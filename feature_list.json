@@ -127,7 +127,7 @@
       "priority": 5,
       "area": "adoption",
       "behavior": "A user can audit and harness any of their repositories without installing anything: bash, git and python3 only.",
-      "state": "active",
+      "state": "passing",
       "verification": [
         "Apply the kit to three real repositories.",
         "Record the audit score before and after for each.",
@@ -140,8 +140,10 @@
           "repair": "If the audit needs anything beyond bash/git/python3, remove the dependency — portability is the point of this kit."
         }
       ],
-      "evidence": [],
-      "notes": "Pilot rollout in progress."
+      "evidence": [
+        "all layers passed — commit 2654584, 2026-08-05T06:46:40Z"
+      ],
+      "notes": "Pilot rollout complete. Aurobalance 32->71/74 (make check exit 0, 97 test files), ADEN-Taller 10->44/74 minimal (check-course.sh exit 0), BootCampIesav1.0 13->72/74 (make check exit 0, 47 tests). No repo needed anything beyond bash, git and python3 to be audited."
     }
   ]
 }

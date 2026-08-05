@@ -213,6 +213,27 @@ bash scripts/clean-state-check.sh . >/dev/null 2>&1
 assert_eq "stray .orig file fails the gate" "1" "$?"
 rm -f stray.orig
 
+# OS noise alone must NOT fail the gate — a gate that cries wolf gets ignored
+touch .DS_Store
+bash scripts/clean-state-check.sh . >/dev/null 2>&1
+assert_eq ".DS_Store alone does not fail the gate" "0" "$?"
+OUT_NOISE="$(bash scripts/clean-state-check.sh . 2>&1)"
+assert_contains ".DS_Store is reported as a note" "$OUT_NOISE" "OS noise present"
+rm -f .DS_Store
+
+# Regression: a verify command that cd's must not move the cwd for later checks
+cp scripts/clean-state-check.sh /tmp/csc-backup.sh
+mkdir -p sub && echo '{}' > sub/marker.json
+sed -i.bak 's|^VERIFY_CMD=.*|VERIFY_CMD="cd sub \&\& true"|' scripts/clean-state-check.sh
+rm -f scripts/clean-state-check.sh.bak
+OUT_CD="$(bash scripts/clean-state-check.sh . 2>&1)"
+case "$OUT_CD" in
+  *"PROGRESS.md missing"*) bad "cd in verify command breaks later checks (cwd leaked)" ;;
+  *) ok "verify command that cd's does not leak the working directory" ;;
+esac
+cp /tmp/csc-backup.sh scripts/clean-state-check.sh
+rm -rf sub /tmp/csc-backup.sh
+
 # a feature marked passing with no evidence must fail the honesty check
 python3 - <<'PYEOF'
 import json

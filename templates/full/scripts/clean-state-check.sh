@@ -29,7 +29,9 @@ echo ""
 echo "${BOLD}1. Verification${RESET}"
 VERIFY_CMD="{{VERIFY_CMD}}"
 if [[ -n "$VERIFY_CMD" ]]; then
-  if eval "$VERIFY_CMD" >/tmp/clean-state-verify.log 2>&1; then
+  # Subshell: a verify command like `cd frontend && npm run verify` must not move
+  # the working directory out from under the checks that follow.
+  if ( eval "$VERIFY_CMD" ) >/tmp/clean-state-verify.log 2>&1; then
     ok "\`$VERIFY_CMD\` exits 0"
   else
     bad "\`$VERIFY_CMD\` failed — see /tmp/clean-state-verify.log"
@@ -113,16 +115,25 @@ fi
 # 5 ── No debug artifacts ─────────────────────────────────────────────────────
 echo ""
 echo "${BOLD}5. Debug artifacts${RESET}"
-ARTIFACTS="$(find . \
-  -not -path './.git/*' -not -path './node_modules/*' -not -path './.next/*' \
-  -not -path './dist/*' -not -path './build/*' -not -path './.venv/*' \
-  \( -name '*.orig' -o -name '*.rej' -o -name '*.bak' -o -name '.DS_Store' \) \
+PRUNE=( -not -path './.git/*' -not -path './node_modules/*' -not -path './.next/*'
+        -not -path './dist/*' -not -path './build/*' -not -path './.venv/*' )
+
+# Session artifacts: these mean a session ended mid-edit. They fail the gate.
+ARTIFACTS="$(find . "${PRUNE[@]}" \
+  \( -name '*.orig' -o -name '*.rej' -o -name '*.bak' -o -name '*.tmp' \) \
   2>/dev/null | head -20)"
 if [[ -z "$ARTIFACTS" ]]; then
   ok "no merge/backup artifacts in the tree"
 else
-  bad "stray artifacts found:"
+  bad "stray session artifacts found:"
   echo "$ARTIFACTS" | sed 's/^/        /'
+fi
+
+# OS noise: worth gitignoring, but failing the gate over .DS_Store only teaches
+# agents that the gate cries wolf.
+OSNOISE="$(find . "${PRUNE[@]}" \( -name '.DS_Store' -o -name 'Thumbs.db' \) 2>/dev/null | head -5)"
+if [[ -n "$OSNOISE" ]]; then
+  note "OS noise present ($(echo "$OSNOISE" | wc -l | tr -d ' ') files) — add .DS_Store to .gitignore"
 fi
 
 if git rev-parse --git-dir >/dev/null 2>&1; then

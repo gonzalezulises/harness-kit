@@ -5,28 +5,26 @@ last. If it disagrees with your recollection, this file wins.
 
 ## Current State
 
-- **Last commit:** _(initial commit — see `git log --oneline -1`)_
-- **Verification:** `make check` — passing, 62/62 assertions
-- **Self-audit:** `make audit` — 73/74, 7/7 critical
+- **Last commit:** `2654584` — feat: portable agent harness kit
+- **Verification:** `make check` — passing, 65/65 assertions
+- **Self-audit:** `make audit` — 74/74, 7/7 critical, VCR 5/5
 - **Startup path:** `./init.sh`
-- **Active feature:** F05 (adoption — pilot rollout)
+- **Active feature:** none — all five features passing
 - **Blocker:** none
 
 ## In Progress
 
-**F05 — adoption.** Applying the kit to real repositories and recording before/after audit
-scores. Four of five features are `passing`; F05 stays `active` until the pilot repos are
-harnessed and their scores recorded.
-
-This is why `make audit` reports 73/74 rather than 74/74: the VCR check correctly reports
-one activated feature that is not yet passing. That is an honest signal, not a defect.
+_Nothing active. All five features are `passing` with recorded evidence._
 
 ## Next Steps
 
-1. Finish the pilot rollout and record before/after scores in F05's evidence.
-2. Run `make verify-feature F=F05` to promote it — do not hand-edit the state.
-3. Decide whether `.harness/arch-rules.json` should grow project-specific rules as the kit
-   is applied to more repos (every recurring review finding becomes a rule).
+1. Roll the kit out to more of the ~173 repositories. Audit first (read-only), harness the
+   ones that will see repeated agent sessions.
+2. Grow `.harness/arch-rules.json` as patterns repeat — every recurring review finding
+   becomes a rule.
+3. Consider splitting Aurobalance's 432-line `AGENTS.md` into `docs/` topic files. The
+   contract is at the top now, but the entry file is still an encyclopedia (`inst.short`
+   is the one recommended check it fails).
 
 ## Blockers
 
@@ -55,4 +53,19 @@ Newest first. One entry per session.
   `eval` in the feature gate let a layer's `exit` kill the script before it printed repair
   guidance; the seed secret rule could not fire because its regex did not survive the
   JSON → shell round-trip. All three are covered by tests now.
-- **Next best action:** apply to pilot repositories, record scores, promote F05.
+- **Next best action:** roll out to more repositories, audit-first.
+
+### 2026-08-05 — pilot rollout
+
+- **Goal:** prove the kit works on real repositories, not just fixtures.
+- **Completed:** harnessed three pilots — Aurobalance (full, 32→71/74), ADEN-Taller
+  (minimal, 10→44/74, plus a real structure verifier for a content repo), and
+  BootCampIesav1.0 (full, 13→72/74).
+- **Verification run:** `make check` exits 0 in both full pilots — Aurobalance 97 test
+  files, BootCamp 47 tests. ADEN's `check-course.sh` exits 0.
+- **Bugs the rollout exposed:** `clean-state-check.sh` ran the verify command with `eval`,
+  so a `cd frontend && ...` command leaked the working directory and made every later
+  check report missing files. Same class of bug as the feature gate. Both now run in a
+  subshell, both covered by regression tests. Also downgraded `.DS_Store` from failure to
+  note — a gate that cries wolf gets ignored.
+- **Known risks:** pilot changes are uncommitted in the three repos, left for review.
