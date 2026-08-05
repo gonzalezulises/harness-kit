@@ -1,0 +1,41 @@
+{
+  "$comment": "Architectural boundary rules, enforced by scripts/check-arch.sh. Each rule runs 'check' and fires when the result does not match 'expect' (empty | nonempty | exit0). Promote every recurring code-review finding into a rule here — a review comment fires once, a rule fires forever. Keep double quotes OUT of the check command: it travels JSON -> shell, and nested quoting is where these rules break.",
+  "rules": [
+    {
+      "id": "no-secrets-committed",
+      "description": "Credentials must never enter version control.",
+      "check": "git grep -nIE '(api[_-]?key|apikey|secret|password|passwd|auth[_-]?token|access[_-]?token)[[:space:]]*[=:][[:space:]]*.?[A-Za-z0-9_/+-]{20,}' -- ':!*.example' ':!*.md' ':!*.lock' ':!*lock.json' ':!.harness/*' 2>/dev/null || true",
+      "expect": "empty",
+      "what": "A hardcoded credential appears in a tracked file.",
+      "why": "Anything committed stays in git history permanently, even if a later commit deletes it.",
+      "fix": "Move the value into .env (gitignored) or the OS keychain, read it through an env var, then rotate the exposed credential — it must be treated as compromised."
+    },
+    {
+      "id": "no-env-file-tracked",
+      "description": ".env must stay untracked.",
+      "check": "git ls-files --error-unmatch .env 2>/dev/null || true",
+      "expect": "empty",
+      "what": "The .env file is tracked by git.",
+      "why": "That is where real credentials live; tracking it publishes them to every clone and fork.",
+      "fix": "Run: git rm --cached .env && echo .env >> .gitignore — then rotate every credential it contained."
+    },
+    {
+      "id": "no-debug-statements",
+      "description": "Debug statements must not survive into committed source.",
+      "check": "git grep -nIE '(debugger;|console[.]debug[(]|binding[.]pry|pdb[.]set_trace[(])' -- src app lib packages 2>/dev/null || true",
+      "expect": "empty",
+      "what": "A debugger or debug-print statement remains in source.",
+      "why": "Debug artifacts change runtime behaviour and are a reliable signal that a session ended without cleanup.",
+      "fix": "Delete the statement. If the output is genuinely needed, route it through the project logger instead."
+    },
+    {
+      "id": "no-merge-conflict-markers",
+      "description": "Conflict markers must never be committed.",
+      "check": "git grep -nIE '^(<<<<<<<|>>>>>>>)[[:space:]]' -- ':!*.md' 2>/dev/null || true",
+      "expect": "empty",
+      "what": "An unresolved merge conflict marker is present in a tracked file.",
+      "why": "The file is syntactically broken; whatever verification passed did not actually cover this path.",
+      "fix": "Open the named file, resolve the conflict by hand, then re-run the full verification command."
+    }
+  ]
+}

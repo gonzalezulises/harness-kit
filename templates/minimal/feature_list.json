@@ -1,0 +1,75 @@
+{
+  "project": "{{PROJECT_NAME}}",
+  "last_updated": "{{DATE}}",
+  "rules": {
+    "single_active_feature": true,
+    "passing_requires_evidence": true,
+    "state_set_by_harness_only": true,
+    "completable_in_one_session": true
+  },
+  "states": {
+    "not_started": "Work has not begun.",
+    "active": "The current task. Only one feature may be active at a time.",
+    "blocked": "Cannot continue until a documented blocker is resolved.",
+    "passing": "Verification ran, evidence is recorded."
+  },
+  "features": [
+    {
+      "id": "F01",
+      "priority": 1,
+      "area": "setup",
+      "behavior": "A clean checkout installs, verifies and starts with a single command.",
+      "state": "not_started",
+      "verification": [
+        "Clone the repo into an empty directory.",
+        "Run ./init.sh",
+        "Confirm it installs dependencies, runs verification, and prints the start command.",
+        "Confirm the exit code is 0."
+      ],
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "{{VERIFY_CMD}}",
+          "repair": "Read the first error only. Fix that one, re-run. Do not batch fixes."
+        },
+        {
+          "label": "runtime",
+          "cmd": "./init.sh",
+          "repair": "If install fails, check the lockfile matches the package manager in init.sh."
+        }
+      ],
+      "evidence": [],
+      "notes": "Replace this placeholder once the real backlog is known."
+    },
+    {
+      "id": "F02",
+      "priority": 2,
+      "area": "replace-me",
+      "behavior": "Replace with the first user-visible behavior this project must deliver.",
+      "state": "not_started",
+      "verification": [
+        "Describe the exact steps a user takes.",
+        "Describe what they should see when it works."
+      ],
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "{{VERIFY_CMD}}",
+          "repair": "Fix type and lint errors before looking at behavior."
+        },
+        {
+          "label": "runtime",
+          "cmd": "{{START_CMD}}",
+          "repair": "Confirm the app reaches its ready state and leaves no debug artifacts."
+        },
+        {
+          "label": "e2e",
+          "cmd": "echo 'replace with the end-to-end check'",
+          "repair": "Exercise the behavior the way a real user would, not through an internal API."
+        }
+      ],
+      "evidence": [],
+      "notes": ""
+    }
+  ]
+}

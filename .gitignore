@@ -1,0 +1,3 @@
+# harness runtime artifacts
+.harness/traces/traces.jsonl
+.DS_Store

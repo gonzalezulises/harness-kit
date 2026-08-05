@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bash tests/run-tests.sh)",
+      "Bash(make check)",
+      "Bash(make audit)",
+      "Bash(bash bin/harness-audit.sh:*)",
+      "Bash(bash -n:*)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)"
+    ],
+    "deny": [
+      "Bash(bash bin/harness-init.sh:* --force)",
+      "Read(./.env)"
+    ]
+  }
+}
