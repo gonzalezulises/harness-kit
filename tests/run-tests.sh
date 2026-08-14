@@ -471,6 +471,53 @@ assert_contains "no claims is stated, not silent" "$OUTN" "NO_CLAIMS"
 assert_file "required-quality workflow is scaffolded" \
   "$CLAIMS/.github/workflows/required-quality.yml"
 
+# ═════════════════════════════════════════════════════════════════════════════
+echo ""
+echo "${BOLD}15. workflow integrity — the gate must protect its own definition${RESET}"
+WF="$CLAIMS/.github/workflows/required-quality.yml"
+
+# 15a — every external action is pinned to a 40-hex SHA. A tag can be moved.
+UNPINNED="$(grep -E '^\s*uses:' "$WF" | grep -vE 'uses:\s*\S+@[0-9a-f]{40}\s*(#.*)?$' || true)"
+assert_eq "every action is pinned to a 40-hex SHA" "" "$UNPINNED"
+
+# 15b/c/d — the integrity ruleset payload ships, and it is the strict one.
+RS="$CLAIMS/.github/rulesets/required-quality-integrity.json"
+assert_file "integrity ruleset payload is scaffolded" "$RS"
+if [[ -f "$RS" ]]; then
+  RSJSON="$(python3 - "$RS" <<'PYEOF'
+import json, sys
+d = json.load(open(sys.argv[1]))
+rules = d.get("rules", [])
+paths = []
+for r in rules:
+    if r.get("type") == "file_path_restriction":
+        paths = r.get("parameters", {}).get("restricted_file_paths", [])
+print("%s|%s|%s|%s" % (d.get("target"), d.get("enforcement"),
+                       len(d.get("bypass_actors", [])), ",".join(paths)))
+PYEOF
+)"
+  IFS='|' read -r RS_TARGET RS_ENF RS_BYPASS RS_PATHS <<< "$RSJSON"
+  assert_eq "integrity ruleset targets push" "push" "$RS_TARGET"
+  assert_eq "integrity ruleset is active" "active" "$RS_ENF"
+  assert_eq "integrity ruleset has no bypass actors" "0" "$RS_BYPASS"
+  assert_eq "integrity ruleset restricts the workflow path" \
+    ".github/workflows/required-quality.yml" "$RS_PATHS"
+fi
+
+# 15e — the required-check ruleset payload ships too
+assert_file "required-check ruleset payload is scaffolded" \
+  "$CLAIMS/.github/rulesets/required-quality-check.json"
+
+# 15f — the installer exists and is syntactically sound
+assert_file "harness-protect.sh exists" "$KIT_DIR/bin/harness-protect.sh"
+bash -n "$KIT_DIR/bin/harness-protect.sh" 2>/dev/null \
+  && ok "harness-protect.sh parses" || bad "harness-protect.sh has a syntax error"
+
+# 15g — the invariant is written where agents read it
+grep -q "skipped" "$CLAIMS/AGENTS.md" \
+  && ok "AGENTS.md documents the skipped-job bypass" \
+  || bad "AGENTS.md does not document the skipped-job bypass"
+
 cd "$KIT_DIR"
 
 # ═════════════════════════════════════════════════════════════════════════════

@@ -189,6 +189,10 @@ if [[ "$LEVEL" == "full" ]]; then
   render "$F/scripts/verify-claims.sh"        "$TARGET/scripts/verify-claims.sh"
   render "$F/.github/workflows/required-quality.yml" \
                                               "$TARGET/.github/workflows/required-quality.yml"
+  render "$F/.github/rulesets/required-quality-check.json" \
+                                              "$TARGET/.github/rulesets/required-quality-check.json"
+  render "$F/.github/rulesets/required-quality-integrity.json" \
+                                              "$TARGET/.github/rulesets/required-quality-integrity.json"
   render "$F/scripts/check-arch.sh"           "$TARGET/scripts/check-arch.sh"
   render "$F/scripts/clean-state-check.sh"    "$TARGET/scripts/clean-state-check.sh"
   render "$F/scripts/session-trace.sh"        "$TARGET/scripts/session-trace.sh"

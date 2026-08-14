@@ -40,6 +40,12 @@ commit and at every clock-out.
   re-runs every claimed feature with `scripts/verify-claims.sh`, using the copy from the
   base branch, and a state whose layers do not pass comes back as `FALSE_CLAIM`. why: a
   state written by hand is a claim; a state that survives re-verification is a receipt.
+- **Never touch `.github/workflows/required-quality.yml`** — not to add a condition, a
+  paths filter, a rename, or a "temporary" skip. GitHub counts a job **skipped** by its
+  own job-level condition as a **successful** required check, so weakening that file makes
+  a pull request merge green while appearing fully gated. The push ruleset installed by
+  `bin/harness-protect.sh` rejects such a push outright. If the workflow genuinely must
+  change, that is a human decision recorded in `DECISIONS.md`, not an agent edit.
 - **Feature granularity** — each feature must be completable in one session. If it
   spans sessions, split it.
 - **Budgets are hard limits** — every feature declares `budgets`: `review_rounds_max`,
