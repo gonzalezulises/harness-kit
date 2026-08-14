@@ -5,7 +5,7 @@ last. If it disagrees with your recollection, this file wins.
 
 ## Current State
 
-- **Last commit:** `aa73fef` — feat(cli): one command to activate, and an honest answer
+- **Last commit:** `fc446bb` — docs: record what this is now
 - **Verification:** `make check` — passing, 149/149 assertions
 - **Pack verification:** `packs/load-testing/` 57/57 · `packs/gherkin/` 15/15, exit 0
 - **Audit:** rubric v2, 84 checks. The kit scores 77/84 against itself.
@@ -217,3 +217,22 @@ fix from `84e8c71` had never reached the kit's own `clean-state-check.sh`.
   subshell, both covered by regression tests. Also downgraded `.DS_Store` from failure to
   note — a gate that cries wolf gets ignored.
 - **Known risks:** pilot changes are uncommitted in the three repos, left for review.
+
+### 2026-08-14 — the kit's own fixture tripped a secret scanner
+
+- **Goal:** close a GitGuardian incident opened against commit `2654584` of this repo.
+- **What it actually was:** a false positive, and an instructive one. The `sk_live_…`
+  string in `tests/run-tests.sh` is the bait this suite feeds `check-arch.sh` to prove the
+  secret rule fires. It was written to look like a real leaked key, so a scanner reading
+  the repo did exactly what it exists to do. No credential was ever real.
+- **Fix:** the prefix is assembled at runtime, so the literal no longer lives in tracked
+  source. `src/leak.ts` still receives the full, byte-identical string — the rule is tested
+  against the same shape as before. Out of scope for the audit rubric; no check changed.
+- **Verification run:** `make check` exits 0 — 149/149. The generated `src/leak.ts` was
+  diffed against the pre-change output and is identical.
+- **Left undone:** the fixture is still in the history of all thirteen commits. Not
+  rewritten: a fake key in a private repo does not justify a force-push that breaks clones.
+  The incident itself must be dismissed by hand in the GitGuardian dashboard.
+- **Lesson worth keeping:** a test fixture that imitates a credential well enough to test a
+  detector will also be found by every other detector. Assemble it at runtime, or expect the
+  alert — and expect it again in every repo scaffolded from this kit.
