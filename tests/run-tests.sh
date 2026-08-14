@@ -58,6 +58,22 @@ for f in "$KIT_DIR"/bin/*.sh "$KIT_DIR"/templates/full/scripts/*.sh "$KIT_DIR"/t
   else bad "syntax $(basename "$f")"; fi
 done
 
+# The kit dogfoods its own scripts: scripts/X and templates/full/scripts/X are the
+# same file in two places. The suite runs the template copy, so editing only the
+# root one produces failures with no visible cause. Catch the drift instead.
+for f in "$KIT_DIR"/templates/full/scripts/*.sh; do
+  base="$(basename "$f")"
+  root="$KIT_DIR/scripts/$base"
+  [[ -f "$root" ]] || continue
+  # The kit's own copy is the rendered one, so placeholders are substituted with
+  # the values the kit itself uses before comparing.
+  if diff -q <(sed 's/{{VERIFY_CMD}}/make check/g; s/{{E2E_CMD}}/make e2e/g' "$f") "$root" >/dev/null 2>&1; then
+    ok "in sync: scripts/$base"
+  else
+    bad "DRIFT: scripts/$base differs from templates/full/scripts/$base — copy it across"
+  fi
+done
+
 # JSON templates must parse
 for j in "$KIT_DIR"/templates/minimal/feature_list.json "$KIT_DIR"/templates/full/.harness/arch-rules.json; do
   if python3 -c "import json,sys;json.load(open(sys.argv[1]))" "$j" 2>/dev/null; then
