@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# gherkin-check — run the executable specification and judge the report.
+#
+# Usage:
+#   bin/gherkin-check [--expect N] [-- <extra cucumber args>]
+#
+# The verdict here is the validator's, not Cucumber's. Cucumber exits 0 when
+# nothing failed, which includes the case where nothing ran: a renamed feature
+# directory, a tag filter matching nothing, or steps that were never wired up all
+# produce a green run that proved nothing.
+#
+# --expect N is the absolute counter. Declare how many scenarios must execute and
+# a run that quietly drops half of them stops being a pass.
+
+set -uo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT_DIR"
+
+EXPECT=""
+EXTRA=()
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --expect) EXPECT="$2"; shift 2 ;;
+    --)       shift; EXTRA=("$@"); break ;;
+    *)        EXTRA+=("$1"); shift ;;
+  esac
+done
+
+REPORT="${GHERKIN_REPORT:-.gherkin-messages.ndjson}"
+
+# Resolve a runner without assuming a package manager.
+if [[ -x "node_modules/.bin/cucumber-js" ]]; then
+  RUNNER=(node_modules/.bin/cucumber-js)
+elif command -v cucumber-js >/dev/null 2>&1; then
+  RUNNER=(cucumber-js)
+elif command -v npx >/dev/null 2>&1; then
+  RUNNER=(npx --no-install cucumber-js)
+else
+  echo "GHERKIN_NO_RUNNER: cucumber-js is not installed. Add @cucumber/cucumber as a devDependency." >&2
+  exit 69
+fi
+
+rm -f "$REPORT"
+
+set +e
+"${RUNNER[@]}" --format "message:$REPORT" "${EXTRA[@]+"${EXTRA[@]}"}"
+CUCUMBER_EXIT=$?
+set -e
+
+# Reported for diagnosis only. It is deliberately NOT the verdict: a zero here
+# with an empty report is the exact case this gate exists to catch.
+echo "cucumber exit: $CUCUMBER_EXIT"
+
+if [[ -n "$EXPECT" ]]; then
+  node "$ROOT_DIR/bin/gherkin-validate.mjs" "$REPORT" --expect "$EXPECT"
+else
+  node "$ROOT_DIR/bin/gherkin-validate.mjs" "$REPORT"
+fi
