@@ -1,0 +1,123 @@
+# Compuerta de rendimiento.
+#
+# El disparador es `pull_request` y NO `deployment_status`, y la razón es la única
+# decisión importante de este archivo:
+#
+# Un check que sólo corre cuando existe un despliegue no puede exigirse. Si se
+# marca como requerido, cualquier pull request que no genere vista previa —un
+# cambio de documentación, de configuración, de este propio archivo— queda
+# bloqueado para siempre esperando un check que nunca va a reportar. No hay forma
+# de fusionarlo salvo desactivar la regla.
+#
+# Con `pull_request`, el trabajo corre siempre y siempre reporta. Cuando no hay
+# despliegue que medir, lo dice y aprueba. Eso lo hace seguro de exigir.
+#
+#   smoke  bloqueante cuando hay algo que medir; aprueba con explicación cuando no.
+#   load   manual. Evidencia de entrega. Nunca bloquea.
+#
+# Las acciones se fijan a versiones exactas: una etiqueta móvil deja que cambie el
+# código que corre en CI sin que nadie lo revise.
+
+name: rendimiento
+
+on:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: Perfil a ejecutar
+        type: choice
+        options: [smoke, load]
+        default: smoke
+      target:
+        description: URL base del objetivo (con esquema)
+        type: string
+        required: true
+
+permissions:
+  contents: read
+  # Lectura de los despliegues del commit para resolver la URL de vista previa.
+  deployments: read
+  # Necesario sólo para el modo iap.
+  id-token: write
+
+jobs:
+  smoke:
+    if: github.event_name == 'pull_request' || github.event.inputs.profile == 'smoke'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - uses: grafana/setup-k6-action@v1.2.1
+
+      # Resuelve qué medir. En un pull request espera la vista previa del commit;
+      # si no aparece, no hay nada que medir y el trabajo aprueba.
+      - name: Resolver objetivo
+        id: target
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ -n "${{ github.event.inputs.target }}" ]; then
+            echo "url=${{ github.event.inputs.target }}" >> "$GITHUB_OUTPUT"
+          else
+            url="$(bash bin/perf-resolve-target "${{ github.event.pull_request.head.sha }}" "$GITHUB_REPOSITORY")"
+            echo "url=${url}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Sin despliegue que medir
+        if: steps.target.outputs.url == ''
+        run: |
+          echo "::notice::Este commit no produjo despliegue de vista previa; no hay nada que medir."
+          echo "La compuerta aprueba: no medir no es lo mismo que medir mal."
+
+      - name: Smoke de rendimiento
+        if: steps.target.outputs.url != ''
+        env:
+          PERF_TARGET: ${{ steps.target.outputs.url }}
+          PERF_AUTH: ${{ vars.PERF_AUTH || 'none' }}
+          PERF_APP_MARKER: ${{ vars.PERF_APP_MARKER }}
+          PERF_GUARD_PATH: ${{ vars.PERF_GUARD_PATH || '/' }}
+          PERF_ROUTES: ${{ vars.PERF_ROUTES || '/' }}
+          PERF_P95_MS: ${{ vars.PERF_P95_MS || '1500' }}
+          PERF_DRIFT_PCT: ${{ vars.PERF_DRIFT_PCT || '25' }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+          PERF_BEARER: ${{ secrets.PERF_BEARER }}
+        # Sin `|| true`, sin `continue-on-error`. Si esto falla, el trabajo falla.
+        run: bin/perf-check smoke
+
+      # if: always() sube la evidencia también cuando la compuerta falla — que es
+      # justo cuando alguien necesita leerla.
+      - name: Publicar evidencia
+        if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: evidencia-rendimiento-smoke
+          path: tests/load/results/
+          if-no-files-found: ignore
+
+  load:
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.profile == 'load'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: grafana/setup-k6-action@v1.2.1
+
+      - name: Prueba de carga
+        env:
+          PERF_TARGET: ${{ github.event.inputs.target }}
+          PERF_AUTH: ${{ vars.PERF_AUTH || 'none' }}
+          PERF_APP_MARKER: ${{ vars.PERF_APP_MARKER }}
+          PERF_ROUTES: ${{ vars.PERF_ROUTES || '/' }}
+          PERF_PEAK_VUS: ${{ vars.PERF_PEAK_VUS || '10' }}
+          PERF_P95_MS: ${{ vars.PERF_P95_MS || '1500' }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+          PERF_BEARER: ${{ secrets.PERF_BEARER }}
+        run: bin/perf-check load
+
+      - name: Publicar evidencia
+        if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: evidencia-rendimiento-load
+          path: tests/load/results/
+          if-no-files-found: ignore

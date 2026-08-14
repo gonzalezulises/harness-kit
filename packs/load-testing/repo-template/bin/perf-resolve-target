@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+# perf-resolve-target — encuentra la URL del despliegue de vista previa de un commit.
+#
+# Imprime la URL en la salida estándar, o nada si ese commit no tiene despliegue.
+#
+# La distinción central: "no hay despliegue" NO es un error. Es el caso normal de
+# un cambio que no produce vista previa (documentación, configuración, un repo sin
+# plataforma conectada). Devolver un error ahí haría fallar la compuerta por algo
+# que no tiene nada que ver con el rendimiento, y una compuerta que falla por
+# motivos ajenos se desactiva.
+#
+# Sale distinto de cero SÓLO si la herramienta no pudo consultar (falta gh, falta
+# autenticación, la API respondió mal). Eso sí es una falla real: significa que no
+# se sabe si hay despliegue o no, y no se debe adivinar.
+#
+# Uso:
+#   bin/perf-resolve-target <sha> [repositorio] [intentos] [segundos-entre-intentos]
+#
+# Compatible con bash 3.2.
+
+set -uo pipefail
+
+SHA="${1:-}"
+REPO="${2:-${GITHUB_REPOSITORY:-}}"
+ATTEMPTS="${3:-10}"
+DELAY="${4:-20}"
+
+err() { echo "perf-resolve-target: $1" >&2; }
+
+[ -n "$SHA" ] || { err "falta el sha del commit"; exit 2; }
+[ -n "$REPO" ] || { err "falta el repositorio (argumento 2 o GITHUB_REPOSITORY)"; exit 2; }
+command -v gh >/dev/null 2>&1 || { err "gh no está disponible"; exit 2; }
+
+attempt=1
+while [ "$attempt" -le "$ATTEMPTS" ]; do
+  # Lista los despliegues de ese commit exacto. Un commit sin despliegue devuelve
+  # una lista vacía, no un error.
+  ids=$(gh api "repos/${REPO}/deployments?sha=${SHA}" --jq '.[].id' 2>/dev/null)
+  api_status=$?
+
+  if [ "$api_status" -ne 0 ]; then
+    err "la consulta a la API falló (intento ${attempt}/${ATTEMPTS})"
+    # Un fallo transitorio de red no debe decidir el resultado: se reintenta, y
+    # sólo se rinde al agotar los intentos.
+    if [ "$attempt" -eq "$ATTEMPTS" ]; then
+      err "no se pudo determinar si el commit tiene despliegue"
+      exit 3
+    fi
+  else
+    for id in $ids; do
+      # Se toma la URL del primer estado exitoso. Un despliegue en curso todavía
+      # no tiene environment_url, y medirlo daría un error de conexión.
+      url=$(gh api "repos/${REPO}/deployments/${id}/statuses" \
+        --jq 'map(select(.state == "success" and .environment_url != null and .environment_url != "")) | .[0].environment_url // empty' \
+        2>/dev/null)
+      if [ -n "${url:-}" ]; then
+        printf '%s\n' "$url"
+        exit 0
+      fi
+    done
+  fi
+
+  if [ "$attempt" -lt "$ATTEMPTS" ]; then
+    err "aún sin despliegue listo para ${SHA:0:8} (intento ${attempt}/${ATTEMPTS}); esperando ${DELAY}s"
+    sleep "$DELAY"
+  fi
+  attempt=$((attempt + 1))
+done
+
+# Sin despliegue tras agotar la espera. No es un error: no hay nada que medir.
+err "el commit ${SHA:0:8} no tiene despliegue de vista previa; no hay nada que medir"
+exit 0

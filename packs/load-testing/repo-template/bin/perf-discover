@@ -1,0 +1,293 @@
+#!/usr/bin/env bash
+# perf-discover — averigua QUÉ se puede medir en una aplicación que ya corre.
+#
+# Existe porque configurar la compuerta a ojo produce mediciones sin valor. En un
+# caso real, de nueve rutas: siete redirigían al login y una servía un armazón
+# cuyo texto visible completo era "Cargando…". Medir esa última habría dado un
+# p(95) excelente sobre una página vacía — un verde que no significa nada.
+#
+# Este script hace ese sondeo siempre igual, en lugar de dejarlo al criterio de
+# quien configure la compuerta ese día. Clasifica cada ruta y propone la
+# configuración; no escribe nada.
+#
+# Uso:
+#   bin/perf-discover <url-base> [ruta,ruta,...]
+#
+# Sin lista de rutas, las deduce de app/**/page.tsx (Next.js App Router) y de
+# app/api/**/route.ts.
+#
+# Compatible con bash 3.2. Requiere curl y python3.
+
+set -uo pipefail
+
+BASE="${1:-}"
+ROUTES_ARG="${2:-}"
+
+if [ -z "$BASE" ]; then
+  cat >&2 <<'USAGE'
+Uso: bin/perf-discover <url-base> [ruta,ruta,...]
+
+Ejemplo:
+  bin/perf-discover http://127.0.0.1:3000
+
+Levanta primero la aplicación. Este script no arranca nada: sondea lo que ya
+está sirviendo, porque la aplicación corriendo es la fuente de verdad y el
+código no dice qué responde de verdad una ruta.
+USAGE
+  exit 2
+fi
+
+command -v curl >/dev/null 2>&1 || { echo "perf-discover: falta curl" >&2; exit 2; }
+command -v python3 >/dev/null 2>&1 || { echo "perf-discover: falta python3" >&2; exit 2; }
+
+BASE="${BASE%/}"
+
+# ---------------------------------------------------------------------------
+# Rutas candidatas
+# ---------------------------------------------------------------------------
+
+if [ -n "$ROUTES_ARG" ]; then
+  ROUTES="$(printf '%s' "$ROUTES_ARG" | tr ',' '\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+else
+  PAGES=""
+  APIS=""
+  if [ -d app ]; then
+    # sed -E: `\?` no es cuantificador en el sed de macOS.
+    PAGES="$(find app -type f \( -name 'page.tsx' -o -name 'page.jsx' -o -name 'page.js' \) 2>/dev/null \
+      | grep -v '\[' \
+      | sed -E -e 's#^app##' -e 's#/page\.(tsx|jsx|js)$##' -e 's#^$#/#')"
+    APIS="$(find app/api -type f -name 'route.ts' 2>/dev/null \
+      | grep -v '\[' \
+      | sed -E -e 's#^app##' -e 's#/route\.ts$##')"
+  fi
+  ROUTES="$(printf '%s\n%s\n' "$PAGES" "$APIS" | grep -v '^$' | sort -u)"
+  [ -n "$ROUTES" ] || ROUTES="/"
+fi
+
+ROUTE_COUNT="$(printf '%s\n' "$ROUTES" | grep -c . | tr -d ' ')"
+echo "perf-discover: sondeando ${BASE} — ${ROUTE_COUNT} ruta(s) candidata(s)"
+echo
+
+TMP="$(mktemp -d)"
+trap 'rm -rf "$TMP"' EXIT
+
+# ---------------------------------------------------------------------------
+# Sondeo
+# ---------------------------------------------------------------------------
+
+i=0
+printf '%s\n' "$ROUTES" | while IFS= read -r route; do
+  [ -n "$route" ] || continue
+  i=$((i + 1))
+  body="$TMP/body-$i.html"
+  # redirects NO seguidos: una redirección seguida se ve como un 200 exitoso en
+  # otro sitio, que es justo lo que hay que distinguir.
+  meta="$(curl -s -o "$body" -w '%{http_code}|%{redirect_url}|%{time_total}|%{size_download}' \
+    --max-time 15 "${BASE}${route}" 2>/dev/null)"
+  printf '%s\t%s\t%s\n' "$route" "$meta" "$body" >> "$TMP/results.tsv"
+done
+
+[ -f "$TMP/results.tsv" ] || { echo "perf-discover: no se pudo sondear ninguna ruta." >&2; exit 1; }
+
+# ---------------------------------------------------------------------------
+# Clasificación e informe
+# ---------------------------------------------------------------------------
+
+python3 - "$TMP/results.tsv" <<'PY'
+import re, sys
+
+rows = []
+with open(sys.argv[1], encoding='utf-8') as fh:
+    for line in fh:
+        parts = line.rstrip('\n').split('\t')
+        if len(parts) != 3:
+            continue
+        route, meta, body_path = parts
+        code, redirect, t, size = (meta.split('|') + ['', '', '', ''])[:4]
+        rows.append({
+            'route': route, 'code': code, 'redirect': redirect,
+            'ms': float(t or 0) * 1000, 'size': int(size or 0),
+            'body': body_path,
+        })
+
+LOADERS = ('cargando', 'loading', 'redirigiendo', 'redirecting', 'please wait', 'espere')
+
+def visible_text(path):
+    try:
+        with open(path, encoding='utf-8', errors='replace') as fh:
+            h = fh.read()
+    except OSError:
+        return '', ''
+    h = re.sub(r'<(script|style|noscript)[^>]*>.*?</\1>', ' ', h, flags=re.S | re.I)
+    txt = re.sub(r'<[^>]+>', ' ', h)
+    txt = re.sub(r'\s+', ' ', txt).strip()
+    title = ''
+    m = re.search(r'<title[^>]*>(.*?)</title>', open(path, encoding='utf-8', errors='replace').read(), re.S | re.I)
+    if m:
+        title = re.sub(r'\s+', ' ', m.group(1)).strip()
+    return txt, title
+
+measurable, redirects, shells, errors = [], [], [], []
+
+for r in rows:
+    code = r['code']
+    if code.startswith('3'):
+        target = r['redirect'] or ''
+        r['login'] = bool(re.search(r'(login|signin|sign-in|auth)', target, re.I))
+        redirects.append(r)
+        continue
+    if code != '200':
+        errors.append(r)
+        continue
+
+    txt, title = visible_text(r['body'])
+    r['text'], r['title'] = txt, title
+    body_only = txt
+    if title and txt.startswith(title):
+        body_only = txt[len(title):].strip()
+    # Se guarda aparte: el marcador debe salir del cuerpo y no del texto pegado
+    # al título, o se producen frases que no existen en la página (el final del
+    # título unido al principio del cuerpo).
+    r['body_text'] = body_only
+
+    is_json = r['body'] and open(r['body'], encoding='utf-8', errors='replace').read(1).strip() in '{['
+    r['is_json'] = is_json
+
+    # Qué cuenta como armazón de cliente. Dos señales, y hacen falta motivos
+    # distintos para cada una:
+    #
+    #   fuerte : el poco texto visible ES un cargador ("Cargando…"). Concluyente
+    #            por sí sola, sin importar el tamaño.
+    #   débil  : casi nada visible PERO el documento es grande. Mucho marcado y
+    #            nada que leer es la firma de una página que se rellena en el
+    #            cliente.
+    #
+    # La señal débil exige las dos condiciones a propósito: una página legítima
+    # puede ser mínima y tener poco texto, y clasificarla como armazón la
+    # excluiría de la medición sin razón.
+    looks_like_loader = any(k in body_only.lower() for k in LOADERS)
+    thin_but_heavy = len(body_only) < 60 and r['size'] > 3072
+
+    if not is_json and (looks_like_loader or thin_but_heavy):
+        r['shell_reason'] = 'cargador' if looks_like_loader else 'mucho marcado, nada de texto'
+        shells.append(r)
+    else:
+        measurable.append(r)
+
+def show(rows_, extra=None):
+    for r in rows_:
+        line = f"  {r['route']:<34} {r['code']:>3}  {r['size']/1024:6.1f} KB  {r['ms']:6.1f} ms"
+        if extra:
+            line += '  ' + extra(r)
+        print(line)
+
+print('MEDIBLES — sirven contenido real')
+if measurable:
+    show(measurable, lambda r: f"texto visible: {len(r['text'])} car.")
+else:
+    print('  (ninguna)')
+
+print()
+print('REQUIEREN SESIÓN — redirigen, no se pueden medir sin autenticarse')
+if redirects:
+    for r in redirects:
+        flag = 'login' if r.get('login') else 'otro destino'
+        print(f"  {r['route']:<34} {r['code']:>3}  -> {r['redirect'] or '?'}  [{flag}]")
+else:
+    print('  (ninguna)')
+
+print()
+print('ARMAZÓN DE CLIENTE — NO medir: se mediría una página vacía')
+if shells:
+    for r in shells:
+        snippet = (r['text'][:70] + '…') if len(r['text']) > 70 else r['text']
+        print(f"  {r['route']:<34} {r['code']:>3}  {r['size']/1024:6.1f} KB   [{r.get('shell_reason','')}]")
+        print(f"       texto visible completo: \"{snippet}\"")
+else:
+    print('  (ninguna)')
+
+if errors:
+    print()
+    print('ERRORES')
+    for r in errors:
+        print(f"  {r['route']:<34} {r['code']:>3}")
+
+# --- Marcador sugerido -------------------------------------------------------
+# Debe aparecer en una ruta medible y NO en los armazones, o no distinguiría la
+# aplicación de una pantalla intermedia.
+marker = ''
+guard = ''
+if measurable:
+    shell_text = ' '.join(s.get('text', '') for s in shells)
+
+    # El guard verifica un marcador de texto, así que tiene que apuntar a una
+    # página HTML y NO a un endpoint JSON. Y debe ser la MISMA ruta de la que
+    # sale el marcador: proponer el marcador de una página y el guard de otra
+    # produce una configuración que aborta en la primera corrida.
+    html_pages = [r for r in measurable if not r.get('is_json')]
+    best = max(html_pages or measurable, key=lambda r: len(r.get('body_text', '')))
+    guard = best['route']
+
+    # El guard comprueba `cuerpo.includes(marcador)` contra el HTML CRUDO, así que
+    # el candidato debe existir literalmente ahí. Una frase tomada del texto
+    # visible (con espacios normalizados) casi nunca coincide en el HTML, porque
+    # entre palabra y palabra hay etiquetas y saltos de línea. Por eso se
+    # prueban también palabras sueltas, que sí sobreviven al marcado.
+    try:
+        with open(best['body'], encoding='utf-8', errors='replace') as fh:
+            raw_html = fh.read()
+    except OSError:
+        raw_html = ''
+
+    body_text = best.get('body_text', '')
+    candidates = []
+    # Frases de 2 y 3 palabras: más distintivas cuando sobreviven.
+    candidates += re.findall(
+        r'[A-ZÁÉÍÓÚÑ][\wáéíóúñÁÉÍÓÚÑ]{3,}(?:\s+[\wáéíóúñ]{3,}){1,2}', body_text)
+    # Palabras sueltas de al menos 6 caracteres.
+    candidates += re.findall(r'[A-ZÁÉÍÓÚÑa-záéíóúñ][\wáéíóúñÁÉÍÓÚÑ]{5,}', body_text)
+
+    # Más largo primero: un marcador más específico es menos propenso a aparecer
+    # por casualidad en una página de error.
+    for p in sorted({c.strip() for c in candidates}, key=len, reverse=True):
+        if len(p) < 5:
+            continue
+        if p in shell_text:          # aparece también en el armazón: no distingue
+            continue
+        if p not in raw_html:        # auto-verificación contra el cuerpo real
+            continue
+        marker = p
+        break
+
+print()
+print('─' * 62)
+print('CONFIGURACIÓN SUGERIDA')
+print()
+if measurable:
+    routes = ','.join(r['route'] for r in measurable)
+    print(f"  PERF_GUARD_PATH={guard}")
+    if marker:
+        print(f"  PERF_APP_MARKER='{marker}'")
+    else:
+        print("  PERF_APP_MARKER=       # ninguna frase del cuerpo resultó fiable;")
+        print("                         # elige a mano un texto que sólo exista en tu app")
+    print(f"  PERF_ROUTES={routes}")
+else:
+    print('  No hay ninguna ruta medible sin autenticarse.')
+
+total = len(rows)
+gated = len(redirects)
+if gated:
+    print()
+    pct = gated * 100 // total if total else 0
+    print(f"  {gated} de {total} rutas ({pct} %) exigen sesión de usuario.")
+    print("  Para medirlas, autentícate con PERF_AUTH=supabase y define")
+    print("  PERF_SUPABASE_URL, PERF_SUPABASE_ANON_KEY, PERF_USER_EMAIL y")
+    print("  PERF_USER_PASSWORD (usuario de PRUEBA, nunca uno real del cliente).")
+
+if shells:
+    print()
+    print(f"  AVISO: {len(shells)} ruta(s) sirven un armazón que hidrata en el cliente.")
+    print("  Si las mides, el resultado será excelente y no dirá nada. k6 mide el")
+    print("  lado del servidor; para el lado del cliente hacen falta otras herramientas.")
+PY

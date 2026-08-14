@@ -1,0 +1,268 @@
+#!/usr/bin/env bash
+# perf-check — verificador de rendimiento con salida fail-closed.
+#
+# Sale 0 únicamente cuando la corrida se ejecutó de verdad, dejó evidencia y
+# cumplió sus umbrales. Cualquier otro estado bloquea. Esto NO es cosmético:
+#
+#   - k6 sale con 0 cuando el script tiene un error de runtime (verificado en
+#     v2.1.0). El código de salida por sí solo no distingue "aprobó" de
+#     "nunca se ejecutó".
+#   - Un resumen ausente o sin iteraciones es descubrimiento vacío, que aquí
+#     cuenta como falla y no como aprobación.
+#
+# Nunca añadas `|| true` ni ignores un código de salida en este archivo. Es la
+# única razón por la que el resultado significa algo.
+#
+# Compatible con bash 3.2 (macOS): sin arreglos asociativos, sin ${var,,}.
+
+set -euo pipefail
+
+PROFILE="smoke"
+UPDATE_BASELINE=0
+RESULTS_DIR="tests/load/results"
+BASELINE_FILE="tests/load/baseline.json"
+
+usage() {
+  cat <<'USAGE'
+Uso: bin/perf-check [smoke|load] [opciones]
+
+Perfiles:
+  smoke   1 usuario virtual, iteraciones fijas. Determinista. Apto para bloquear.
+  load    Rampa de usuarios virtuales. No determinista. Evidencia, no compuerta.
+
+Opciones:
+  --update-baseline   Guarda el p(95) de esta corrida como línea base aprobada.
+  -h, --help          Muestra esta ayuda.
+
+Variables de entorno requeridas:
+  PERF_TARGET         URL base del objetivo, con esquema.
+
+Variables según el tipo de objetivo:
+  PERF_AUTH           none | vercel-bypass | iap | bearer   (por defecto: none)
+  PERF_APP_MARKER     Texto que sólo existe en tu aplicación. Obligatorio cuando
+                      PERF_AUTH no es "none".
+  PERF_GUARD_PATH     Ruta canónica a verificar (por defecto: /)
+  PERF_ROUTES         Rutas a medir: "GET /,GET /api/records"
+
+Umbrales:
+  PERF_P95_MS         Límite de latencia p(95) en ms (por defecto: 1500)
+  PERF_ERROR_RATE     Tasa de error HTTP tolerada (por defecto: 0.01)
+  PERF_DRIFT_PCT      Deriva tolerada frente a la línea base (por defecto: 25)
+USAGE
+}
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    smoke|load) PROFILE="$1" ;;
+    --update-baseline) UPDATE_BASELINE=1 ;;
+    -h|--help) usage; exit 0 ;;
+    *) echo "perf-check: opción desconocida '$1'" >&2; usage >&2; exit 2 ;;
+  esac
+  shift
+done
+
+fail() { echo "perf-check: FALLA — $1" >&2; exit 1; }
+
+# Muestra hasta cinco mensajes del registro que coincidan con un patrón.
+#
+# Devuelve 0 siempre, porque es diagnóstico y no un veredicto: si el patrón no
+# coincide, no hay nada que reportar y eso no cambia el resultado. Está en una
+# función a propósito, para que no aparezca un solo `|| true` en este archivo —
+# un lector no puede distinguir un escape inofensivo de uno que anula la
+# compuerta, así que aquí no hay ninguno.
+show_log_messages() {
+  if [ -f "${LOG_FILE:-}" ]; then
+    grep -o "$1" "$LOG_FILE" 2>/dev/null | head -5 >&2
+  fi
+  return 0
+}
+
+# ---------------------------------------------------------------------------
+# Requisitos previos
+# ---------------------------------------------------------------------------
+
+command -v k6 >/dev/null 2>&1 || fail "k6 no está instalado. Instálalo con \`brew install k6\` o consulta https://grafana.com/docs/k6/latest/set-up/install-k6/"
+command -v python3 >/dev/null 2>&1 || fail "python3 no está disponible; se usa para leer el resumen JSON."
+
+[ -n "${PERF_TARGET:-}" ] || fail "PERF_TARGET no está definido. Ejecuta 'bin/perf-check --help'."
+
+SCRIPT="tests/load/${PROFILE}.js"
+[ -f "$SCRIPT" ] || fail "no existe $SCRIPT"
+
+mkdir -p "$RESULTS_DIR"
+LOG_FILE="${RESULTS_DIR}/${PROFILE}-k6.log"
+SUMMARY_FILE="${RESULTS_DIR}/${PROFILE}-summary.json"
+
+# Un resumen viejo haría pasar una corrida que nunca produjo uno nuevo.
+rm -f "$SUMMARY_FILE" "$LOG_FILE"
+
+echo "perf-check: perfil=${PROFILE} objetivo=${PERF_TARGET} auth=${PERF_AUTH:-none}"
+
+# ---------------------------------------------------------------------------
+# Ejecución
+# ---------------------------------------------------------------------------
+
+# --log-format json hace que los errores del script sean legibles por máquina.
+# El código de salida se captura sin que `set -e` mate el script, porque los
+# códigos distintos de cero son justo lo que hay que interpretar.
+K6_EXIT=0
+k6 run --quiet --log-format json "$SCRIPT" 2>"$LOG_FILE" || K6_EXIT=$?
+
+# ---------------------------------------------------------------------------
+# Interpretación del código de salida
+#   0    aprobó (pero todavía hay que verificar la evidencia)
+#   99   un umbral se incumplió
+#   108  el test se abortó — en este pack, casi siempre el guard
+# ---------------------------------------------------------------------------
+
+case "$K6_EXIT" in
+  0) : ;;
+  99)
+    echo "perf-check: un umbral se incumplió." >&2
+    show_log_messages '"msg":"[^"]*thresholds[^"]*"'
+    echo "perf-check: revisa ${RESULTS_DIR}/${PROFILE}-report.md para el detalle." >&2
+    exit 1
+    ;;
+  108)
+    echo "perf-check: el test se abortó antes de medir. Motivo informado por el guard:" >&2
+    python3 - "$LOG_FILE" <<'PY' >&2
+import json, sys
+for line in open(sys.argv[1], encoding='utf-8', errors='replace'):
+    line = line.strip()
+    if not line.startswith('{'):
+        continue
+    try:
+        rec = json.loads(line)
+    except Exception:
+        continue
+    if rec.get('level') == 'error':
+        print('  ' + rec.get('msg', ''))
+PY
+    exit 1
+    ;;
+  *)
+    fail "k6 terminó con el código inesperado ${K6_EXIT}. Es una falla de herramienta, no un veredicto de rendimiento; revisa ${LOG_FILE}."
+    ;;
+esac
+
+# ---------------------------------------------------------------------------
+# Defensa contra el falso verde
+#
+# Llegar aquí significa que k6 salió con 0. Eso no basta: un error de runtime en
+# el script también sale con 0. Se exige evidencia positiva.
+# ---------------------------------------------------------------------------
+
+SCRIPT_ERRORS=$(python3 - "$LOG_FILE" <<'PY'
+import json, sys
+count = 0
+for line in open(sys.argv[1], encoding='utf-8', errors='replace'):
+    line = line.strip()
+    if not line.startswith('{'):
+        continue
+    try:
+        rec = json.loads(line)
+    except Exception:
+        continue
+    if rec.get('level') != 'error':
+        continue
+    msg = rec.get('msg', '')
+    # El error de umbrales ya se manejó en el código de salida 99; cualquier otro
+    # error indica que el script se rompió mientras k6 reportaba éxito.
+    if 'thresholds on metrics' in msg:
+        continue
+    count += 1
+print(count)
+PY
+)
+
+if [ "$SCRIPT_ERRORS" -gt 0 ]; then
+  echo "perf-check: k6 salió con 0 pero el registro contiene ${SCRIPT_ERRORS} error(es) de script." >&2
+  echo "perf-check: eso es un falso verde — la corrida no probó lo que dice haber probado." >&2
+  show_log_messages '"msg":"[^"]*"'
+  exit 1
+fi
+
+[ -f "$SUMMARY_FILE" ] || fail "no se generó ${SUMMARY_FILE}. Sin resumen no hay evidencia, y sin evidencia no hay aprobación."
+
+# ---------------------------------------------------------------------------
+# Verificación de la evidencia y comparación con la línea base
+# ---------------------------------------------------------------------------
+
+python3 - "$SUMMARY_FILE" "$BASELINE_FILE" "$UPDATE_BASELINE" "${PERF_DRIFT_PCT:-25}" "$PROFILE" <<'PY'
+import json, os, sys
+
+summary_path, baseline_path, update, drift_pct, profile = sys.argv[1:6]
+update = update == '1'
+drift_pct = float(drift_pct)
+
+with open(summary_path, encoding='utf-8') as fh:
+    data = json.load(fh)
+
+metrics = data.get('metrics', {})
+
+def value(metric, stat):
+    m = metrics.get(metric)
+    if not m:
+        return None
+    vals = m.get('values')
+    if isinstance(vals, dict) and stat in vals:
+        return vals[stat]
+    if stat in m:
+        return m[stat]
+    return None
+
+completed = value('perf_completed', 'count')
+p95 = value('http_req_duration', 'p(95)')
+
+# Descubrimiento vacío cuenta como falla. Un resumen sin iteraciones completadas
+# describe una corrida que no ejercitó nada.
+if not completed:
+    print('perf-check: FALLA — el resumen no reporta iteraciones completadas '
+          '(perf_completed ausente o en cero). Descubrimiento vacío no aprueba.',
+          file=sys.stderr)
+    sys.exit(1)
+
+if p95 is None:
+    print('perf-check: FALLA — el resumen no contiene latencia p(95); no se '
+          'realizó ninguna petición HTTP.', file=sys.stderr)
+    sys.exit(1)
+
+print('perf-check: iteraciones completadas=%s  p(95)=%.1f ms' % (completed, p95))
+
+# Línea base de deriva
+key = 'p95_ms_' + profile
+baseline = {}
+if os.path.exists(baseline_path):
+    with open(baseline_path, encoding='utf-8') as fh:
+        baseline = json.load(fh)
+
+if update:
+    baseline[key] = round(p95, 1)
+    with open(baseline_path, 'w', encoding='utf-8') as fh:
+        json.dump(baseline, fh, indent=2, ensure_ascii=False)
+        fh.write('\n')
+    print('perf-check: línea base actualizada — %s = %.1f ms' % (key, p95))
+    sys.exit(0)
+
+if key in baseline:
+    ref = float(baseline[key])
+    if ref > 0:
+        change = (p95 - ref) / ref * 100.0
+        print('perf-check: línea base %s = %.1f ms  (cambio %+.1f %%)' % (key, ref, change))
+        # Sin este vaciado, el mensaje de error en stderr se adelanta a las
+        # líneas de stdout y el registro de CI queda ilegible.
+        sys.stdout.flush()
+        if change > drift_pct:
+            print('perf-check: FALLA — la latencia se degradó %+.1f %% frente a la '
+                  'línea base aprobada, por encima del %.0f %% tolerado.\n'
+                  '            Si la degradación es esperada y aceptada, apruébala '
+                  'con: bin/perf-check %s --update-baseline'
+                  % (change, drift_pct, profile), file=sys.stderr)
+            sys.exit(1)
+else:
+    print('perf-check: no hay línea base para %s. Créala con: '
+          'bin/perf-check %s --update-baseline' % (key, profile))
+PY
+
+echo "perf-check: APROBADO (perfil=${PROFILE})"
+echo "perf-check: evidencia en ${RESULTS_DIR}/${PROFILE}-report.md"
