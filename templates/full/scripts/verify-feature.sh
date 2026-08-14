@@ -87,6 +87,33 @@ if [[ "$LAYERS_TSV" == "__NOLAYERS__" ]]; then
   exit 65
 fi
 
+# ── Budget preflight ─────────────────────────────────────────────────────────
+# A feature that declares budgets must also declare what makes the work stop.
+# Without that, "out of budget" has no answer and the loop restarts forever.
+BUDGET_CHECK="$("$PY" - "$FL" "$FEATURE_ID" <<'PYEOF'
+import json, sys
+data = json.load(open(sys.argv[1]))
+for f in data.get("features", []):
+    if f.get("id") == sys.argv[2]:
+        b = f.get("budgets")
+        if not b:
+            print("NOBUDGET")
+        elif not str(b.get("stop_condition") or "").strip():
+            print("NOSTOP")
+        else:
+            print("OK")
+        sys.exit(0)
+print("NOBUDGET")
+PYEOF
+)"
+
+if [[ "$BUDGET_CHECK" == "NOSTOP" ]]; then
+  echo "${RED}STOP_CONDITION_REQUIRED: feature '$FEATURE_ID' declares budgets but no stop_condition.${RESET}" >&2
+  echo "Add budgets.stop_condition describing what ends the work — who is told, and" >&2
+  echo "what happens next — before this feature can be verified." >&2
+  exit 67
+fi
+
 # ── Run each layer in order; stop at the first failure ───────────────────────
 echo "${BOLD}Verifying $FEATURE_ID${RESET}"
 FAILED_LAYER=""
@@ -119,6 +146,72 @@ while IFS=$'\t' read -r label cmd repair; do
     echo ""
     echo "${RED}${BOLD}FAILED at layer: ${FAILED_LAYER}${RESET}"
     echo "${BOLD}How to fix:${RESET} ${FAILED_REPAIR}"
+
+    # A failure spends budget. The ledger is written here, never by hand, so the
+    # count of attempts is a receipt rather than something an agent can forget.
+    if [[ "$BUDGET_CHECK" == "OK" ]]; then
+      VERDICT="$("$PY" - "$FL" "$FEATURE_ID" "$FAILED_LAYER" <<'PYEOF'
+import json, sys
+path, fid, layer = sys.argv[1:4]
+data = json.load(open(path))
+for f in data.get("features", []):
+    if f.get("id") != fid:
+        continue
+    b = f.get("budgets", {})
+    ledger = f.setdefault("ledger", {"review_rounds": 0, "blockers": []})
+    ledger["review_rounds"] = ledger.get("review_rounds", 0) + 1
+
+    signature = "layer:%s" % layer
+    for entry in ledger.setdefault("blockers", []):
+        if entry.get("signature") == signature:
+            entry["count"] = entry.get("count", 0) + 1
+            hits = entry["count"]
+            break
+    else:
+        ledger["blockers"].append({"signature": signature, "count": 1})
+        hits = 1
+
+    rounds = ledger["review_rounds"]
+    rmax = int(b.get("review_rounds_max", 0) or 0)
+    bmax = int(b.get("repeated_blocker_max", 0) or 0)
+    stop = str(b.get("stop_condition") or "").strip()
+
+    verdict = "CONTINUE|%d|%d|%s" % (rounds, rmax, stop)
+    if rmax and rounds >= rmax:
+        verdict = "BUDGET_EXHAUSTED|%d|%d|%s" % (rounds, rmax, stop)
+    elif bmax and hits >= bmax:
+        verdict = "REPEATED_BLOCKER|%d|%d|%s" % (hits, bmax, stop)
+
+    if not verdict.startswith("CONTINUE"):
+        f["state"] = "blocked"
+
+    with open(path, "w") as fh:
+        json.dump(data, fh, indent=2, ensure_ascii=False)
+        fh.write("\n")
+    print(verdict)
+    sys.exit(0)
+print("CONTINUE")
+PYEOF
+)"
+      IFS='|' read -r KIND SEEN LIMIT STOP_TEXT <<< "$VERDICT"
+      if [[ "$KIND" == "BUDGET_EXHAUSTED" || "$KIND" == "REPEATED_BLOCKER" ]]; then
+        echo ""
+        if [[ "$KIND" == "BUDGET_EXHAUSTED" ]]; then
+          echo "${RED}${BOLD}BUDGET_EXHAUSTED${RESET} — $SEEN review rounds spent, budget is $LIMIT."
+        else
+          echo "${RED}${BOLD}REPEATED_BLOCKER${RESET} — layer '${FAILED_LAYER}' failed $SEEN times, ceiling is $LIMIT."
+        fi
+        echo "${BOLD}Stop condition:${RESET} $STOP_TEXT"
+        echo ""
+        echo "$FEATURE_ID is now ${BOLD}blocked${RESET}. Stop working on it."
+        echo "Do not retry, do not refactor around it, do not open a new approach."
+        echo "Escalate to a human, or split the feature into something smaller."
+        [[ "$KIND" == "BUDGET_EXHAUSTED" ]] && exit 3 || exit 4
+      fi
+      echo ""
+      echo "Review rounds spent: ${SEEN}${LIMIT:+/$LIMIT}."
+    fi
+
     echo ""
     echo "Feature '$FEATURE_ID' stays in its current state. Do not advance to the"
     echo "next layer, and do not mark it passing."
@@ -140,6 +233,9 @@ for f in data.get("features", []):
         f.setdefault("evidence", []).append(
             f"all layers passed — commit {commit}, {stamp}"
         )
+        # Green run: the budget measures the current attempt, not repo history.
+        if "ledger" in f:
+            f["ledger"] = {"review_rounds": 0, "blockers": []}
 data["last_updated"] = stamp[:10]
 with open(path, "w") as fh:
     json.dump(data, fh, indent=2, ensure_ascii=False)

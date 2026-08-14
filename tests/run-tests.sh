@@ -310,6 +310,104 @@ else
   bad "--json output is not parseable"
 fi
 
+# ═════════════════════════════════════════════════════════════════════════════
+echo ""
+echo "${BOLD}13. budgets — the anti-loop gate${RESET}"
+cd "$FULL"
+
+# Install a feature FB1 with the given budgets and a single layer command.
+# Usage: fb1 <cmd> <review_rounds_max> <repeated_blocker_max> <stop_condition>
+fb1() {
+  CMD="$1" RMAX="$2" BMAX="$3" STOP="$4" python3 - <<'PYEOF'
+import json, os
+d = json.load(open("feature_list.json"))
+d["features"] = [f for f in d["features"] if f.get("id") != "FB1"]
+budgets = {
+    "review_rounds_max": int(os.environ["RMAX"]),
+    "repeated_blocker_max": int(os.environ["BMAX"]),
+}
+if os.environ["STOP"]:
+    budgets["stop_condition"] = os.environ["STOP"]
+d["features"].append({
+    "id": "FB1", "priority": 99, "area": "budget-test",
+    "behavior": "budget fixture", "state": "active",
+    "verification": ["n/a"],
+    "budgets": budgets,
+    "layers": [{"label": "static", "cmd": os.environ["CMD"], "repair": "REPAIR-MARKER"}],
+    "evidence": [],
+})
+json.dump(d, open("feature_list.json", "w"), indent=2)
+PYEOF
+}
+fb1_rounds() { python3 -c "
+import json
+for f in json.load(open('feature_list.json'))['features']:
+    if f.get('id')=='FB1': print(f.get('ledger',{}).get('review_rounds',0))
+"; }
+
+# 13a — budgets without a stop condition are refused outright
+fb1 "false" 2 3 ""
+bash scripts/verify-feature.sh FB1 >/dev/null 2>&1
+assert_eq "missing stop_condition exits 67" "67" "$?"
+
+# 13b — the first failure consumes exactly one review round
+fb1 "false" 2 9 "escalate to a human after two failed rounds"
+OUTB="$(bash scripts/verify-feature.sh FB1 2>&1)"; RCB=$?
+assert_eq "first failure still exits 1" "1" "$RCB"
+assert_eq "first failure consumes one round" "1" "$(fb1_rounds)"
+assert_contains "first failure still prints repair" "$OUTB" "REPAIR-MARKER"
+assert_contains "first failure reports budget spent" "$OUTB" "Review rounds spent: 1/2"
+
+# 13c — exhausting the review budget stops the loop and escalates
+OUTC="$(bash scripts/verify-feature.sh FB1 2>&1)"; RCC=$?
+assert_eq "exhausted review budget exits 3" "3" "$RCC"
+assert_contains "exhaustion is named" "$OUTC" "BUDGET_EXHAUSTED"
+assert_contains "exhaustion prints the stop condition" "$OUTC" "escalate to a human"
+STC="$(python3 -c "
+import json
+for f in json.load(open('feature_list.json'))['features']:
+    if f.get('id')=='FB1': print(f['state'])
+")"
+assert_eq "exhausted feature is never promoted" "blocked" "$STC"
+
+# 13d — the same blocker recurring hits its own ceiling
+fb1 "false" 99 2 "stop and ask for help"
+bash scripts/verify-feature.sh FB1 >/dev/null 2>&1
+OUTD="$(bash scripts/verify-feature.sh FB1 2>&1)"; RCD=$?
+assert_eq "repeated blocker exits 4" "4" "$RCD"
+assert_contains "repeated blocker is named" "$OUTD" "REPEATED_BLOCKER"
+
+# 13e — a green run resets the ledger, so budgets measure the current attempt
+fb1 "false" 9 9 "stop"
+bash scripts/verify-feature.sh FB1 >/dev/null 2>&1
+assert_eq "ledger accumulated before success" "1" "$(fb1_rounds)"
+python3 - <<'PYEOF'
+import json
+d = json.load(open("feature_list.json"))
+for f in d["features"]:
+    if f.get("id") == "FB1":
+        f["layers"] = [{"label": "static", "cmd": "true", "repair": "n/a"}]
+json.dump(d, open("feature_list.json", "w"), indent=2)
+PYEOF
+bash scripts/verify-feature.sh FB1 >/dev/null 2>&1
+assert_eq "success promotes despite prior failures" "0" "$?"
+assert_eq "success resets the review ledger" "0" "$(fb1_rounds)"
+
+# 13f — features without budgets keep working exactly as before
+python3 - <<'PYEOF'
+import json
+d = json.load(open("feature_list.json"))
+for f in d["features"]:
+    if f.get("id") == "FB1":
+        f.pop("budgets", None); f.pop("ledger", None)
+        f["state"] = "active"
+        f["layers"] = [{"label": "static", "cmd": "false", "repair": "LEGACY-MARKER"}]
+json.dump(d, open("feature_list.json", "w"), indent=2)
+PYEOF
+OUTF="$(bash scripts/verify-feature.sh FB1 2>&1)"; RCF=$?
+assert_eq "no budgets means unchanged exit 1" "1" "$RCF"
+assert_contains "no budgets still prints repair" "$OUTF" "LEGACY-MARKER"
+
 cd "$KIT_DIR"
 
 # ═════════════════════════════════════════════════════════════════════════════

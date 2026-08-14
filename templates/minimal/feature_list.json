@@ -5,13 +5,19 @@
     "single_active_feature": true,
     "passing_requires_evidence": true,
     "state_set_by_harness_only": true,
-    "completable_in_one_session": true
+    "completable_in_one_session": true,
+    "budgets_enforced": true
   },
   "states": {
     "not_started": "Work has not begun.",
     "active": "The current task. Only one feature may be active at a time.",
     "blocked": "Cannot continue until a documented blocker is resolved.",
     "passing": "Verification ran, evidence is recorded."
+  },
+  "budget_defaults": {
+    "review_rounds_max": 2,
+    "repeated_blocker_max": 3,
+    "stop_condition": "Stop, record the blocker in PROGRESS.md, and escalate to a human. Do not retry, do not refactor around it, do not open a new approach."
   },
   "features": [
     {
@@ -20,6 +26,11 @@
       "area": "setup",
       "behavior": "A clean checkout installs, verifies and starts with a single command.",
       "state": "not_started",
+      "budgets": {
+        "review_rounds_max": 2,
+        "repeated_blocker_max": 3,
+        "stop_condition": "Stop, record the blocker in PROGRESS.md, and escalate to a human. Do not retry, do not refactor around it, do not open a new approach."
+      },
       "verification": [
         "Clone the repo into an empty directory.",
         "Run ./init.sh",
@@ -47,6 +58,11 @@
       "area": "replace-me",
       "behavior": "Replace with the first user-visible behavior this project must deliver.",
       "state": "not_started",
+      "budgets": {
+        "review_rounds_max": 2,
+        "repeated_blocker_max": 3,
+        "stop_condition": "Stop, record the blocker in PROGRESS.md, and escalate to a human. Do not retry, do not refactor around it, do not open a new approach."
+      },
       "verification": [
         "Describe the exact steps a user takes.",
         "Describe what they should see when it works."

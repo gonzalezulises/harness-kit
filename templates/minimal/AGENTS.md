@@ -38,6 +38,13 @@ commit and at every clock-out.
   Mark it passing only after the verification command actually ran and produced output.
 - **Feature granularity** — each feature must be completable in one session. If it
   spans sessions, split it.
+- **Budgets are hard limits** — every feature declares `budgets`: `review_rounds_max`,
+  `repeated_blocker_max`, and a `stop_condition`. Each failed verification spends one
+  round, written to the feature's `ledger` by the harness. When a budget runs out the
+  feature is set to `blocked` and work on it MUST stop — do not retry, do not refactor
+  around the failure, do not open a new approach. Escalate to a human or split the
+  feature. why: an agent with no spending limit will loop on the same blocker until the
+  session dies, producing motion instead of software.
 - **State machine** — `not_started` → `active` → `passing`. No skipping states.
 - **Stay in scope** — do not modify files unrelated to the active feature. A blocking
   fix is allowed, but record it in `PROGRESS.md`.
