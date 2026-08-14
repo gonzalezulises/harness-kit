@@ -199,6 +199,14 @@ if [[ "$LEVEL" == "full" ]]; then
   render "$F/scripts/session-trace.sh"        "$TARGET/scripts/session-trace.sh"
   render "$KIT_DIR/bin/harness-audit.sh"      "$TARGET/scripts/harness-audit.sh"
   render "$F/.harness/arch-rules.json"        "$TARGET/.harness/arch-rules.json"
+
+  # Stamp which kit built this. Without it there is no way to answer "which of my
+  # repositories still lack the fix?" across a fleet.
+  if [[ $DRYRUN -eq 0 ]]; then
+    mkdir -p "$TARGET/.harness"
+    tr -d '[:space:]' < "$KIT_DIR/VERSION" > "$TARGET/.harness/kit-version" 2>/dev/null || true
+    printf '\n' >> "$TARGET/.harness/kit-version"
+  fi
   render "$F/templates/sprint-contract.md"    "$TARGET/templates/sprint-contract.md"
   render "$F/templates/evaluator-rubric.md"   "$TARGET/templates/evaluator-rubric.md"
   render "$F/docs/quality-document.md"        "$TARGET/docs/quality-document.md"

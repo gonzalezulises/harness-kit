@@ -24,7 +24,10 @@
 
 set -euo pipefail
 
-VERSION="2.0.0"
+# Single source of truth. A constant here drifts from the VERSION file the moment
+# one of the two is bumped, and then the score reports a version nobody shipped.
+KIT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+VERSION="$(tr -d '[:space:]' < "$KIT_ROOT/VERSION" 2>/dev/null || echo "unknown")"
 
 # The rubric version travels with the score. v1 was 74 checks; v2 adds the
 # Enforcement group (L13). Scores are only comparable within the same rubric, so

@@ -789,6 +789,41 @@ assert_file "--with gherkin installs the validator" "$ACT2/bin/gherkin-validate.
 [[ ! -f "$ACT/bin/gherkin-check" ]] && ok "gherkin stays opt-in when not requested" \
                                     || bad "gherkin was installed without being asked for"
 
+# ═════════════════════════════════════════════════════════════════════════════
+echo ""
+echo "${BOLD}19. version and fleet drift${RESET}"
+
+# 19a — a single source of truth for the version
+assert_file "VERSION file exists" "$KIT_DIR/VERSION"
+KITVER="$(tr -d '[:space:]' < "$KIT_DIR/VERSION" 2>/dev/null)"
+case "$KITVER" in
+  [0-9]*.[0-9]*.[0-9]*) ok "VERSION is semver ($KITVER)" ;;
+  *) bad "VERSION is not semver: '$KITVER'" ;;
+esac
+
+# 19b — the auditor reports it rather than carrying its own copy
+AUDVER="$(bash "$KIT_DIR/bin/harness-audit.sh" "$ACT" --json 2>/dev/null \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['version'])" 2>/dev/null)"
+assert_eq "audit reports the VERSION file" "$KITVER" "$AUDVER"
+
+# 19c — the scaffolded repo records which kit built it
+assert_file "target records the kit version" "$ACT/.harness/kit-version"
+assert_eq "recorded version matches the kit" "$KITVER" \
+  "$(tr -d '[:space:]' < "$ACT/.harness/kit-version" 2>/dev/null)"
+
+# 19d — a current repo is not nagged
+OUTV="$(bash "$KIT_DIR/bin/harness-status.sh" --target "$ACT" 2>&1)"
+assert_contains "status shows the kit version" "$OUTV" "$KITVER"
+case "$OUTV" in *"desactualizado"*) bad "an up-to-date repo was reported as stale" ;;
+                *) ok "an up-to-date repo is not reported as stale" ;; esac
+
+# 19e — a repo built by an older kit is told, because that is how you answer
+# "which of my repositories still lack the security fix?"
+echo "1.0.0" > "$ACT/.harness/kit-version"
+OUTV2="$(bash "$KIT_DIR/bin/harness-status.sh" --target "$ACT" 2>&1)"
+assert_contains "a stale repo is reported" "$OUTV2" "desactualizado"
+assert_contains "the stale report names both versions" "$OUTV2" "1.0.0"
+
 cd "$KIT_DIR" || exit 1
 
 # ═════════════════════════════════════════════════════════════════════════════

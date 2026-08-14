@@ -89,6 +89,23 @@ case "$STATE" in
 esac
 
 say ""
+# ── Kit version: the question this answers is "which of my repositories still
+# lack the fix?", and it is unanswerable without a stamp in each one.
+KIT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+KIT_VER="$(tr -d '[:space:]' < "$KIT_ROOT/VERSION" 2>/dev/null || echo "unknown")"
+REPO_VER="$(tr -d '[:space:]' < "$TARGET/.harness/kit-version" 2>/dev/null || echo "")"
+
+if [[ -z "$REPO_VER" ]]; then
+  say "Kit: $KIT_VER  ${YELLOW}(este repo no registra su versión: se activó con un kit anterior)${RESET}"
+elif [[ "$REPO_VER" != "$KIT_VER" ]]; then
+  say "Kit: $REPO_VER  ${YELLOW}desactualizado — hay $KIT_VER${RESET}"
+  say "  Revisa el CHANGELOG y actualiza con: harness-init.sh --target $TARGET --level full --force"
+  say "  (--force sobrescribe: revisa el diff antes de commitear)"
+else
+  say "Kit: $KIT_VER"
+fi
+
+say ""
 say "${BOLD}Local${RESET}"
 line "ok" "contrato, estado y presupuestos"
 [[ $HAS_CLAIMS -eq 1 ]] && line "ok" "re-verificador de afirmaciones (verify-claims.sh)" \
