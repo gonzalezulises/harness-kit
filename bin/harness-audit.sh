@@ -25,6 +25,11 @@
 set -euo pipefail
 
 VERSION="2.0.0"
+
+# The rubric version travels with the score. v1 was 74 checks; v2 adds the
+# Enforcement group (L13). Scores are only comparable within the same rubric, so
+# an older "71/74" stays readable instead of silently competing with a new total.
+RUBRIC_VERSION="v2"
 REPO="."
 FORMAT="text"
 STRICT=0
@@ -593,6 +598,72 @@ recommended clean.dualmode "Dual-mode cleanup documented (immediate + periodic s
   "Document both modes in $IPATH: cleanup at every session end + a periodic full-system sweep."
 
 # ═════════════════════════════════════════════════════════════════════════════
+# L13: Enforcement — is the verdict out of the agent's reach?
+# Everything above measures what the repository *says*. This group measures what
+# it can still *do* when an agent decides to write "passing" by hand.
+# ═════════════════════════════════════════════════════════════════════════════
+group "Enforcement (L13)"
+
+WF_PATH=".github/workflows/required-quality.yml"
+
+actions_pinned() {
+  # Every `uses:` must end in a 40-hex SHA. A tag can be repointed at other code.
+  local f="$REPO/$WF_PATH"
+  [[ -f "$f" ]] || { echo "fail"; return; }
+  if grep -E '^[[:space:]]*uses:' "$f" 2>/dev/null \
+     | grep -qvE 'uses:[[:space:]]*[^[:space:]]+@[0-9a-f]{40}[[:space:]]*(#.*)?$'; then
+    echo "fail"
+  else
+    echo "pass"
+  fi
+}
+
+budgets_have_stop() {
+  # Shell-only JSON heuristic: every "budgets" block needs its own
+  # "stop_condition", plus one for the "budget_defaults" template if present.
+  local fl b s d
+  fl="$(feature_list_path)"
+  [[ -n "$fl" ]] || { echo "fail"; return; }
+  b="$(grep -c '"budgets"' "$fl" 2>/dev/null || echo 0)"
+  [[ "$b" -eq 0 ]] && { echo "fail"; return; }
+  s="$(grep -c '"stop_condition"' "$fl" 2>/dev/null || echo 0)"
+  d="$(grep -c '"budget_defaults"' "$fl" 2>/dev/null || echo 0)"
+  [[ "$s" -ge $((b + d)) ]] && echo "pass" || echo "fail"
+}
+
+recommended enf.claims "Claim re-verifier present (scripts/verify-claims.sh)" \
+  "$(file_exists "scripts/verify-claims.sh")" \
+  "Install it: harness-init.sh --target $REPO --level full. Without it, a hand-written 'passing' is never re-checked."
+
+recommended enf.claimstarget "'verify-claims' target exists" \
+  "$(makefile_has_target "verify-claims")" \
+  "Add 'verify-claims:' running 'bash scripts/verify-claims.sh'."
+
+recommended enf.workflow "Required-quality workflow present" \
+  "$(file_exists "$WF_PATH")" \
+  "Install it: harness-init.sh --target $REPO --level full, then make the check required."
+
+recommended enf.pinned "Workflow actions pinned to 40-hex SHAs" \
+  "$(actions_pinned)" \
+  "Replace every 'uses: owner/action@vN' with its 40-hex commit SHA. A tag can be moved to other code."
+
+recommended enf.ruleset "Workflow-integrity ruleset payload present" \
+  "$(file_exists ".github/rulesets/required-quality-integrity.json")" \
+  "GitHub counts a job skipped by its own condition as a PASSING required check. Ship the push ruleset and install it with bin/harness-protect.sh."
+
+recommended enf.budgets "Features declare anti-loop budgets" \
+  "$(contains_pattern "$(feature_list_path | sed "s|^$REPO/||")" '"budgets"')" \
+  "Give each feature a 'budgets' block: review_rounds_max, repeated_blocker_max, stop_condition."
+
+recommended enf.stopcond "Every budget declares its stop condition" \
+  "$(budgets_have_stop)" \
+  "A budget with no stop_condition just restarts the loop when it runs out. Add stop_condition to every budgets block."
+
+recommended enf.wfdoc "Workflow-tampering rule documented" \
+  "$(routed_contains '(required-quality\.yml|skipped by its own|skip.*the gate)')" \
+  "Add to $IPATH: agents must never edit .github/workflows/required-quality.yml — a skipped job counts as a passing check."
+
+# ═════════════════════════════════════════════════════════════════════════════
 # Reporting
 # ═════════════════════════════════════════════════════════════════════════════
 CP=0; CF=0; RP=0; RF=0
@@ -613,6 +684,7 @@ json_escape() {
 if [[ "$FORMAT" == "json" ]]; then
   printf '{\n'
   printf '  "version": "%s",\n' "$VERSION"
+  printf '  "rubric_version": "%s",\n' "$RUBRIC_VERSION"
   printf '  "repo": "%s",\n' "$(json_escape "$REPO")"
   printf '  "score": { "passed": %d, "total": %d, "critical_passed": %d, "critical_total": %d, "recommended_passed": %d, "recommended_total": %d },\n' \
     "$TOTAL_PASS" "$TOTAL" "$CP" "$((CP+CF))" "$RP" "$((RP+RF))"
@@ -646,7 +718,8 @@ else
 
   echo ""
   echo "${BOLD}────────────────────────────────────────${RESET}"
-  printf '%sScore%s  %d / %d harness components present\n' "$BOLD" "$RESET" "$TOTAL_PASS" "$TOTAL"
+  printf '%sScore%s  %d / %d harness components present (rubric %s)\n' \
+    "$BOLD" "$RESET" "$TOTAL_PASS" "$TOTAL" "$RUBRIC_VERSION"
   printf '  Critical:    %d / %d\n' "$CP" "$((CP+CF))"
   printf '  Recommended: %d / %d\n' "$RP" "$((RP+RF))"
   echo "${BOLD}────────────────────────────────────────${RESET}"

@@ -518,6 +518,74 @@ grep -q "skipped" "$CLAIMS/AGENTS.md" \
   && ok "AGENTS.md documents the skipped-job bypass" \
   || bad "AGENTS.md does not document the skipped-job bypass"
 
+# ═════════════════════════════════════════════════════════════════════════════
+echo ""
+echo "${BOLD}16. audit rubric v2 — the score measures what is now enforced${RESET}"
+
+# A fresh scaffold: the claims fixture above deliberately left mangled features
+# behind, which would score as missing budgets and hide a real regression.
+AUD="$WORK/audit"; make_fixture "$AUD"
+bash "$KIT_DIR/bin/harness-init.sh" --target "$AUD" --level full >/dev/null 2>&1
+CLAIMS="$AUD"
+
+AJSON="$(bash "$KIT_DIR/bin/harness-audit.sh" "$CLAIMS" --json 2>/dev/null)"
+
+# 16a — the rubric version is machine-readable, so old scores stay interpretable
+RUBRIC="$(echo "$AJSON" | python3 -c "
+import json,sys
+print(json.load(sys.stdin).get('rubric_version','MISSING'))" 2>/dev/null)"
+assert_eq "json declares the rubric version" "v2" "$RUBRIC"
+
+# 16b — and visible in the human output
+TXT="$(NO_COLOR=1 bash "$KIT_DIR/bin/harness-audit.sh" "$CLAIMS" 2>&1)"
+assert_contains "text output names the rubric" "$TXT" "rubric v2"
+
+# 16c — enforcement checks exist and pass on a fully scaffolded repo
+ENF="$(echo "$AJSON" | python3 -c "
+import json,sys
+ch=[c for c in json.load(sys.stdin)['checks'] if c['id'].startswith('enf.')]
+print('%d %d' % (len(ch), sum(1 for c in ch if c['result']=='pass')))" 2>/dev/null)"
+ENF_N="${ENF% *}"; ENF_PASS="${ENF#* }"
+[[ "${ENF_N:-0}" -ge 5 ]] && ok "rubric adds enforcement checks (${ENF_N:-0})" \
+                          || bad "expected >= 5 enforcement checks, got ${ENF_N:-0}"
+assert_eq "full scaffold passes every enforcement check" "$ENF_N" "$ENF_PASS"
+
+# 16d — remove the claim checker and the rubric must notice
+mv "$CLAIMS/scripts/verify-claims.sh" "$CLAIMS/scripts/verify-claims.sh.bak"
+GONE="$(bash "$KIT_DIR/bin/harness-audit.sh" "$CLAIMS" --json 2>/dev/null | python3 -c "
+import json,sys
+print(next(c['result'] for c in json.load(sys.stdin)['checks'] if c['id']=='enf.claims'))" 2>/dev/null)"
+assert_eq "missing verify-claims.sh is caught" "fail" "$GONE"
+mv "$CLAIMS/scripts/verify-claims.sh.bak" "$CLAIMS/scripts/verify-claims.sh"
+
+# 16e — an unpinned action in the workflow is caught
+python3 - "$CLAIMS/.github/workflows/required-quality.yml" <<'PYEOF'
+import re, sys
+p = sys.argv[1]
+s = open(p).read()
+open(p + ".bak", "w").write(s)
+open(p, "w").write(re.sub(r'uses: (\S+)@[0-9a-f]{40}[^\n]*', r'uses: \1@v4', s))
+PYEOF
+UNPIN="$(bash "$KIT_DIR/bin/harness-audit.sh" "$CLAIMS" --json 2>/dev/null | python3 -c "
+import json,sys
+print(next(c['result'] for c in json.load(sys.stdin)['checks'] if c['id']=='enf.pinned'))" 2>/dev/null)"
+assert_eq "unpinned action is caught" "fail" "$UNPIN"
+mv "$CLAIMS/.github/workflows/required-quality.yml.bak" "$CLAIMS/.github/workflows/required-quality.yml"
+
+# 16f — a feature declaring budgets without a stop condition is caught
+python3 - "$CLAIMS/feature_list.json" <<'PYEOF'
+import json, sys
+d = json.load(open(sys.argv[1]))
+d["features"] = [{"id":"C1","state":"active","behavior":"b","evidence":[],
+                  "budgets":{"review_rounds_max":2,"repeated_blocker_max":3},
+                  "layers":[{"label":"unit","cmd":"true","repair":"r"}]}]
+json.dump(d, open(sys.argv[1], "w"), indent=2)
+PYEOF
+NOSTOP="$(bash "$KIT_DIR/bin/harness-audit.sh" "$CLAIMS" --json 2>/dev/null | python3 -c "
+import json,sys
+print(next(c['result'] for c in json.load(sys.stdin)['checks'] if c['id']=='enf.stopcond'))" 2>/dev/null)"
+assert_eq "budgets without stop_condition is caught" "fail" "$NOSTOP"
+
 cd "$KIT_DIR"
 
 # ═════════════════════════════════════════════════════════════════════════════
