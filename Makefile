@@ -22,6 +22,19 @@ test: ## Run the test suite
 check: ## Full verification pipeline — must exit 0 before every commit
 	bash tests/run-tests.sh
 
+.PHONY: verify-claims
+verify-claims: ## Re-run every feature this repo claims is passing
+	bash scripts/verify-claims.sh
+
+.PHONY: verify-decisions
+verify-decisions: ## Confirm no earlier decision was rewritten
+	bash scripts/verify-decisions.sh
+
+.PHONY: lint
+lint: ## shellcheck over every script the kit ships
+	shellcheck -S warning bin/*.sh scripts/*.sh tests/*.sh \
+	  templates/full/scripts/*.sh packs/*/verify-pack.sh
+
 .PHONY: e2e
 e2e: ## End-to-end suite. Required when a change crosses component boundaries.
 	bash tests/run-tests.sh

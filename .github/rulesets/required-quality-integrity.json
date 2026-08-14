@@ -1,0 +1,17 @@
+{
+  "_comment": "GitHub treats a job skipped by its own job-level condition as a SUCCESSFUL required check. Requiring the check name therefore does not protect the workflow that emits it: a PR adding 'if: false' to the job merges green. This push-boundary rule rejects every ordinary Git update touching the workflow path, covering modification, deletion, renaming, path filtering and conditional skipping before any PR can become mergeable. Minimum verified plan: GitHub Team on an organization-owned repository. Install with bin/harness-protect.sh; committing this file does not by itself activate anything.",
+  "name": "required-quality-workflow-integrity",
+  "target": "push",
+  "enforcement": "active",
+  "bypass_actors": [],
+  "rules": [
+    {
+      "type": "file_path_restriction",
+      "parameters": {
+        "restricted_file_paths": [
+          ".github/workflows/required-quality.yml"
+        ]
+      }
+    }
+  ]
+}
