@@ -123,19 +123,16 @@ if [[ $WITH_GHERKIN -eq 1 ]]; then
 fi
 
 # ── 3. Make the gate binding, as far as this repo's plan allows ──────────────
-PROTECTED="none"
 if [[ -n "$SLUG" ]] && command -v gh >/dev/null 2>&1; then
   PROTECT_OUT="$(NO_COLOR=1 bash "$KIT_DIR/bin/harness-protect.sh" "$SLUG" --repo-dir "$TARGET" 2>&1)"
   if printf '%s' "$PROTECT_OUT" | grep -q "required-quality-check.*\n.*verified" ||
      printf '%s' "$PROTECT_OUT" | grep -A2 "required-quality-check" | grep -q "verified"; then
     echo "  ${GREEN}ok${RESET}   compuerta requerida activa en $SLUG"
-    PROTECTED="check"
   else
     echo "  ${YELLOW}--${RESET}   no se pudo activar la compuerta requerida"
   fi
   if printf '%s' "$PROTECT_OUT" | grep -A2 "workflow-integrity" | grep -q "verified"; then
     echo "  ${GREEN}ok${RESET}   workflow protegido contra ediciones"
-    PROTECTED="dual"
   else
     echo "  ${YELLOW}--${RESET}   workflow NO protegido (los push rules requieren repo de organización)"
   fi

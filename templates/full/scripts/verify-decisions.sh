@@ -21,7 +21,7 @@
 set -uo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$ROOT_DIR"
+cd "$ROOT_DIR" || { echo "cannot cd to $ROOT_DIR" >&2; exit 66; }
 
 if [[ ! -t 1 ]] || [[ -n "${NO_COLOR:-}" ]]; then
   RED=""; GREEN=""; YELLOW=""; BOLD=""; RESET=""

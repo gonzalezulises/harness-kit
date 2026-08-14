@@ -31,9 +31,9 @@ done
 TARGET="$(cd "$TARGET" 2>/dev/null && pwd)" || { echo "harness-status: no such directory" >&2; exit 64; }
 
 if [[ ! -t 1 ]] || [[ -n "${NO_COLOR:-}" ]]; then
-  RED=""; GREEN=""; YELLOW=""; BOLD=""; RESET=""
+  GREEN=""; YELLOW=""; BOLD=""; RESET=""
 else
-  RED=$'\033[0;31m'; GREEN=$'\033[0;32m'; YELLOW=$'\033[1;33m'
+  GREEN=$'\033[0;32m'; YELLOW=$'\033[1;33m'
   BOLD=$'\033[1m'; RESET=$'\033[0m'
 fi
 

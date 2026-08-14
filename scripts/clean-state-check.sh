@@ -8,7 +8,12 @@ set -uo pipefail
 
 REPO="${1:-.}"
 REPO="${REPO%/}"
-cd "$REPO"
+cd "$REPO" || { echo "clean-state-check: cannot cd to $REPO" >&2; exit 66; }
+
+# A fixed path under /tmp collides between concurrent projects and is a symlink
+# target on a shared machine. The rest of the kit already uses mktemp.
+VERIFY_LOG="$(mktemp "${TMPDIR:-/tmp}/clean-state-verify.XXXXXX")"
+trap 'rm -f "$VERIFY_LOG"' EXIT
 
 if [[ ! -t 1 ]] || [[ -n "${NO_COLOR:-}" ]]; then
   RED=""; GREEN=""; YELLOW=""; BOLD=""; RESET=""
@@ -31,10 +36,10 @@ VERIFY_CMD="make check"
 if [[ -n "$VERIFY_CMD" ]]; then
   # Subshell: a verify command like `cd frontend && npm run verify` must not move
   # the working directory out from under the checks that follow.
-  if ( eval "$VERIFY_CMD" ) >/tmp/clean-state-verify.log 2>&1; then
+  if ( eval "$VERIFY_CMD" ) >"$VERIFY_LOG" 2>&1; then
     ok "\`$VERIFY_CMD\` exits 0"
   else
-    bad "\`$VERIFY_CMD\` failed — see /tmp/clean-state-verify.log"
+    bad "\`$VERIFY_CMD\` failed — see $VERIFY_LOG"
   fi
 else
   bad "no verification command configured in this script"

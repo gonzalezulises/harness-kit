@@ -37,7 +37,8 @@ assert_file() {
 make_fixture() {
   # make_fixture <dir>  — a minimal node project with a green check
   local d="$1"
-  mkdir -p "$d" && cd "$d" && git init -q
+  mkdir -p "$d" && cd "$d" || exit 1
+  git init -q
   cat > package.json <<'EOF'
 { "name":"fixture","version":"1.0.0",
   "scripts":{"check":"echo static-ok","test":"echo tests-ok","dev":"echo dev"} }
@@ -45,7 +46,7 @@ EOF
   echo '{}' > package-lock.json
   echo "20" > .nvmrc
   git add -A && git -c user.email=t@t -c user.name=t commit -qm "base" >/dev/null
-  cd - >/dev/null
+  cd - >/dev/null || exit 1
 }
 
 echo "${BOLD}harness-kit test suite${RESET}"
@@ -161,7 +162,7 @@ bash "$KIT_DIR/bin/harness-init.sh" --target "$FULL" --level full --force >/dev/
 # ═════════════════════════════════════════════════════════════════════════════
 echo ""
 echo "${BOLD}8. verify-feature gate${RESET}"
-cd "$FULL"
+cd "$FULL" || exit 1
 
 # 8a — happy path promotes to passing with evidence
 python3 - <<'PYEOF'
@@ -329,7 +330,7 @@ fi
 # ═════════════════════════════════════════════════════════════════════════════
 echo ""
 echo "${BOLD}13. budgets — the anti-loop gate${RESET}"
-cd "$FULL"
+cd "$FULL" || exit 1
 
 # Install a feature FB1 with the given budgets and a single layer command.
 # Usage: fb1 <cmd> <review_rounds_max> <repeated_blocker_max> <stop_condition>
@@ -429,7 +430,7 @@ echo ""
 echo "${BOLD}14. verify-claims — re-check what the repo claims is passing${RESET}"
 CLAIMS="$WORK/claims"; make_fixture "$CLAIMS"
 bash "$KIT_DIR/bin/harness-init.sh" --target "$CLAIMS" --level full >/dev/null 2>&1
-cd "$CLAIMS"
+cd "$CLAIMS" || exit 1
 
 # Replace the feature list with exactly the claims under test.
 # Usage: claims <json-array-of-features>
@@ -651,7 +652,7 @@ echo ""
 echo "${BOLD}17. verify-decisions — the record of WHY cannot be rewritten${RESET}"
 DEC="$WORK/decisions"; make_fixture "$DEC"
 bash "$KIT_DIR/bin/harness-init.sh" --target "$DEC" --level full >/dev/null 2>&1
-cd "$DEC"
+cd "$DEC" || exit 1
 
 cat > DECISIONS.md <<'EOF'
 # Decisions
@@ -788,7 +789,7 @@ assert_file "--with gherkin installs the validator" "$ACT2/bin/gherkin-validate.
 [[ ! -f "$ACT/bin/gherkin-check" ]] && ok "gherkin stays opt-in when not requested" \
                                     || bad "gherkin was installed without being asked for"
 
-cd "$KIT_DIR"
+cd "$KIT_DIR" || exit 1
 
 # ═════════════════════════════════════════════════════════════════════════════
 echo ""

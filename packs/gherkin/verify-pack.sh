@@ -94,9 +94,10 @@ mkdir -p "$WORK/esm/bin"
 cp "$VALIDATE" "$WORK/esm/bin/"
 cp "$WORK/valid.ndjson" "$WORK/esm/"
 printf '{"name":"esm-host","type":"module"}\n' > "$WORK/esm/package.json"
-( cd "$WORK/esm" && node bin/$(basename "$VALIDATE") valid.ndjson >/dev/null 2>&1 )
-if [[ $? -eq 0 ]]; then ok "validator runs inside a \"type\": \"module\" repo"
-else bad "validator breaks inside an ESM repo (exit $?)"; fi
+( cd "$WORK/esm" && node "bin/$(basename "$VALIDATE")" valid.ndjson >/dev/null 2>&1 )
+ESM_RC=$?
+if [[ $ESM_RC -eq 0 ]]; then ok "validator runs inside a \"type\": \"module\" repo"
+else bad "validator breaks inside an ESM repo (exit $ESM_RC)"; fi
 
 echo ""
 echo "${BOLD}────────────────────────────────────────${RESET}"

@@ -331,6 +331,7 @@ INIT_CODE=$?
 check "el instalador sale 0 cuando no configura CI" "[ '$INIT_CODE' -eq 0 ]"
 check "no usa set -e (un fallo de gh no debe matar la instalación)" \
   "! grep -qE '^set -[a-z]*e' '${TEMPLATE}/bin/perf-init.sh'"
+# shellcheck disable=SC2034  # se expande dentro del string que check() evalúa
 PLAN_BRANCH="$(grep -A9 'Upgrade to GitHub Pro' '${TEMPLATE}/bin/perf-init.sh' 2>/dev/null || \
   grep -A9 'Upgrade to GitHub Pro' "${TEMPLATE}/bin/perf-init.sh")"
 check "la rama del límite de plan no aborta" \
@@ -473,6 +474,7 @@ check "avisa cuántas rutas exigen sesión" \
 # haría abortar la compuerta en su primera corrida.
 MARKER_LINE="$(grep 'PERF_APP_MARKER=' "$DISC" | head -1)"
 if printf '%s' "$MARKER_LINE" | grep -q "PERF_APP_MARKER='"; then
+  # shellcheck disable=SC2034  # se expande dentro del string que check() evalúa
   PROPOSED="$(printf '%s' "$MARKER_LINE" | sed -E "s/.*PERF_APP_MARKER='([^']*)'.*/\1/")"
   curl -s --max-time 8 http://127.0.0.1:18801/ > "$WORK/probe-body.html"
   check "el marcador propuesto existe en el cuerpo servido" \

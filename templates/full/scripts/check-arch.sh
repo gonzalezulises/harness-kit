@@ -14,7 +14,7 @@ set -uo pipefail
 
 REPO="${1:-.}"
 REPO="${REPO%/}"
-cd "$REPO"
+cd "$REPO" || { echo "check-arch: cannot cd to $REPO" >&2; exit 66; }
 
 RULES=".harness/arch-rules.json"
 [[ -f "$RULES" ]] || { echo "check-arch: $RULES not found"; exit 0; }

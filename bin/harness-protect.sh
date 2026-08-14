@@ -55,6 +55,10 @@ command -v gh      >/dev/null 2>&1 || { echo "harness-protect: needs the gh CLI"
 command -v python3 >/dev/null 2>&1 || { echo "harness-protect: needs python3" >&2; exit 69; }
 
 RULESET_DIR="$REPO_DIR/.github/rulesets"
+# Scratch space for API errors goes to a temp dir: writing it under the user's
+# .github/ leaves an orphan file behind whenever an install fails halfway.
+WORK_PROTECT="$(mktemp -d)"
+trap 'rm -rf "$WORK_PROTECT"' EXIT
 [[ -d "$RULESET_DIR" ]] || {
   echo "harness-protect: no $RULESET_DIR — scaffold with harness-init.sh --level full" >&2
   exit 66
@@ -99,16 +103,14 @@ PYEOF
     echo "  creating"
   fi
 
-  if ! printf '%s' "$body" | gh api -X "$method" "$endpoint" --input - >/dev/null 2>"$RULESET_DIR/.protect-err"; then
-    echo "  ${RED}FAILED${RESET} — $(head -3 "$RULESET_DIR/.protect-err" | tr '\n' ' ')"
+  if ! printf '%s' "$body" | gh api -X "$method" "$endpoint" --input - >/dev/null 2>"$WORK_PROTECT/err"; then
+    echo "  ${RED}FAILED${RESET} — $(head -3 "$WORK_PROTECT/err" | tr '\n' ' ')"
     echo "  A 403 means the plan does not allow rulesets here; a 422 means the rule"
     echo "  type is unavailable for this owner. Neither is something to work around:"
     echo "  move the repository to an organization on a plan that supports it."
-    rm -f "$RULESET_DIR/.protect-err"
     FAILED=$((FAILED + 1))
     return 1
   fi
-  rm -f "$RULESET_DIR/.protect-err"
 
   # ── The receipt: read the live rule back and check it says what we asked for.
   local live

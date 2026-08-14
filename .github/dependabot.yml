@@ -1,0 +1,28 @@
+# Pinning every action to a 40-hex SHA closes the "a tag can be repointed at other
+# code" hole, and immediately opens a quieter one: nobody notices when the pin
+# goes stale. A pin without an update path is a security fix that decays.
+#
+# This keeps the SHAs current through pull requests, which then have to pass the
+# same required-quality gate as any other change.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "chore(deps)"
+    labels:
+      - dependencies
+
+  # The scaffolded workflow lives under templates/ and is copied into other
+  # repositories verbatim. If its pins rot, every repo harnessed from here
+  # inherits the rot.
+  - package-ecosystem: github-actions
+    directory: /templates/full
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "chore(deps)"
+    labels:
+      - dependencies
