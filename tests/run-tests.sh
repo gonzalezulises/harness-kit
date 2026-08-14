@@ -699,6 +699,51 @@ EMPTYBASE="$(git rev-parse HEAD)"
 bash scripts/verify-decisions.sh "$EMPTYBASE" >/dev/null 2>&1
 assert_eq "absent ledger in base is not an error" "0" "$?"
 
+# ═════════════════════════════════════════════════════════════════════════════
+echo ""
+echo "${BOLD}18. activate / status — one command, and an honest answer${RESET}"
+ACT="$WORK/activate"; make_fixture "$ACT"
+
+# 18a — status on a bare repo says so instead of guessing
+OUTS="$(bash "$KIT_DIR/bin/harness-status.sh" --target "$ACT" 2>&1)"; RCS=$?
+assert_contains "status reports NOT_ACTIVATED before anything exists" "$OUTS" "NOT_ACTIVATED"
+assert_eq "status exits non-zero when not activated" "1" "$RCS"
+
+# 18b — dry run writes nothing
+bash "$KIT_DIR/bin/harness-activate.sh" --target "$ACT" --yes --dry-run >/dev/null 2>&1
+[[ ! -f "$ACT/AGENTS.md" ]] && ok "activate --dry-run wrote nothing" \
+                            || bad "activate --dry-run created files"
+
+# 18c — one command leaves a governed repo
+OUTA="$(bash "$KIT_DIR/bin/harness-activate.sh" --target "$ACT" --yes 2>&1)"; RCA=$?
+assert_eq "activate exits 0 on a local repo" "0" "$RCA"
+for f in AGENTS.md feature_list.json Makefile scripts/verify-claims.sh \
+         scripts/verify-decisions.sh .github/workflows/required-quality.yml; do
+  assert_file "activate installed $f" "$ACT/$f"
+done
+
+# 18d — it reports the stack it detected, not a generic success
+assert_contains "activate names the detected verify command" "$OUTA" "npm run check"
+
+# 18e — with no remote, the honest state is local-only, and it says why
+assert_contains "activate reports READY_LOCAL without a remote" "$OUTA" "READY_LOCAL"
+OUTS2="$(bash "$KIT_DIR/bin/harness-status.sh" --target "$ACT" 2>&1)"; RCS2=$?
+assert_contains "status agrees after activation" "$OUTS2" "READY_LOCAL"
+assert_eq "status exits 0 when activated" "0" "$RCS2"
+
+# 18f — running it twice must not damage a configured repo
+echo "PRECIOUS PURPOSE" > "$ACT/AGENTS.md"
+bash "$KIT_DIR/bin/harness-activate.sh" --target "$ACT" --yes >/dev/null 2>&1
+assert_eq "activate is idempotent and never clobbers" "PRECIOUS PURPOSE" "$(cat "$ACT/AGENTS.md")"
+
+# 18g — the Gherkin pack is opt-in, and opting in actually installs it
+ACT2="$WORK/activate-gherkin"; make_fixture "$ACT2"
+bash "$KIT_DIR/bin/harness-activate.sh" --target "$ACT2" --yes --with gherkin >/dev/null 2>&1
+assert_file "--with gherkin installs the runner" "$ACT2/bin/gherkin-check"
+assert_file "--with gherkin installs the validator" "$ACT2/bin/gherkin-validate.mjs"
+[[ ! -f "$ACT/bin/gherkin-check" ]] && ok "gherkin stays opt-in when not requested" \
+                                    || bad "gherkin was installed without being asked for"
+
 cd "$KIT_DIR"
 
 # ═════════════════════════════════════════════════════════════════════════════

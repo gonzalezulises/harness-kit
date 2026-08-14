@@ -10,11 +10,13 @@
 #   required-quality-check      requires the "Required quality" check to pass.
 #   required-quality-integrity  forbids pushing to the workflow file at all.
 #
-# The second one is not optional. GitHub treats a job skipped by its own
+# The second one is what makes the first trustworthy. GitHub treats a job skipped by its own
 # job-level condition as a SUCCESSFUL required check, so a PR that adds
 # `if: false` to the job merges green while appearing fully gated. Requiring the
 # check name protects the result; only the push restriction protects the
-# definition that produces it.
+# definition that produces it. Push rules exist only on organization-owned
+# repositories, so a personal repo lands in READY_PARTIAL: the gate blocks bad
+# code, but cannot stop someone from editing the gate.
 #
 # Creating a ruleset is a claim. This script does a GET afterwards and fails if
 # the live rule is not `active` with zero bypass actors, so what it prints is a
@@ -59,6 +61,8 @@ RULESET_DIR="$REPO_DIR/.github/rulesets"
 }
 
 FAILED=0
+CHECK_OK=0
+INTEGRITY_OK=0
 
 install_one() {
   # install_one <payload-path>
@@ -132,6 +136,10 @@ PYEOF
   fi
 
   echo "  ${GREEN}verified${RESET}  id=$live_id  target=$live_target  enforcement=$live_enf  bypass_actors=0"
+  case "$name" in
+    required-quality-check)              CHECK_OK=1 ;;
+    required-quality-workflow-integrity) INTEGRITY_OK=1 ;;
+  esac
   return 0
 }
 
@@ -147,14 +155,28 @@ for payload in "$RULESET_DIR"/required-quality-check.json \
 done
 
 echo ""
-if [[ "$FAILED" -gt 0 ]]; then
-  echo "${RED}${BOLD}$FAILED ruleset(s) are not verifiably active.${RESET}"
-  echo "The gate is NOT binding until both appear above as verified."
+if [[ $DRYRUN -eq 1 ]]; then
+  echo "${YELLOW}Dry run — nothing was installed.${RESET}"
+  exit 0
+fi
+
+# Distinguish "nothing binds" from "the gate binds but cannot defend itself".
+# Reporting a working required check as a total failure would push people to
+# disable the whole thing on repositories where most of it does work.
+if [[ "$CHECK_OK" -eq 0 ]]; then
+  echo "${RED}${BOLD}The gate is NOT binding.${RESET} The required check is not active,"
+  echo "so CI can report whatever it likes and a merge still goes through."
   exit 1
 fi
 
-if [[ $DRYRUN -eq 1 ]]; then
-  echo "${YELLOW}Dry run — nothing was installed.${RESET}"
+if [[ "$INTEGRITY_OK" -eq 0 ]]; then
+  echo "${YELLOW}${BOLD}READY_PARTIAL — the gate blocks, but it does not protect itself.${RESET}"
+  echo "Broken tests and hand-written 'passing' states are blocked. Editing the"
+  echo "workflow is not: GitHub only allows push rules on organization-owned"
+  echo "repositories, so an 'if: false' on the job would merge green."
+  echo ""
+  echo "Review by hand any PR touching .github/workflows/, or move the repository"
+  echo "to an organization to close it."
   exit 0
 fi
 
