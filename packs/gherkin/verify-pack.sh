@@ -36,7 +36,7 @@ command -v node >/dev/null 2>&1 || { echo "verify-pack: needs node on PATH" >&2;
 step()  { printf '{"testStepFinished":{"testStepResult":{"status":"%s"}}}\n' "$1"; }
 case_()  { printf '{"testCaseFinished":{"testCaseStartedId":"%s"}}\n' "$1"; }
 pickle() { printf '{"pickle":{"id":"%s","name":"%s","tags":[{"name":"%s"}]}}\n' "$1" "$2" "$3"; }
-finish() { printf '{"testRunFinished":{"success":%s}}\n' "${1:-true}"; }
+finish() { printf '{"testRunFinished":{"success":true}}\n'; }
 
 # assert_case <label> <expected-exit> <report-file> [extra args...]
 assert_case() {

@@ -87,8 +87,18 @@ jobs:
           set -uo pipefail
           # A project that is entirely shell without a shell linter is a project
           # without a compiler. -S warning is the level the repo is clean at.
+          #
+          # The version is pinned because the runner's preinstalled shellcheck is
+          # older than the one developers have locally, and the two disagree: a
+          # lint that passes on your machine and fails in CI teaches people to
+          # stop reading lint output.
+          SC_VERSION=v0.11.0
+          curl -fsSL "https://github.com/koalaman/shellcheck/releases/download/${SC_VERSION}/shellcheck-${SC_VERSION}.linux.x86_64.tar.xz" \
+            | tar -xJf - -C "$RUNNER_TEMP"
+          SHELLCHECK="$RUNNER_TEMP/shellcheck-${SC_VERSION}/shellcheck"
+          "$SHELLCHECK" --version | grep version:
           set +e
-          shellcheck -S warning bin/*.sh scripts/*.sh tests/*.sh \
+          "$SHELLCHECK" -S warning bin/*.sh scripts/*.sh tests/*.sh \
             templates/full/scripts/*.sh packs/*/verify-pack.sh
           lint_exit=$?
           set -e
