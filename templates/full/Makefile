@@ -22,6 +22,10 @@ test: ## Run the test suite
 check: ## Full verification pipeline — must exit 0 before every commit
 	{{VERIFY_CMD}}
 
+.PHONY: verify-claims
+verify-claims: ## Re-run every feature the repo claims is passing. CI runs this too.
+	bash scripts/verify-claims.sh
+
 .PHONY: e2e
 e2e: ## End-to-end suite. Required when a change crosses component boundaries.
 	{{E2E_CMD}}

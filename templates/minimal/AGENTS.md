@@ -36,6 +36,10 @@ commit and at every clock-out.
   activate the next. why: parallel half-finished features leave no verifiable state.
 - **Evidence before done** — never mark a feature `passing` because code was written.
   Mark it passing only after the verification command actually ran and produced output.
+- **`passing` is not yours to write** — only `scripts/verify-feature.sh` may set it. CI
+  re-runs every claimed feature with `scripts/verify-claims.sh`, using the copy from the
+  base branch, and a state whose layers do not pass comes back as `FALSE_CLAIM`. why: a
+  state written by hand is a claim; a state that survives re-verification is a receipt.
 - **Feature granularity** — each feature must be completable in one session. If it
   spans sessions, split it.
 - **Budgets are hard limits** — every feature declares `budgets`: `review_rounds_max`,

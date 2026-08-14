@@ -1,0 +1,156 @@
+# Required quality — the verdict the agent cannot issue.
+#
+# Two properties are worth more than everything else here:
+#
+#  1. PROTECTED BASE. The claim checker is taken from the base branch, not from the
+#     pull request. A PR cannot weaken the script that judges it.
+#  2. SENTINEL. Success requires an observed zero exit, proven by a file written only
+#     after the command actually ran. A step that was skipped, cancelled, or never
+#     executed leaves no sentinel and therefore cannot be reported as success.
+#
+# Make this check required in branch protection, or it is only decoration.
+name: Required quality
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  merge_group:
+    types: [checks_requested]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: required-quality-${{ github.repository_id }}-${{ github.event_name }}-${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.event.merge_group.head_sha }}
+  cancel-in-progress: true
+
+jobs:
+  required-quality:
+    name: Required quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Resolve exact commit identities
+        id: identity
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          MG_HEAD_SHA: ${{ github.event.merge_group.head_sha }}
+          MG_BASE_SHA: ${{ github.event.merge_group.base_sha }}
+        run: |
+          set -euo pipefail
+          case "$EVENT_NAME" in
+            pull_request) head_sha=$PR_HEAD_SHA; base_sha=$PR_BASE_SHA ;;
+            merge_group)  head_sha=$MG_HEAD_SHA; base_sha=$MG_BASE_SHA ;;
+            *) printf 'UNKNOWN: unsupported event: %s\n' "$EVENT_NAME" >&2; exit 1 ;;
+          esac
+          if [[ ! "$head_sha" =~ ^[0-9a-f]{40}$ ]]; then
+            printf 'UNKNOWN: invalid head SHA: %s\n' "$head_sha" >&2; exit 1
+          fi
+          if [[ ! "$base_sha" =~ ^[0-9a-f]{40}$ ]]; then
+            printf 'UNKNOWN: invalid base SHA: %s\n' "$base_sha" >&2; exit 1
+          fi
+          {
+            printf 'head_sha=%s\n' "$head_sha"
+            printf 'base_sha=%s\n' "$base_sha"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Check out proposed head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.identity.outputs.head_sha }}
+          path: head
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Check out protected base claim checker
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.identity.outputs.base_sha }}
+          path: base
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout: scripts/verify-claims.sh
+          sparse-checkout-cone-mode: false
+
+      - name: Run the repository verification pipeline
+        id: check
+        shell: bash
+        working-directory: head
+        run: |
+          set -uo pipefail
+          set +e
+          make check
+          command_exit=$?
+          set -e
+          printf 'command_exit=%s\n' "$command_exit" >> "$GITHUB_OUTPUT"
+          [ "$command_exit" -eq 0 ] || exit "$command_exit"
+          : > "$RUNNER_TEMP/check-observed-zero"
+
+      - name: Re-verify every claimed passing state with the protected checker
+        id: claims
+        shell: bash
+        run: |
+          set -uo pipefail
+          checker="$GITHUB_WORKSPACE/base/scripts/verify-claims.sh"
+          if [ ! -f "$checker" ]; then
+            printf '%s\n' 'NOT_EXECUTED: protected claim checker is missing from the base branch' >&2
+            printf 'claims_exit=126\n' >> "$GITHUB_OUTPUT"
+            exit 126
+          fi
+          cp "$checker" "$GITHUB_WORKSPACE/head/scripts/verify-claims.sh"
+          chmod +x "$GITHUB_WORKSPACE/head/scripts/verify-claims.sh"
+          cd "$GITHUB_WORKSPACE/head"
+          set +e
+          bash scripts/verify-claims.sh
+          claims_exit=$?
+          set -e
+          printf 'claims_exit=%s\n' "$claims_exit" >> "$GITHUB_OUTPUT"
+          [ "$claims_exit" -eq 0 ] || exit "$claims_exit"
+          : > "$RUNNER_TEMP/claims-observed-zero"
+
+      - name: Publish evidence and enforce the final conclusion
+        if: ${{ always() }}
+        shell: bash
+        env:
+          BASE_SHA: ${{ steps.identity.outputs.base_sha }}
+          HEAD_SHA: ${{ steps.identity.outputs.head_sha }}
+          CHECK_OUTCOME: ${{ steps.check.outcome }}
+          CHECK_EXIT: ${{ steps.check.outputs.command_exit }}
+          CLAIMS_OUTCOME: ${{ steps.claims.outcome }}
+          CLAIMS_EXIT: ${{ steps.claims.outputs.claims_exit }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+          WORKFLOW_SHA: ${{ github.workflow_sha }}
+        run: |
+          set -eu
+
+          # Fail-closed: success needs both observed zeros AND both sentinels.
+          # Missing, skipped, cancelled and not-executed all land here as blocked.
+          conclusion=blocked
+          if [ "$CHECK_OUTCOME" = success ] && [ "${CHECK_EXIT:-}" = 0 ] &&
+             [ "$CLAIMS_OUTCOME" = success ] && [ "${CLAIMS_EXIT:-}" = 0 ] &&
+             [ -f "$RUNNER_TEMP/check-observed-zero" ] &&
+             [ -f "$RUNNER_TEMP/claims-observed-zero" ]; then
+            conclusion=success
+          fi
+
+          {
+            printf '%s\n' '## Required quality'
+            printf '%s\n' '| field | value |'
+            printf '%s\n' '|---|---|'
+            printf '| head_sha | `%s` |\n' "$HEAD_SHA"
+            printf '| base_sha | `%s` |\n' "$BASE_SHA"
+            printf '| workflow_sha | `%s` |\n' "$WORKFLOW_SHA"
+            printf '| run | `%s` (attempt %s) |\n' "$RUN_ID" "$RUN_ATTEMPT"
+            printf '| make check | `%s` (exit `%s`) |\n' "$CHECK_OUTCOME" "${CHECK_EXIT:-none}"
+            printf '| verify-claims | `%s` (exit `%s`) |\n' "$CLAIMS_OUTCOME" "${CLAIMS_EXIT:-none}"
+            printf '| conclusion | `%s` |\n' "$conclusion"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$conclusion" != success ]; then
+            printf 'Required quality conclusion is non-success: %s\n' "$conclusion" >&2
+            exit 1
+          fi

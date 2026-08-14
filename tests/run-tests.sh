@@ -408,6 +408,69 @@ OUTF="$(bash scripts/verify-feature.sh FB1 2>&1)"; RCF=$?
 assert_eq "no budgets means unchanged exit 1" "1" "$RCF"
 assert_contains "no budgets still prints repair" "$OUTF" "LEGACY-MARKER"
 
+# ═════════════════════════════════════════════════════════════════════════════
+echo ""
+echo "${BOLD}14. verify-claims — re-check what the repo claims is passing${RESET}"
+CLAIMS="$WORK/claims"; make_fixture "$CLAIMS"
+bash "$KIT_DIR/bin/harness-init.sh" --target "$CLAIMS" --level full >/dev/null 2>&1
+cd "$CLAIMS"
+
+# Replace the feature list with exactly the claims under test.
+# Usage: claims <json-array-of-features>
+claims() {
+  FEATS="$1" python3 - <<'PYEOF'
+import json, os
+d = json.load(open("feature_list.json"))
+d["features"] = json.loads(os.environ["FEATS"])
+json.dump(d, open("feature_list.json", "w"), indent=2)
+PYEOF
+}
+CLAIM_OK='[{"id":"C1","state":"passing","behavior":"b","evidence":["ran"],"layers":[{"label":"unit","cmd":"true","repair":"r"}]}]'
+CLAIM_LIE='[{"id":"C1","state":"passing","behavior":"b","evidence":["ran"],"layers":[{"label":"unit","cmd":"false","repair":"r"}]}]'
+
+# 14a — an honest claim survives re-verification
+claims "$CLAIM_OK"
+OUT14="$(bash scripts/verify-claims.sh 2>&1)"; RC14=$?
+assert_eq "honest passing claim exits 0" "0" "$RC14"
+assert_contains "reports how many claims were re-verified" "$OUT14" "1"
+
+# 14b — a hand-written passing state does NOT survive
+claims "$CLAIM_LIE"
+OUTL="$(bash scripts/verify-claims.sh 2>&1)"; RCL=$?
+assert_eq "false claim exits 1" "1" "$RCL"
+assert_contains "false claim is named FALSE_CLAIM" "$OUTL" "FALSE_CLAIM"
+assert_contains "false claim names the feature" "$OUTL" "C1"
+
+# 14c — passing with no layers cannot be verified, so it cannot pass
+claims '[{"id":"C1","state":"passing","behavior":"b","evidence":["ran"],"layers":[]}]'
+bash scripts/verify-claims.sh >/dev/null 2>&1
+assert_eq "unverifiable claim exits 2" "2" "$?"
+
+# 14d — passing with no evidence is fail-closed too
+claims '[{"id":"C1","state":"passing","behavior":"b","evidence":[],
+          "layers":[{"label":"unit","cmd":"true","repair":"r"}]}]'
+OUTE="$(bash scripts/verify-claims.sh 2>&1)"; RCE=$?
+assert_eq "claim without evidence exits 2" "2" "$RCE"
+assert_contains "missing evidence is named" "$OUTE" "NO_EVIDENCE"
+
+# 14e — non-passing features are not re-run and never block
+claims '[{"id":"C1","state":"active","behavior":"b","evidence":[],
+          "layers":[{"label":"unit","cmd":"false","repair":"r"}]},
+         {"id":"C2","state":"blocked","behavior":"b","evidence":[],
+          "layers":[{"label":"unit","cmd":"false","repair":"r"}]}]'
+bash scripts/verify-claims.sh >/dev/null 2>&1
+assert_eq "unclaimed features do not block" "0" "$?"
+
+# 14f — nothing claimed must say so out loud, not pass in silence
+claims '[{"id":"C1","state":"not_started","behavior":"b","evidence":[],"layers":[]}]'
+OUTN="$(bash scripts/verify-claims.sh 2>&1)"; RCN=$?
+assert_eq "no claims still exits 0" "0" "$RCN"
+assert_contains "no claims is stated, not silent" "$OUTN" "NO_CLAIMS"
+
+# 14g — the CI workflow that runs this gate ships with the full level
+assert_file "required-quality workflow is scaffolded" \
+  "$CLAIMS/.github/workflows/required-quality.yml"
+
 cd "$KIT_DIR"
 
 # ═════════════════════════════════════════════════════════════════════════════
