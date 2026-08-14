@@ -187,6 +187,7 @@ if [[ "$LEVEL" == "full" ]]; then
   render "$F/Makefile"                        "$TARGET/Makefile"
   render "$F/scripts/verify-feature.sh"       "$TARGET/scripts/verify-feature.sh"
   render "$F/scripts/verify-claims.sh"        "$TARGET/scripts/verify-claims.sh"
+  render "$F/scripts/verify-decisions.sh"     "$TARGET/scripts/verify-decisions.sh"
   render "$F/.github/workflows/required-quality.yml" \
                                               "$TARGET/.github/workflows/required-quality.yml"
   render "$F/.github/rulesets/required-quality-check.json" \

@@ -659,6 +659,14 @@ recommended enf.stopcond "Every budget declares its stop condition" \
   "$(budgets_have_stop)" \
   "A budget with no stop_condition just restarts the loop when it runs out. Add stop_condition to every budgets block."
 
+recommended enf.decisions "Decision ledger verifier present (scripts/verify-decisions.sh)" \
+  "$(file_exists "scripts/verify-decisions.sh")" \
+  "Install it: harness-init.sh --target $REPO --level full. Without it, an agent can delete the decision that blocked its approach."
+
+recommended enf.decdoc "Append-only decision rule documented" \
+  "$(routed_contains '(append.only|DECISION_REWRITE|supersede|no editar.*decisi|never edit an earlier)')" \
+  "Add to $IPATH: DECISIONS.md is append-only — supersede an entry by adding a new one, never by editing it."
+
 recommended enf.wfdoc "Workflow-tampering rule documented" \
   "$(routed_contains '(required-quality\.yml|skipped by its own|skip.*the gate)')" \
   "Add to $IPATH: agents must never edit .github/workflows/required-quality.yml — a skipped job counts as a passing check."

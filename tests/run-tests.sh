@@ -586,6 +586,103 @@ import json,sys
 print(next(c['result'] for c in json.load(sys.stdin)['checks'] if c['id']=='enf.stopcond'))" 2>/dev/null)"
 assert_eq "budgets without stop_condition is caught" "fail" "$NOSTOP"
 
+# ═════════════════════════════════════════════════════════════════════════════
+echo ""
+echo "${BOLD}17. verify-decisions — the record of WHY cannot be rewritten${RESET}"
+DEC="$WORK/decisions"; make_fixture "$DEC"
+bash "$KIT_DIR/bin/harness-init.sh" --target "$DEC" --level full >/dev/null 2>&1
+cd "$DEC"
+
+cat > DECISIONS.md <<'EOF'
+# Decisions
+
+---
+
+## 2026-08-01 — Postgres over SQLite
+
+**Context.** Two services needed the same data.
+
+**Decision.** Postgres.
+
+**Consequences.** A container in local dev.
+
+---
+
+## 2026-08-02 — No ORM
+
+**Context.** Queries were simple and shaped by reporting needs.
+
+**Decision.** Raw parameterised SQL.
+
+**Consequences.** More typing, no hidden N+1.
+EOF
+git add -A && git -c user.email=t@t -c user.name=t commit -qm "decisions baseline" >/dev/null
+BASE="$(git rev-parse HEAD)"
+
+# 17a — an untouched ledger passes
+bash scripts/verify-decisions.sh "$BASE" >/dev/null 2>&1
+assert_eq "unchanged ledger passes" "0" "$?"
+
+# 17b — appending a new decision is the normal, allowed path
+cat >> DECISIONS.md <<'EOF'
+
+---
+
+## 2026-08-14 — Adopt the required-quality gate
+
+**Context.** A hand-written passing state was never re-checked.
+
+**Decision.** Re-verify claims in CI.
+
+**Consequences.** A PR cannot merge on a claim alone.
+EOF
+git add -A && git -c user.email=t@t -c user.name=t commit -qm "add decision" >/dev/null
+bash scripts/verify-decisions.sh "$BASE" >/dev/null 2>&1
+assert_eq "appending a decision is allowed" "0" "$?"
+
+# 17c — editing an earlier decision is the thing this exists to stop
+python3 - <<'PYEOF'
+s = open("DECISIONS.md").read()
+s = s.replace("**Decision.** Raw parameterised SQL.", "**Decision.** Use an ORM after all.")
+open("DECISIONS.md", "w").write(s)
+PYEOF
+git add -A && git -c user.email=t@t -c user.name=t commit -qm "revise decision" >/dev/null
+OUTD="$(bash scripts/verify-decisions.sh "$BASE" 2>&1)"; RCD=$?
+assert_eq "rewriting an earlier decision exits 1" "1" "$RCD"
+assert_contains "the rewrite is named" "$OUTD" "DECISION_REWRITE_FORBIDDEN"
+assert_contains "the altered decision is identified" "$OUTD" "No ORM"
+
+# 17d — deleting one is equally forbidden
+git checkout -q HEAD~1 -- DECISIONS.md 2>/dev/null
+python3 - <<'PYEOF'
+s = open("DECISIONS.md").read()
+i = s.find("## 2026-08-01 — Postgres over SQLite")
+j = s.find("## 2026-08-02")
+open("DECISIONS.md", "w").write(s[:i] + s[j:])
+PYEOF
+git add -A && git -c user.email=t@t -c user.name=t commit -qm "drop decision" >/dev/null
+OUTX="$(bash scripts/verify-decisions.sh "$BASE" 2>&1)"; RCX=$?
+assert_eq "deleting an earlier decision exits 1" "1" "$RCX"
+assert_contains "the deleted decision is identified" "$OUTX" "Postgres"
+
+# 17e-bis — the CI path: base handed over as a file, because a depth-1 checkout
+# cannot resolve `git show <base>:FILE`.
+git show "$BASE:DECISIONS.md" > "$WORK/base-ledger.md" 2>/dev/null
+DECISIONS_BASE_FILE="$WORK/base-ledger.md" bash scripts/verify-decisions.sh >/dev/null 2>&1
+assert_eq "DECISIONS_BASE_FILE path catches the rewrite too" "1" "$?"
+git checkout -q "$BASE" -- DECISIONS.md
+DECISIONS_BASE_FILE="$WORK/base-ledger.md" bash scripts/verify-decisions.sh >/dev/null 2>&1
+assert_eq "DECISIONS_BASE_FILE path passes an intact ledger" "0" "$?"
+git add -A && git -c user.email=t@t -c user.name=t commit -qm "restore ledger" >/dev/null
+
+# 17e — a repo with no ledger in the base has nothing to protect yet
+git checkout -q HEAD~2 -- DECISIONS.md 2>/dev/null || true
+rm -f DECISIONS.md
+git add -A && git -c user.email=t@t -c user.name=t commit -qm "no ledger" >/dev/null
+EMPTYBASE="$(git rev-parse HEAD)"
+bash scripts/verify-decisions.sh "$EMPTYBASE" >/dev/null 2>&1
+assert_eq "absent ledger in base is not an error" "0" "$?"
+
 cd "$KIT_DIR"
 
 # ═════════════════════════════════════════════════════════════════════════════

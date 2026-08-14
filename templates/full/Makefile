@@ -26,6 +26,10 @@ check: ## Full verification pipeline — must exit 0 before every commit
 verify-claims: ## Re-run every feature the repo claims is passing. CI runs this too.
 	bash scripts/verify-claims.sh
 
+.PHONY: verify-decisions
+verify-decisions: ## Confirm no earlier decision was rewritten
+	bash scripts/verify-decisions.sh
+
 .PHONY: e2e
 e2e: ## End-to-end suite. Required when a change crosses component boundaries.
 	{{E2E_CMD}}

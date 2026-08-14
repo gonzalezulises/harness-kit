@@ -72,7 +72,10 @@ jobs:
           path: base
           fetch-depth: 1
           persist-credentials: false
-          sparse-checkout: scripts/verify-claims.sh
+          sparse-checkout: |
+            scripts/verify-claims.sh
+            scripts/verify-decisions.sh
+            DECISIONS.md
           sparse-checkout-cone-mode: false
 
       - name: Run the repository verification pipeline
@@ -111,6 +114,29 @@ jobs:
           [ "$claims_exit" -eq 0 ] || exit "$claims_exit"
           : > "$RUNNER_TEMP/claims-observed-zero"
 
+      - name: Verify no earlier decision was rewritten
+        id: decisions
+        shell: bash
+        env:
+          DECISIONS_BASE_FILE: ${{ github.workspace }}/base/DECISIONS.md
+        run: |
+          set -uo pipefail
+          checker="$GITHUB_WORKSPACE/base/scripts/verify-decisions.sh"
+          if [ ! -f "$checker" ]; then
+            printf '%s\n' 'NOT_EXECUTED: protected decision checker is missing from the base branch' >&2
+            printf 'decisions_exit=126\n' >> "$GITHUB_OUTPUT"
+            exit 126
+          fi
+          cp "$checker" "$GITHUB_WORKSPACE/head/scripts/verify-decisions.sh"
+          cd "$GITHUB_WORKSPACE/head"
+          set +e
+          bash scripts/verify-decisions.sh
+          decisions_exit=$?
+          set -e
+          printf 'decisions_exit=%s\n' "$decisions_exit" >> "$GITHUB_OUTPUT"
+          [ "$decisions_exit" -eq 0 ] || exit "$decisions_exit"
+          : > "$RUNNER_TEMP/decisions-observed-zero"
+
       - name: Publish evidence and enforce the final conclusion
         if: ${{ always() }}
         shell: bash
@@ -121,6 +147,8 @@ jobs:
           CHECK_EXIT: ${{ steps.check.outputs.command_exit }}
           CLAIMS_OUTCOME: ${{ steps.claims.outcome }}
           CLAIMS_EXIT: ${{ steps.claims.outputs.claims_exit }}
+          DECISIONS_OUTCOME: ${{ steps.decisions.outcome }}
+          DECISIONS_EXIT: ${{ steps.decisions.outputs.decisions_exit }}
           RUN_ID: ${{ github.run_id }}
           RUN_ATTEMPT: ${{ github.run_attempt }}
           WORKFLOW_SHA: ${{ github.workflow_sha }}
@@ -132,8 +160,10 @@ jobs:
           conclusion=blocked
           if [ "$CHECK_OUTCOME" = success ] && [ "${CHECK_EXIT:-}" = 0 ] &&
              [ "$CLAIMS_OUTCOME" = success ] && [ "${CLAIMS_EXIT:-}" = 0 ] &&
+             [ "$DECISIONS_OUTCOME" = success ] && [ "${DECISIONS_EXIT:-}" = 0 ] &&
              [ -f "$RUNNER_TEMP/check-observed-zero" ] &&
-             [ -f "$RUNNER_TEMP/claims-observed-zero" ]; then
+             [ -f "$RUNNER_TEMP/claims-observed-zero" ] &&
+             [ -f "$RUNNER_TEMP/decisions-observed-zero" ]; then
             conclusion=success
           fi
 
@@ -147,6 +177,7 @@ jobs:
             printf '| run | `%s` (attempt %s) |\n' "$RUN_ID" "$RUN_ATTEMPT"
             printf '| make check | `%s` (exit `%s`) |\n' "$CHECK_OUTCOME" "${CHECK_EXIT:-none}"
             printf '| verify-claims | `%s` (exit `%s`) |\n' "$CLAIMS_OUTCOME" "${CLAIMS_EXIT:-none}"
+            printf '| verify-decisions | `%s` (exit `%s`) |\n' "$DECISIONS_OUTCOME" "${DECISIONS_EXIT:-none}"
             printf '| conclusion | `%s` |\n' "$conclusion"
           } >> "$GITHUB_STEP_SUMMARY"
 

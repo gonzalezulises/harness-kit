@@ -40,6 +40,11 @@ commit and at every clock-out.
   re-runs every claimed feature with `scripts/verify-claims.sh`, using the copy from the
   base branch, and a state whose layers do not pass comes back as `FALSE_CLAIM`. why: a
   state written by hand is a claim; a state that survives re-verification is a receipt.
+- **`DECISIONS.md` is append-only** — record new decisions freely, and supersede an old one
+  by adding an entry that references it. Never edit or delete an earlier entry; CI rejects
+  that as `DECISION_REWRITE_FORBIDDEN`. why: when a past decision blocks your approach, the
+  cheapest move is to erase the reason it existed — and the next session reads a tidy ledger
+  with no way to tell a constraint was dropped rather than resolved.
 - **Never touch `.github/workflows/required-quality.yml`** — not to add a condition, a
   paths filter, a rename, or a "temporary" skip. GitHub counts a job **skipped** by its
   own job-level condition as a **successful** required check, so weakening that file makes
