@@ -206,7 +206,7 @@ PYEOF
         echo "$FEATURE_ID is now ${BOLD}blocked${RESET}. Stop working on it."
         echo "Do not retry, do not refactor around it, do not open a new approach."
         echo "Escalate to a human, or split the feature into something smaller."
-        [[ "$KIND" == "BUDGET_EXHAUSTED" ]] && exit 3 || exit 4
+        [[ "$KIND" == "BUDGET_EXHAUSTED" ]] && exit 0 || exit 4
       fi
       echo ""
       echo "Review rounds spent: ${SEEN}${LIMIT:+/$LIMIT}."
