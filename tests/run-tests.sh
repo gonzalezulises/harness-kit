@@ -487,6 +487,50 @@ assert_contains "no claims is stated, not silent" "$OUTN" "NO_CLAIMS"
 assert_file "required-quality workflow is scaffolded" \
   "$CLAIMS/.github/workflows/required-quality.yml"
 
+# ── 14h-14l — weakening the verification is not a green path ─────────────────
+# The script is taken from the protected base, but the commands it runs come from
+# the PR. Without this, swapping a real command for `true` passes as "verified".
+BASEFL="$WORK/base-feature-list.json"
+claim_base() {
+  FEATS="$1" python3 - "$BASEFL" <<'PYEOF'
+import json, os, sys
+json.dump({"features": json.loads(os.environ["FEATS"])}, open(sys.argv[1], "w"), indent=2)
+PYEOF
+}
+REAL='[{"id":"C1","state":"passing","behavior":"b","evidence":["ran"],"layers":[{"label":"unit","cmd":"node tests/checkout.test.js","repair":"r"}]}]'
+WEAK='[{"id":"C1","state":"passing","behavior":"b","evidence":["ran"],"layers":[{"label":"unit","cmd":"true","repair":"r"}]}]'
+
+# 14h — the attack: same passing state, weaker command
+claim_base "$REAL"
+claims "$WEAK"
+OUTW="$(CLAIMS_BASE_FILE="$BASEFL" bash scripts/verify-claims.sh 2>&1)"; RCW=$?
+assert_eq "weakened verification exits 5" "5" "$RCW"
+assert_contains "the weakening is named" "$OUTW" "WEAKENED_VERIFICATION"
+assert_contains "it names the feature" "$OUTW" "C1"
+assert_contains "it shows the command that was there before" "$OUTW" "checkout.test.js"
+
+# 14i — the legitimate path: change the command AND re-earn the state
+claims '[{"id":"C1","state":"active","behavior":"b","evidence":[],"layers":[{"label":"unit","cmd":"true","repair":"r"}]}]'
+CLAIMS_BASE_FILE="$BASEFL" bash scripts/verify-claims.sh >/dev/null 2>&1
+assert_eq "changing the command while going back to active is allowed" "0" "$?"
+
+# 14j — an unchanged claim still passes with a base present
+claim_base "$CLAIM_OK"
+claims "$CLAIM_OK"
+CLAIMS_BASE_FILE="$BASEFL" bash scripts/verify-claims.sh >/dev/null 2>&1
+assert_eq "unchanged layers pass against a base" "0" "$?"
+
+# 14k — a brand new passing feature has nothing to compare against
+claim_base '[]'
+claims "$CLAIM_OK"
+CLAIMS_BASE_FILE="$BASEFL" bash scripts/verify-claims.sh >/dev/null 2>&1
+assert_eq "a new feature is not a weakening" "0" "$?"
+
+# 14l — with no base at all, behaviour is unchanged
+claims "$CLAIM_LIE"
+bash scripts/verify-claims.sh >/dev/null 2>&1
+assert_eq "no base still falls back to FALSE_CLAIM" "1" "$?"
+
 # ═════════════════════════════════════════════════════════════════════════════
 echo ""
 echo "${BOLD}15. workflow integrity — the gate must protect its own definition${RESET}"

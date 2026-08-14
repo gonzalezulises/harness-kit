@@ -15,6 +15,7 @@
 #   0  every claim re-verified, or there were no claims (stated out loud)
 #   1  FALSE_CLAIM     — a feature marked passing whose layers do not pass
 #   2  NOT_VERIFIABLE  — a claim that cannot be checked at all (no layers, no evidence)
+#   5  WEAKENED_VERIFICATION — a passing feature changed how it is verified
 #  66  feature_list.json missing
 #  69  no python available
 
@@ -38,6 +39,75 @@ for c in python3 python; do
   command -v "$c" >/dev/null 2>&1 && { PY="$c"; break; }
 done
 [[ -n "$PY" ]] || { echo "verify-claims: needs python3" >&2; exit 69; }
+
+# ── Was the verification itself weakened? ────────────────────────────────────
+# This script is taken from the protected base, but the commands it runs come
+# from the pull request. Re-running a layer proves nothing if the layer was
+# swapped for `true` in the same change: the state stays `passing` and the
+# receipt now certifies a command that does no work.
+#
+# So a feature that was already `passing` at the base and is still `passing` here
+# must carry the same layers. Changing how something is verified invalidates the
+# earlier receipt — set the feature back to `active` and earn it again.
+WORK_CLAIMS="$(mktemp -d)"
+trap 'rm -rf "$WORK_CLAIMS"' EXIT
+
+BASE_FL=""
+if [[ -n "${CLAIMS_BASE_FILE:-}" ]]; then
+  # CI checks the head out at depth 1, so `git show <base>:FILE` cannot resolve.
+  [[ -f "$CLAIMS_BASE_FILE" ]] && BASE_FL="$CLAIMS_BASE_FILE"
+else
+  for candidate in origin/main origin/master main master; do
+    git rev-parse --verify --quiet "$candidate" >/dev/null 2>&1 || continue
+    if git show "$candidate:$FL" > "$WORK_CLAIMS/base.json" 2>/dev/null; then
+      BASE_FL="$WORK_CLAIMS/base.json"
+    fi
+    break
+  done
+fi
+
+if [[ -n "$BASE_FL" ]]; then
+  WEAKENED="$("$PY" - "$BASE_FL" "$FL" <<'PYEOF'
+import json, sys
+
+def passing_layers(path):
+    try:
+        data = json.load(open(path))
+    except Exception:
+        return {}
+    out = {}
+    for f in data.get("features", []):
+        if f.get("state") == "passing":
+            out[f.get("id")] = f.get("layers") or []
+    return out
+
+base, head = passing_layers(sys.argv[1]), passing_layers(sys.argv[2])
+for fid, base_layers in base.items():
+    if fid not in head:
+        continue  # dropped, or moved back to active: both are legitimate
+    if json.dumps(base_layers, sort_keys=True) == json.dumps(head[fid], sort_keys=True):
+        continue
+    was = " | ".join(l.get("cmd", "") for l in base_layers) or "(none)"
+    now = " | ".join(l.get("cmd", "") for l in head[fid]) or "(none)"
+    print("%s\t%s\t%s" % (fid, was, now))
+PYEOF
+)"
+
+  if [[ -n "${WEAKENED//[$'\n'[:space:]]/}" ]]; then
+    echo "${RED}${BOLD}WEAKENED_VERIFICATION${RESET}" >&2
+    while IFS=$'\t' read -r fid was now; do
+      [[ -z "$fid" ]] && continue
+      echo "  ${BOLD}$fid${RESET} is still marked passing, but its verification changed." >&2
+      echo "    was: $was" >&2
+      echo "    now: $now" >&2
+    done <<< "$WEAKENED"
+    echo "" >&2
+    echo "The recorded evidence certifies the command that ran at the time. Changing" >&2
+    echo "the command invalidates it. Set the feature back to 'active' and re-run" >&2
+    echo "scripts/verify-feature.sh so the new command earns its own receipt." >&2
+    exit 5
+  fi
+fi
 
 # ── Collect the claims ───────────────────────────────────────────────────────
 # One line per claimed feature: id \t problem \t label \t cmd

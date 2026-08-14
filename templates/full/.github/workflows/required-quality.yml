@@ -76,6 +76,7 @@ jobs:
             scripts/verify-claims.sh
             scripts/verify-decisions.sh
             DECISIONS.md
+            feature_list.json
           sparse-checkout-cone-mode: false
 
       - name: Run the repository verification pipeline
@@ -95,6 +96,8 @@ jobs:
       - name: Re-verify every claimed passing state with the protected checker
         id: claims
         shell: bash
+        env:
+          CLAIMS_BASE_FILE: ${{ github.workspace }}/base/feature_list.json
         run: |
           set -uo pipefail
           checker="$GITHUB_WORKSPACE/base/scripts/verify-claims.sh"
