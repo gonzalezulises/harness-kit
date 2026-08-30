@@ -297,10 +297,11 @@ assert_contains "violation reports WHAT" "$OUT6" "WHAT:"
 rm src/leak.ts
 printf 'curl -H "apikey: $SUPABASE_SERVICE_ROLE_KEY" "$url"\n' > src/env-ref.sh
 printf 'const secret = requireWebhookSecret()\n' > src/fn-call.ts
+printf 'const password = "test-password-integration-1";\n' > src/fixture.ts
 git add -A >/dev/null 2>&1
 bash scripts/check-arch.sh . >/dev/null 2>&1
 assert_eq "env-var reference and function call are not flagged" "0" "$?"
-rm src/env-ref.sh src/fn-call.ts
+rm src/env-ref.sh src/fn-call.ts src/fixture.ts
 git add -A >/dev/null 2>&1
 assert_contains "violation reports WHY"  "$OUT6" "WHY:"
 assert_contains "violation reports FIX"  "$OUT6" "FIX:"
