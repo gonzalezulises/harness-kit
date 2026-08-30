@@ -7,7 +7,7 @@
 set -uo pipefail
 
 ROOT_DIR="$(git rev-parse --show-toplevel 2>/dev/null)" || { echo "not a git repository" >&2; exit 66; }
-cd "$ROOT_DIR"
+cd "$ROOT_DIR" || exit 66
 
 current="$(git config core.hooksPath || true)"
 if [[ -n "$current" && "$current" != ".githooks" ]]; then
