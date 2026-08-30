@@ -51,6 +51,7 @@ apagarlo, simplemente nunca se encendió.
 ```text
 bin/sentry-check                       La compuerta. Fail-closed.
 bin/sentry-heartbeat                   Envuelve un cron para que Sentry note si deja de correr
+bin/sentry-to-issues                   Abre un issue de GitHub por cada issue sin resolver
 instrumentation.ts                     register() + onRequestError (errores de servidor)
 instrumentation-client.ts              Navegador: replay, tracing de navegación
 sentry.server.config.ts                Runtime Node
@@ -115,7 +116,28 @@ bin/sentry-check triage               # issues sin resolver, como candidatos de 
 bin/sentry-check all v1.2.3           # preflight + canary + release + health
 
 bin/sentry-heartbeat nightly-backup -- pg_dump ...   # envuelve un cron
+
+bin/sentry-to-issues            # dry run: imprime el plan, no crea nada
+bin/sentry-to-issues --apply    # abre los issues de GitHub que falten
 ```
+
+### El puente al backlog
+
+`triage` te dice qué está roto; `sentry-to-issues` hace que eso llegue a donde el
+próximo clock-in lo va a leer. Abre un issue de GitHub por cada issue sin
+resolver de Sentry, y de ahí entra a `feature_list.json` como cualquier otra
+feature — con lo que la señal de producción deja de morir en un correo.
+
+Dos propiedades lo hacen seguro de programar:
+
+- **Las escrituras son opt-in.** Sin `--apply` no crea nada e imprime el plan.
+  Crear issues es un efecto sobre una superficie compartida, y una herramienta
+  que lo hace por defecto se ejecuta una vez por accidente y después nadie
+  vuelve a confiar en ella.
+- **Es idempotente por `shortId`.** Un issue ya registrado se salta, buscando en
+  abiertos *y* cerrados: un defecto que ya cerraste no reaparece como nuevo en la
+  siguiente corrida. Sin esto, ponerlo en un cron produce cien duplicados del
+  mismo error.
 
 ### Lo que cada comprobación cierra
 
@@ -171,7 +193,7 @@ Más `instrumentation-client.ts` para el navegador y `sentry.server.config.ts` /
 ## Verificar el pack
 
 ```bash
-bash packs/sentry/verify-pack.sh   # 45 modos de falla, todos deben bloquear
+bash packs/sentry/verify-pack.sh   # 55 modos de falla, todos deben bloquear
 ```
 
 Las respuestas se sintetizan en vez de pedirse a la red, así que el pack se

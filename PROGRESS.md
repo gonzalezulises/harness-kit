@@ -8,7 +8,7 @@ last. If it disagrees with your recollection, this file wins.
 - **Last commit:** `7dfcd14` — fix: correct invalid deny rule pattern in project settings
 - **Verification:** `make check` — passing, 175/175 assertions · `make gates` 3 pass
 - **Pack verification:** `packs/load-testing/` 57/57 · `packs/gherkin/` 15/15 ·
-  `packs/sentry/` 45/45, exit 0
+  `packs/sentry/` 55/55, exit 0
 - **Audit:** rubric v2, 84 checks. The kit scores 77/84 against itself.
 - **Startup path:** `./init.sh` — activation for other repos: `bin/harness-activate.sh`
 - **Active feature:** none — all fourteen features passing (VCR 14/14)
@@ -38,9 +38,10 @@ the gate's logic but not the ingest and API contracts — in particular the exac
 shapes for monitors, release health and commits are the least certain part of this pack.
 First real DSN closes that gap.
 
-`.env.sentry.example` could not be written by the agent: the global permission rules deny
-reads of `.env.*`, and narrowing that deny was refused by the safety classifier. The file's
-content lives in `packs/sentry/index.md`; a human creates it in one command.
+`.env.sentry.example` is deliberately NOT tracked. The agent cannot read or write `.env.*`
+(global permission rules; narrowing the read deny was refused by the safety classifier), and
+committing a file it cannot read would mean shipping unverified content. The full contents
+live in `packs/sentry/index.md`, which is the file the pack's readers actually consult.
 
 ## Next Steps
 
