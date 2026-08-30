@@ -417,6 +417,63 @@ TI_ARGS=(--frobnicate)
 ti_assert "an unknown flag is a usage error" 64 \
   "${TI_BASE[@]}" "GH_BIN=$GHDIR/gh" "GH_LOG=$WORK/gh3.log" "SENTRY_STUB_DIR=$TRIAGE_STUB"
 
+# ── 49-53. The shape Sentry actually returns, not the flat one ───────────────
+# Every stub above is a flat object, and that is exactly how the readers stayed
+# broken for so long: they matched the first key at any depth, so a nested
+# object could answer a question asked about its parent. These cases pin the
+# nesting Sentry really sends. Verified against rizoma-di on 2026-08-30.
+
+# The one that mattered: a monitor is disabled, one of its environments last
+# reported "ok", and the environment list is serialised first. Reading the
+# nested status passed a job nobody was watching.
+stub
+printf '{"slug":"nightly-backup","environments":[{"name":"production","status":"ok","lastCheckIn":"2026-08-30T03:00:00Z"}],"status":"disabled","isMuted":false}\n' > "$STUB_DIR/monitor.json"
+assert "a disabled monitor blocks even when a nested environment reads ok" 1 \
+  NO_COLOR=1 SENTRY_ORG=acme SENTRY_AUTH_TOKEN=t \
+  "SENTRY_STUB_DIR=$STUB_DIR" -- cron nightly-backup
+
+# And the mirror case, so the fix is not just "always fail": a live monitor with
+# one unhealthy environment is still a monitor that is watching.
+stub
+printf '{"slug":"nightly-backup","environments":[{"name":"staging","status":"error"}],"status":"active","isMuted":false}\n' > "$STUB_DIR/monitor.json"
+assert "an active monitor passes even when a nested environment reads error" 0 \
+  NO_COLOR=1 SENTRY_ORG=acme SENTRY_AUTH_TOKEN=t \
+  "SENTRY_STUB_DIR=$STUB_DIR" -- cron nightly-backup
+
+# A muted monitor whose mute flag sits after a nested block.
+stub
+printf '{"slug":"nightly-backup","environments":[{"name":"production","isMuted":false}],"status":"ok","isMuted":true}\n' > "$STUB_DIR/monitor.json"
+assert "a muted monitor blocks even when a nested flag reads false" 1 \
+  NO_COLOR=1 SENTRY_ORG=acme SENTRY_AUTH_TOKEN=t \
+  "SENTRY_STUB_DIR=$STUB_DIR" -- cron nightly-backup
+
+# Commits carry an author object with its own id. Counting keys at any depth
+# reported twice the commits that exist — a number in a receipt must be true.
+stub
+printf '["app.js","app.js.map"]\n' > "$STUB_DIR/files.json"
+cat > "$STUB_DIR/commits.json" <<'EOF'
+[{"id":"aaa111","message":"fix: guard the parser","author":{"id":"9","name":"U","email":"u@example.com"}},
+ {"id":"bbb222","message":"feat: add the gate","author":{"id":"9","name":"U","email":"u@example.com"}}]
+EOF
+# Captured rather than piped: grep -q closes the pipe early, and under
+# pipefail the SIGPIPE that reaches the gate would be read as a gate failure.
+COMMIT_OUT="$( cd "$SANDBOX" && env NO_COLOR=1 SENTRY_ORG=acme SENTRY_AUTH_TOKEN=t \
+    "SENTRY_STUB_DIR=$STUB_DIR" "$GATE" release v1.0.0 2>/dev/null )"
+case "$COMMIT_OUT" in
+  *"has 2 associated commit"*)
+    ok "commits are counted once each, not once per nested author id" ;;
+  *) bad "commits with a nested author id are miscounted" ;;
+esac
+
+# Release health genuinely nests under projects[].healthData — the one reader
+# that must still see through a level, and must still read the number right.
+stub
+printf '{"version":"v1.0.0","projects":[{"slug":"web","healthData":{"crashFreeSessions":97.4,"crashFreeUsers":99.1}}]}\n' > "$STUB_DIR/health.json"
+assert "a nested crash-free rate below the floor still blocks" 1 \
+  NO_COLOR=1 SENTRY_ORG=acme SENTRY_AUTH_TOKEN=t SENTRY_MIN_CRASH_FREE=99 \
+  "SENTRY_STUB_DIR=$STUB_DIR" -- health v1.0.0
+
+
 echo ""
 echo "${BOLD}────────────────────────────────────────${RESET}"
 echo "${BOLD}$PASS passed, $FAIL failed${RESET}"

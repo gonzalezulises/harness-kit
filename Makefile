@@ -21,6 +21,13 @@ test: ## Run the test suite
 .PHONY: check
 check: ## Full verification pipeline — must exit 0 before every commit
 	bash tests/run-tests.sh
+# The packs ship their own failure matrices. Linting them was never the same as
+# running them: a pack could regress with the repo's gate still green, which is
+# the exact failure the packs exist to prevent.
+	@for p in packs/*/verify-pack.sh; do \
+	  [ -f "$$p" ] || continue; \
+	  echo ""; bash "$$p" || exit 1; \
+	done
 
 .PHONY: verify-claims
 verify-claims: ## Re-run every feature this repo claims is passing

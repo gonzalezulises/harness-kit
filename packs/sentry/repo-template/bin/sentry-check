@@ -99,14 +99,61 @@ require_json() {
 # Minimal field readers. The kit ships without a JSON dependency on purpose, so
 # these are deliberately narrow: they find a scalar for a key, or report nothing
 # and let the caller fail closed.
-json_field() {
-  printf '%s' "$1" \
-    | tr ',' '\n' \
-    | grep -m1 "\"$2\"[[:space:]]*:" \
-    | sed 's/.*:[[:space:]]*//; s/^"//; s/"$//; s/[]}[:space:]}]*$//'
+#
+# They are also depth-aware, and that is not a detail. An earlier version read
+# the first match at any nesting level, so a monitor's per-environment "status"
+# shadowed the monitor's own: a disabled monitor reported "ok" and the gate
+# passed a job nobody was watching. A gate that reads the wrong field is worse
+# than no gate, because it issues a receipt for something it never checked.
+
+# Emit the JSON with everything nested deeper than <keep> removed, so a reader
+# can only match keys at the level it actually means. Quotes and escapes are
+# honoured, so a brace inside a string value never shifts the depth.
+json_prune() {
+  awk -v keep="$1" '
+    { body = body $0 }
+    END {
+      n = length(body)
+      for (i = 1; i <= n; i++) {
+        c = substr(body, i, 1)
+        if (instr) {
+          if (esc) { esc = 0 }
+          else if (c == "\\") { esc = 1 }
+          else if (c == "\"") { instr = 0 }
+          if (depth <= keep) printf "%s", c
+          continue
+        }
+        if (c == "\"") { instr = 1; if (depth <= keep) printf "%s", c; continue }
+        if (c == "{" || c == "[") { depth++; if (depth <= keep) printf "%s", c; continue }
+        if (c == "}" || c == "]") { if (depth <= keep) printf "%s", c; depth--; continue }
+        if (depth <= keep) printf "%s", c
+      }
+    }'
 }
 
-json_count() { printf '%s' "$1" | grep -o "\"$2\"[[:space:]]*:" | wc -l | tr -d ' '; }
+# Strip the trailing structure before the quotes, not after: "ok"} loses the
+# brace first and then the quotes, otherwise the value keeps a dangling " and
+# matches none of the cases the caller lists.
+json_scalar() {
+  tr ',' '\n' \
+    | grep -m1 "\"$1\"[[:space:]]*:" \
+    | sed 's/.*:[[:space:]]*//; s/[][:space:]}]*$//; s/^"//; s/"$//'
+}
+
+# A key on the object's own level. This is the default because every field the
+# gate judges on — a monitor's status, its mute flag — belongs to the object
+# asked about, never to something nested inside it.
+json_field() { printf '%s' "$1" | json_prune 1 | json_scalar "$2"; }
+
+# A key at any depth. Only for values Sentry genuinely nests, such as release
+# health living under projects[].healthData. It reads the first match, so it is
+# only sound where a single project is in play.
+json_field_deep() { printf '%s' "$1" | json_scalar "$2"; }
+
+# Count elements of a root array by one of their own keys. Pruning to the
+# element level stops a nested object's identically-named key — a commit's
+# author.id — from counting as another element.
+json_count() { printf '%s' "$1" | json_prune 2 | grep -o "\"$2\"[[:space:]]*:" | wc -l | tr -d ' '; }
 
 # ── DSN parsing ──────────────────────────────────────────────────────────────
 # A DSN is https://<publicKey>@<host>/<projectId>. Anything that does not parse
@@ -357,8 +404,8 @@ cmd_health() {
   }
   require_json "$body"
 
-  rate="$(json_field "$body" crashFreeSessions)"
-  [[ -n "$rate" ]] || rate="$(json_field "$body" crash_free_rate)"
+  rate="$(json_field_deep "$body" crashFreeSessions)"
+  [[ -n "$rate" ]] || rate="$(json_field_deep "$body" crash_free_rate)"
   if [[ -z "$rate" ]]; then
     die "no crash-free rate in the response — cannot judge release health" "$E_MALFORMED"
   fi
