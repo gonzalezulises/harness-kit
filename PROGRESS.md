@@ -5,10 +5,13 @@ last. If it disagrees with your recollection, this file wins.
 
 ## Current State
 
-- **Last commit:** `0ad2b1d` — chore(packs): ship the Sentry env template with the pack
-- **Verification:** `make check` — passing, 311 assertions · `make gates` 4 pass.
-  `make check` now runs the packs' own failure matrices; linting them was never
-  the same as running them.
+- **Last commit:** `b8c2ceb` — Merge pull request #12 (release 2.2.0)
+- **Released:** `v2.2.0` — first release cut by release-please, tag and GitHub
+  Release published, `VERSION` / `.harness/kit-version` / manifest all in sync.
+- **Verification:** `make check` — passing, 311 assertions locally · `make gates`
+  4 pass. `make check` now runs the packs' own failure matrices; linting them
+  was never the same as running them. CI ran them for the first time on the
+  release PR: 179 + 15 + 55 + 60, all green.
 - **Pack verification:** `packs/load-testing/` 57/57 · `packs/gherkin/` 15/15 ·
   `packs/sentry/` 60/60, exit 0
 - **Audit:** rubric v2, 84 checks. The kit scores 77/84 against itself.
@@ -20,6 +23,24 @@ last. If it disagrees with your recollection, this file wins.
 
 _Nothing active. All fourteen features are `passing`, each promoted by
 `verify-feature.sh` with recorded evidence — none set by hand._
+
+## Session log — 2026-08-30 (v2.2.0 shipped)
+
+Both open PRs merged in order: #14 (the depth fix) first, so release-please
+regenerated #12 and the fix landed in the 2.2.0 changelog before it shipped.
+
+**The release PR was blocked by a check that had never run.** `Required quality`
+reported nothing on #12, so branch protection had nothing to approve. Cause:
+GitHub does not trigger workflows from events raised by the built-in
+`GITHUB_TOKEN`, and release-please opens its PR with it. Closing and reopening
+the PR by hand raises `reopened` under a human identity and the check runs —
+3m23s, pass. `--admin` was available and refused: an untested release is the
+artefact this repo exists to block. Recurs on every release; recorded in
+[the Agent Note](.agents/notes/implemented/process/2026-08-30-release-pr-needs-reopen-to-run-checks.md).
+
+`v2.2.0` is tagged and published. CHANGELOG lists the fix twice — once for the
+commit, once for the merge commit — a cosmetic artefact of merging rather than
+squashing, visible on earlier entries too. Not addressed here.
 
 ## Session log — 2026-08-30 (Sentry contracts, read against the live org)
 
