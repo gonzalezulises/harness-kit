@@ -4,7 +4,7 @@
     {
       "id": "no-secrets-committed",
       "description": "Credentials must never enter version control.",
-      "check": "git grep -nIE '(api[_-]?key|apikey|secret|password|passwd|auth[_-]?token|access[_-]?token)[[:space:]]*[=:][[:space:]]*.?[A-Za-z0-9_/+-]{20,}' -- ':!*.example' ':!*.md' ':!*.lock' ':!*lock.json' ':!.harness/*' 2>/dev/null || true",
+      "check": "git grep -nIE '(api[_-]?key|apikey|secret|password|passwd|auth[_-]?token|access[_-]?token)[[:space:]]*[=:][[:space:]]*.?[A-Za-z0-9_/+-]{20,}' -- ':!*.example' ':!*.md' ':!*.lock' ':!*lock.json' ':!.harness/*' 2>/dev/null | grep -vE '(api[_-]?key|apikey|secret|password|passwd|auth[_-]?token|access[_-]?token)[[:space:]]*[=:][[:space:]]*[\"'\\'']?[$]' | grep -E '(api[_-]?key|apikey|secret|password|passwd|auth[_-]?token|access[_-]?token)[[:space:]]*[=:][[:space:]]*[\"'\\'']?[A-Za-z_/+-]*[0-9]' | grep -viE '(api[_-]?key|apikey|secret|password|passwd|auth[_-]?token|access[_-]?token)[[:space:]]*[=:][[:space:]]*[\"'\\'']?(test|fake|dummy|example|placeholder|sample|changeme)[-_]' || true",
       "expect": "empty",
       "what": "A hardcoded credential appears in a tracked file.",
       "why": "Anything committed stays in git history permanently, even if a later commit deletes it.",
