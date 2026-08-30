@@ -281,8 +281,11 @@ bash scripts/check-arch.sh . >/dev/null 2>&1
 assert_eq "clean repo passes arch rules" "0" "$?"
 
 # A realistic hardcoded credential, as it would actually appear in source.
+# Composed at runtime so this test file itself never matches the scanner
+# pattern it exercises (the kit runs its own gates repo-wide).
 mkdir -p src
-printf 'export const cfg = { api_key: "sk_live_9fJ2xQ7mNp4RtY8wZ1aB3cD5" };\n' > src/leak.ts
+FAKE_KEY="sk_live_9fJ2xQ7m""Np4RtY8wZ1aB3cD5"
+printf 'export const cfg = { api_key: "%s" };\n' "$FAKE_KEY" > src/leak.ts
 git add -A >/dev/null 2>&1
 OUT6="$(bash scripts/check-arch.sh . 2>&1)"
 ARCH_RC=$?

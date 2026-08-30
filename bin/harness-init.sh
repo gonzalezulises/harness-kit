@@ -195,6 +195,11 @@ if [[ "$LEVEL" == "full" ]]; then
   render "$F/.github/rulesets/required-quality-integrity.json" \
                                               "$TARGET/.github/rulesets/required-quality-integrity.json"
   render "$F/scripts/check-arch.sh"           "$TARGET/scripts/check-arch.sh"
+  render "$F/scripts/run-gates.sh"            "$TARGET/scripts/run-gates.sh"
+  render "$F/scripts/verify-agent-notes.sh"   "$TARGET/scripts/verify-agent-notes.sh"
+  render "$F/scripts/pre-commit-staged.sh"    "$TARGET/scripts/pre-commit-staged.sh"
+  render "$F/scripts/install-githooks.sh"     "$TARGET/scripts/install-githooks.sh"
+  render "$F/.agents/notes/README.md"         "$TARGET/.agents/notes/README.md"
   render "$F/scripts/clean-state-check.sh"    "$TARGET/scripts/clean-state-check.sh"
   render "$F/scripts/session-trace.sh"        "$TARGET/scripts/session-trace.sh"
   render "$KIT_DIR/bin/harness-audit.sh"      "$TARGET/scripts/harness-audit.sh"
