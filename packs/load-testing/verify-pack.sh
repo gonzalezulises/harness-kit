@@ -352,7 +352,10 @@ bash "${TEMPLATE}/bin/perf-resolve-target" >/dev/null 2>&1
 RESOLVE_NOSHA=$?
 check "sin sha devuelve error de uso (2)" "[ '$RESOLVE_NOSHA' -eq 2 ]"
 
-bash "${TEMPLATE}/bin/perf-resolve-target" abc123 >/dev/null 2>&1
+# env -u: en GitHub Actions GITHUB_REPOSITORY siempre existe y llenaría el
+# argumento que este caso verifica como ausente (y con gh presente, el script
+# seguiría hasta su loop de reintentos).
+env -u GITHUB_REPOSITORY bash "${TEMPLATE}/bin/perf-resolve-target" abc123 >/dev/null 2>&1
 RESOLVE_NOREPO=$?
 check "sin repositorio devuelve error de uso (2)" "[ '$RESOLVE_NOREPO' -eq 2 ]"
 
