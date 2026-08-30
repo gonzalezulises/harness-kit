@@ -31,10 +31,33 @@ noise: every canary writes a real, marked error event into the production
 project. Proof was judged worth the noise; the marker makes the events
 filterable and correlates them with the CI run that sent them.
 
+The same standard extends to what the gate covers beyond errors. `release` also
+requires associated commits, because without them Sentry can never name the
+change that caused an issue and every incident restarts with "which deploy was
+this?". `cron` exists because a scheduled job that stops being scheduled raises
+nothing at all — silence is the one signal an error tracker is built to ignore,
+and an unmonitored job is the longest-lived outage in any system. `triage`
+reports rather than gates, but still fails closed when it cannot reach the API:
+"no issues" and "could not ask" must never look the same.
+
+A second rule governs the opinionated checks: **a capability may be switched
+off, but it must be switched off out loud.** Tracing at zero passes only with
+`SENTRY_TRACING_ACKNOWLEDGED=true`, PII collection only with
+`SENTRY_PII_ACKNOWLEDGED=true`. The alternative — warn and continue — was
+rejected because a warning nobody reads is how half of Sentry ends up disabled
+without anyone having decided to disable it. The cost is friction on first
+install, paid once, by the person who can still change the answer.
+
 `verify-pack.sh` synthesises API responses through the `SENTRY_STUB_DIR` seam
-instead of calling the network, so the 21 failure modes are verifiable on any
+instead of calling the network, so the 45 failure modes are verifiable on any
 machine with `bash` and no Sentry account. A pack whose own verification needs
 a paid account and network access is a pack nobody re-verifies.
+
+`bin/sentry-heartbeat` is the one deliberate exception to fail-closed: with no
+usable DSN the wrapped job still runs, and the job's exit code always survives
+the wrapper. Monitoring that can take down the work it monitors is worse than
+no monitoring, so that behaviour is asserted in the failure matrix rather than
+left to good intentions.
 
 Revisit if Sentry ships a first-party endpoint that confirms storage without
 writing an event, which would remove the noise cost, or if canary events become

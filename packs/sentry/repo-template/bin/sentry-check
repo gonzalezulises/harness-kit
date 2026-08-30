@@ -1,11 +1,19 @@
 #!/usr/bin/env bash
-# sentry-check — prove that errors actually reach Sentry.
+# sentry-check — prove that errors actually reach Sentry, and that what arrives
+# is usable.
 #
 # Installing an SDK is not observability. A Sentry that has never received an
 # event is indistinguishable from a working one until the night you need it,
 # because every silent misconfiguration — an empty DSN, a zero sample rate, a
-# release without source maps — leaves the application running normally and the
-# build green. This gate refuses to report success on any of them.
+# release without source maps, a cron that stopped reporting — leaves the
+# application running normally and the build green. This gate refuses to report
+# success on any of them.
+#
+# One rule governs the opinionated checks: a capability may be switched off, but
+# it must be switched off OUT LOUD. Tracing at zero passes only when
+# SENTRY_TRACING_ACKNOWLEDGED=true, PII collection only when
+# SENTRY_PII_ACKNOWLEDGED=true. A default that quietly disables half the product
+# is how observability decays.
 #
 # Exit codes:
 #   0   every requested check passed
@@ -18,8 +26,11 @@
 # Usage:
 #   bin/sentry-check preflight        static checks; run before deploying
 #   bin/sentry-check canary           send an event and confirm it arrived
-#   bin/sentry-check release <ver>    confirm the release has source maps
-#   bin/sentry-check all <ver>        all of the above
+#   bin/sentry-check release <ver>    source maps and commits for a release
+#   bin/sentry-check health <ver>     crash-free rate of a release
+#   bin/sentry-check cron <slug>      a scheduled job is still reporting in
+#   bin/sentry-check triage           unresolved issues, as backlog candidates
+#   bin/sentry-check all <ver>        preflight + canary + release + health
 #
 # Test seam: set SENTRY_STUB_DIR to a directory of fixture files and the gate
 # reads those instead of calling the network. verify-pack.sh uses this to prove
@@ -32,6 +43,7 @@ E_OK=0; E_FAIL=1; E_UNCONFIRMED=2; E_MALFORMED=3; E_USAGE=64; E_DEP=69
 API_BASE="${SENTRY_API_BASE:-https://sentry.io/api/0}"
 STUB="${SENTRY_STUB_DIR:-}"
 CANARY_TIMEOUT="${SENTRY_CANARY_TIMEOUT:-60}"
+MIN_CRASH_FREE="${SENTRY_MIN_CRASH_FREE_RATE:-99}"
 
 if [[ ! -t 1 ]] || [[ -n "${NO_COLOR:-}" ]]; then
   RED=""; GREEN=""; YELLOW=""; BOLD=""; RESET=""
@@ -47,9 +59,9 @@ note() { echo "  ${YELLOW}··${RESET}   $1"; }
 die()  { echo "${RED}sentry-check: $1${RESET}" >&2; exit "$2"; }
 
 # ── Network seam ─────────────────────────────────────────────────────────────
-# Every outbound call goes through one of these two functions so the gate can be
-# verified offline. A stub file that does not exist means "the call failed",
-# which is the same thing the gate must do when the network is down: block.
+# Every outbound call goes through one of these so the gate can be verified
+# offline. A stub file that does not exist means "the call failed", which is the
+# same thing the gate must do when the network is down: block.
 
 api_get() {
   local path="$1" name="$2"
@@ -58,7 +70,7 @@ api_get() {
     cat "$STUB/$name"
     return 0
   fi
-  curl -sS --max-time 20 -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
+  curl -sS --fail --max-time 20 -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
     "$API_BASE/$path" 2>/dev/null
 }
 
@@ -68,12 +80,33 @@ ingest_send() {
     [[ -f "$STUB/ingest-ok" ]] || return 1
     return 0
   fi
-  curl -sS --max-time 20 -X POST \
+  curl -sS --fail --max-time 20 -X POST \
     -H 'Content-Type: application/x-sentry-envelope' \
     --data-binary "$payload" \
     "https://$DSN_HOST/api/$DSN_PROJECT_ID/envelope/?sentry_key=$DSN_KEY&sentry_version=7" \
     >/dev/null 2>&1
 }
+
+# A body that is not JSON is not an answer. Every reader calls this first, so a
+# proxy error page or an HTML login screen can never be read as "no results".
+require_json() {
+  case "$1" in
+    \[*|\{*) return 0 ;;
+    *) die "the API returned something that is not JSON" "$E_MALFORMED" ;;
+  esac
+}
+
+# Minimal field readers. The kit ships without a JSON dependency on purpose, so
+# these are deliberately narrow: they find a scalar for a key, or report nothing
+# and let the caller fail closed.
+json_field() {
+  printf '%s' "$1" \
+    | tr ',' '\n' \
+    | grep -m1 "\"$2\"[[:space:]]*:" \
+    | sed 's/.*:[[:space:]]*//; s/^"//; s/"$//; s/[]}[:space:]}]*$//'
+}
+
+json_count() { printf '%s' "$1" | grep -o "\"$2\"[[:space:]]*:" | wc -l | tr -d ' '; }
 
 # ── DSN parsing ──────────────────────────────────────────────────────────────
 # A DSN is https://<publicKey>@<host>/<projectId>. Anything that does not parse
@@ -108,6 +141,23 @@ is_placeholder() {
   [[ ${#DSN_KEY} -lt 8 ]]
 }
 
+resolve_dsn() {
+  local dsn="${SENTRY_DSN:-${NEXT_PUBLIC_SENTRY_DSN:-}}"
+  [[ -n "$dsn" ]] || return 1
+  parse_dsn "$dsn" || return 1
+  printf '%s' "$dsn"
+}
+
+# Is a rate a number in [0,1]? A string like "true" silently becomes 0.
+is_rate() {
+  case "$1" in
+    0|1|0.[0-9]*|1.0|.[0-9]*) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+is_zero() { [[ "$1" == "0" || "$1" == "0.0" || "$1" == ".0" ]]; }
+
 # ── preflight ────────────────────────────────────────────────────────────────
 
 cmd_preflight() {
@@ -130,16 +180,58 @@ cmd_preflight() {
     pass "DSN is not a documentation placeholder"
   fi
 
-  # A zero sample rate is a supported configuration that discards everything.
+  # An environment-less project mixes preview noise with production incidents,
+  # and an alert channel that cries wolf gets muted within two weeks.
+  if [[ -z "${SENTRY_ENVIRONMENT:-}" ]]; then
+    fail "SENTRY_ENVIRONMENT is unset — preview errors will page you like production ones"
+  else
+    pass "environment is ${SENTRY_ENVIRONMENT}"
+  fi
+
+  # ── Sampling: off is allowed, off by accident is not ───────────────────────
   local rate="${SENTRY_SAMPLE_RATE:-1}"
-  if [[ "$rate" == "0" || "$rate" == "0.0" ]]; then
-    fail "sample rate is 0 — every event is dropped before it leaves the process"
+  if ! is_rate "$rate"; then
+    fail "error sample rate '$rate' is not a number in [0,1] — the SDK coerces it to 0"
+  elif is_zero "$rate"; then
+    fail "error sample rate is 0 — every event is dropped before it leaves the process"
   else
     pass "error sample rate is $rate"
   fi
 
-  # The auth token uploads source maps. It is a real secret; the DSN is not.
-  if [[ -n "${SENTRY_AUTH_TOKEN:-}" ]] && command -v git >/dev/null 2>&1; then
+  local traces="${SENTRY_TRACES_SAMPLE_RATE:-0}"
+  if ! is_rate "$traces"; then
+    fail "traces sample rate '$traces' is not a number in [0,1]"
+  elif is_zero "$traces"; then
+    if [[ "${SENTRY_TRACING_ACKNOWLEDGED:-false}" == "true" ]]; then
+      note "tracing is off, and acknowledged"
+    else
+      fail "tracing is off — an error will not tell you which query caused it. Set SENTRY_TRACING_ACKNOWLEDGED=true to accept that."
+    fi
+  else
+    pass "traces sample rate is $traces"
+  fi
+
+  local replay="${SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE:-0}"
+  if is_zero "$replay"; then
+    note "session replay on error is off — errors arrive without the steps that caused them"
+  else
+    pass "session replay on error is $replay"
+  fi
+
+  # ── Privacy: the setting that turns a bug tracker into a data leak ─────────
+  if [[ "${SENTRY_SEND_DEFAULT_PII:-false}" == "true" ]]; then
+    if [[ "${SENTRY_PII_ACKNOWLEDGED:-false}" == "true" ]]; then
+      note "sendDefaultPii is on, and acknowledged"
+    else
+      fail "sendDefaultPii sends headers, cookies and IPs. Set SENTRY_PII_ACKNOWLEDGED=true if that is intended."
+    fi
+  else
+    pass "sendDefaultPii is off — no headers, cookies or IPs leave the process"
+  fi
+
+  # The auth token uploads source maps and reads the org. It is a real secret;
+  # the DSN is not.
+  if command -v git >/dev/null 2>&1; then
     if git ls-files --error-unmatch .env >/dev/null 2>&1; then
       fail ".env is tracked by git and may carry SENTRY_AUTH_TOKEN"
     else
@@ -148,20 +240,18 @@ cmd_preflight() {
   fi
 
   # Next.js: server errors reach Sentry only when onRequestError is exported.
-  if [[ -f instrumentation.ts || -f instrumentation.js || -f src/instrumentation.ts ]]; then
-    local f
-    for f in instrumentation.ts instrumentation.js src/instrumentation.ts; do
-      [[ -f "$f" ]] || continue
-      if grep -q 'onRequestError' "$f"; then
-        pass "$f exports onRequestError — server errors are captured"
-      else
-        fail "$f does not export onRequestError — server-side errors never reach Sentry"
-      fi
-      break
-    done
-  else
-    note "no instrumentation.ts found — skipping the Next.js server-error check"
-  fi
+  local f found=0
+  for f in instrumentation.ts instrumentation.js src/instrumentation.ts; do
+    [[ -f "$f" ]] || continue
+    found=1
+    if grep -q 'onRequestError' "$f"; then
+      pass "$f exports onRequestError — server errors are captured"
+    else
+      fail "$f does not export onRequestError — server-side errors never reach Sentry"
+    fi
+    break
+  done
+  [[ $found -eq 1 ]] || note "no instrumentation.ts found — skipping the Next.js server-error check"
 }
 
 # ── canary ───────────────────────────────────────────────────────────────────
@@ -171,9 +261,8 @@ cmd_preflight() {
 cmd_canary() {
   echo "${BOLD}Sentry · canary${RESET}"
 
-  local dsn="${SENTRY_DSN:-${NEXT_PUBLIC_SENTRY_DSN:-}}"
-  [[ -n "$dsn" ]] || die "canary needs SENTRY_DSN" "$E_MALFORMED"
-  parse_dsn "$dsn" || die "canary needs a parseable DSN" "$E_MALFORMED"
+  local dsn
+  dsn="$(resolve_dsn)" || die "canary needs a parseable SENTRY_DSN" "$E_MALFORMED"
   [[ -n "${SENTRY_ORG:-}" && -n "${SENTRY_PROJECT:-}" ]] \
     || die "canary needs SENTRY_ORG and SENTRY_PROJECT to read the event back" "$E_MALFORMED"
   [[ -n "${SENTRY_AUTH_TOKEN:-}" ]] \
@@ -185,8 +274,8 @@ cmd_canary() {
   # Overridable so CI can correlate the canary with the run that sent it.
   local marker="${SENTRY_CANARY_MARKER:-harness-canary-$$-$(date +%s)}"
   local envelope
-  envelope=$(printf '{"event_id":"%s","dsn":"%s"}\n{"type":"event"}\n{"message":"%s","level":"error"}\n' \
-    "$(printf '%032d' 0 | tr '0' 'a')" "$dsn" "$marker")
+  envelope=$(printf '{"event_id":"%s","dsn":"%s"}\n{"type":"event"}\n{"message":"%s","level":"error","environment":"%s"}\n' \
+    "$(printf '%032d' 0 | tr '0' 'a')" "$dsn" "$marker" "${SENTRY_ENVIRONMENT:-production}")
 
   if ! ingest_send "$envelope"; then
     fail "the ingest endpoint refused the event — nothing was delivered"
@@ -200,10 +289,7 @@ cmd_canary() {
   while [[ $waited -lt $CANARY_TIMEOUT ]]; do
     body="$(api_get "projects/$SENTRY_ORG/$SENTRY_PROJECT/issues/?query=$marker" "issues.json")" || body=""
     if [[ -n "$body" ]]; then
-      case "$body" in
-        \[*|\{*) ;;
-        *) fail "the API returned something that is not JSON"; exit "$E_MALFORMED" ;;
-      esac
+      require_json "$body"
       if printf '%s' "$body" | grep -q "$marker"; then
         pass "event confirmed stored in $SENTRY_ORG/$SENTRY_PROJECT"
         return
@@ -219,39 +305,145 @@ cmd_canary() {
 }
 
 # ── release ──────────────────────────────────────────────────────────────────
-# An event without source maps points at column 4913 of a minified bundle. That
-# is a notification, not observability, and it is what breaks MTTR.
+# An event without source maps points at column 4913 of a minified bundle, and
+# a release without commits cannot name the change that broke it. Both turn an
+# alert into a scavenger hunt.
 
 cmd_release() {
-  local version="$1"
+  local version="$1" body
   echo "${BOLD}Sentry · release $version${RESET}"
   [[ -n "${SENTRY_ORG:-}" ]] || die "release needs SENTRY_ORG" "$E_MALFORMED"
   [[ -n "${SENTRY_AUTH_TOKEN:-}" ]] || die "release needs SENTRY_AUTH_TOKEN" "$E_MALFORMED"
 
-  local body
   body="$(api_get "organizations/$SENTRY_ORG/releases/$version/files/" "files.json")" || {
     fail "release $version does not exist in Sentry — events cannot be attributed to a deploy"
     return
   }
-  case "$body" in
-    \[*|\{*) ;;
-    *) die "unreadable response from the releases API" "$E_MALFORMED" ;;
-  esac
+  require_json "$body"
   if [[ "$(printf '%s' "$body" | tr -d '[:space:]')" == "[]" ]]; then
     fail "release $version has no uploaded files — stack traces will be minified"
-    return
-  fi
-  if printf '%s' "$body" | grep -q '\.map'; then
+  elif printf '%s' "$body" | grep -q '\.map'; then
     pass "release $version has source maps"
   else
     fail "release $version has files but no .map — stack traces will be minified"
   fi
+
+  # Suspect commits: with commits associated, Sentry names the change that most
+  # likely caused an issue and suggests its author. Without them, every incident
+  # starts with "which deploy was this?".
+  body="$(api_get "organizations/$SENTRY_ORG/releases/$version/commits/" "commits.json")" || {
+    fail "release $version has no commit data — suspect commits will never be identified"
+    return
+  }
+  require_json "$body"
+  if [[ "$(printf '%s' "$body" | tr -d '[:space:]')" == "[]" ]]; then
+    fail "release $version has zero associated commits — suspect commits stay empty"
+  else
+    pass "release $version has $(json_count "$body" id) associated commit(s)"
+  fi
+}
+
+# ── health ───────────────────────────────────────────────────────────────────
+
+cmd_health() {
+  local version="$1" body rate
+  echo "${BOLD}Sentry · health $version${RESET}"
+  [[ -n "${SENTRY_ORG:-}" ]] || die "health needs SENTRY_ORG" "$E_MALFORMED"
+  [[ -n "${SENTRY_AUTH_TOKEN:-}" ]] || die "health needs SENTRY_AUTH_TOKEN" "$E_MALFORMED"
+
+  body="$(api_get "organizations/$SENTRY_ORG/releases/$version/" "health.json")" || {
+    fail "release $version has no health data — release health is not being reported"
+    return
+  }
+  require_json "$body"
+
+  rate="$(json_field "$body" crashFreeSessions)"
+  [[ -n "$rate" ]] || rate="$(json_field "$body" crash_free_rate)"
+  if [[ -z "$rate" ]]; then
+    die "no crash-free rate in the response — cannot judge release health" "$E_MALFORMED"
+  fi
+  case "$rate" in ''|*[!0-9.]*) die "crash-free rate '$rate' is not a number" "$E_MALFORMED" ;; esac
+
+  # Integer comparison: bash has no floats, and a percentage does not need them.
+  if [[ "${rate%%.*}" -lt "${MIN_CRASH_FREE%%.*}" ]]; then
+    fail "crash-free sessions ${rate}% is below the ${MIN_CRASH_FREE}% floor"
+  else
+    pass "crash-free sessions ${rate}% (floor ${MIN_CRASH_FREE}%)"
+  fi
+}
+
+# ── cron ─────────────────────────────────────────────────────────────────────
+# A scheduled job that stopped running produces no errors. It produces silence,
+# and silence raises no alerts — which is why a job nobody monitors is the
+# longest-lived outage in any system.
+
+cmd_cron() {
+  local slug="$1" body status
+  echo "${BOLD}Sentry · cron $slug${RESET}"
+  [[ -n "${SENTRY_ORG:-}" ]] || die "cron needs SENTRY_ORG" "$E_MALFORMED"
+  [[ -n "${SENTRY_AUTH_TOKEN:-}" ]] || die "cron needs SENTRY_AUTH_TOKEN" "$E_MALFORMED"
+
+  body="$(api_get "organizations/$SENTRY_ORG/monitors/$slug/" "monitor.json")" || {
+    fail "monitor '$slug' does not exist — the job is running unwatched"
+    return
+  }
+  require_json "$body"
+
+  status="$(json_field "$body" status)"
+  case "$status" in
+    ok|active) pass "monitor '$slug' is $status" ;;
+    error|failed|missed|timeout)
+      fail "monitor '$slug' is '$status' — the scheduled job is not completing" ;;
+    disabled|muted)
+      fail "monitor '$slug' is '$status' — it will not alert when the job stops" ;;
+    "") die "monitor response has no status field" "$E_MALFORMED" ;;
+    *) fail "monitor '$slug' reports an unrecognised status '$status'" ;;
+  esac
+
+  if [[ "$(json_field "$body" isMuted)" == "true" ]]; then
+    fail "monitor '$slug' is muted — it is watching, and telling nobody"
+  fi
+}
+
+# ── triage ───────────────────────────────────────────────────────────────────
+# The step that turns an alert into work. Prints unresolved issues as backlog
+# candidates so production signal reaches feature_list.json instead of an inbox.
+#
+# It reports rather than gates — but it fails closed when it cannot ask, because
+# "no issues" and "I could not reach Sentry" must never look the same.
+
+cmd_triage() {
+  local body count
+  echo "${BOLD}Sentry · triage${RESET}"
+  [[ -n "${SENTRY_ORG:-}" && -n "${SENTRY_PROJECT:-}" ]] \
+    || die "triage needs SENTRY_ORG and SENTRY_PROJECT" "$E_MALFORMED"
+  [[ -n "${SENTRY_AUTH_TOKEN:-}" ]] || die "triage needs SENTRY_AUTH_TOKEN" "$E_MALFORMED"
+
+  body="$(api_get "projects/$SENTRY_ORG/$SENTRY_PROJECT/issues/?query=is:unresolved&statsPeriod=24h" "triage.json")" \
+    || die "could not reach the issues API — this is not the same as having no issues" "$E_MALFORMED"
+  require_json "$body"
+
+  count="$(json_count "$body" shortId)"
+  if [[ "$count" == "0" ]]; then
+    pass "no unresolved issues in the last 24h"
+    return
+  fi
+
+  note "$count unresolved issue(s) in the last 24h — candidates for feature_list.json:"
+  printf '%s' "$body" \
+    | tr '{' '\n' \
+    | grep '"shortId"' \
+    | sed 's/.*"shortId"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/  · \1/' \
+    | head -20
+  echo ""
+  echo "  Each line is a defect a user already hit. Promote it or dismiss it, but"
+  echo "  do not leave it here — an unread queue is the same as no monitoring."
 }
 
 # ── main ─────────────────────────────────────────────────────────────────────
 
 usage() {
-  sed -n '2,25p' "$0" | sed 's/^# \{0,1\}//'
+  sed -n '2,40p' "$0" | sed 's/^# \{0,1\}//'
   exit "$E_USAGE"
 }
 
@@ -261,17 +453,21 @@ case "$1" in
   preflight) cmd_preflight ;;
   canary)    cmd_canary ;;
   release)   [[ $# -ge 2 ]] || die "release needs a version" "$E_USAGE"; cmd_release "$2" ;;
+  health)    [[ $# -ge 2 ]] || die "health needs a version" "$E_USAGE"; cmd_health "$2" ;;
+  cron)      [[ $# -ge 2 ]] || die "cron needs a monitor slug" "$E_USAGE"; cmd_cron "$2" ;;
+  triage)    cmd_triage ;;
   all)
     [[ $# -ge 2 ]] || die "all needs a release version" "$E_USAGE"
-    cmd_preflight; echo ""; cmd_canary; echo ""; cmd_release "$2" ;;
+    cmd_preflight; echo ""; cmd_canary; echo ""
+    cmd_release "$2"; echo ""; cmd_health "$2" ;;
   -h|--help) usage ;;
   *) die "unknown command: $1" "$E_USAGE" ;;
 esac
 
 echo ""
 if [[ $FAILED -ne 0 ]]; then
-  echo "${RED}${BOLD}Sentry is not proven to be receiving errors. Do not call this observable.${RESET}"
+  echo "${RED}${BOLD}Sentry is not proven to be receiving usable errors. Do not call this observable.${RESET}"
   exit "$E_FAIL"
 fi
-echo "${GREEN}${BOLD}Errors reach Sentry.${RESET}"
+echo "${GREEN}${BOLD}Errors reach Sentry, and what arrives can be acted on.${RESET}"
 exit "$E_OK"

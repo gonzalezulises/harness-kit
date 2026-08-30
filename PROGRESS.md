@@ -8,7 +8,7 @@ last. If it disagrees with your recollection, this file wins.
 - **Last commit:** `7dfcd14` — fix: correct invalid deny rule pattern in project settings
 - **Verification:** `make check` — passing, 175/175 assertions · `make gates` 3 pass
 - **Pack verification:** `packs/load-testing/` 57/57 · `packs/gherkin/` 15/15 ·
-  `packs/sentry/` 21/21, exit 0
+  `packs/sentry/` 45/45, exit 0
 - **Audit:** rubric v2, 84 checks. The kit scores 77/84 against itself.
 - **Startup path:** `./init.sh` — activation for other repos: `bin/harness-activate.sh`
 - **Active feature:** none — all fourteen features passing (VCR 14/14)
@@ -27,12 +27,20 @@ and read back from the project. Rationale and costs in
 `docs/ciclo-desarrollo-harness.drawio` now carries the stage that motivated it — production
 signal returning to the backlog, which is what turns the cycle from a line into a loop.
 
-Not done, and deliberately: the pack's live path has never run against a real Sentry
-project. The 21 failure modes are verified through the `SENTRY_STUB_DIR` seam, which proves
-the gate's logic but not the ingest and API contracts. First real DSN closes that gap.
+Extended the same session to the rest of the product: source maps AND associated commits
+per release, crash-free rate, cron monitors, and a triage command that turns unresolved
+issues into backlog candidates. Plus the Next.js instrumentation templates, so the pack
+installs Sentry rather than only inspecting it. 45 failure modes, all blocking.
 
-`.env.sentry.example` is documented inside `packs/sentry/index.md` rather than shipped as a
-file — agent permission rules block writes to `.env*`, and they should.
+Not done, and deliberately: the pack's live path has never run against a real Sentry
+project. The 45 failure modes are verified through the `SENTRY_STUB_DIR` seam, which proves
+the gate's logic but not the ingest and API contracts — in particular the exact response
+shapes for monitors, release health and commits are the least certain part of this pack.
+First real DSN closes that gap.
+
+`.env.sentry.example` could not be written by the agent: the global permission rules deny
+reads of `.env.*`, and narrowing that deny was refused by the safety classifier. The file's
+content lives in `packs/sentry/index.md`; a human creates it in one command.
 
 ## Next Steps
 

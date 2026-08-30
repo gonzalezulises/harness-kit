@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+# sentry-heartbeat — wrap a scheduled job so Sentry notices when it stops.
+#
+# A cron that fails loudly is the easy case: it raises an error and something
+# alerts. The expensive case is a cron that stops being scheduled at all — it
+# raises nothing, and nothing is exactly what an error tracker is built to
+# ignore. Cron monitors invert that: Sentry expects a check-in on a schedule and
+# alerts on the absence of one.
+#
+# This wrapper reports in-progress before the job, then ok or error after it,
+# and preserves the job's exit code so the caller's own gate still works.
+#
+# Usage:
+#   bin/sentry-heartbeat <monitor-slug> -- <command> [args...]
+#   bin/sentry-heartbeat backup -- pg_dump ...
+#
+# Needs SENTRY_DSN (or NEXT_PUBLIC_SENTRY_DSN). With no DSN the job still runs:
+# a missing monitor must never be the reason production work stops. That is the
+# one place in this pack where the failure is not fatal, and it is deliberate.
+
+set -uo pipefail
+
+SLUG="${1:-}"
+[[ -n "$SLUG" ]] || { echo "usage: sentry-heartbeat <slug> -- <command>" >&2; exit 64; }
+shift
+[[ "${1:-}" == "--" ]] || { echo "usage: sentry-heartbeat <slug> -- <command>" >&2; exit 64; }
+shift
+[[ $# -ge 1 ]] || { echo "sentry-heartbeat: no command given" >&2; exit 64; }
+
+DSN="${SENTRY_DSN:-${NEXT_PUBLIC_SENTRY_DSN:-}}"
+CHECKIN_URL=""
+
+if [[ -n "$DSN" ]]; then
+  REST="${DSN#https://}"; REST="${REST#http://}"
+  KEY="${REST%%@*}"
+  REST="${REST#*@}"
+  HOST="${REST%%/*}"
+  PROJECT="${REST##*/}"
+  if [[ -n "$KEY" && -n "$HOST" && -n "$PROJECT" ]]; then
+    CHECKIN_URL="https://$HOST/api/$PROJECT/cron/$SLUG/$KEY/"
+  fi
+fi
+
+checkin() {
+  [[ -n "$CHECKIN_URL" ]] || return 0
+  command -v curl >/dev/null 2>&1 || return 0
+  curl -sS --max-time 10 "$CHECKIN_URL?status=$1" >/dev/null 2>&1 || true
+}
+
+if [[ -z "$CHECKIN_URL" ]]; then
+  echo "sentry-heartbeat: no usable DSN — running '$1' unmonitored" >&2
+fi
+
+checkin in_progress
+"$@"
+RC=$?
+if [[ $RC -eq 0 ]]; then checkin ok; else checkin error; fi
+exit $RC
