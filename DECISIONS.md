@@ -11,6 +11,28 @@ Longer decisions get their own file in `docs/decisions/`.
 
 ---
 
+## 2026-08-30 — Observability gates on proof of arrival, not on configuration
+
+**Context.** The cycle ended at "merge to main": nothing in the kit observed what was
+deployed. Adding Sentry raised the question of what the gate should assert.
+
+**Decision.** `packs/sentry/` passes only when a uniquely marked event is sent and then read
+back from the project through the Web API. Configuration presence is not evidence, and the
+ingest `200` is not either — Sentry accepts and then drops on quota, inbound filters and
+rate limits. Full rationale in
+[the Agent Note](.agents/notes/implemented/feature/2026-08-30-sentry-observability-pack.md).
+
+**Alternatives rejected.** Asserting that the SDK is installed and a DSN is set — a tenth of
+the work, and it certifies the exact failure the pack exists to catch: an empty DSN, a
+documentation placeholder or `sampleRate: 0` all leave the build green and the project empty.
+
+**Consequences.** The gate cannot sit in the merge path: proving arrival needs a live
+deployment and real secrets, so it runs on `deployment_status` after production succeeds. A
+broken observability config can merge and is caught minutes later. Every canary also writes
+a real marked error event into the production project — noise traded for proof.
+
+---
+
 ## 2026-08-14 — Build the governance layer here, not in a new repository
 
 **Context.** `ai-software-factory` was started to be the system that governs how AI builds

@@ -1,0 +1,50 @@
+name: Observability
+
+# The gate runs where the answer is real: against the deployment that just went
+# live. Running it on a pull request would only prove that a DSN string exists.
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      release:
+        description: Release version to check for source maps
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  sentry:
+    # deployment_status fires for every transition; only a live success matters.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.deployment_status.state == 'success' &&
+       github.event.deployment.environment == 'production')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Preflight — configurations the SDK accepts and then ignores
+        env:
+          NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          SENTRY_SAMPLE_RATE: ${{ vars.SENTRY_SAMPLE_RATE || '1' }}
+        run: bash bin/sentry-check preflight
+
+      # The only step that proves the pipeline end to end. It sends a marked
+      # event and reads it back; if it cannot confirm storage it exits 2 and
+      # this job fails. An unconfirmed pipeline is a broken one.
+      - name: Canary — prove an event actually arrives
+        env:
+          NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_CANARY_MARKER: harness-canary-${{ github.run_id }}
+        run: bash bin/sentry-check canary
+
+      - name: Release — a stack trace nobody can read is not observability
+        if: github.event_name == 'workflow_dispatch' && inputs.release != ''
+        env:
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        run: bash bin/sentry-check release "${{ inputs.release }}"
