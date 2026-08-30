@@ -17,6 +17,7 @@ TEMPLATE="${PACK_DIR}/repo-template"
 WORK="$(mktemp -d)"
 PASS=0
 FAIL=0
+SKIP=0
 
 cleanup() {
   if [ -n "${SERVER_PIDS:-}" ]; then
@@ -34,6 +35,18 @@ say() { printf '%s\n' "$*"; }
 # of a failed layer, so a failure named only mid-run is a failure named never.
 FALLAS=()
 falla() { say "  FALLA $*"; FALLAS+=("$*"); }
+
+# Un caso que no se ejecutó no es un caso que pasó. Algunos casos necesitan una
+# herramienta que no está en todas partes (gh autenticado, node, PyYAML), y
+# omitirlos es correcto — informarlo sólo en una nota a mitad del log no lo es:
+# el resumen decía "55 correctos, 0 fallidos" y quien lo leía concluía que todo
+# quedó verificado. La misma distinción que run-gates.sh ya hace con SKIP.
+OMITIDOS=()
+omitir() {
+  say "  omit $1 — $2"
+  OMITIDOS+=("$1 — $2")
+  SKIP=$((SKIP + 1))
+}
 
 # Comprueba que un caso produce el código de salida esperado y, opcionalmente,
 # que su salida contiene un texto concreto.
@@ -120,6 +133,8 @@ if command -v node >/dev/null 2>&1; then
   else
     FAIL=$((FAIL + 1))
   fi
+else
+  omitir "los scripts de k6 son JS válido" "requiere node"
 fi
 
 # ---------------------------------------------------------------------------
@@ -368,7 +383,8 @@ if command -v gh >/dev/null 2>&1 && gh api user --jq .login >/dev/null 2>&1; the
   check "commit sin despliegue: salida vacía" "[ -z '$RESOLVE_OUT' ]"
   check "commit sin despliegue: no es un error de rendimiento" "[ '$RESOLVE_CODE' -ne 1 ]"
 else
-  say "  nota gh no disponible o sin autenticación; casos de red omitidos"
+  omitir "commit sin despliegue: salida vacía" "requiere gh autenticado"
+  omitir "commit sin despliegue: no es un error de rendimiento" "requiere gh autenticado"
 fi
 
 say ""
@@ -398,7 +414,11 @@ assert 'deployment_status' not in on, 'deployment_status haría el check no exig
 assert set(d['jobs']) == {'smoke', 'load'}, d['jobs'].keys()
 " 2>/dev/null
     check "el YAML es válido y declara los dos trabajos" "[ \$? -eq 0 ]"
+  else
+    omitir "el YAML es válido y declara los dos trabajos" "requiere PyYAML"
   fi
+else
+  omitir "el YAML es válido y declara los dos trabajos" "requiere python3"
 fi
 
 
@@ -496,9 +516,19 @@ check "sin url devuelve error de uso (2)" "[ '$DISC_NOARG' -eq 2 ]"
 
 say ""
 say "────────────────────────────────────────"
-say "$PASS correctos, $FAIL fallidos"
+if [ "$SKIP" -ne 0 ]; then
+  say "$PASS correctos, $FAIL fallidos, $SKIP omitidos"
+else
+  say "$PASS correctos, $FAIL fallidos"
+fi
 if [ "$FAIL" -ne 0 ]; then
   for f in "${FALLAS[@]}"; do say "  FALLA $f"; done
   exit 1
+fi
+# Los omitidos van después del veredicto y no lo cambian: son cobertura que
+# esta máquina no pudo dar, no un fallo. Nombrarlos evita que el conteo se lea
+# como una regresión cuando cambia de entorno.
+if [ "$SKIP" -ne 0 ]; then
+  for s in "${OMITIDOS[@]}"; do say "  omitido: $s"; done
 fi
 say "verify-pack: el pack se comporta como se documenta."

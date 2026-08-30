@@ -11,7 +11,10 @@ last. If it disagrees with your recollection, this file wins.
 - **Verification:** `make check` — passing, 311 assertions locally · `make gates`
   4 pass. `make check` now runs the packs' own failure matrices; linting them
   was never the same as running them. CI ran them for the first time on the
-  release PR: 179 + 15 + 55 + 60, all green.
+  release PR: 179 + 15 + 55 + 60, all green — the 55 is `load-testing` omitting
+  two cases that need an authenticated `gh`, which the summary now says out loud.
+- **Merge policy:** merge commits are disabled. Use `gh pr merge --rebase`;
+  a merge commit duplicates every conventional PR title in the CHANGELOG.
 - **Pack verification:** `packs/load-testing/` 57/57 · `packs/gherkin/` 15/15 ·
   `packs/sentry/` 60/60, exit 0
 - **Audit:** rubric v2, 84 checks. The kit scores 77/84 against itself.
@@ -23,6 +26,24 @@ last. If it disagrees with your recollection, this file wins.
 
 _Nothing active. All fourteen features are `passing`, each promoted by
 `verify-feature.sh` with recorded evidence — none set by hand._
+
+## Session log — 2026-08-30 (the two loose ends from the release)
+
+**Skipped cases now reach the summary.** CI reported `55 correctos, 0 fallidos`
+for `packs/load-testing/` where local reported 57, with nothing in the summary
+explaining the gap — so the honest readings were "we lost coverage" and
+"something broke", and ruling that out cost a session. Three environment guards
+(authenticated `gh`, `node`, `python3`/PyYAML) now report through `omitir()`:
+the summary reads `55 correctos, 0 fallidos, 2 omitidos` and names each one.
+Omissions never change the exit code. Reasoning in
+[the Agent Note](.agents/notes/implemented/bug-fix/2026-08-30-skipped-cases-must-reach-the-summary.md).
+
+**Merge commits disabled on the repo.** GitHub puts the PR title in the merge
+commit's body, so release-please read every conventional PR title twice and the
+2.2.0 CHANGELOG listed three entries in duplicate. Rebase and squash stay
+enabled; neither duplicates. Rebase is the one to use — it keeps the atomic
+commits this repo requires, which squash would collapse. Nothing already
+published was rewritten.
 
 ## Session log — 2026-08-30 (v2.2.0 shipped)
 
