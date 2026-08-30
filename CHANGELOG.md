@@ -6,6 +6,19 @@ con qué versión se construyó, así que `harness-status.sh` puede decir cuál 
 
 ---
 
+## [2.2.1](https://github.com/gonzalezulises/harness-kit/compare/v2.2.0...v2.2.1) (2026-08-30)
+
+
+### Arreglado
+
+* **load-testing:** report omitted cases in the summary, not only mid-log ([bd9ee9e](https://github.com/gonzalezulises/harness-kit/commit/bd9ee9eae681cdfa623aa0953ce3e29cd1632f65))
+
+
+### Documentación
+
+* record why the release PR arrives with its check unrun ([ed848ec](https://github.com/gonzalezulises/harness-kit/commit/ed848ecf33cd1aae3c1b443e446dfde36220fecf))
+* record why the release PR arrives with its check unrun ([0315ba8](https://github.com/gonzalezulises/harness-kit/commit/0315ba8044ad476597d1bcea65177c27dd0ea1aa))
+
 ## [2.2.0](https://github.com/gonzalezulises/harness-kit/compare/v2.1.0...v2.2.0) (2026-08-30)
 
 
