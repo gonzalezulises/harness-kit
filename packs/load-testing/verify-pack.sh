@@ -30,6 +30,10 @@ cleanup() {
 trap cleanup EXIT
 
 say() { printf '%s\n' "$*"; }
+# Failures repeat in the final summary: CI's claims runner only shows the tail
+# of a failed layer, so a failure named only mid-run is a failure named never.
+FALLAS=()
+falla() { falla "$*"; FALLAS+=("$*"); }
 
 # Comprueba que un caso produce el código de salida esperado y, opcionalmente,
 # que su salida contiene un texto concreto.
@@ -54,7 +58,7 @@ expect() {
     say "  ok   $label"
     PASS=$((PASS + 1))
   else
-    say "  FALLA $label"
+    falla "$label"
     say "       código=$code (esperado: $want_code)"
     [ -n "$want_text" ] && say "       se esperaba encontrar: $want_text"
     printf '%s\n' "$out" | sed 's/^/       | /'
@@ -85,7 +89,7 @@ if bash -n "${TEMPLATE}/bin/perf-check"; then
   say "  ok   bin/perf-check es bash válido"
   PASS=$((PASS + 1))
 else
-  say "  FALLA bin/perf-check tiene un error de sintaxis"
+  falla "bin/perf-check tiene un error de sintaxis"
   FAIL=$((FAIL + 1))
 fi
 
@@ -96,7 +100,7 @@ fi
 # y esa advertencia no debe contar como una infracción.
 if grep -vE '^[[:space:]]*#' "${TEMPLATE}/bin/perf-check" \
    | grep -qE '\|\|[[:space:]]*true|\|\|[[:space:]]*:|continue-on-error'; then
-  say "  FALLA bin/perf-check contiene un escape que anula el código de salida"
+  falla "bin/perf-check contiene un escape que anula el código de salida"
   FAIL=$((FAIL + 1))
 else
   say "  ok   bin/perf-check no anula códigos de salida"
@@ -108,7 +112,7 @@ if command -v node >/dev/null 2>&1; then
   for f in "${TEMPLATE}"/tests/load/*.js "${TEMPLATE}"/tests/load/lib/*.js; do
     # k6 scripts are ESM; --input-type=module keeps the parse mode explicit so
     # the check does not depend on the Node version's module auto-detection.
-    node --input-type=module --check < "$f" 2>/dev/null || { say "  FALLA sintaxis JS en $f"; js_ok=0; }
+    node --input-type=module --check < "$f" 2>/dev/null || { falla "sintaxis JS en $f"; js_ok=0; }
   done
   if [ "$js_ok" -eq 1 ]; then
     say "  ok   los scripts de k6 son JS válido"
@@ -257,7 +261,7 @@ check() {
     say "  ok   $label"
     PASS=$((PASS + 1))
   else
-    say "  FALLA $label"
+    falla "$label"
     say "       condición: $condition"
     FAIL=$((FAIL + 1))
   fi
@@ -490,5 +494,8 @@ check "sin url devuelve error de uso (2)" "[ '$DISC_NOARG' -eq 2 ]"
 say ""
 say "────────────────────────────────────────"
 say "$PASS correctos, $FAIL fallidos"
-[ "$FAIL" -eq 0 ] || exit 1
+if [ "$FAIL" -ne 0 ]; then
+  for f in "${FALLAS[@]}"; do say "  FALLA $f"; done
+  exit 1
+fi
 say "verify-pack: el pack se comporta como se documenta."
