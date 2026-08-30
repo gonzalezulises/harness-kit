@@ -11,6 +11,30 @@ Longer decisions get their own file in `docs/decisions/`.
 
 ---
 
+## 2026-08-30 — release-please cuts releases; a gate guards the version's four copies
+
+**Context.** Releases were manual: edit `VERSION`, `.harness/kit-version` and `CHANGELOG.md`,
+then remember to tag. The kit already writes conventional commits, so the release notes were
+being derived by hand from data that was already structured.
+
+**Decision.** Adopt release-please with `.release-please-manifest.json` as the source of
+truth, propagate it with `scripts/sync-version.sh` inside the release PR, and register
+`scripts/verify-version-sync.sh` in the gate registry. Full rationale in
+[the Agent Note](.agents/notes/implemented/process/2026-08-30-release-please-with-a-version-sync-gate.md).
+
+**Alternatives rejected.** Letting release-please write `VERSION` directly — its generic
+updater needs an annotation comment inside the file, and `VERSION` is parsed with
+`tr -d '[:space:]'` by three scripts. Teaching those scripts to skip comments was rejected:
+shipping code should not grow a parser to suit a release tool.
+
+**Consequences.** A release now needs no manual edits, but it depends on a second job
+running inside the release PR. That job failing silently would ship a repository whose
+version files disagree — so the gate exists, and the test suite asserts it rejects that
+case rather than trusting it. `templates/full/scripts/run-gates.sh` gains a row that reports
+SKIP in scaffolded repositories, which is what the registry's SKIP was designed for.
+
+---
+
 ## 2026-08-30 — Observability gates on proof of arrival, not on configuration
 
 **Context.** The cycle ended at "merge to main": nothing in the kit observed what was

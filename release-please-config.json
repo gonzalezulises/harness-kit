@@ -1,0 +1,23 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "simple",
+  "packages": {
+    ".": {
+      "package-name": "harness-kit",
+      "changelog-path": "CHANGELOG.md",
+      "include-component-in-tag": false,
+      "bump-minor-pre-major": false,
+      "draft": false,
+      "prerelease": false
+    }
+  },
+  "changelog-sections": [
+    { "type": "feat", "section": "Añadido" },
+    { "type": "fix", "section": "Arreglado" },
+    { "type": "docs", "section": "Documentación" },
+    { "type": "refactor", "section": "Cambiado" },
+    { "type": "perf", "section": "Rendimiento" },
+    { "type": "test", "section": "Pruebas", "hidden": true },
+    { "type": "chore", "section": "Mantenimiento", "hidden": true }
+  ]
+}

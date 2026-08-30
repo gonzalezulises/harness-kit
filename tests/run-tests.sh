@@ -841,6 +841,53 @@ assert_contains "the stale report names both versions" "$OUTV2" "1.0.0"
 
 cd "$KIT_DIR" || exit 1
 
+# 19f-19i — the version-sync gate. A release that bumps some copies of the
+# version and not the others ships silently: the scaffolder stamps one number
+# and harness-status.sh compares against another, so downstream repositories are
+# told they are current when they are not. The gate is only worth having while
+# it rejects that, so the rejection is asserted here rather than assumed.
+VSYNC="$WORK/vsync"
+rm -rf "$VSYNC"; mkdir -p "$VSYNC/scripts" "$VSYNC/.harness"
+cp "$KIT_DIR/scripts/verify-version-sync.sh" "$KIT_DIR/scripts/sync-version.sh" "$VSYNC/scripts/"
+
+vsync_fixture() {  # <VERSION> <kit-version> <manifest> <changelog>
+  printf '%s\n' "$1" > "$VSYNC/VERSION"
+  printf '%s\n' "$2" > "$VSYNC/.harness/kit-version"
+  printf '{\n  ".": "%s"\n}\n' "$3" > "$VSYNC/.release-please-manifest.json"
+  printf '# Changelog\n\n## [%s] — 2026-08-30\n' "$4" > "$VSYNC/CHANGELOG.md"
+}
+
+vsync_fixture 3.0.0 3.0.0 3.0.0 3.0.0
+if ( cd "$VSYNC" && NO_COLOR=1 bash scripts/verify-version-sync.sh >/dev/null 2>&1 ); then
+  ok "version-sync passes when every copy agrees"
+else
+  bad "version-sync rejected a consistent repository"
+fi
+
+vsync_fixture 3.0.0 2.1.0 3.0.0 3.0.0
+if ( cd "$VSYNC" && NO_COLOR=1 bash scripts/verify-version-sync.sh >/dev/null 2>&1 ); then
+  bad "a stale .harness/kit-version was accepted — downstream repos would be told they are current"
+else
+  ok "version-sync rejects a stale .harness/kit-version"
+fi
+
+vsync_fixture 3.0.0 3.0.0 2.1.0 3.0.0
+if ( cd "$VSYNC" && NO_COLOR=1 bash scripts/verify-version-sync.sh >/dev/null 2>&1 ); then
+  bad "a manifest that disagrees with VERSION was accepted"
+else
+  ok "version-sync rejects a manifest that disagrees with VERSION"
+fi
+
+# sync-version.sh is the documented fix, so it has to actually produce a state
+# the gate accepts — otherwise the error message sends the next session in a loop.
+vsync_fixture 1.0.0 1.0.0 3.0.0 3.0.0
+( cd "$VSYNC" && bash scripts/sync-version.sh >/dev/null 2>&1 )
+if ( cd "$VSYNC" && NO_COLOR=1 bash scripts/verify-version-sync.sh >/dev/null 2>&1 ); then
+  ok "sync-version.sh repairs the drift its own error message points at"
+else
+  bad "sync-version.sh did not produce a state the gate accepts"
+fi
+
 # ═════════════════════════════════════════════════════════════════════════════
 echo ""
 echo "${BOLD}────────────────────────────────────────${RESET}"
