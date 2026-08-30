@@ -1,0 +1,223 @@
+<mxGraphModel adaptiveColors="auto">
+  <root>
+    <mxCell id="0"/>
+    <mxCell id="1" parent="0"/>
+    <mxCell id="t1" value="harness-kit · ciclo de desarrollo end-to-end (una sesión de agente)" style="text;html=1;fontSize=18;fontStyle=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="40" y="14" width="900" height="30" as="geometry"/>
+    </mxCell>
+    <mxCell id="t2" value="Fuente: AGENTS.md + Makefile + .github/workflows (2026-08-30)" style="text;html=1;fontSize=10;fontColor=#888888;align=left;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="960" y="14" width="440" height="30" as="geometry"/>
+    </mxCell>
+    <mxCell id="agents" value="Agentes que operan el ciclo&#10;Claude Code · Cursor · Codex · humano" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fontStyle=1;fillColor=#f5f5f5;strokeColor=#999999;" vertex="1" parent="1">
+      <mxGeometry x="40" y="60" width="420" height="70" as="geometry"/>
+    </mxCell>
+    <mxCell id="contract" value="Contrato operativo: AGENTS.md (cargado vía CLAUDE.md)&#10;WIP=1 · evidencia antes de decir listo · DoD en 3 capas · repo sobre chat · commits atómicos · el agente no amplía sus propios permisos" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;fillColor=#f5f5f5;strokeColor=#999999;" vertex="1" parent="1">
+      <mxGeometry x="490" y="60" width="940" height="70" as="geometry"/>
+    </mxCell>
+    <mxCell id="kitcli" value="Kit CLI (bin/) — instala y audita el harness en otros repos&#10;harness-init.sh · harness-audit.sh (make audit) · harness-status.sh · harness-activate.sh · harness-protect.sh" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;fillColor=#f5f5f5;strokeColor=#999999;dashed=1;" vertex="1" parent="1">
+      <mxGeometry x="1460" y="60" width="350" height="70" as="geometry"/>
+    </mxCell>
+    <mxCell id="p1" value="① CLOCK-IN" style="swimlane;startSize=26;rounded=1;fontSize=12;fontStyle=1;fillColor=#dae8fc;strokeColor=#6c8ebf;swimlaneFillColor=#f5f9ff;pointerEvents=0;" vertex="1" parent="1">
+      <mxGeometry x="40" y="210" width="240" height="380" as="geometry"/>
+    </mxCell>
+    <mxCell id="p1i1" value="pwd — confirmar directorio de trabajo" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="p1">
+      <mxGeometry x="15" y="36" width="210" height="46" as="geometry"/>
+    </mxCell>
+    <mxCell id="p1i2" value="Leer PROGRESS.md — último estado verificado + próximo paso" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="p1">
+      <mxGeometry x="15" y="92" width="210" height="46" as="geometry"/>
+    </mxCell>
+    <mxCell id="p1i3" value="feature_list.json — elegir la feature prioritaria sin terminar" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="p1">
+      <mxGeometry x="15" y="148" width="210" height="46" as="geometry"/>
+    </mxCell>
+    <mxCell id="p1i4" value="git log --oneline -5 — historia reciente" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="p1">
+      <mxGeometry x="15" y="204" width="210" height="46" as="geometry"/>
+    </mxCell>
+    <mxCell id="p1i5" value="./init.sh — instalar y verificar la baseline" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="p1">
+      <mxGeometry x="15" y="260" width="210" height="46" as="geometry"/>
+    </mxCell>
+    <mxCell id="p1i6" value="⚠ baseline roja ⇒ repararla antes de cualquier feature nueva" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="p1">
+      <mxGeometry x="15" y="316" width="210" height="46" as="geometry"/>
+    </mxCell>
+    <mxCell id="p2" value="② CONTRATO + TRAZA" style="swimlane;startSize=26;rounded=1;fontSize=12;fontStyle=1;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=#f6fbf4;pointerEvents=0;" vertex="1" parent="1">
+      <mxGeometry x="335" y="210" width="240" height="380" as="geometry"/>
+    </mxCell>
+    <mxCell id="p2i1" value="templates/sprint-contract.md — alcance, exclusiones y DoD antes de tocar código" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="p2">
+      <mxGeometry x="15" y="36" width="210" height="46" as="geometry"/>
+    </mxCell>
+    <mxCell id="p2i2" value="make session-start — abre la traza de la sesión" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="p2">
+      <mxGeometry x="15" y="92" width="210" height="46" as="geometry"/>
+    </mxCell>
+    <mxCell id="p2i3" value="scripts/session-trace.sh event — registra verificaciones y fallas en .harness/traces/traces.jsonl" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="p2">
+      <mxGeometry x="15" y="148" width="210" height="56" as="geometry"/>
+    </mxCell>
+    <mxCell id="p2i4" value="make audit — score del harness (opcional)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="p2">
+      <mxGeometry x="15" y="214" width="210" height="46" as="geometry"/>
+    </mxCell>
+    <mxCell id="p3" value="③ DESARROLLO · WIP=1" style="swimlane;startSize=26;rounded=1;fontSize=12;fontStyle=1;fillColor=#e1d5e7;strokeColor=#9673a6;swimlaneFillColor=#faf6fc;pointerEvents=0;" vertex="1" parent="1">
+      <mxGeometry x="630" y="210" width="240" height="380" as="geometry"/>
+    </mxCell>
+    <mxCell id="p3i1" value="Una sola feature active a la vez — terminarla antes de activar otra" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#9673a6;" vertex="1" parent="p3">
+      <mxGeometry x="15" y="36" width="210" height="46" as="geometry"/>
+    </mxCell>
+    <mxCell id="p3i2" value="Máquina de estados: not_started ⇒ active ⇒ passing (sin saltos)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#9673a6;" vertex="1" parent="p3">
+      <mxGeometry x="15" y="92" width="210" height="46" as="geometry"/>
+    </mxCell>
+    <mxCell id="p3i3" value="Commits atómicos — el mensaje explica el PORQUÉ" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#9673a6;" vertex="1" parent="p3">
+      <mxGeometry x="15" y="148" width="210" height="46" as="geometry"/>
+    </mxCell>
+    <mxCell id="p3i4" value="Agent Note en .agents/notes/ — decisión y trade-off, en el mismo PR" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#9673a6;" vertex="1" parent="p3">
+      <mxGeometry x="15" y="204" width="210" height="46" as="geometry"/>
+    </mxCell>
+    <mxCell id="p3i5" value="Scope: solo archivos de la feature activa (fix bloqueante ⇒ anotarlo en PROGRESS.md)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#9673a6;" vertex="1" parent="p3">
+      <mxGeometry x="15" y="260" width="210" height="56" as="geometry"/>
+    </mxCell>
+    <mxCell id="p4" value="④ VERIFICACIÓN · 3 capas" style="swimlane;startSize=26;rounded=1;fontSize=12;fontStyle=1;fillColor=#ffe6cc;strokeColor=#d79b00;swimlaneFillColor=#fff8f0;pointerEvents=0;" vertex="1" parent="1">
+      <mxGeometry x="925" y="210" width="240" height="380" as="geometry"/>
+    </mxCell>
+    <mxCell id="p4i1" value="Capa 1 · estática — tipos, lint, build (make lint)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#d79b00;" vertex="1" parent="p4">
+      <mxGeometry x="15" y="36" width="210" height="42" as="geometry"/>
+    </mxCell>
+    <mxCell id="p4i2" value="Capa 2 · runtime — el código corre y produce el comportamiento" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#d79b00;" vertex="1" parent="p4">
+      <mxGeometry x="15" y="86" width="210" height="42" as="geometry"/>
+    </mxCell>
+    <mxCell id="p4i3" value="Capa 3 · e2e — make e2e (obligatoria si cruza fronteras de componente)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#d79b00;" vertex="1" parent="p4">
+      <mxGeometry x="15" y="136" width="210" height="42" as="geometry"/>
+    </mxCell>
+    <mxCell id="p4i4" value="make verify-feature F=xx — ÚNICA vía a passing, escribe la evidencia" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#d79b00;fontStyle=1;" vertex="1" parent="p4">
+      <mxGeometry x="15" y="186" width="210" height="42" as="geometry"/>
+    </mxCell>
+    <mxCell id="p4i5" value="make check-arch — fronteras según .harness/arch-rules.json" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#d79b00;" vertex="1" parent="p4">
+      <mxGeometry x="15" y="236" width="210" height="42" as="geometry"/>
+    </mxCell>
+    <mxCell id="p4i6" value="make gates [A=full] · make check ⇒ exit 0 antes de cada commit" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#d79b00;" vertex="1" parent="p4">
+      <mxGeometry x="15" y="286" width="210" height="42" as="geometry"/>
+    </mxCell>
+    <mxCell id="p5" value="⑤ CLOCK-OUT" style="swimlane;startSize=26;rounded=1;fontSize=12;fontStyle=1;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=#f6fbf4;pointerEvents=0;" vertex="1" parent="1">
+      <mxGeometry x="1220" y="210" width="240" height="380" as="geometry"/>
+    </mxCell>
+    <mxCell id="p5i1" value="make check — correr y registrar el resultado" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="p5">
+      <mxGeometry x="15" y="36" width="210" height="42" as="geometry"/>
+    </mxCell>
+    <mxCell id="p5i2" value="Actualizar PROGRESS.md + feature_list.json (estados y evidencia)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="p5">
+      <mxGeometry x="15" y="86" width="210" height="42" as="geometry"/>
+    </mxCell>
+    <mxCell id="p5i3" value="make clean-check — recorrer clean-state-checklist.md" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="p5">
+      <mxGeometry x="15" y="136" width="210" height="42" as="geometry"/>
+    </mxCell>
+    <mxCell id="p5i4" value="make session-end — cierra la traza" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="p5">
+      <mxGeometry x="15" y="186" width="210" height="42" as="geometry"/>
+    </mxCell>
+    <mxCell id="p5i5" value="templates/evaluator-rubric.md — puntuar la sesión, todo ≥ B" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="p5">
+      <mxGeometry x="15" y="236" width="210" height="42" as="geometry"/>
+    </mxCell>
+    <mxCell id="p5i6" value="Commit — repo restartable desde ./init.sh; sin contexto: checkpoint, no apuro" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="p5">
+      <mxGeometry x="15" y="286" width="210" height="42" as="geometry"/>
+    </mxCell>
+    <mxCell id="p6" value="⑥ INTEGRACIÓN · GitHub" style="swimlane;startSize=26;rounded=1;fontSize=12;fontStyle=1;fillColor=#dae8fc;strokeColor=#6c8ebf;swimlaneFillColor=#f5f9ff;pointerEvents=0;" vertex="1" parent="1">
+      <mxGeometry x="1515" y="210" width="240" height="380" as="geometry"/>
+    </mxCell>
+    <mxCell id="p6i1" value="push de rama ⇒ Pull Request (main protegido: sin push directo)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="p6">
+      <mxGeometry x="15" y="36" width="210" height="46" as="geometry"/>
+    </mxCell>
+    <mxCell id="p6i2" value="CI: Required quality — GitHub Actions (required-quality.yml), check obligatorio" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#6c8ebf;fontStyle=1;" vertex="1" parent="p6">
+      <mxGeometry x="15" y="92" width="210" height="46" as="geometry"/>
+    </mxCell>
+    <mxCell id="p6i3" value="GitGuardian — escaneo de secretos" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="p6">
+      <mxGeometry x="15" y="148" width="210" height="46" as="geometry"/>
+    </mxCell>
+    <mxCell id="p6i4" value="Cursor Bugbot — review automático del PR" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="p6">
+      <mxGeometry x="15" y="204" width="210" height="46" as="geometry"/>
+    </mxCell>
+    <mxCell id="p6i5" value="Checks verdes ⇒ merge a main" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="p6">
+      <mxGeometry x="15" y="260" width="210" height="46" as="geometry"/>
+    </mxCell>
+    <mxCell id="p7" value="⑦ OPERACIÓN · producción" style="swimlane;startSize=26;rounded=1;fontSize=12;fontStyle=1;fillColor=#f8cecc;strokeColor=#b85450;swimlaneFillColor=#fff6f5;pointerEvents=0;" vertex="1" parent="1">
+      <mxGeometry x="1810" y="210" width="240" height="380" as="geometry"/>
+    </mxCell>
+    <mxCell id="p7i1" value="Deploy a producción (Vercel / Cloud Run) con el release tagueado" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#b85450;" vertex="1" parent="p7">
+      <mxGeometry x="15" y="36" width="210" height="46" as="geometry"/>
+    </mxCell>
+    <mxCell id="p7i2" value="Sentry — errores y trazas, source maps por release" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#b85450;" vertex="1" parent="p7">
+      <mxGeometry x="15" y="92" width="210" height="46" as="geometry"/>
+    </mxCell>
+    <mxCell id="p7i3" value="bin/sentry-check — compuerta: prueba que los eventos LLEGAN, no que el SDK está instalado" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#b85450;fontStyle=1;" vertex="1" parent="p7">
+      <mxGeometry x="15" y="148" width="210" height="56" as="geometry"/>
+    </mxCell>
+    <mxCell id="p7i4" value="Alerta proactiva ⇒ issue de GitHub (no esperar a que escriba el cliente)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#b85450;" vertex="1" parent="p7">
+      <mxGeometry x="15" y="214" width="210" height="46" as="geometry"/>
+    </mxCell>
+    <mxCell id="p7i5" value="El issue entra a feature_list.json ⇒ lo recoge el próximo clock-in" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;align=left;spacingLeft=6;fillColor=#ffffff;strokeColor=#b85450;" vertex="1" parent="p7">
+      <mxGeometry x="15" y="270" width="210" height="46" as="geometry"/>
+    </mxCell>
+    <mxCell id="e12" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#666666;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="p1" target="p2">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e23" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#666666;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="p2" target="p3">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e34" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#666666;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="p3" target="p4">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e43" value="falla ⇒ corregir" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#b85450;dashed=1;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;entryX=0.5;entryY=0;" edge="1" parent="1" source="p4" target="p3">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="1045" y="172"/>
+          <mxPoint x="750" y="172"/>
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="e45" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#666666;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="p4" target="p5">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e56" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#666666;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="p5" target="p6">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e67" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#666666;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="p6" target="p7">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e61" value="la señal de producción vuelve al backlog — el ciclo se cierra" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=#b85450;dashed=1;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=1;" edge="1" parent="1" source="p7" target="p1">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="1930" y="622"/>
+          <mxPoint x="160" y="622"/>
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="band" value="Estado persistente — la memoria entre sesiones (repo sobre chat)" style="swimlane;startSize=26;rounded=1;fontSize=12;fontStyle=1;fillColor=#fff2cc;strokeColor=#d6b656;swimlaneFillColor=#fffbeb;pointerEvents=0;" vertex="1" parent="1">
+      <mxGeometry x="40" y="660" width="2010" height="120" as="geometry"/>
+    </mxCell>
+    <mxCell id="b1" value="PROGRESS.md&#10;estado verificado + próximo paso" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;fillColor=#ffffff;strokeColor=#d6b656;" vertex="1" parent="band">
+      <mxGeometry x="15" y="40" width="195" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="b2" value="feature_list.json&#10;features, estados, evidencia" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;fillColor=#ffffff;strokeColor=#d6b656;" vertex="1" parent="band">
+      <mxGeometry x="228" y="40" width="195" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="b3" value=".agents/notes/&#10;decisiones y trade-offs (Agent Notes)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;fillColor=#ffffff;strokeColor=#d6b656;" vertex="1" parent="band">
+      <mxGeometry x="441" y="40" width="195" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="b4" value="docs/decisions/ + DECISIONS.md&#10;decisiones de arquitectura" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;fillColor=#ffffff;strokeColor=#d6b656;" vertex="1" parent="band">
+      <mxGeometry x="654" y="40" width="195" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="b5" value=".harness/&#10;arch-rules.json · traces/ · kit-version" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;fillColor=#ffffff;strokeColor=#d6b656;" vertex="1" parent="band">
+      <mxGeometry x="867" y="40" width="195" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="b6" value="docs/quality-document.md&#10;salud A–D por módulo" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;fillColor=#ffffff;strokeColor=#d6b656;" vertex="1" parent="band">
+      <mxGeometry x="1080" y="40" width="195" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="b7" value="session-handoff.md&#10;traspaso entre sesiones" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;fillColor=#ffffff;strokeColor=#d6b656;" vertex="1" parent="band">
+      <mxGeometry x="1293" y="40" width="195" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="b8" value="templates/&#10;sprint-contract · evaluator-rubric" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;fillColor=#ffffff;strokeColor=#d6b656;" vertex="1" parent="band">
+      <mxGeometry x="1506" y="40" width="195" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="b9" value="docs/evidence/&#10;evidencia de verificación" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;fillColor=#ffffff;strokeColor=#d6b656;" vertex="1" parent="band">
+      <mxGeometry x="1719" y="40" width="195" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="ed1" value="se lee al clock-in" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#d6b656;dashed=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=0.05;exitY=0;entryX=0.25;entryY=1;" edge="1" parent="1" source="band" target="p1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="ed2" value="se actualiza al clock-out" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#d6b656;dashed=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.76;entryY=0;" edge="1" parent="1" source="p5" target="band">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+  </root>
+</mxGraphModel>
