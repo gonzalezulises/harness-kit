@@ -316,6 +316,107 @@ else
   bad "no DSN stopped the job from running — monitoring became an outage"
 fi
 
+# ── 41-48. Sentry → GitHub issues: the step that reaches the backlog ─────────
+# A stub 'gh' records every call, so the tests assert on what WOULD have been
+# sent to GitHub. Nothing here touches a real repository.
+TO_ISSUES="$PACK_DIR/repo-template/bin/sentry-to-issues"
+GHDIR="$WORK/ghbin"
+mkdir -p "$GHDIR"
+cat > "$GHDIR/gh" <<'EOF'
+#!/usr/bin/env bash
+# Stub GitHub CLI. Logs the invocation, and reports an existing issue only for
+# short ids listed in $GH_EXISTING.
+echo "$*" >> "$GH_LOG"
+case "$1 $2" in
+  "issue list")
+    for s in ${GH_EXISTING:-}; do
+      case " $* " in *" $s "*) echo "42  [$s] already there  open"; exit 0 ;; esac
+    done
+    exit 0 ;;
+  "issue create")
+    [[ "${GH_CREATE_FAILS:-0}" == "1" ]] && exit 1
+    echo "https://github.com/acme/web/issues/99"; exit 0 ;;
+esac
+exit 0
+EOF
+chmod +x "$GHDIR/gh"
+
+ti_assert() {
+  local label="$1" want="$2" got
+  shift 2
+  # bash 3.2 (the macOS default) treats an empty array expansion under `set -u`
+  # as an unbound variable, so the no-arguments cases need the guarded form.
+  ( env "$@" "$TO_ISSUES" ${TI_ARGS[@]+"${TI_ARGS[@]}"} ) >/dev/null 2>&1
+  got=$?
+  if [[ "$got" == "$want" ]]; then ok "$label (exit $got)"
+  else bad "$label — expected exit $want, got $got"; fi
+}
+
+TI_BASE=(NO_COLOR=1 SENTRY_ORG=acme SENTRY_PROJECT=web SENTRY_AUTH_TOKEN=t)
+
+# An unreachable Sentry must never look like a clean project.
+stub
+TI_ARGS=()
+ti_assert "an unreachable API blocks instead of reporting nothing to do" 3 \
+  "${TI_BASE[@]}" "GH_BIN=$GHDIR/gh" "GH_LOG=$WORK/gh1.log" "SENTRY_STUB_DIR=$STUB_DIR"
+
+stub
+printf '[]\n' > "$STUB_DIR/triage.json"
+TI_ARGS=()
+ti_assert "an empty project is a clean pass" 0 \
+  "${TI_BASE[@]}" "GH_BIN=$GHDIR/gh" "GH_LOG=$WORK/gh2.log" "SENTRY_STUB_DIR=$STUB_DIR"
+
+stub
+cat > "$STUB_DIR/triage.json" <<'EOF'
+[{"shortId":"WEB-1","title":"TypeError: x is undefined"},
+ {"shortId":"WEB-2","title":"fetch failed"}]
+EOF
+TRIAGE_STUB="$STUB_DIR"
+
+# THE safety property: a dry run must not write to a shared surface.
+: > "$WORK/gh-dry.log"
+TI_ARGS=()
+ti_assert "a dry run exits clean" 0 \
+  "${TI_BASE[@]}" "GH_BIN=$GHDIR/gh" "GH_LOG=$WORK/gh-dry.log" "SENTRY_STUB_DIR=$TRIAGE_STUB"
+if grep -q 'issue create' "$WORK/gh-dry.log"; then
+  bad "a dry run created issues — the default is not safe"
+else
+  ok "a dry run creates nothing (no 'issue create' reached gh)"
+fi
+
+: > "$WORK/gh-apply.log"
+TI_ARGS=(--apply)
+ti_assert "--apply exits clean" 0 \
+  "${TI_BASE[@]}" "GH_BIN=$GHDIR/gh" "GH_LOG=$WORK/gh-apply.log" "SENTRY_STUB_DIR=$TRIAGE_STUB"
+if [[ "$(grep -c 'issue create' "$WORK/gh-apply.log")" == "2" ]]; then
+  ok "--apply opens exactly one issue per unresolved Sentry issue"
+else
+  bad "--apply opened $(grep -c 'issue create' "$WORK/gh-apply.log") issues, expected 2"
+fi
+
+# Idempotence: the property that makes it safe to schedule.
+: > "$WORK/gh-dedup.log"
+TI_ARGS=(--apply)
+ti_assert "a second run over tracked issues exits clean" 0 \
+  "${TI_BASE[@]}" "GH_BIN=$GHDIR/gh" "GH_LOG=$WORK/gh-dedup.log" \
+  "SENTRY_STUB_DIR=$TRIAGE_STUB" "GH_EXISTING=WEB-1 WEB-2"
+if grep -q 'issue create' "$WORK/gh-dedup.log"; then
+  bad "issues already tracked were opened again — scheduling this would spam the repo"
+else
+  ok "issues already tracked are never opened twice"
+fi
+
+# A GitHub that refuses the write must not report success.
+: > "$WORK/gh-fail.log"
+TI_ARGS=(--apply)
+ti_assert "a GitHub failure is reported, not swallowed" 1 \
+  "${TI_BASE[@]}" "GH_BIN=$GHDIR/gh" "GH_LOG=$WORK/gh-fail.log" \
+  "SENTRY_STUB_DIR=$TRIAGE_STUB" GH_CREATE_FAILS=1
+
+TI_ARGS=(--frobnicate)
+ti_assert "an unknown flag is a usage error" 64 \
+  "${TI_BASE[@]}" "GH_BIN=$GHDIR/gh" "GH_LOG=$WORK/gh3.log" "SENTRY_STUB_DIR=$TRIAGE_STUB"
+
 echo ""
 echo "${BOLD}────────────────────────────────────────${RESET}"
 echo "${BOLD}$PASS passed, $FAIL failed${RESET}"

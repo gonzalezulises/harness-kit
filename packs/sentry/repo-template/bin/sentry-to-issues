@@ -1,0 +1,153 @@
+#!/usr/bin/env bash
+# sentry-to-issues — turn production signal into work the backlog can see.
+#
+# An alert that lands in an inbox dies there. This walks the unresolved issues
+# in a Sentry project and opens one GitHub issue per Sentry issue, so the next
+# clock-in reads defects a user already hit instead of only the plan.
+#
+# Writes are opt-in: without --apply nothing is created, and the run prints what
+# it would do. Creating issues is a side effect on a shared surface, and a tool
+# that does it by default gets run once by accident and then distrusted.
+#
+# Idempotence is the property that makes it safe to schedule: an issue whose
+# Sentry short id already appears in the repository is skipped, so running this
+# hourly does not produce a hundred duplicates of the same defect.
+#
+# Exit codes:
+#   0   completed (with --apply: issues created; without: plan printed)
+#   1   at least one issue could not be created
+#   3   could not read Sentry, or a required input was missing
+#   64  usage error
+#   69  a required dependency is not on PATH
+#
+# Usage:
+#   bin/sentry-to-issues              # dry run: print the plan, change nothing
+#   bin/sentry-to-issues --apply      # create the missing GitHub issues
+#
+# Test seams: SENTRY_STUB_DIR for the Sentry API, GH_BIN to substitute the
+# GitHub CLI. verify-pack.sh uses both to prove the failure modes offline.
+
+set -uo pipefail
+
+E_OK=0; E_FAIL=1; E_MALFORMED=3; E_USAGE=64; E_DEP=69
+
+API_BASE="${SENTRY_API_BASE:-https://sentry.io/api/0}"
+STUB="${SENTRY_STUB_DIR:-}"
+GH="${GH_BIN:-gh}"
+LABEL="${SENTRY_ISSUE_LABEL:-sentry}"
+APPLY=0
+
+if [[ ! -t 1 ]] || [[ -n "${NO_COLOR:-}" ]]; then
+  RED=""; GREEN=""; YELLOW=""; BOLD=""; RESET=""
+else
+  RED=$'\033[0;31m'; GREEN=$'\033[0;32m'; YELLOW=$'\033[0;33m'
+  BOLD=$'\033[1m'; RESET=$'\033[0m'
+fi
+
+die() { echo "${RED}sentry-to-issues: $1${RESET}" >&2; exit "$2"; }
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --apply) APPLY=1; shift ;;
+    -h|--help) sed -n '2,28p' "$0" | sed 's/^# \{0,1\}//'; exit "$E_USAGE" ;;
+    *) die "unknown argument: $1" "$E_USAGE" ;;
+  esac
+done
+
+[[ -n "${SENTRY_ORG:-}" && -n "${SENTRY_PROJECT:-}" ]] \
+  || die "needs SENTRY_ORG and SENTRY_PROJECT" "$E_MALFORMED"
+[[ -n "${SENTRY_AUTH_TOKEN:-}" ]] || die "needs SENTRY_AUTH_TOKEN with project:read" "$E_MALFORMED"
+command -v "$GH" >/dev/null 2>&1 || die "the GitHub CLI ('$GH') is not on PATH" "$E_DEP"
+
+# ── Read Sentry ──────────────────────────────────────────────────────────────
+
+fetch_issues() {
+  if [[ -n "$STUB" ]]; then
+    [[ -f "$STUB/triage.json" ]] || return 1
+    cat "$STUB/triage.json"
+    return 0
+  fi
+  curl -sS --fail --max-time 20 -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
+    "$API_BASE/projects/$SENTRY_ORG/$SENTRY_PROJECT/issues/?query=is:unresolved&statsPeriod=24h" \
+    2>/dev/null
+}
+
+BODY="$(fetch_issues)" \
+  || die "could not reach the issues API — this is not the same as having no issues" "$E_MALFORMED"
+
+case "$BODY" in
+  \[*|\{*) ;;
+  *) die "the API returned something that is not JSON" "$E_MALFORMED" ;;
+esac
+
+# ── Plan ─────────────────────────────────────────────────────────────────────
+# One Sentry issue per line, as: shortId<TAB>title. Splitting on '{' keeps each
+# issue's fields together, which is what makes the pairing correct without a
+# JSON parser.
+
+PLAN="$(printf '%s' "$BODY" \
+  | tr '{' '\n' \
+  | grep '"shortId"' \
+  | while IFS= read -r chunk; do
+      sid="$(printf '%s' "$chunk" | sed -n 's/.*"shortId"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p')"
+      title="$(printf '%s' "$chunk" | sed -n 's/.*"title"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p')"
+      [[ -n "$sid" ]] || continue
+      [[ -n "$title" ]] || title="(untitled Sentry issue)"
+      printf '%s\t%s\n' "$sid" "$title"
+    done)"
+
+if [[ -z "$PLAN" ]]; then
+  echo "${GREEN}No unresolved Sentry issues. Nothing to open.${RESET}"
+  exit "$E_OK"
+fi
+
+echo "${BOLD}Sentry → GitHub issues${RESET}"
+[[ $APPLY -eq 1 ]] || echo "${YELLOW}dry run — nothing will be created. Re-run with --apply.${RESET}"
+echo ""
+
+CREATED=0; SKIPPED=0; FAILED=0
+
+while IFS=$'\t' read -r sid title; do
+  [[ -n "$sid" ]] || continue
+
+  # The short id is the identity. Searching all states means a defect that was
+  # closed once does not come back as a fresh issue on the next run.
+  if "$GH" issue list --search "$sid" --state all --limit 1 2>/dev/null | grep -q "$sid"; then
+    echo "  ${YELLOW}skip${RESET}   $sid — already tracked"
+    SKIPPED=$((SKIPPED + 1))
+    continue
+  fi
+
+  if [[ $APPLY -eq 0 ]]; then
+    echo "  ${GREEN}would${RESET}  $sid — $title"
+    CREATED=$((CREATED + 1))
+    continue
+  fi
+
+  if "$GH" issue create \
+      --title "[$sid] $title" \
+      --label "$LABEL" \
+      --body "Reported by Sentry as \`$sid\` in \`$SENTRY_ORG/$SENTRY_PROJECT\`.
+
+A user hit this. Promote it into \`feature_list.json\` or close it with a reason —
+an unread queue is the same as no monitoring.
+
+https://sentry.io/organizations/$SENTRY_ORG/issues/?query=$sid" >/dev/null 2>&1; then
+    echo "  ${GREEN}open${RESET}   $sid — $title"
+    CREATED=$((CREATED + 1))
+  else
+    echo "  ${RED}FAIL${RESET}   $sid — could not create the issue"
+    FAILED=$((FAILED + 1))
+  fi
+done <<EOF
+$PLAN
+EOF
+
+echo ""
+if [[ $APPLY -eq 1 ]]; then
+  echo "${BOLD}$CREATED opened · $SKIPPED already tracked · $FAILED failed${RESET}"
+else
+  echo "${BOLD}$CREATED would be opened · $SKIPPED already tracked${RESET}"
+fi
+[[ $FAILED -eq 0 ]] || exit "$E_FAIL"
+exit "$E_OK"

@@ -4,6 +4,9 @@ name: Observability
 # live. Running it on a pull request would only prove that a DSN string exists.
 on:
   deployment_status:
+  schedule:
+    # Production keeps reporting whether or not anybody deploys.
+    - cron: "0 9 * * *"
   workflow_dispatch:
     inputs:
       release:
@@ -77,3 +80,22 @@ jobs:
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: bash bin/sentry-check triage
+
+  # Separate job because opening issues needs a write scope the checks above
+  # must not carry. It is idempotent by short id, which is what makes running it
+  # on a schedule safe rather than a source of duplicates.
+  backlog:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Open a GitHub issue for each unresolved Sentry issue
+        env:
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+        run: bash bin/sentry-to-issues --apply

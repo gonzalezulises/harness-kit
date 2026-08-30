@@ -53,6 +53,16 @@ instead of calling the network, so the 45 failure modes are verifiable on any
 machine with `bash` and no Sentry account. A pack whose own verification needs
 a paid account and network access is a pack nobody re-verifies.
 
+`bin/sentry-to-issues` is what makes the loop reach the backlog: it opens one
+GitHub issue per unresolved Sentry issue, so the next clock-in reads defects a
+user already hit. Two properties make it safe to schedule. Writes are opt-in —
+without `--apply` it prints the plan and creates nothing, because a tool that
+writes to a shared surface by default gets run once by accident and distrusted
+afterwards. And it is idempotent by short id, searching closed issues as well as
+open ones, so a defect that was already closed does not return as a fresh issue
+on the next run. Both are asserted in the failure matrix by a stub `gh` that
+records what would have been sent, rather than trusted to review.
+
 `bin/sentry-heartbeat` is the one deliberate exception to fail-closed: with no
 usable DSN the wrapped job still runs, and the job's exit code always survives
 the wrapper. Monitoring that can take down the work it monitors is worse than

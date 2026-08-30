@@ -250,7 +250,7 @@ para el de observabilidad.
 make check                          # 149 aserciones end-to-end
 bash packs/gherkin/verify-pack.sh   # 15 modos de falla, todos deben bloquear
 bash packs/load-testing/verify-pack.sh
-bash packs/sentry/verify-pack.sh    # 45 modos de falla, todos deben bloquear
+bash packs/sentry/verify-pack.sh    # 55 modos de falla, todos deben bloquear
 ```
 
 Sin mocks: construye repositorios desechables, corre los scripts reales y afirma sobre
