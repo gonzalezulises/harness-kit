@@ -30,6 +30,18 @@ verify-claims: ## Re-run every feature this repo claims is passing
 verify-decisions: ## Confirm no earlier decision was rewritten
 	bash scripts/verify-decisions.sh
 
+.PHONY: verify-agent-notes
+verify-agent-notes: ## Agent Notes tree and format gate
+	bash scripts/verify-agent-notes.sh
+
+.PHONY: gates
+gates: ## Run the registered quality gates. Usage: make gates [A=quick|full]
+	bash scripts/run-gates.sh $(or $(A),quick)
+
+.PHONY: hooks-install
+hooks-install: ## Opt-in fast staged-only git hooks (refuses to fight husky)
+	bash scripts/install-githooks.sh
+
 .PHONY: lint
 lint: ## shellcheck over every script the kit ships
 	shellcheck -S warning bin/*.sh scripts/*.sh tests/*.sh \
