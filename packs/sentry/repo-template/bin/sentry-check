@@ -1,0 +1,277 @@
+#!/usr/bin/env bash
+# sentry-check — prove that errors actually reach Sentry.
+#
+# Installing an SDK is not observability. A Sentry that has never received an
+# event is indistinguishable from a working one until the night you need it,
+# because every silent misconfiguration — an empty DSN, a zero sample rate, a
+# release without source maps — leaves the application running normally and the
+# build green. This gate refuses to report success on any of them.
+#
+# Exit codes:
+#   0   every requested check passed
+#   1   a check failed (misconfiguration found)
+#   2   UNCONFIRMED — could not prove events arrive. Treated as failure.
+#   3   a response was unreadable, or a required input was missing
+#   64  usage error
+#   69  a required dependency is not on PATH
+#
+# Usage:
+#   bin/sentry-check preflight        static checks; run before deploying
+#   bin/sentry-check canary           send an event and confirm it arrived
+#   bin/sentry-check release <ver>    confirm the release has source maps
+#   bin/sentry-check all <ver>        all of the above
+#
+# Test seam: set SENTRY_STUB_DIR to a directory of fixture files and the gate
+# reads those instead of calling the network. verify-pack.sh uses this to prove
+# each failure mode still blocks without needing a Sentry account.
+
+set -uo pipefail
+
+E_OK=0; E_FAIL=1; E_UNCONFIRMED=2; E_MALFORMED=3; E_USAGE=64; E_DEP=69
+
+API_BASE="${SENTRY_API_BASE:-https://sentry.io/api/0}"
+STUB="${SENTRY_STUB_DIR:-}"
+CANARY_TIMEOUT="${SENTRY_CANARY_TIMEOUT:-60}"
+
+if [[ ! -t 1 ]] || [[ -n "${NO_COLOR:-}" ]]; then
+  RED=""; GREEN=""; YELLOW=""; BOLD=""; RESET=""
+else
+  RED=$'\033[0;31m'; GREEN=$'\033[0;32m'; YELLOW=$'\033[0;33m'
+  BOLD=$'\033[1m'; RESET=$'\033[0m'
+fi
+
+FAILED=0
+pass() { echo "  ${GREEN}ok${RESET}   $1"; }
+fail() { echo "  ${RED}FAIL${RESET} $1"; FAILED=1; }
+note() { echo "  ${YELLOW}··${RESET}   $1"; }
+die()  { echo "${RED}sentry-check: $1${RESET}" >&2; exit "$2"; }
+
+# ── Network seam ─────────────────────────────────────────────────────────────
+# Every outbound call goes through one of these two functions so the gate can be
+# verified offline. A stub file that does not exist means "the call failed",
+# which is the same thing the gate must do when the network is down: block.
+
+api_get() {
+  local path="$1" name="$2"
+  if [[ -n "$STUB" ]]; then
+    [[ -f "$STUB/$name" ]] || return 1
+    cat "$STUB/$name"
+    return 0
+  fi
+  curl -sS --max-time 20 -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
+    "$API_BASE/$path" 2>/dev/null
+}
+
+ingest_send() {
+  local payload="$1"
+  if [[ -n "$STUB" ]]; then
+    [[ -f "$STUB/ingest-ok" ]] || return 1
+    return 0
+  fi
+  curl -sS --max-time 20 -X POST \
+    -H 'Content-Type: application/x-sentry-envelope' \
+    --data-binary "$payload" \
+    "https://$DSN_HOST/api/$DSN_PROJECT_ID/envelope/?sentry_key=$DSN_KEY&sentry_version=7" \
+    >/dev/null 2>&1
+}
+
+# ── DSN parsing ──────────────────────────────────────────────────────────────
+# A DSN is https://<publicKey>@<host>/<projectId>. Anything that does not parse
+# is a DSN the SDK will silently ignore.
+
+DSN_KEY=""; DSN_HOST=""; DSN_PROJECT_ID=""
+
+parse_dsn() {
+  local dsn="$1" rest
+  case "$dsn" in
+    https://*@*/*) rest="${dsn#https://}" ;;
+    http://*@*/*)  rest="${dsn#http://}"  ;;
+    *) return 1 ;;
+  esac
+  DSN_KEY="${rest%%@*}"
+  rest="${rest#*@}"
+  DSN_HOST="${rest%%/*}"
+  DSN_PROJECT_ID="${rest##*/}"
+  [[ -n "$DSN_KEY" && -n "$DSN_HOST" && -n "$DSN_PROJECT_ID" ]] || return 1
+  case "$DSN_PROJECT_ID" in ''|*[!0-9]*) return 1 ;; esac
+  return 0
+}
+
+# A DSN copied from the docs parses perfectly and reports nothing forever.
+is_placeholder() {
+  local lower
+  lower="$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')"
+  case "$lower" in
+    *your_dsn*|*your-dsn*|*'<key>'*|*example.com*|*examplepublickey*|*changeme*|*xxxxx*)
+      return 0 ;;
+  esac
+  [[ ${#DSN_KEY} -lt 8 ]]
+}
+
+# ── preflight ────────────────────────────────────────────────────────────────
+
+cmd_preflight() {
+  echo "${BOLD}Sentry · preflight${RESET}"
+
+  local dsn="${SENTRY_DSN:-${NEXT_PUBLIC_SENTRY_DSN:-}}"
+  if [[ -z "$dsn" ]]; then
+    fail "no DSN in SENTRY_DSN or NEXT_PUBLIC_SENTRY_DSN — Sentry.init() no-ops in silence"
+    return
+  fi
+  if ! parse_dsn "$dsn"; then
+    fail "DSN does not parse as https://<key>@<host>/<projectId> — the SDK ignores it"
+    return
+  fi
+  pass "DSN parses (project $DSN_PROJECT_ID at $DSN_HOST)"
+
+  if is_placeholder "$dsn"; then
+    fail "DSN is a placeholder from the docs, not a real project key"
+  else
+    pass "DSN is not a documentation placeholder"
+  fi
+
+  # A zero sample rate is a supported configuration that discards everything.
+  local rate="${SENTRY_SAMPLE_RATE:-1}"
+  if [[ "$rate" == "0" || "$rate" == "0.0" ]]; then
+    fail "sample rate is 0 — every event is dropped before it leaves the process"
+  else
+    pass "error sample rate is $rate"
+  fi
+
+  # The auth token uploads source maps. It is a real secret; the DSN is not.
+  if [[ -n "${SENTRY_AUTH_TOKEN:-}" ]] && command -v git >/dev/null 2>&1; then
+    if git ls-files --error-unmatch .env >/dev/null 2>&1; then
+      fail ".env is tracked by git and may carry SENTRY_AUTH_TOKEN"
+    else
+      pass ".env is not tracked by git"
+    fi
+  fi
+
+  # Next.js: server errors reach Sentry only when onRequestError is exported.
+  if [[ -f instrumentation.ts || -f instrumentation.js || -f src/instrumentation.ts ]]; then
+    local f
+    for f in instrumentation.ts instrumentation.js src/instrumentation.ts; do
+      [[ -f "$f" ]] || continue
+      if grep -q 'onRequestError' "$f"; then
+        pass "$f exports onRequestError — server errors are captured"
+      else
+        fail "$f does not export onRequestError — server-side errors never reach Sentry"
+      fi
+      break
+    done
+  else
+    note "no instrumentation.ts found — skipping the Next.js server-error check"
+  fi
+}
+
+# ── canary ───────────────────────────────────────────────────────────────────
+# The only check that proves the pipeline end to end: send a uniquely marked
+# event, then ask the API whether it landed. Everything else is inference.
+
+cmd_canary() {
+  echo "${BOLD}Sentry · canary${RESET}"
+
+  local dsn="${SENTRY_DSN:-${NEXT_PUBLIC_SENTRY_DSN:-}}"
+  [[ -n "$dsn" ]] || die "canary needs SENTRY_DSN" "$E_MALFORMED"
+  parse_dsn "$dsn" || die "canary needs a parseable DSN" "$E_MALFORMED"
+  [[ -n "${SENTRY_ORG:-}" && -n "${SENTRY_PROJECT:-}" ]] \
+    || die "canary needs SENTRY_ORG and SENTRY_PROJECT to read the event back" "$E_MALFORMED"
+  [[ -n "${SENTRY_AUTH_TOKEN:-}" ]] \
+    || die "canary needs SENTRY_AUTH_TOKEN with project:read" "$E_MALFORMED"
+  if [[ -z "$STUB" ]]; then
+    command -v curl >/dev/null 2>&1 || die "curl is not on PATH" "$E_DEP"
+  fi
+
+  # Overridable so CI can correlate the canary with the run that sent it.
+  local marker="${SENTRY_CANARY_MARKER:-harness-canary-$$-$(date +%s)}"
+  local envelope
+  envelope=$(printf '{"event_id":"%s","dsn":"%s"}\n{"type":"event"}\n{"message":"%s","level":"error"}\n' \
+    "$(printf '%032d' 0 | tr '0' 'a')" "$dsn" "$marker")
+
+  if ! ingest_send "$envelope"; then
+    fail "the ingest endpoint refused the event — nothing was delivered"
+    return
+  fi
+  pass "event accepted by ingest ($marker)"
+
+  # Accepted is not the same as stored: quotas, inbound filters and rate limits
+  # all drop events after a successful POST. Read it back or report nothing.
+  local waited=0 body=""
+  while [[ $waited -lt $CANARY_TIMEOUT ]]; do
+    body="$(api_get "projects/$SENTRY_ORG/$SENTRY_PROJECT/issues/?query=$marker" "issues.json")" || body=""
+    if [[ -n "$body" ]]; then
+      case "$body" in
+        \[*|\{*) ;;
+        *) fail "the API returned something that is not JSON"; exit "$E_MALFORMED" ;;
+      esac
+      if printf '%s' "$body" | grep -q "$marker"; then
+        pass "event confirmed stored in $SENTRY_ORG/$SENTRY_PROJECT"
+        return
+      fi
+    fi
+    [[ -n "$STUB" ]] && break
+    sleep 5
+    waited=$((waited + 5))
+  done
+
+  fail "event never appeared in the project — accepted by ingest, dropped before storage"
+  exit "$E_UNCONFIRMED"
+}
+
+# ── release ──────────────────────────────────────────────────────────────────
+# An event without source maps points at column 4913 of a minified bundle. That
+# is a notification, not observability, and it is what breaks MTTR.
+
+cmd_release() {
+  local version="$1"
+  echo "${BOLD}Sentry · release $version${RESET}"
+  [[ -n "${SENTRY_ORG:-}" ]] || die "release needs SENTRY_ORG" "$E_MALFORMED"
+  [[ -n "${SENTRY_AUTH_TOKEN:-}" ]] || die "release needs SENTRY_AUTH_TOKEN" "$E_MALFORMED"
+
+  local body
+  body="$(api_get "organizations/$SENTRY_ORG/releases/$version/files/" "files.json")" || {
+    fail "release $version does not exist in Sentry — events cannot be attributed to a deploy"
+    return
+  }
+  case "$body" in
+    \[*|\{*) ;;
+    *) die "unreadable response from the releases API" "$E_MALFORMED" ;;
+  esac
+  if [[ "$(printf '%s' "$body" | tr -d '[:space:]')" == "[]" ]]; then
+    fail "release $version has no uploaded files — stack traces will be minified"
+    return
+  fi
+  if printf '%s' "$body" | grep -q '\.map'; then
+    pass "release $version has source maps"
+  else
+    fail "release $version has files but no .map — stack traces will be minified"
+  fi
+}
+
+# ── main ─────────────────────────────────────────────────────────────────────
+
+usage() {
+  sed -n '2,25p' "$0" | sed 's/^# \{0,1\}//'
+  exit "$E_USAGE"
+}
+
+[[ $# -ge 1 ]] || usage
+
+case "$1" in
+  preflight) cmd_preflight ;;
+  canary)    cmd_canary ;;
+  release)   [[ $# -ge 2 ]] || die "release needs a version" "$E_USAGE"; cmd_release "$2" ;;
+  all)
+    [[ $# -ge 2 ]] || die "all needs a release version" "$E_USAGE"
+    cmd_preflight; echo ""; cmd_canary; echo ""; cmd_release "$2" ;;
+  -h|--help) usage ;;
+  *) die "unknown command: $1" "$E_USAGE" ;;
+esac
+
+echo ""
+if [[ $FAILED -ne 0 ]]; then
+  echo "${RED}${BOLD}Sentry is not proven to be receiving errors. Do not call this observable.${RESET}"
+  exit "$E_FAIL"
+fi
+echo "${GREEN}${BOLD}Errors reach Sentry.${RESET}"
+exit "$E_OK"

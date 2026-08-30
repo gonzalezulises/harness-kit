@@ -5,9 +5,10 @@ last. If it disagrees with your recollection, this file wins.
 
 ## Current State
 
-- **Last commit:** `aa73fef` — feat(cli): one command to activate, and an honest answer
-- **Verification:** `make check` — passing, 149/149 assertions
-- **Pack verification:** `packs/load-testing/` 57/57 · `packs/gherkin/` 15/15, exit 0
+- **Last commit:** `7dfcd14` — fix: correct invalid deny rule pattern in project settings
+- **Verification:** `make check` — passing, 175/175 assertions · `make gates` 3 pass
+- **Pack verification:** `packs/load-testing/` 57/57 · `packs/gherkin/` 15/15 ·
+  `packs/sentry/` 21/21, exit 0
 - **Audit:** rubric v2, 84 checks. The kit scores 77/84 against itself.
 - **Startup path:** `./init.sh` — activation for other repos: `bin/harness-activate.sh`
 - **Active feature:** none — all fourteen features passing (VCR 14/14)
@@ -18,9 +19,26 @@ last. If it disagrees with your recollection, this file wins.
 _Nothing active. All fourteen features are `passing`, each promoted by
 `verify-feature.sh` with recorded evidence — none set by hand._
 
+## Session log — 2026-08-30 (observability)
+
+Added `packs/sentry/`: an observability gate that passes only when a marked event is sent
+and read back from the project. Rationale and costs in
+[the Agent Note](.agents/notes/implemented/feature/2026-08-30-sentry-observability-pack.md).
+`docs/ciclo-desarrollo-harness.drawio` now carries the stage that motivated it — production
+signal returning to the backlog, which is what turns the cycle from a line into a loop.
+
+Not done, and deliberately: the pack's live path has never run against a real Sentry
+project. The 21 failure modes are verified through the `SENTRY_STUB_DIR` seam, which proves
+the gate's logic but not the ingest and API contracts. First real DSN closes that gap.
+
+`.env.sentry.example` is documented inside `packs/sentry/index.md` rather than shipped as a
+file — agent permission rules block writes to `.env*`, and they should.
+
 ## Next Steps
 
-1. Use it on a real delivery repository. `bin/harness-activate.sh` handles the mechanics;
+1. Run `packs/sentry/` against a real project once, and record the evidence. Until then the
+   pack is verified in logic only.
+2. Use it on a real delivery repository. `bin/harness-activate.sh` handles the mechanics;
    the step that decides whether this is real or decoration is replacing the placeholder
    features with the actual backlog.
 2. Roll out to more of the ~173 repositories. Audit first (read-only), harness the ones

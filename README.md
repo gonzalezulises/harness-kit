@@ -209,6 +209,7 @@ templates/minimal/        contrato base y archivos de estado
 templates/full/           Makefile, compuertas, workflow, payloads de ruleset
 packs/gherkin/            especificación ejecutable + matriz de modos de falla
 packs/load-testing/       compuerta de rendimiento k6
+packs/sentry/             compuerta de observabilidad: prueba que los errores llegan
 packs/openai-advanced/    estructura pesada para bases de código grandes
 docs/evidence/            evidencia de que la compuerta bloquea de verdad
 tests/run-tests.sh        verificación end-to-end del kit
@@ -224,6 +225,10 @@ Opt-in, porque traen dependencias externas que no todo repositorio necesita.
 - **`packs/load-testing/`** — compuerta de rendimiento con k6: smoke determinista que puede
   bloquear una fusión, prueba de carga a demanda con evidencia de entrega, y línea base que
   detecta degradación. Requiere `k6` en el PATH.
+- **`packs/sentry/`** — compuerta de observabilidad: prueba que un evento **llega y se
+  almacena**, no que el SDK esté instalado. Un DSN vacío, un `sampleRate: 0` o una cuota
+  agotada dejan el build en verde y el proyecto vacío; los tres bloquean aquí. Requiere
+  `curl` y una cuenta de Sentry para la ruta viva; su `verify-pack.sh` corre sin red.
 
 ---
 
@@ -231,7 +236,8 @@ Opt-in, porque traen dependencias externas que no todo repositorio necesita.
 
 `bash` 3.2+ (el de macOS de fábrica sirve) y `git`. `python3` sólo para el nivel full.
 Sin `npm install`, sin runtime, sin nada que mantener al día. Las únicas excepciones son los
-packs: `k6` para el de rendimiento, `node` para el de Gherkin.
+packs: `k6` para el de rendimiento, `node` para el de Gherkin, `curl` y una cuenta de Sentry
+para el de observabilidad.
 
 ---
 
@@ -241,6 +247,7 @@ packs: `k6` para el de rendimiento, `node` para el de Gherkin.
 make check                          # 149 aserciones end-to-end
 bash packs/gherkin/verify-pack.sh   # 15 modos de falla, todos deben bloquear
 bash packs/load-testing/verify-pack.sh
+bash packs/sentry/verify-pack.sh    # 21 modos de falla, todos deben bloquear
 ```
 
 Sin mocks: construye repositorios desechables, corre los scripts reales y afirma sobre
