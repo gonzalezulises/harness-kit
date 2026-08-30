@@ -5,10 +5,12 @@ last. If it disagrees with your recollection, this file wins.
 
 ## Current State
 
-- **Last commit:** `7dfcd14` — fix: correct invalid deny rule pattern in project settings
-- **Verification:** `make check` — passing, 179/179 assertions · `make gates` 4 pass
+- **Last commit:** `0ad2b1d` — chore(packs): ship the Sentry env template with the pack
+- **Verification:** `make check` — passing, 311 assertions · `make gates` 4 pass.
+  `make check` now runs the packs' own failure matrices; linting them was never
+  the same as running them.
 - **Pack verification:** `packs/load-testing/` 57/57 · `packs/gherkin/` 15/15 ·
-  `packs/sentry/` 55/55, exit 0
+  `packs/sentry/` 60/60, exit 0
 - **Audit:** rubric v2, 84 checks. The kit scores 77/84 against itself.
 - **Startup path:** `./init.sh` — activation for other repos: `bin/harness-activate.sh`
 - **Active feature:** none — all fourteen features passing (VCR 14/14)
@@ -18,6 +20,37 @@ last. If it disagrees with your recollection, this file wins.
 
 _Nothing active. All fourteen features are `passing`, each promoted by
 `verify-feature.sh` with recorded evidence — none set by hand._
+
+## Session log — 2026-08-30 (Sentry contracts, read against the live org)
+
+The Sentry MCP was connected to the `rizoma-di` org, which replaced the pending DSN as the
+way to check the pack's contracts: reading the real API needs no token pasted into a chat.
+Three of the four shapes flagged as least certain above were checked against live data.
+
+**The cron check was passing monitors nobody was watching.** `json_field` matched the first
+occurrence of a key at any nesting depth. Sentry's monitor response carries a per-environment
+`status` next to the monitor's own, and when the environment list serialises first, a
+`disabled` monitor read as `ok` — `sentry-check cron` printed a pass and exited 0 for an
+unwatched scheduled job. Same class of bug in the commit count, which counted each commit's
+nested `author.id` and reported double. Both confirmed by running the gate itself, not a
+reimplementation of its functions. Fix and costs in
+[the Agent Note](.agents/notes/implemented/bug-fix/2026-08-30-json-readers-must-honour-depth.md).
+Five regression cases now pin the real nested shapes (55 → 60); four of them fail against the
+previous readers, which is what makes them worth having.
+
+**Why the stubs never caught it:** every fixture in the matrix was a flat object. The live org
+is why the real shape came to light — and it also explains why the gap survived: `rizoma-di`
+has no cron monitors at all, and all 25 of its releases carry zero associated commits, so
+nothing in production was exercising those paths.
+
+**`make check` now runs the packs.** The Makefile linted `packs/*/verify-pack.sh` but never
+executed them: 132 failure modes sat outside the gate that is supposed to guard every commit,
+so a pack could regress with the repo green. Now `check` runs each matrix and propagates the
+failure.
+
+Still not closed: the ingest path (`canary`) and release health have not run against a real
+project — the org reports no release health data, so `json_field_deep`'s single-project
+assumption stays unverified. That one still needs a DSN.
 
 ## Session log — 2026-08-30 (observability)
 
