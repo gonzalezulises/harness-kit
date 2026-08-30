@@ -73,7 +73,7 @@ split_entries() {
     # A horizontal rule is formatting between entries, not content. Appending a
     # new decision adds one after the previous entry, which would otherwise read
     # as that earlier entry having been modified.
-    /^-{3,}[[:space:]]*$/ { next }
+    /^---+[[:space:]]*$/ { next }  # ---+ not -{3,}: mawk has no interval regex
     /^## / {
       title = substr($0, 4)
       gsub(/[^a-zA-Z0-9]+/, "-", title)

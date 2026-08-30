@@ -217,3 +217,6 @@ fix from `84e8c71` had never reached the kit's own `clean-state-check.sh`.
   subshell, both covered by regression tests. Also downgraded `.DS_Store` from failure to
   note — a gate that cries wolf gets ignored.
 - **Known risks:** pilot changes are uncommitted in the three repos, left for review.
+
+## 2026-08-30 — Gate proof
+D12-D14 merged to main; this PR exercises the full gate with the new claims output visible from base.
