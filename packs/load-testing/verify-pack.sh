@@ -33,7 +33,7 @@ say() { printf '%s\n' "$*"; }
 # Failures repeat in the final summary: CI's claims runner only shows the tail
 # of a failed layer, so a failure named only mid-run is a failure named never.
 FALLAS=()
-falla() { falla "$*"; FALLAS+=("$*"); }
+falla() { say "  FALLA $*"; FALLAS+=("$*"); }
 
 # Comprueba que un caso produce el código de salida esperado y, opcionalmente,
 # que su salida contiene un texto concreto.
