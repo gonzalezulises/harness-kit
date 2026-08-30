@@ -106,7 +106,9 @@ fi
 if command -v node >/dev/null 2>&1; then
   js_ok=1
   for f in "${TEMPLATE}"/tests/load/*.js "${TEMPLATE}"/tests/load/lib/*.js; do
-    node --check "$f" 2>/dev/null || { say "  FALLA sintaxis JS en $f"; js_ok=0; }
+    # k6 scripts are ESM; --input-type=module keeps the parse mode explicit so
+    # the check does not depend on the Node version's module auto-detection.
+    node --input-type=module --check < "$f" 2>/dev/null || { say "  FALLA sintaxis JS en $f"; js_ok=0; }
   done
   if [ "$js_ok" -eq 1 ]; then
     say "  ok   los scripts de k6 son JS válido"
