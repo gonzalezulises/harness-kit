@@ -227,8 +227,11 @@ Opt-in, porque traen dependencias externas que no todo repositorio necesita.
   detecta degradación. Requiere `k6` en el PATH.
 - **`packs/sentry/`** — compuerta de observabilidad: prueba que un evento **llega y se
   almacena**, no que el SDK esté instalado. Un DSN vacío, un `sampleRate: 0` o una cuota
-  agotada dejan el build en verde y el proyecto vacío; los tres bloquean aquí. Requiere
-  `curl` y una cuenta de Sentry para la ruta viva; su `verify-pack.sh` corre sin red.
+  agotada dejan el build en verde y el proyecto vacío; los tres bloquean aquí. Cubre
+  además source maps, commits asociados (sin ellos Sentry nunca nombra el cambio que
+  rompió algo), salud del release y cron monitors — un trabajo programado que dejó de
+  correr no produce errores, produce silencio. Requiere `curl` y una cuenta de Sentry para
+  la ruta viva; su `verify-pack.sh` corre sin red.
 
 ---
 
@@ -247,7 +250,7 @@ para el de observabilidad.
 make check                          # 149 aserciones end-to-end
 bash packs/gherkin/verify-pack.sh   # 15 modos de falla, todos deben bloquear
 bash packs/load-testing/verify-pack.sh
-bash packs/sentry/verify-pack.sh    # 21 modos de falla, todos deben bloquear
+bash packs/sentry/verify-pack.sh    # 45 modos de falla, todos deben bloquear
 ```
 
 Sin mocks: construye repositorios desechables, corre los scripts reales y afirma sobre

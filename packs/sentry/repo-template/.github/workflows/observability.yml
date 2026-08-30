@@ -42,9 +42,38 @@ jobs:
           SENTRY_CANARY_MARKER: harness-canary-${{ github.run_id }}
         run: bash bin/sentry-check canary
 
+      # Source maps, so a trace names a line; commits, so Sentry can name the
+      # change that caused the issue instead of leaving you to guess the deploy.
       - name: Release — a stack trace nobody can read is not observability
         if: github.event_name == 'workflow_dispatch' && inputs.release != ''
         env:
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: bash bin/sentry-check release "${{ inputs.release }}"
+
+      - name: Health — did this deploy make stability worse?
+        if: github.event_name == 'workflow_dispatch' && inputs.release != ''
+        env:
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_MIN_CRASH_FREE_RATE: ${{ vars.SENTRY_MIN_CRASH_FREE_RATE || '99' }}
+        run: bash bin/sentry-check health "${{ inputs.release }}"
+
+      # A job that stopped being scheduled raises nothing at all, which is the
+      # one thing an error tracker is built to ignore.
+      - name: Cron — the scheduled job is still reporting in
+        if: vars.SENTRY_MONITOR_SLUG != ''
+        env:
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        run: bash bin/sentry-check cron "${{ vars.SENTRY_MONITOR_SLUG }}"
+
+      # Reports rather than gates: production signal that should reach the
+      # backlog. It still fails the job if it cannot ask, because "no issues"
+      # and "could not reach Sentry" must never look the same.
+      - name: Triage — what production is telling the backlog
+        env:
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        run: bash bin/sentry-check triage

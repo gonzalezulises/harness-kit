@@ -33,6 +33,10 @@ bad() { echo "  ${RED}FAIL${RESET} $1"; FAIL=$((FAIL+1)); }
 [[ -f "$GATE" ]] || { echo "verify-pack: gate not found at $GATE" >&2; exit 69; }
 
 GOOD_DSN="https://0123456789abcdef0123456789abcdef@o4507.ingest.us.sentry.io/4507"
+# The baseline every preflight case starts from: a configuration that passes, so
+# each case below changes exactly one thing and the failure is attributable.
+BASE_ENV=(NO_COLOR=1 "SENTRY_DSN=$GOOD_DSN" SENTRY_ENVIRONMENT=production
+          SENTRY_TRACES_SAMPLE_RATE=0.2)
 SANDBOX="$WORK/app"
 mkdir -p "$SANDBOX"
 STUB_N=0
@@ -63,34 +67,56 @@ echo "${BOLD}Sentry pack — failure matrix${RESET}"
 echo ""
 
 # ── 1. The honest case must pass, or the gate is just a wall ─────────────────
-assert "a real DSN passes preflight" 0 \
-  NO_COLOR=1 "SENTRY_DSN=$GOOD_DSN" -- preflight
+assert "a complete configuration passes preflight" 0 \
+  "${BASE_ENV[@]}" -- preflight
 
 # ── 2-5. Configurations the SDK accepts and then ignores ─────────────────────
 assert "an absent DSN blocks" 1 \
-  NO_COLOR=1 SENTRY_DSN= -- preflight
+  "${BASE_ENV[@]}" SENTRY_DSN= -- preflight
 
 assert "a malformed DSN blocks" 1 \
-  NO_COLOR=1 "SENTRY_DSN=not-a-dsn" -- preflight
+  "${BASE_ENV[@]}" "SENTRY_DSN=not-a-dsn" -- preflight
 
 assert "a non-numeric project id blocks" 1 \
-  NO_COLOR=1 "SENTRY_DSN=https://abcdef0123456789@o1.ingest.sentry.io/PROJECT_ID" -- preflight
+  "${BASE_ENV[@]}" "SENTRY_DSN=https://abcdef0123456789@o1.ingest.sentry.io/PROJECT_ID" -- preflight
 
 assert "the placeholder DSN from the docs blocks" 1 \
-  NO_COLOR=1 "SENTRY_DSN=https://examplePublicKey@o0.ingest.sentry.io/0" -- preflight
+  "${BASE_ENV[@]}" "SENTRY_DSN=https://examplePublicKey@o0.ingest.sentry.io/0" -- preflight
 
-# ── 6. A supported setting that discards every event ─────────────────────────
+# ── 6-8. Sampling: off is allowed, off by accident is not ────────────────────
 assert "a sample rate of 0 blocks" 1 \
-  NO_COLOR=1 "SENTRY_DSN=$GOOD_DSN" SENTRY_SAMPLE_RATE=0 -- preflight
+  "${BASE_ENV[@]}" SENTRY_SAMPLE_RATE=0 -- preflight
 
-# ── 7-8. Next.js server errors reach Sentry only via onRequestError ──────────
+# "true" is not a rate. The SDK coerces it to 0 and discards everything.
+assert "a non-numeric sample rate blocks" 1 \
+  "${BASE_ENV[@]}" SENTRY_SAMPLE_RATE=true -- preflight
+
+assert "tracing left at the default 0 blocks" 1 \
+  NO_COLOR=1 "SENTRY_DSN=$GOOD_DSN" SENTRY_ENVIRONMENT=production -- preflight
+
+assert "tracing off passes once acknowledged out loud" 0 \
+  NO_COLOR=1 "SENTRY_DSN=$GOOD_DSN" SENTRY_ENVIRONMENT=production \
+  SENTRY_TRACES_SAMPLE_RATE=0 SENTRY_TRACING_ACKNOWLEDGED=true -- preflight
+
+# ── 9. Preview noise and production incidents must be separable ──────────────
+assert "an unset environment blocks" 1 \
+  NO_COLOR=1 "SENTRY_DSN=$GOOD_DSN" SENTRY_TRACES_SAMPLE_RATE=0.2 -- preflight
+
+# ── 10-11. The setting that turns a bug tracker into a data leak ─────────────
+assert "sendDefaultPii on without acknowledgement blocks" 1 \
+  "${BASE_ENV[@]}" SENTRY_SEND_DEFAULT_PII=true -- preflight
+
+assert "sendDefaultPii on passes once acknowledged out loud" 0 \
+  "${BASE_ENV[@]}" SENTRY_SEND_DEFAULT_PII=true SENTRY_PII_ACKNOWLEDGED=true -- preflight
+
+# ── 12-13. Next.js server errors reach Sentry only via onRequestError ────────
 printf 'export async function register() {}\n' > "$SANDBOX/instrumentation.ts"
 assert "instrumentation.ts without onRequestError blocks" 1 \
-  NO_COLOR=1 "SENTRY_DSN=$GOOD_DSN" -- preflight
+  "${BASE_ENV[@]}" -- preflight
 
 printf 'export const onRequestError = Sentry.captureRequestError;\n' > "$SANDBOX/instrumentation.ts"
 assert "instrumentation.ts with onRequestError passes" 0 \
-  NO_COLOR=1 "SENTRY_DSN=$GOOD_DSN" -- preflight
+  "${BASE_ENV[@]}" -- preflight
 rm -f "$SANDBOX/instrumentation.ts"
 
 # ── 9. Ingest refuses the event ──────────────────────────────────────────────
@@ -167,15 +193,128 @@ assert "a release with files but no source map blocks" 1 \
   NO_COLOR=1 SENTRY_ORG=acme SENTRY_AUTH_TOKEN=t \
   "SENTRY_STUB_DIR=$STUB_DIR" -- release v1.0.0
 
+# ── 20-22. Without commits, Sentry can never name the change that broke it ──
 stub
 printf '[{"name":"~/app.js"},{"name":"~/app.js.map"}]\n' > "$STUB_DIR/files.json"
-assert "a release with source maps passes" 0 \
+assert "a release with source maps but no commit data blocks" 1 \
   NO_COLOR=1 SENTRY_ORG=acme SENTRY_AUTH_TOKEN=t \
   "SENTRY_STUB_DIR=$STUB_DIR" -- release v1.0.0
 
-# ── 20-21. Usage errors are not silent successes ─────────────────────────────
+stub
+printf '[{"name":"~/app.js"},{"name":"~/app.js.map"}]\n' > "$STUB_DIR/files.json"
+printf '[]\n' > "$STUB_DIR/commits.json"
+assert "a release with zero associated commits blocks" 1 \
+  NO_COLOR=1 SENTRY_ORG=acme SENTRY_AUTH_TOKEN=t \
+  "SENTRY_STUB_DIR=$STUB_DIR" -- release v1.0.0
+
+stub
+printf '[{"name":"~/app.js"},{"name":"~/app.js.map"}]\n' > "$STUB_DIR/files.json"
+printf '[{"id":"abc123","message":"fix"}]\n' > "$STUB_DIR/commits.json"
+assert "a release with source maps and commits passes" 0 \
+  NO_COLOR=1 SENTRY_ORG=acme SENTRY_AUTH_TOKEN=t \
+  "SENTRY_STUB_DIR=$STUB_DIR" -- release v1.0.0
+
+# ── 23-26. Release health: a number, or an honest refusal to judge ───────────
+stub
+assert "a release with no health data blocks" 1 \
+  NO_COLOR=1 SENTRY_ORG=acme SENTRY_AUTH_TOKEN=t \
+  "SENTRY_STUB_DIR=$STUB_DIR" -- health v1.0.0
+
+stub
+printf '{"version":"v1.0.0","crashFreeSessions":92.5}\n' > "$STUB_DIR/health.json"
+assert "a crash-free rate below the floor blocks" 1 \
+  NO_COLOR=1 SENTRY_ORG=acme SENTRY_AUTH_TOKEN=t \
+  "SENTRY_STUB_DIR=$STUB_DIR" -- health v1.0.0
+
+stub
+printf '{"version":"v1.0.0","crashFreeSessions":99.8}\n' > "$STUB_DIR/health.json"
+assert "a crash-free rate above the floor passes" 0 \
+  NO_COLOR=1 SENTRY_ORG=acme SENTRY_AUTH_TOKEN=t \
+  "SENTRY_STUB_DIR=$STUB_DIR" -- health v1.0.0
+
+# Health that was never reported must not read as healthy.
+stub
+printf '{"version":"v1.0.0","dateCreated":"2026-08-30"}\n' > "$STUB_DIR/health.json"
+assert "a response with no crash-free rate blocks as unreadable" 3 \
+  NO_COLOR=1 SENTRY_ORG=acme SENTRY_AUTH_TOKEN=t \
+  "SENTRY_STUB_DIR=$STUB_DIR" -- health v1.0.0
+
+# ── 27-30. A cron that stopped running produces silence, not errors ──────────
+stub
+assert "a monitor that does not exist blocks" 1 \
+  NO_COLOR=1 SENTRY_ORG=acme SENTRY_AUTH_TOKEN=t \
+  "SENTRY_STUB_DIR=$STUB_DIR" -- cron nightly-backup
+
+stub
+printf '{"slug":"nightly-backup","status":"missed","isMuted":false}\n' > "$STUB_DIR/monitor.json"
+assert "a missed cron check-in blocks" 1 \
+  NO_COLOR=1 SENTRY_ORG=acme SENTRY_AUTH_TOKEN=t \
+  "SENTRY_STUB_DIR=$STUB_DIR" -- cron nightly-backup
+
+# Watching and telling nobody is the same as not watching.
+stub
+printf '{"slug":"nightly-backup","status":"ok","isMuted":true}\n' > "$STUB_DIR/monitor.json"
+assert "a muted monitor blocks" 1 \
+  NO_COLOR=1 SENTRY_ORG=acme SENTRY_AUTH_TOKEN=t \
+  "SENTRY_STUB_DIR=$STUB_DIR" -- cron nightly-backup
+
+stub
+printf '{"slug":"nightly-backup","status":"ok","isMuted":false}\n' > "$STUB_DIR/monitor.json"
+assert "a healthy monitor passes" 0 \
+  NO_COLOR=1 SENTRY_ORG=acme SENTRY_AUTH_TOKEN=t \
+  "SENTRY_STUB_DIR=$STUB_DIR" -- cron nightly-backup
+
+# ── 31-33. Triage: "no issues" and "could not ask" must never look alike ─────
+stub
+assert "an unreachable issues API blocks instead of reporting silence" 3 \
+  NO_COLOR=1 SENTRY_ORG=acme SENTRY_PROJECT=web SENTRY_AUTH_TOKEN=t \
+  "SENTRY_STUB_DIR=$STUB_DIR" -- triage
+
+stub
+printf '[]\n' > "$STUB_DIR/triage.json"
+assert "an empty issue list is a genuine pass" 0 \
+  NO_COLOR=1 SENTRY_ORG=acme SENTRY_PROJECT=web SENTRY_AUTH_TOKEN=t \
+  "SENTRY_STUB_DIR=$STUB_DIR" -- triage
+
+stub
+cat > "$STUB_DIR/triage.json" <<'EOF'
+[{"shortId":"WEB-1","title":"TypeError: x is undefined"},
+ {"shortId":"WEB-2","title":"fetch failed"}]
+EOF
+assert "unresolved issues are reported without failing the run" 0 \
+  NO_COLOR=1 SENTRY_ORG=acme SENTRY_PROJECT=web SENTRY_AUTH_TOKEN=t \
+  "SENTRY_STUB_DIR=$STUB_DIR" -- triage
+
+# ── 34-35. Usage errors are not silent successes ─────────────────────────────
 assert "an unknown command is a usage error" 64 NO_COLOR=1 -- frobnicate
 assert "release without a version is a usage error" 64 NO_COLOR=1 -- release
+
+# ── 36-40. The heartbeat wrapper must never become the reason a job fails ────
+# Monitoring is not worth an outage: with no DSN the job still runs, and the
+# job's own exit code always survives the wrapper.
+HEARTBEAT="$PACK_DIR/repo-template/bin/sentry-heartbeat"
+
+hb_assert() {
+  local label="$1" want="$2" got
+  shift 2
+  ( env SENTRY_DSN= NEXT_PUBLIC_SENTRY_DSN= "$HEARTBEAT" "$@" ) >/dev/null 2>&1
+  got=$?
+  if [[ "$got" == "$want" ]]; then ok "$label (exit $got)"
+  else bad "$label — expected exit $want, got $got"; fi
+}
+
+hb_assert "a job runs and its success survives the wrapper" 0 backup -- true
+hb_assert "a failing job keeps its exit code" 1 backup -- false
+hb_assert "an unusual exit code is preserved, not flattened" 42 backup -- sh -c 'exit 42'
+hb_assert "a missing -- separator is a usage error" 64 backup true
+
+( env SENTRY_DSN= NEXT_PUBLIC_SENTRY_DSN= "$HEARTBEAT" side-effect -- \
+    touch "$WORK/job-ran" ) >/dev/null 2>&1
+if [[ -f "$WORK/job-ran" ]]; then
+  ok "the job still runs when there is no DSN to report to"
+else
+  bad "no DSN stopped the job from running — monitoring became an outage"
+fi
 
 echo ""
 echo "${BOLD}────────────────────────────────────────${RESET}"
