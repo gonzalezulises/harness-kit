@@ -30,6 +30,18 @@ verify-claims: ## Re-run every feature the repo claims is passing. CI runs this 
 verify-decisions: ## Confirm no earlier decision was rewritten
 	bash scripts/verify-decisions.sh
 
+.PHONY: verify-agent-notes
+verify-agent-notes: ## Agent Notes tree and format gate
+	bash scripts/verify-agent-notes.sh
+
+.PHONY: gates
+gates: ## Run the registered quality gates. Usage: make gates [A=quick|full]
+	bash scripts/run-gates.sh $(or $(A),quick)
+
+.PHONY: hooks-install
+hooks-install: ## Opt-in fast staged-only git hooks (refuses to fight husky)
+	bash scripts/install-githooks.sh
+
 .PHONY: e2e
 e2e: ## End-to-end suite. Required when a change crosses component boundaries.
 	{{E2E_CMD}}

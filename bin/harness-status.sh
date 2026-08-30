@@ -93,7 +93,9 @@ say ""
 # lack the fix?", and it is unanswerable without a stamp in each one.
 KIT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 KIT_VER="$(tr -d '[:space:]' < "$KIT_ROOT/VERSION" 2>/dev/null || echo "unknown")"
-REPO_VER="$(tr -d '[:space:]' < "$TARGET/.harness/kit-version" 2>/dev/null || echo "")"
+REPO_VER=""
+[[ -f "$TARGET/.harness/kit-version" ]] && \
+  REPO_VER="$(tr -d '[:space:]' < "$TARGET/.harness/kit-version")"
 
 if [[ -z "$REPO_VER" ]]; then
   say "Kit: $KIT_VER  ${YELLOW}(este repo no registra su versión: se activó con un kit anterior)${RESET}"

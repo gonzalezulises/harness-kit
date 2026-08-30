@@ -41,7 +41,11 @@ if [[ -z "$BASE" ]]; then
     fi
   done
 fi
-[[ -n "$BASE" ]] || { echo "verify-decisions: no base ref found; pass one explicitly" >&2; exit 66; }
+# DECISIONS_BASE_FILE (set by CI) supersedes the git ref: a depth-1 sha
+# checkout has no origin/main, and the base copy arrives as a file instead.
+if [[ -z "$BASE" && -z "${DECISIONS_BASE_FILE:-}" ]]; then
+  echo "verify-decisions: no base ref found; pass one explicitly" >&2; exit 66
+fi
 
 LEDGER="DECISIONS.md"
 WORK="$(mktemp -d)"

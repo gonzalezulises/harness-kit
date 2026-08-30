@@ -116,6 +116,17 @@ the mechanical gates.
 | `make clean-check` | Clock-out gate. |
 | `make e2e` | End-to-end suite. |
 | `make session-start` / `session-end` | Open and close the session trace. |
+| `make gates` (`A=full` for everything) | Run the gate registry — every mechanically checkable convention lives there. |
+| `make verify-agent-notes` | Agent Notes tree/format gate. |
+| `make hooks-install` | Opt-in staged-only git hooks with formatter autofix. |
+
+## Agent Notes
+
+Every non-trivial change adds or updates an Agent Note in the same PR —
+`.agents/notes/{lifecycle}/{class}/yyyy-mm-dd-topic.md` records the decision's
+WHY and what was given up ([rules](.agents/notes/README.md)). A note is never
+edited into a different decision: supersede and cross-link. `make gates`
+enforces the tree.
 
 ## Feature list rules
 

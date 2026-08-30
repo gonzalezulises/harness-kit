@@ -174,10 +174,20 @@ while IFS=$'\t' read -r fid problem label cmd; do
   fi
 
   # Subshell: a layer command calling `exit` must not take this script with it.
-  if ( eval "$cmd" >/dev/null 2>&1 ); then
+  # Output is captured rather than discarded: a failure whose reason you cannot
+  # see is a failure you cannot act on, and in CI there is no way to re-run it by
+  # hand. Only the tail is shown, so a passing run stays quiet.
+  LAYER_LOG="$WORK_CLAIMS/layer.log"
+  if ( eval "$cmd" >"$LAYER_LOG" 2>&1 ); then
     echo "  ${GREEN}ok${RESET}   $label"
   else
     echo "  ${RED}FAIL${RESET} $label  \$ $cmd"
+    if [[ -s "$LAYER_LOG" ]]; then
+      echo "  ${BOLD}last output:${RESET}"
+      tail -15 "$LAYER_LOG" | sed 's/^/    /'
+    else
+      echo "    (the command produced no output)"
+    fi
     FAILED=$((FAILED + 1))
   fi
 done <<< "$CLAIMS_TSV"
