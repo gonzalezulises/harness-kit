@@ -52,10 +52,29 @@ four ever disagree. Rationale in
 
 ## Next Steps
 
-1. **Cut one release with release-please and watch it.** The gate and the sync script are
-   verified against fixtures, but no release has actually run: the `pr_branch` output
-   expression and the sync job's push into the release PR are unproven against the live
-   action. This is the highest-value unknown in the repo right now.
+1. **BLOCKED — enable "Allow GitHub Actions to create and approve pull requests".**
+   The Release workflow ran on the merge of #10 (run 33323634694) and got everything right:
+   it computed `2.2.0` from the conventional commits, generated the CHANGELOG with the
+   configured Spanish sections, and pushed the branch
+   `release-please--branches--main--components--harness-kit`. It then failed on the last
+   step with `GitHub Actions is not permitted to create or approve pull requests`.
+
+   That is a repository setting, not a code defect. A human enables it in
+   Settings → Actions → General → Workflow permissions, or with:
+
+   ```bash
+   gh api -X PUT repos/gonzalezulises/harness-kit/actions/permissions/workflow \
+     -f default_workflow_permissions=read -F can_approve_pull_request_reviews=true
+   ```
+
+   Trade-off worth stating: the same flag also lets a workflow approve pull requests. This
+   repo's ruleset requires a passing `Required quality` check rather than a human approval,
+   so enabling it does not open a review bypass here — but it would in a repo that gates on
+   approvals.
+
+   Still unproven after that: the `sync-version.sh` job. Its `pr_branch` expression and its
+   push into the release PR have never run, because the PR was never created. The release
+   that follows enabling the flag is the real test.
 2. Run `packs/sentry/` against a real project once, and record the evidence. Until then the
    pack is verified in logic only.
 2. Use it on a real delivery repository. `bin/harness-activate.sh` handles the mechanics;
