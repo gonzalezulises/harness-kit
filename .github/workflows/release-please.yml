@@ -1,0 +1,61 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    outputs:
+      released: ${{ steps.release.outputs.release_created }}
+      pr_branch: ${{ steps.release.outputs.pr && fromJSON(steps.release.outputs.pr).headBranchName || '' }}
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  # release-please updates CHANGELOG.md and the manifest, but it cannot touch
+  # VERSION or .harness/kit-version: both are bare version strings read with
+  # `tr -d '[:space:]'`, and its generic updater needs an annotation comment
+  # they cannot carry without breaking every consumer. So the manifest is the
+  # source of truth and this job propagates it into the same release PR.
+  #
+  # If this job ever fails to run, scripts/verify-version-sync.sh fails the
+  # build. The drift is caught by a gate, not noticed after a bad release.
+  sync-version:
+    needs: release-please
+    if: needs.release-please.outputs.pr_branch != ''
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.release-please.outputs.pr_branch }}
+
+      - name: Propagate the released version
+        run: bash scripts/sync-version.sh
+
+      - name: Prove every copy agrees before pushing
+        run: bash scripts/verify-version-sync.sh
+
+      - name: Commit into the release PR
+        run: |
+          if git diff --quiet; then
+            echo "Nothing to sync — VERSION already matches the manifest."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add VERSION .harness/kit-version
+          git commit -m "chore: sync VERSION with the release manifest"
+          git push

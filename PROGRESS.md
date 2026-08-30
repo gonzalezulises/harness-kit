@@ -6,7 +6,7 @@ last. If it disagrees with your recollection, this file wins.
 ## Current State
 
 - **Last commit:** `7dfcd14` — fix: correct invalid deny rule pattern in project settings
-- **Verification:** `make check` — passing, 175/175 assertions · `make gates` 3 pass
+- **Verification:** `make check` — passing, 179/179 assertions · `make gates` 4 pass
 - **Pack verification:** `packs/load-testing/` 57/57 · `packs/gherkin/` 15/15 ·
   `packs/sentry/` 55/55, exit 0
 - **Audit:** rubric v2, 84 checks. The kit scores 77/84 against itself.
@@ -43,9 +43,20 @@ First real DSN closes that gap.
 committing a file it cannot read would mean shipping unverified content. The full contents
 live in `packs/sentry/index.md`, which is the file the pack's readers actually consult.
 
+Releases are now cut by release-please from the conventional commits this repo already
+writes. The version lives in four files and only two are ones release-please can write, so
+`scripts/sync-version.sh` propagates the manifest inside the release PR and
+`scripts/verify-version-sync.sh` — registered in the gate registry — fails the build if the
+four ever disagree. Rationale in
+[the Agent Note](.agents/notes/implemented/process/2026-08-30-release-please-with-a-version-sync-gate.md).
+
 ## Next Steps
 
-1. Run `packs/sentry/` against a real project once, and record the evidence. Until then the
+1. **Cut one release with release-please and watch it.** The gate and the sync script are
+   verified against fixtures, but no release has actually run: the `pr_branch` output
+   expression and the sync job's push into the release PR are unproven against the live
+   action. This is the highest-value unknown in the repo right now.
+2. Run `packs/sentry/` against a real project once, and record the evidence. Until then the
    pack is verified in logic only.
 2. Use it on a real delivery repository. `bin/harness-activate.sh` handles the mechanics;
    the step that decides whether this is real or decoration is replacing the placeholder

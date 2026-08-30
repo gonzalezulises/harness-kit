@@ -204,6 +204,8 @@ bin/harness-protect.sh    instala los rulesets y los verifica por GET
 bin/harness-init.sh       scaffolder (--level minimal|full)
 scripts/verify-feature.sh la única ruta a passing; hace cumplir los presupuestos
 scripts/verify-claims.sh  re-verifica todo passing declarado
+scripts/verify-version-sync.sh  las cuatro copias de la versión deben coincidir
+scripts/sync-version.sh   propaga la versión publicada desde el manifiesto
 scripts/verify-decisions.sh  ledger append-only
 templates/minimal/        contrato base y archivos de estado
 templates/full/           Makefile, compuertas, workflow, payloads de ruleset
