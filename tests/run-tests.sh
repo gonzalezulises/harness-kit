@@ -291,6 +291,17 @@ OUT6="$(bash scripts/check-arch.sh . 2>&1)"
 ARCH_RC=$?
 assert_eq "committed secret trips a rule" "1" "$ARCH_RC"
 assert_contains "violation reports WHAT" "$OUT6" "WHAT:"
+
+# Regression: healthy code the scanner used to flag must pass. A $VAR
+# reference is not a credential, and neither is a function call (no digits).
+rm src/leak.ts
+printf 'curl -H "apikey: $SUPABASE_SERVICE_ROLE_KEY" "$url"\n' > src/env-ref.sh
+printf 'const secret = requireWebhookSecret()\n' > src/fn-call.ts
+git add -A >/dev/null 2>&1
+bash scripts/check-arch.sh . >/dev/null 2>&1
+assert_eq "env-var reference and function call are not flagged" "0" "$?"
+rm src/env-ref.sh src/fn-call.ts
+git add -A >/dev/null 2>&1
 assert_contains "violation reports WHY"  "$OUT6" "WHY:"
 assert_contains "violation reports FIX"  "$OUT6" "FIX:"
 assert_contains "violation names the offending file" "$OUT6" "src/leak.ts"
