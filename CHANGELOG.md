@@ -6,6 +6,13 @@ con qué versión se construyó, así que `harness-status.sh` puede decir cuál 
 
 ---
 
+## [2.2.3](https://github.com/gonzalezulises/harness-kit/compare/v2.2.2...v2.2.3) (2026-08-31)
+
+
+### Documentación
+
+* **readme:** say how the packs other than gherkin get installed ([c14eed8](https://github.com/gonzalezulises/harness-kit/commit/c14eed807e1ed188d78b4d1b078afc03d5518def))
+
 ## [2.2.2](https://github.com/gonzalezulises/harness-kit/compare/v2.2.1...v2.2.2) (2026-08-31)
 
 
