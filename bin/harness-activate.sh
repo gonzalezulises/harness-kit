@@ -24,7 +24,20 @@ DRYRUN=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --target)  TARGET="$2"; shift 2 ;;
-    --with)    [[ "$2" == "gherkin" ]] && WITH_GHERKIN=1; shift 2 ;;
+    # Un pack mal escrito instalaba nada y no decía nada: quien pedía --with sentry
+    # se iba creyendo que el pack estaba puesto. Un flag que se descarta en silencio
+    # es peor que uno que no existe.
+    --with)
+      case "${2:-}" in
+        gherkin) WITH_GHERKIN=1 ;;
+        "") echo "harness-activate: --with necesita el nombre de un pack" >&2; exit 64 ;;
+        *) echo "harness-activate: pack desconocido '$2'" >&2
+           echo "  Sólo 'gherkin' se instala con --with." >&2
+           echo "  Los demás (sentry, load-testing, openai-advanced) se copian a mano" >&2
+           echo "  desde packs/<nombre>/repo-template/ y se verifican con su verify-pack.sh." >&2
+           exit 64 ;;
+      esac
+      shift 2 ;;
     --yes|-y)  ASSUME_YES=1; shift ;;
     --dry-run) DRYRUN=1; shift ;;
     -h|--help) sed -n '2,18p' "$0"; exit 0 ;;

@@ -193,7 +193,7 @@ Más `instrumentation-client.ts` para el navegador y `sentry.server.config.ts` /
 ## Verificar el pack
 
 ```bash
-bash packs/sentry/verify-pack.sh   # 55 modos de falla, todos deben bloquear
+bash packs/sentry/verify-pack.sh   # cada modo de falla debe bloquear
 ```
 
 Las respuestas se sintetizan en vez de pedirse a la red, así que el pack se

@@ -15,6 +15,8 @@ last. If it disagrees with your recollection, this file wins.
   two cases that need an authenticated `gh`, which the summary now says out loud.
 - **Merge policy:** merge commits are disabled. Use `gh pr merge --rebase`;
   a merge commit duplicates every conventional PR title in the CHANGELOG.
+- **Release ritual:** a release-please PR arrives with its required check never
+  run. Close and reopen it to trigger the check, then merge. Never `--admin`.
 - **Pack verification:** `packs/load-testing/` 57/57 · `packs/gherkin/` 15/15 ·
   `packs/sentry/` 60/60, exit 0
 - **Audit:** rubric v2, 84 checks. The kit scores 77/84 against itself.
@@ -26,6 +28,31 @@ last. If it disagrees with your recollection, this file wins.
 
 _Nothing active. All fourteen features are `passing`, each promoted by
 `verify-feature.sh` with recorded evidence — none set by hand._
+
+## Session log — 2026-08-31 (the entry point was lying too)
+
+**`--with sentry` installed nothing and said nothing.** The flag parser matched
+only `gherkin` and let everything else fall through with no branch, no message
+and a zero exit: the repo scaffolded, no pack landed, and a success banner
+printed. Found while updating the `harness-creator` skill, where it was about to
+be written down as a warning to work around. It now exits 64 naming the pack.
+Three regression cases pin it. Reasoning in
+[the Agent Note](.agents/notes/implemented/bug-fix/2026-08-31-unknown-pack-must-fail-loudly.md).
+
+**Figures in living docs.** `tests/run-tests.sh` printed a score out of 74 when
+the rubric has 84; README and `packs/sentry/index.md` quoted assertion counts
+that had drifted four separate times in one day. Corrected where the number
+carries signal, deleted where it only ages — `make check` prints the real count
+every run, and a figure repeated from memory is how all four went stale.
+Historical entries below and in `CHANGELOG.md` were left untouched: they are
+records of what was true then, not claims about now.
+
+**Outside the repo:** the `harness-creator` skill was pointing at
+`harness-init.sh` (files only) instead of `harness-activate.sh` (files, remote,
+CI ruleset, and a closing list of what is still the user's to do). It also cited
+65 assertions and a 74-check rubric. Updated, and told to quote what the auditor
+prints rather than a remembered number. It now defers day-zero client repos to
+`nuevo-repo-cliente`, which already calls activate.
 
 ## Session log — 2026-08-30 (the two loose ends from the release)
 

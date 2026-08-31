@@ -143,8 +143,8 @@ done
 
 FULL_SCORE="$(bash "$KIT_DIR/bin/harness-audit.sh" "$FULL" --json 2>/dev/null \
   | python3 -c "import json,sys;d=json.load(sys.stdin);print(d['score']['passed'])")"
-[[ "$FULL_SCORE" -ge 70 ]] && ok "full harness scores >= 70/74 (got $FULL_SCORE)" \
-                           || bad "full harness scored only $FULL_SCORE/74"
+[[ "$FULL_SCORE" -ge 70 ]] && ok "full harness scores >= 70/84 (got $FULL_SCORE)" \
+                           || bad "full harness scored only $FULL_SCORE/84"
 
 grep -q 'traces.jsonl' "$FULL/.gitignore" && ok "gitignored the trace artifact" \
                                           || bad "traces.jsonl not gitignored"
@@ -803,6 +803,23 @@ assert_file "--with gherkin installs the runner" "$ACT2/bin/gherkin-check"
 assert_file "--with gherkin installs the validator" "$ACT2/bin/gherkin-validate.mjs"
 [[ ! -f "$ACT/bin/gherkin-check" ]] && ok "gherkin stays opt-in when not requested" \
                                     || bad "gherkin was installed without being asked for"
+
+# 18h — an unknown pack must fail loudly. It used to be discarded in silence, so
+# `--with sentry` installed nothing and said nothing: the user walked away
+# believing the pack was in place. A flag that is quietly ignored is worse than
+# one that does not exist.
+ACT3="$WORK/activate-badpack"; make_fixture "$ACT3"
+bash "$KIT_DIR/bin/harness-activate.sh" --target "$ACT3" --yes --with sentry >/dev/null 2>&1
+BADPACK=$?
+[[ "$BADPACK" -eq 64 ]] && ok "an unknown pack is a usage error (exit 64)" \
+                        || bad "--with sentry exited $BADPACK instead of 64 — it was ignored"
+BADPACK_MSG="$(bash "$KIT_DIR/bin/harness-activate.sh" --target "$ACT3" --yes --with sentry 2>&1)"
+case "$BADPACK_MSG" in
+  *"pack desconocido"*sentry*) ok "the unknown pack is named in the error" ;;
+  *) bad "the error does not name the pack the user asked for" ;;
+esac
+[[ ! -f "$ACT3/AGENTS.md" ]] && ok "a rejected --with installs nothing" \
+                             || bad "activate scaffolded despite rejecting the flag"
 
 # ═════════════════════════════════════════════════════════════════════════════
 echo ""
