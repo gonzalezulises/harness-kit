@@ -107,6 +107,28 @@ echo ""
 
 CREATED=0; SKIPPED=0; FAILED=0
 
+# ── Frontera de confianza ────────────────────────────────────────────────────
+# El DSN de cliente es público por diseño: viaja en el bundle del navegador.
+# Cualquiera en internet puede enviar un envelope y crear un issue en Sentry
+# cuyo título controla por completo. Este comando copia ese título a los issues
+# de un repositorio privado, así que el texto cruza de "internet anónimo" a
+# "tracker interno" — y un título es texto que la gente lee y que GitHub
+# interpreta: @menciones notifican, los enlaces se convierten en clics.
+#
+# Se sanea el título y se limita cuántos issues puede abrir una corrida. Nada de
+# esto autentica el origen —no se puede, el DSN es público— pero quita el filo:
+# sin notificaciones inducidas, sin markdown inyectado, sin inundar el tracker.
+
+MAX_NEW_ISSUES="${SENTRY_ISSUE_MAX:-10}"
+case "$MAX_NEW_ISSUES" in ''|*[!0-9]*) die "SENTRY_ISSUE_MAX must be a number" 78 ;; esac
+
+sanitize_title() {
+  printf '%s' "$1" \
+    | tr -d '\000-\037' \
+    | sed 's/@/@\xe2\x80\x8b/g; s/`/'"'"'/g' \
+    | cut -c1-120
+}
+
 while IFS=$'\t' read -r sid title; do
   [[ -n "$sid" ]] || continue
 
@@ -119,13 +141,21 @@ while IFS=$'\t' read -r sid title; do
   fi
 
   if [[ $APPLY -eq 0 ]]; then
-    echo "  ${GREEN}would${RESET}  $sid — $title"
+    echo "  ${GREEN}would${RESET}  $sid — $(sanitize_title "$title")"
     CREATED=$((CREATED + 1))
     continue
   fi
 
+  if [[ $CREATED -ge $MAX_NEW_ISSUES ]]; then
+    echo "  ${YELLOW}stop${RESET}   límite de $MAX_NEW_ISSUES issues por corrida alcanzado"
+    echo "         El resto queda en Sentry. Súbelo con SENTRY_ISSUE_MAX si es"
+    echo "         un pico legítimo; si no lo es, alguien está usando el DSN público."
+    break
+  fi
+
+  SAFE_TITLE="$(sanitize_title "$title")"
   if "$GH" issue create \
-      --title "[$sid] $title" \
+      --title "[$sid] $SAFE_TITLE" \
       --label "$LABEL" \
       --body "Reported by Sentry as \`$sid\` in \`$SENTRY_ORG/$SENTRY_PROJECT\`.
 
@@ -133,7 +163,7 @@ A user hit this. Promote it into \`feature_list.json\` or close it with a reason
 an unread queue is the same as no monitoring.
 
 https://sentry.io/organizations/$SENTRY_ORG/issues/?query=$sid" >/dev/null 2>&1; then
-    echo "  ${GREEN}open${RESET}   $sid — $title"
+    echo "  ${GREEN}open${RESET}   $sid — $SAFE_TITLE"
     CREATED=$((CREATED + 1))
   else
     echo "  ${RED}FAIL${RESET}   $sid — could not create the issue"

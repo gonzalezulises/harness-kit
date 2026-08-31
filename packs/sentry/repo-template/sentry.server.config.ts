@@ -1,4 +1,5 @@
 import * as Sentry from "@sentry/nextjs";
+import { scrubEvent } from "./sentry-scrub";
 
 // Every knob is read from the environment and mirrored by bin/sentry-check, so
 // the gate checks the same values the SDK uses. Hardcoding one here would make
@@ -23,5 +24,11 @@ Sentry.init({
 
   // Local runs would otherwise fill the production project with noise from
   // code that was never deployed.
+
+  // La URL no la filtra sendDefaultPii: un token en el path —enlace mágico,
+  // portal de cliente— sale vivo hacia Sentry con el primer error. Ver
+  // sentry-scrub.ts.
+  beforeSend: (event) => scrubEvent(event),
+  beforeSendTransaction: (event) => scrubEvent(event),
   enabled: process.env.NODE_ENV === "production",
 });
