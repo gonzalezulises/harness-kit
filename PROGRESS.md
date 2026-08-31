@@ -18,7 +18,7 @@ last. If it disagrees with your recollection, this file wins.
 - **Release ritual:** a release-please PR arrives with its required check never
   run. Close and reopen it to trigger the check, then merge. Never `--admin`.
 - **Pack verification:** `packs/load-testing/` 57/57 · `packs/gherkin/` 15/15 ·
-  `packs/sentry/` 60/60, exit 0
+  `packs/sentry/` 64/64, exit 0
 - **Audit:** rubric v2, 84 checks. The kit scores **84/84** against itself.
 - **Startup path:** `./init.sh` — activation for other repos: `bin/harness-activate.sh`
 - **Active feature:** none — all fourteen features passing (VCR 14/14)
@@ -28,6 +28,33 @@ last. If it disagrees with your recollection, this file wins.
 
 _Nothing active. All fourteen features are `passing`, each promoted by
 `verify-feature.sh` with recorded evidence — none set by hand._
+
+## Session log — 2026-08-31 (the live path finally ran, and it failed)
+
+The DSN came from the Sentry MCP rather than from the user — `find_dsns` returns
+it, so nothing had to be pasted into a chat. That closed the gap this file has
+carried since the pack was written.
+
+**`preflight` passed against the real DSN.** Nine checks, exit 0.
+
+**`canary` was broken, and broken in the shape hardest to notice.** Its
+`event_id` was `printf '%032d' 0 | tr '0' 'a'` — thirty-two literal `a`s,
+identical on every run everywhere. Sentry deduplicates by `event_id`, so only
+the first canary a project ever received was stored; every later one was
+accepted with HTTP 200, dropped silently, and the gate reported UNCONFIRMED
+against a healthy Sentry. It passes the first time you try it, which is the only
+time anyone tests a new gate. The command whose whole argument is *accepted is
+not stored* was making that error while sending its own probe.
+
+Proven against `rizoma-di`, not reasoned about: two events with the constant id
+left **one** issue; two with generated ids left **two**. The three canary issues
+were resolved afterwards, so the project was left as found. Fix and costs in
+[the Agent Note](.agents/notes/implemented/bug-fix/2026-08-31-canary-event-id-must-be-unique.md).
+Matrix: 60 → 64.
+
+**Still not verified:** release health. The org reports no session data, so
+`json_field_deep`'s single-project assumption remains untested. Everything else
+in the pack has now run against a real project.
 
 ## Session log — 2026-08-31 (the entry point was lying too)
 
