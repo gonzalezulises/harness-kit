@@ -18,7 +18,7 @@ last. If it disagrees with your recollection, this file wins.
 - **Release ritual:** a release-please PR arrives with its required check never
   run. Close and reopen it to trigger the check, then merge. Never `--admin`.
 - **Pack verification:** `packs/load-testing/` 57/57 · `packs/gherkin/` 15/15 ·
-  `packs/sentry/` 64/64, exit 0
+  `packs/sentry/` 68/68, exit 0
 - **Audit:** rubric v2, 84 checks. The kit scores **84/84** against itself.
 - **Startup path:** `./init.sh` — activation for other repos: `bin/harness-activate.sh`
 - **Active feature:** none — all fourteen features passing (VCR 14/14)
@@ -28,6 +28,35 @@ last. If it disagrees with your recollection, this file wins.
 
 _Nothing active. All fourteen features are `passing`, each promoted by
 `verify-feature.sh` with recorded evidence — none set by hand._
+
+## Session log — 2026-08-31 (installed in two real repos; the canary had never worked)
+
+The Sentry CLI was installed and authenticated, which unblocked what the MCP
+could not do: `sentry project create` succeeded where the MCP returned 403, so
+the CLI carries the user's own permissions and the MCP does not. Two projects
+created, `aurobalance` and `portal-expediente-kyc`.
+
+**The canary had never once reached a real Sentry.** `cmd_canary` resolved the
+DSN with `dsn="$(resolve_dsn)"`, and `parse_dsn` sets its three values as
+globals — the command substitution ran it in a subshell, so they came back empty
+and `ingest_send` composed `https:///api//envelope/?sentry_key=`. curl refused
+it every time and the gate blamed the server. The one command whose job is to
+prove errors arrive could not send one.
+
+**Sixty-four cases missed it because the stub skipped the URL entirely** — the
+only line that could be wrong was the only line never exercised. `ingest_send`
+now builds the URL before the stub branch and records it; four cases assert its
+shape. Reasoning in
+[the Agent Note](.agents/notes/implemented/bug-fix/2026-08-31-canary-dsn-lost-in-a-subshell.md).
+Matrix: 64 → 68.
+
+Both projects now report `event confirmed stored`, exit 0 — the canary's full
+cycle against a live Sentry, for the first time.
+
+**Two gaps the pack has, found by installing it for real:** it ships no
+`withSentryConfig` (so no source maps) and says nothing about CSP — both target
+repos had a `connect-src` that would have blocked every SDK request silently.
+Both were fixed by hand in those repos; the pack still does not carry them.
 
 ## Session log — 2026-08-31 (the live path finally ran, and it failed)
 

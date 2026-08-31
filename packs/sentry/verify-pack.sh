@@ -499,6 +499,43 @@ esac
                          || bad "two canaries produced the same event id — Sentry would drop the second"
 
 
+
+# ── 65-68. La URL que sale a la red, no sólo el resultado ───────────────────
+# El canary nunca pudo enviar un evento a un Sentry real: cmd_canary resolvía el
+# DSN con `dsn="$(resolve_dsn)"`, y parse_dsn llenaba DSN_HOST/DSN_PROJECT_ID
+# dentro de esa subshell. Al volver estaban vacías, ingest_send armaba
+# https:///api//envelope/ y curl fallaba siempre — "the ingest endpoint refused
+# the event" contra un Sentry que nunca vio la petición.
+#
+# Sesenta y cuatro casos no lo vieron porque el stub saltaba directo al
+# resultado sin construir la URL: el seam que hace verificable esta compuerta
+# era el que escondía su peor fallo. Ahora la deja escrita y estos casos la leen.
+stub
+: > "$STUB_DIR/ingest-ok"
+printf '[{"shortId":"WEB-1","title":"canary-url-probe"}]\n' > "$STUB_DIR/issues.json"
+( cd "$SANDBOX" && env NO_COLOR=1 SENTRY_ORG=acme SENTRY_PROJECT=web \
+    SENTRY_AUTH_TOKEN=t SENTRY_CANARY_MARKER=canary-url-probe \
+    "SENTRY_DSN=https://abc123@o4507.ingest.us.sentry.io/4507" \
+    "SENTRY_STUB_DIR=$STUB_DIR" "$GATE" canary ) >/dev/null 2>&1
+INGEST_URL="$(cat "$STUB_DIR/ingest-url" 2>/dev/null || true)"
+
+[[ -n "$INGEST_URL" ]] && ok "the ingest URL is recorded for inspection" \
+                       || bad "no ingest URL was recorded — the seam still hides it"
+case "$INGEST_URL" in
+  *o4507.ingest.us.sentry.io*) ok "the ingest URL carries the DSN host" ;;
+  *) bad "the ingest URL lost its host: $INGEST_URL" ;;
+esac
+case "$INGEST_URL" in
+  *api/4507/envelope*) ok "the ingest URL carries the project id" ;;
+  *) bad "the ingest URL lost its project id: $INGEST_URL" ;;
+esac
+# El síntoma exacto del bug, por si alguien vuelve a envolver el parseo.
+case "$INGEST_URL" in
+  https:///*|*api//*) bad "the ingest URL is the empty-host shape: $INGEST_URL" ;;
+  *) ok "the ingest URL is not the empty-host shape" ;;
+esac
+
+
 echo ""
 echo "${BOLD}────────────────────────────────────────${RESET}"
 echo "${BOLD}$PASS passed, $FAIL failed${RESET}"

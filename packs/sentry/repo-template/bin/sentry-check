@@ -75,15 +75,22 @@ api_get() {
 }
 
 ingest_send() {
-  local payload="$1"
+  local payload="$1" url
+  # La URL se arma antes de la bifurcación, y el stub la deja escrita. Cuando el
+  # modo stub saltaba directamente al resultado, un DSN que no había llegado a
+  # parsearse producía https:///api//envelope/ sin que ninguna prueba pudiera
+  # verlo: el seam que hace verificable esta compuerta era el que escondía su
+  # peor fallo. Un doble de prueba tiene que ejercitar lo que va a la red.
+  url="https://$DSN_HOST/api/$DSN_PROJECT_ID/envelope/?sentry_key=$DSN_KEY&sentry_version=7"
   if [[ -n "$STUB" ]]; then
+    printf '%s\n' "$url" > "$STUB/ingest-url"
     [[ -f "$STUB/ingest-ok" ]] || return 1
     return 0
   fi
   curl -sS --fail --max-time 20 -X POST \
     -H 'Content-Type: application/x-sentry-envelope' \
     --data-binary "$payload" \
-    "https://$DSN_HOST/api/$DSN_PROJECT_ID/envelope/?sentry_key=$DSN_KEY&sentry_version=7" \
+    "$url" \
     >/dev/null 2>&1
 }
 
@@ -333,7 +340,15 @@ cmd_canary() {
   echo "${BOLD}Sentry · canary${RESET}"
 
   local dsn
-  dsn="$(resolve_dsn)" || die "canary needs a parseable SENTRY_DSN" "$E_MALFORMED"
+  # parse_dsn llena DSN_KEY/DSN_HOST/DSN_PROJECT_ID como globales. Una
+  # sustitución de comandos —`dsn="$(resolve_dsn)"`— las llenaba dentro de una
+  # subshell que muere al volver, así que ingest_send armaba
+  # https:///api//envelope/ y curl fallaba siempre: el canary reportaba "the
+  # ingest endpoint refused the event" contra un Sentry que nunca vio la
+  # petición. Se parsea aquí, en este shell, para que las globales sobrevivan.
+  dsn="${SENTRY_DSN:-${NEXT_PUBLIC_SENTRY_DSN:-}}"
+  [[ -n "$dsn" ]] && parse_dsn "$dsn" \
+    || die "canary needs a parseable SENTRY_DSN" "$E_MALFORMED"
   [[ -n "${SENTRY_ORG:-}" && -n "${SENTRY_PROJECT:-}" ]] \
     || die "canary needs SENTRY_ORG and SENTRY_PROJECT to read the event back" "$E_MALFORMED"
   [[ -n "${SENTRY_AUTH_TOKEN:-}" ]] \
