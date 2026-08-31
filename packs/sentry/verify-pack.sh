@@ -474,6 +474,31 @@ assert "a nested crash-free rate below the floor still blocks" 1 \
   "SENTRY_STUB_DIR=$STUB_DIR" -- health v1.0.0
 
 
+
+# ── 61-64. El event_id del canary no puede repetirse ────────────────────────
+# Sentry deduplica por event_id. Con un id constante el segundo canary era
+# aceptado con 200 y descartado en silencio: el gate imprimía "event accepted
+# by ingest", esperaba su timeout y reportaba UNCONFIRMED para siempre contra
+# un proyecto sano. Comprobado contra rizoma-di el 2026-08-31: con id fijo, dos
+# envíos dejaron un solo issue; con id único, dos envíos dejaron dos.
+EID_FN="$WORK/canary-id.sh"
+sed -n '/^canary_event_id() {/,/^}/p' "$GATE" > "$EID_FN"
+[[ -s "$EID_FN" ]] && ok "the gate exposes canary_event_id" \
+                   || bad "canary_event_id not found in the gate"
+
+# shellcheck source=/dev/null
+. "$EID_FN"
+EID1="$(canary_event_id)"; EID2="$(canary_event_id)"
+[[ "${#EID1}" -eq 32 ]] && ok "the event id is 32 characters" \
+                        || bad "the event id is ${#EID1} characters, not 32"
+case "$EID1" in
+  *[!0-9a-f]*) bad "the event id is not hexadecimal: $EID1" ;;
+  *) ok "the event id is hexadecimal" ;;
+esac
+[[ "$EID1" != "$EID2" ]] && ok "two canaries never share an event id" \
+                         || bad "two canaries produced the same event id — Sentry would drop the second"
+
+
 echo ""
 echo "${BOLD}────────────────────────────────────────${RESET}"
 echo "${BOLD}$PASS passed, $FAIL failed${RESET}"

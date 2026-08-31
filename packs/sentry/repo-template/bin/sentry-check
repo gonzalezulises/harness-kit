@@ -305,6 +305,30 @@ cmd_preflight() {
 # The only check that proves the pipeline end to end: send a uniquely marked
 # event, then ask the API whether it landed. Everything else is inference.
 
+# Sentry deduplica por event_id. Un id constante hace que el segundo canary sea
+# aceptado con 200 y descartado en silencio: el gate imprime "event accepted by
+# ingest", espera su timeout, y reporta UNCONFIRMED para siempre en un proyecto
+# perfectamente sano. Es exactamente el fallo que este comando existe para
+# detectar —aceptado no es almacenado— cometido al enviar la prueba.
+#
+# 16 bytes de /dev/urandom cuando existe; si no, RANDOM sembrado con el PID y el
+# reloj, que basta para distinguir corridas. No es criptografía: sólo tiene que
+# ser distinto la próxima vez.
+canary_event_id() {
+  local id=""
+  if [[ -r /dev/urandom ]]; then
+    id="$(head -c 16 /dev/urandom 2>/dev/null | od -An -tx1 2>/dev/null | tr -d ' \n')"
+  fi
+  if [[ ${#id} -ne 32 ]]; then
+    RANDOM=$(( $$ ^ $(date +%s) ))
+    id=""
+    for _ in 1 2 3 4 5 6 7 8; do
+      id="$id$(printf '%04x' $(( ((RANDOM << 1) ^ RANDOM) & 0xFFFF )))"
+    done
+  fi
+  printf '%s' "${id:0:32}"
+}
+
 cmd_canary() {
   echo "${BOLD}Sentry · canary${RESET}"
 
@@ -322,7 +346,7 @@ cmd_canary() {
   local marker="${SENTRY_CANARY_MARKER:-harness-canary-$$-$(date +%s)}"
   local envelope
   envelope=$(printf '{"event_id":"%s","dsn":"%s"}\n{"type":"event"}\n{"message":"%s","level":"error","environment":"%s"}\n' \
-    "$(printf '%032d' 0 | tr '0' 'a')" "$dsn" "$marker" "${SENTRY_ENVIRONMENT:-production}")
+    "$(canary_event_id)" "$dsn" "$marker" "${SENTRY_ENVIRONMENT:-production}")
 
   if ! ingest_send "$envelope"; then
     fail "the ingest endpoint refused the event — nothing was delivered"
