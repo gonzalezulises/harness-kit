@@ -939,6 +939,55 @@ fi
 
 # ═════════════════════════════════════════════════════════════════════════════
 echo ""
+echo "${BOLD}21. verify-claims does not repeat identical work${RESET}"
+# Features share layers on purpose. Re-running an identical command against the
+# same checkout returns the same answer at the same cost: six features x three
+# layers meant eighteen executions to observe three results.
+
+DEDUP="$WORK/dedup"; make_fixture "$DEDUP"
+bash "$KIT_DIR/bin/harness-init.sh" --target "$DEDUP" --level full >/dev/null 2>&1
+cd "$DEDUP" || exit 1
+
+dedup_claims() {
+  FEATS="$1" python3 - <<'PYEOF2'
+import json, os
+d = json.load(open("feature_list.json"))
+d["features"] = json.loads(os.environ["FEATS"])
+json.dump(d, open("feature_list.json", "w"), indent=2)
+PYEOF2
+}
+
+COUNTER="$DEDUP/counter.txt"
+SHARED='{"label":"suite","cmd":"printf x >> \"$COUNTER\"","repair":"r"}'
+
+# 21a — three features, one shared command, one execution
+: > "$COUNTER"
+dedup_claims "[{\"id\":\"D1\",\"state\":\"passing\",\"behavior\":\"b\",\"evidence\":[\"e\"],\"layers\":[$SHARED]},
+               {\"id\":\"D2\",\"state\":\"passing\",\"behavior\":\"b\",\"evidence\":[\"e\"],\"layers\":[$SHARED]},
+               {\"id\":\"D3\",\"state\":\"passing\",\"behavior\":\"b\",\"evidence\":[\"e\"],\"layers\":[$SHARED]}]"
+OUT21="$(COUNTER="$COUNTER" bash scripts/verify-claims.sh 2>&1)"; RC21=$?
+assert_eq "shared-layer claims still exit 0" "0" "$RC21"
+assert_eq "an identical command runs once, not three times" "1" "$(wc -c < "$COUNTER" | tr -d ' ')"
+
+# 21b — reusing a verdict must not make features disappear from the report
+assert_contains "every feature is still reported" "$OUT21" "D3"
+
+# 21c — genuinely different commands are genuinely different verifications
+: > "$COUNTER"
+dedup_claims "[{\"id\":\"D1\",\"state\":\"passing\",\"behavior\":\"b\",\"evidence\":[\"e\"],\"layers\":[{\"label\":\"a\",\"cmd\":\"printf x >> \\\"\$COUNTER\\\"\",\"repair\":\"r\"}]},
+               {\"id\":\"D2\",\"state\":\"passing\",\"behavior\":\"b\",\"evidence\":[\"e\"],\"layers\":[{\"label\":\"b\",\"cmd\":\"printf y >> \\\"\$COUNTER\\\"\",\"repair\":\"r\"}]}]"
+COUNTER="$COUNTER" bash scripts/verify-claims.sh >/dev/null 2>&1
+assert_eq "two distinct commands both run" "2" "$(wc -c < "$COUNTER" | tr -d ' ')"
+
+# 21d — the risk of deduplicating is certifying green what never passed
+dedup_claims '[{"id":"D1","state":"passing","behavior":"b","evidence":["e"],"layers":[{"label":"s","cmd":"false","repair":"r"}]},
+               {"id":"D2","state":"passing","behavior":"b","evidence":["e"],"layers":[{"label":"s","cmd":"false","repair":"r"}]}]'
+OUTF="$(bash scripts/verify-claims.sh 2>&1)"; RCF=$?
+assert_eq "a shared failing command still fails" "1" "$RCF"
+assert_contains "it fails once per feature that declares it" "$OUTF" "2 layer(s) failed"
+
+# ═════════════════════════════════════════════════════════════════════════════
+echo ""
 echo "${BOLD}────────────────────────────────────────${RESET}"
 echo "${BOLD}$PASS passed, $FAIL failed${RESET}"
 [[ $FAIL -eq 0 ]] || exit 1
