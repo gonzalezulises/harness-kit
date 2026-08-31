@@ -40,5 +40,15 @@ repos Node, Rust y Go, así que un verificador propio del kit tiene que ser bash
 de un repo nuevo. Es intencional: es la diferencia entre una tarea pendiente visible y una
 verificación fantasma. Quien no quiera la capa 3 todavía, borra el target; no lo deja mintiendo.
 
+**Un efecto de borde que conviene recordar.** `required-quality.yml` copia
+`scripts/verify-claims.sh` desde la base protegida encima del del head durante su paso de
+claims: es la propiedad que impide que una PR debilite al juez que la evalúa. Pero la suite del
+repo corre DENTRO de ese paso, así que cualquier prueba que inspeccione ese archivo está mirando
+la versión de la base, no la del commit. Costó dos corridas en rojo con todo verde en local —
+aquí el falso positivo fue la comparación de drift entre `scripts/` y `templates/full/scripts/`.
+`CLAIMS_BASE_FILE` la exporta exactamente ese paso, así que sirve de marca: cuando está presente,
+el contenido se lee de `git show HEAD:...`; fuera, manda el árbol de trabajo, que es lo que hace
+falta para escribir la prueba en rojo antes que el arreglo.
+
 **Condición de revisión.** Si aparece un target legítimo cuyo trabajo es solo imprimir, se declara
 en `HARNESS_INFORMATIONAL_TARGETS` con su razón — es la salida documentada, y `help` ya la usa.

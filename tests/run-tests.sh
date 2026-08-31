@@ -62,13 +62,26 @@ done
 # The kit dogfoods its own scripts: scripts/X and templates/full/scripts/X are the
 # same file in two places. The suite runs the template copy, so editing only the
 # root one produces failures with no visible cause. Catch the drift instead.
+# required-quality.yml copia scripts/verify-claims.sh desde la base protegida encima del
+# del head durante su paso de claims — así una PR no puede debilitar al juez que la evalúa.
+# Pero la suite corre DENTRO de ese paso, así que ahí el archivo en disco no es el de este
+# commit y la comparación de drift daba un falso positivo (run 33421061860). CLAIMS_BASE_FILE
+# la exporta exactamente ese paso, así que marca el único contexto donde hay que leer de git.
+root_content() {
+  if [[ -n "${CLAIMS_BASE_FILE:-}" ]] && git -C "$KIT_DIR" show "HEAD:scripts/$1" 2>/dev/null; then
+    return 0
+  fi
+  cat "$KIT_DIR/scripts/$1"
+}
+
 for f in "$KIT_DIR"/templates/full/scripts/*.sh; do
   base="$(basename "$f")"
   root="$KIT_DIR/scripts/$base"
   [[ -f "$root" ]] || continue
   # The kit's own copy is the rendered one, so placeholders are substituted with
   # the values the kit itself uses before comparing.
-  if diff -q <(sed 's/{{VERIFY_CMD}}/make check/g; s/{{E2E_CMD}}/make e2e/g' "$f") "$root" >/dev/null 2>&1; then
+  if diff -q <(sed 's/{{VERIFY_CMD}}/make check/g; s/{{E2E_CMD}}/make e2e/g' "$f") \
+             <(root_content "$base") >/dev/null 2>&1; then
     ok "in sync: scripts/$base"
   else
     bad "DRIFT: scripts/$base differs from templates/full/scripts/$base — copy it across"
