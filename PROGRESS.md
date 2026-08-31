@@ -19,7 +19,7 @@ last. If it disagrees with your recollection, this file wins.
   run. Close and reopen it to trigger the check, then merge. Never `--admin`.
 - **Pack verification:** `packs/load-testing/` 57/57 · `packs/gherkin/` 15/15 ·
   `packs/sentry/` 60/60, exit 0
-- **Audit:** rubric v2, 84 checks. The kit scores 77/84 against itself.
+- **Audit:** rubric v2, 84 checks. The kit scores **84/84** against itself.
 - **Startup path:** `./init.sh` — activation for other repos: `bin/harness-activate.sh`
 - **Active feature:** none — all fourteen features passing (VCR 14/14)
 - **Blocker:** none
@@ -46,6 +46,17 @@ carries signal, deleted where it only ages — `make check` prints the real coun
 every run, and a figure repeated from memory is how all four went stale.
 Historical entries below and in `CHANGELOG.md` were left untouched: they are
 records of what was true then, not claims about now.
+
+**The auditor was scoring this repo wrong.** `grep -c` prints `0` and exits 1
+when nothing matches, so `$(grep -c … || echo 0)` appended a second zero: the
+variable held `"0\n0"` and every arithmetic comparison using it blew up. Five
+call sites were affected — the VCR pair and the three budget counters. Effect:
+`enf.stopcond` was unpassable for any repo without a `budget_defaults` block no
+matter how complete its budgets were, and told the user to add `stop_condition`
+to blocks that already had one. This repo had been at a true **84/84** while
+reporting 83. Counters now go through one helper that returns an integer.
+Reasoning in
+[the Agent Note](.agents/notes/implemented/bug-fix/2026-08-31-audit-counters-must-return-an-integer.md).
 
 **Outside the repo:** the `harness-creator` skill was pointing at
 `harness-init.sh` (files only) instead of `harness-activate.sh` (files, remote,
