@@ -6,6 +6,13 @@ con qué versión se construyó, así que `harness-status.sh` puede decir cuál 
 
 ---
 
+## [2.2.5](https://github.com/gonzalezulises/harness-kit/compare/v2.2.4...v2.2.5) (2026-08-31)
+
+
+### Arreglado
+
+* **sentry:** keep the parsed DSN out of a subshell ([ea8cfa4](https://github.com/gonzalezulises/harness-kit/commit/ea8cfa45b8d924a40f80232c9cee47fff18f93c2))
+
 ## [2.2.4](https://github.com/gonzalezulises/harness-kit/compare/v2.2.3...v2.2.4) (2026-08-31)
 
 
