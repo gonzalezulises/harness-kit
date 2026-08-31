@@ -344,6 +344,38 @@ fi
 
 # ═════════════════════════════════════════════════════════════════════════════
 echo ""
+# 12z — the auditor's own counters must survive a zero match.
+# `grep -c` prints "0" AND exits 1 when nothing matches, so the old
+# `$(grep -c … || echo 0)` produced a two-line "0\n0": every arithmetic
+# comparison using it blew up, the check failed for a reason that was not its
+# own, and its repair text told the user to fix something already correct.
+# A repo with complete budgets and no budget_defaults could never pass.
+AUD="$WORK/audit-counters"; make_fixture "$AUD"
+bash "$KIT_DIR/bin/harness-activate.sh" --target "$AUD" --yes >/dev/null 2>&1
+python3 - "$AUD/feature_list.json" <<'PYEOF'
+import json, sys
+p = sys.argv[1]
+d = json.load(open(p))
+if isinstance(d, dict):
+    d.pop("budget_defaults", None)          # the shape that used to break
+fs = d["features"] if isinstance(d, dict) and "features" in d else d
+for f in fs:
+    f["budgets"] = {"review_rounds_max": 2, "repeated_blocker_max": 3,
+                    "stop_condition": "Stop and escalate to a human."}
+json.dump(d, open(p, "w"), indent=2)
+PYEOF
+[[ "$(grep -c '"budget_defaults"' "$AUD/feature_list.json")" == "0" ]]   && ok "fixture has no budget_defaults (the case that used to break)"   || bad "fixture unexpectedly carries budget_defaults"
+AUD_JSON="$(bash "$KIT_DIR/bin/harness-audit.sh" "$AUD" --json 2>/dev/null)"
+STOPCOND="$(printf '%s' "$AUD_JSON" | python3 -c "
+import json,sys
+for c in json.load(sys.stdin)['checks']:
+    if c.get('id') == 'enf.stopcond': print(c.get('status') or c.get('result') or c)
+")"
+case "$STOPCOND" in
+  *pass*|*PASS*) ok "complete budgets pass enf.stopcond without budget_defaults" ;;
+  *) bad "enf.stopcond reported '$STOPCOND' for budgets that are complete" ;;
+esac
+
 echo "${BOLD}13. budgets — the anti-loop gate${RESET}"
 cd "$FULL" || exit 1
 

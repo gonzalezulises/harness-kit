@@ -142,6 +142,17 @@ makefile_has_target() {
   echo "fail"
 }
 
+# grep -c imprime "0" Y ADEMÁS sale con código 1 cuando no hay coincidencias, así
+# que el idioma `$(grep -c … || echo 0)` añade un segundo cero: la variable queda
+# con dos líneas y cualquier aritmética que la use revienta. El check entonces
+# falla por una razón que no es la suya, y su texto de reparación manda arreglar
+# algo que ya estaba bien. Un contador devuelve un entero, siempre.
+count_matches() {
+  local n
+  n="$(grep -c "$1" "$2" 2>/dev/null)" || n=0
+  printf '%s' "${n:-0}"
+}
+
 feature_list_path() {
   local f
   for f in "feature_list.json" "features.json"; do
@@ -420,8 +431,8 @@ recommended wip.vcrtarget "'vcr' target exists (verified completion ratio)" \
 _vcr_res="fail"; _vcr_desc="VCR: no feature_list found, ratio cannot be computed"
 if [[ -n "$FLPATH" ]]; then
   _va=0; _vp=0
-  _va="$(grep -c '"state"[[:space:]]*:[[:space:]]*"active"' "$FLPATH" 2>/dev/null || echo 0)"
-  _vp="$(grep -c '"state"[[:space:]]*:[[:space:]]*"passing"' "$FLPATH" 2>/dev/null || echo 0)"
+  _va="$(count_matches '"state"[[:space:]]*:[[:space:]]*"active"' "$FLPATH")"
+  _vp="$(count_matches '"state"[[:space:]]*:[[:space:]]*"passing"' "$FLPATH")"
   _va="$(echo "$_va" | tr -d ' \n')"; _vp="$(echo "$_vp" | tr -d ' \n')"
   _vtot=$(( _va + _vp ))
   if [[ "$_vtot" -eq 0 ]]; then
@@ -627,10 +638,10 @@ budgets_have_stop() {
   local fl b s d
   fl="$(feature_list_path)"
   [[ -n "$fl" ]] || { echo "fail"; return; }
-  b="$(grep -c '"budgets"' "$fl" 2>/dev/null || echo 0)"
+  b="$(count_matches '"budgets"' "$fl")"
   [[ "$b" -eq 0 ]] && { echo "fail"; return; }
-  s="$(grep -c '"stop_condition"' "$fl" 2>/dev/null || echo 0)"
-  d="$(grep -c '"budget_defaults"' "$fl" 2>/dev/null || echo 0)"
+  s="$(count_matches '"stop_condition"' "$fl")"
+  d="$(count_matches '"budget_defaults"' "$fl")"
   [[ "$s" -ge $((b + d)) ]] && echo "pass" || echo "fail"
 }
 
