@@ -142,6 +142,9 @@ Remoto:       gonzalezulises/mi-app
 Opciones: `--with gherkin` añade el pack de especificación ejecutable, `--dry-run` no escribe
 nada, `--yes` salta la confirmación.
 
+`--with` sólo entiende `gherkin`. Cualquier otro nombre es un error de uso, no un silencio:
+los demás packs se instalan copiándolos, como se explica abajo.
+
 ### Los tres estados
 
 `bin/harness-status.sh` responde la pregunta que el score no responde:
@@ -170,7 +173,7 @@ es mejor que aparentar protección total o negarse a funcionar.
 
 ## Niveles y auditoría
 
-**`--level minimal`** — 8 archivos, sin suponer sistema de build: contrato de operación,
+**`--level minimal`** — 9 archivos, sin suponer sistema de build: contrato de operación,
 ruta de arranque, estado de features, memoria de progreso y checklist de cierre.
 
 **`--level full`** — agrega las compuertas mecánicas: `Makefile`, `verify-feature.sh`,
@@ -220,6 +223,24 @@ tests/run-tests.sh        verificación end-to-end del kit
 ### Packs
 
 Opt-in, porque traen dependencias externas que no todo repositorio necesita.
+
+**Cómo se instala uno.** Sólo Gherkin tiene bandera propia, porque es el único que no
+necesita configuración del repositorio para funcionar:
+
+```bash
+# Gherkin — durante la activación
+~/GitHub/harness-kit/bin/harness-activate.sh --with gherkin
+
+# Los demás — copiar la plantilla y verificar que la compuerta bloquea
+KIT=~/GitHub/harness-kit
+cp -R "$KIT"/packs/sentry/repo-template/. .      # o load-testing, u openai-advanced
+bash "$KIT"/packs/sentry/verify-pack.sh          # cada modo de falla debe bloquear
+```
+
+Sentry y load-testing necesitan además un dato que sólo tú tienes —un DSN, una URL objetivo—
+que una bandera desatendida no puede inventar. Por eso no se instalan solos: media compuerta
+instalada es peor que ninguna, porque parece que está. Cada pack lleva su propio `index.md`
+con la configuración exacta.
 
 - **`packs/gherkin/`** — criterios de aceptación ejecutables. Requiere `node` y
   `@cucumber/cucumber`. Su `verify-pack.sh` provoca 15 modos de falla y exige que todos
