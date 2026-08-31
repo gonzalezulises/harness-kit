@@ -6,6 +6,14 @@ con qué versión se construyó, así que `harness-status.sh` puede decir cuál 
 
 ---
 
+## [2.2.2](https://github.com/gonzalezulises/harness-kit/compare/v2.2.1...v2.2.2) (2026-08-31)
+
+
+### Arreglado
+
+* **activate:** reject an unknown pack instead of ignoring it ([5547f2b](https://github.com/gonzalezulises/harness-kit/commit/5547f2b181c257991e33d651d10e8f0a8130d96b))
+* **audit:** count through a helper that returns an integer ([0048161](https://github.com/gonzalezulises/harness-kit/commit/004816138ba965ee1794b7080b9e36838fdcdea4))
+
 ## [2.2.1](https://github.com/gonzalezulises/harness-kit/compare/v2.2.0...v2.2.1) (2026-08-30)
 
 
