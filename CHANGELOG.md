@@ -6,6 +6,13 @@ con qué versión se construyó, así que `harness-status.sh` puede decir cuál 
 
 ---
 
+## [2.2.4](https://github.com/gonzalezulises/harness-kit/compare/v2.2.3...v2.2.4) (2026-08-31)
+
+
+### Arreglado
+
+* **sentry:** give every canary its own event id ([b633564](https://github.com/gonzalezulises/harness-kit/commit/b63356450bf3eeb15a7a91426960029f6298cf33))
+
 ## [2.2.3](https://github.com/gonzalezulises/harness-kit/compare/v2.2.2...v2.2.3) (2026-08-31)
 
 
