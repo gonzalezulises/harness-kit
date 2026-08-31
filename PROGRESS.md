@@ -76,7 +76,7 @@ ruleset change or owner/baseline acceptance occurred. See
 - **Release ritual:** a release-please PR arrives with its required check never
   run. Close and reopen it to trigger the check, then merge. Never `--admin`.
 - **Pack verification:** `packs/load-testing/` 57/57 · `packs/gherkin/` 15/15 ·
-  `packs/sentry/` 68/68, exit 0
+  `packs/sentry/` 75/75, exit 0
 - **Audit:** rubric v2, 84 checks. The kit scores **84/84** against itself.
 - **Startup path:** `./init.sh` — activation for other repos: `bin/harness-activate.sh`
 - **Active feature:** none — all fourteen features passing (VCR 14/14)
@@ -86,6 +86,37 @@ ruleset change or owner/baseline acceptance occurred. See
 
 _Nothing active. F01–F14 are `passing`, each promoted by `verify-feature.sh` with
 recorded evidence — none set by hand. F15–F30 are `not_started`; the next is F15._
+
+## Session log — 2026-08-31 (the pack itself had never been audited)
+
+A security review on the first real installation found three holes the pack
+opened in every repository it touched. All three verified against the code
+rather than taken on the reviewer's word.
+
+**Capability tokens were leaking to Sentry.** `sendDefaultPii: false` does not
+filter the URL — Sentry sends the request URL, transaction name, Referer and
+every navigation breadcrumb verbatim. The target repo carries tokens in the
+path (`/mi-perfil/<token>`, `/encuesta/<token>`, `/encuesta-evaluacion/<token>`
+— the review saw one, the code has three), so the first error on a client's page
+would hand that client's live token to a third party. It is a wellbeing app.
+`sentry-scrub.ts` now redacts them, wired through `beforeSend` and
+`beforeSendTransaction` in all three inits; 17 cases pin it against the real
+routes.
+
+**Command injection in the workflow.** GitHub substitutes `${{ inputs.release }}`
+before bash reads the line, so the quotes bound nothing and anyone able to
+dispatch the workflow could inject into a job exporting `SENTRY_AUTH_TOKEN`.
+Inputs moved to `env:`.
+
+**Unauthenticated writes into a private tracker.** The client DSN is public, so
+anyone can create a Sentry issue with a title they control, and
+`sentry-to-issues` copied it into GitHub Issues where `@mentions` notify people.
+Titles are sanitised and a run is capped.
+
+**Worth keeping:** 68 failure cases could not have caught any of these, because
+every one measured whether the gate detects failure — never what the gate
+exposes by being installed. Matrix 68 → 75. Reasoning in
+[the Agent Note](.agents/notes/implemented/bug-fix/2026-08-31-the-pack-had-to-be-audited-too.md).
 
 ## Session log — 2026-08-31 (installed in two real repos; the canary had never worked)
 

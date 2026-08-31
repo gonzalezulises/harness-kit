@@ -1,4 +1,5 @@
 import * as Sentry from "@sentry/nextjs";
+import { scrubEvent } from "./sentry-scrub";
 
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
@@ -28,6 +29,12 @@ Sentry.init({
   ],
 
   sendDefaultPii: process.env.NEXT_PUBLIC_SENTRY_SEND_DEFAULT_PII === "true",
+
+  // La URL no la filtra sendDefaultPii: un token en el path —enlace mágico,
+  // portal de cliente— sale vivo hacia Sentry con el primer error. Ver
+  // sentry-scrub.ts.
+  beforeSend: (event) => scrubEvent(event),
+  beforeSendTransaction: (event) => scrubEvent(event),
   enabled: process.env.NODE_ENV === "production",
 });
 
