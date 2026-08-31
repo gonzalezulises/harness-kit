@@ -62,13 +62,26 @@ done
 # The kit dogfoods its own scripts: scripts/X and templates/full/scripts/X are the
 # same file in two places. The suite runs the template copy, so editing only the
 # root one produces failures with no visible cause. Catch the drift instead.
+# required-quality.yml copia scripts/verify-claims.sh desde la base protegida encima del
+# del head durante su paso de claims — así una PR no puede debilitar al juez que la evalúa.
+# Pero la suite corre DENTRO de ese paso, así que ahí el archivo en disco no es el de este
+# commit y la comparación de drift daba un falso positivo (run 33421061860). CLAIMS_BASE_FILE
+# la exporta exactamente ese paso, así que marca el único contexto donde hay que leer de git.
+root_content() {
+  if [[ -n "${CLAIMS_BASE_FILE:-}" ]] && git -C "$KIT_DIR" show "HEAD:scripts/$1" 2>/dev/null; then
+    return 0
+  fi
+  cat "$KIT_DIR/scripts/$1"
+}
+
 for f in "$KIT_DIR"/templates/full/scripts/*.sh; do
   base="$(basename "$f")"
   root="$KIT_DIR/scripts/$base"
   [[ -f "$root" ]] || continue
   # The kit's own copy is the rendered one, so placeholders are substituted with
   # the values the kit itself uses before comparing.
-  if diff -q <(sed 's/{{VERIFY_CMD}}/make check/g; s/{{E2E_CMD}}/make e2e/g' "$f") "$root" >/dev/null 2>&1; then
+  if diff -q <(sed 's/{{VERIFY_CMD}}/make check/g; s/{{E2E_CMD}}/make e2e/g' "$f") \
+             <(root_content "$base") >/dev/null 2>&1; then
     ok "in sync: scripts/$base"
   else
     bad "DRIFT: scripts/$base differs from templates/full/scripts/$base — copy it across"
@@ -936,6 +949,115 @@ if ( cd "$VSYNC" && NO_COLOR=1 bash scripts/verify-version-sync.sh >/dev/null 2>
 else
   bad "sync-version.sh did not produce a state the gate accepts"
 fi
+
+# ═════════════════════════════════════════════════════════════════════════════
+echo ""
+echo "${BOLD}20. Declared gates must do real work${RESET}"
+# A target that announces what it would do exits 0, and the contract counts a
+# verification that never ran. `make e2e` shipped as `echo 'TODO: ...'` and three
+# repos inherited a mandatory layer that could not fail.
+
+GATES="$WORK/gates"; make_fixture "$GATES"
+bash "$KIT_DIR/bin/harness-init.sh" --target "$GATES" --level full >/dev/null 2>&1
+cd "$GATES" || exit 1
+
+# 20a — the fixture has no e2e script, so init had to choose a default
+if make e2e >/dev/null 2>&1; then
+  bad "scaffolded e2e without a command must FAIL, not pass silently"
+else
+  ok "scaffolded e2e without a command fails closed"
+fi
+
+# 20b — and it must say what to do about it
+OUT20="$(make e2e 2>&1)"
+assert_contains "the empty e2e explains itself" "$OUT20" "e2e"
+
+# 20c — the gate that catches this class for every target
+cat > Makefile.broken <<'MKEOF'
+.PHONY: real
+real:
+	pnpm test
+
+.PHONY: empty
+empty:
+	echo 'TODO: set the end-to-end command'
+MKEOF
+OUTB="$(MAKEFILE_UNDER_TEST=Makefile.broken bash scripts/verify-makefile-gates.sh 2>&1)"; RCB=$?
+assert_eq "a placeholder target is rejected" "1" "$RCB"
+assert_contains "the offending target is named" "$OUTB" "empty"
+
+# 20d — and a healthy Makefile is accepted
+cat > Makefile.ok <<'MKEOF'
+.PHONY: real
+real:
+	pnpm test
+MKEOF
+MAKEFILE_UNDER_TEST=Makefile.ok bash scripts/verify-makefile-gates.sh >/dev/null 2>&1
+assert_eq "a Makefile whose targets all work is accepted" "0" "$?"
+rm -f Makefile.broken Makefile.ok
+
+# 20f — a template script the installer forgets is a gate that SKIPs forever.
+# run-gates.sh skips a gate whose script is missing (deliberate: version-sync is the
+# kit's own and must not run in scaffolded repos), so the omission is silent by design.
+for tpl in "$KIT_DIR"/templates/full/scripts/*.sh; do
+  base="$(basename "$tpl")"
+  # Registered gates are the ones that must travel; helpers are pulled in by name elsewhere.
+  grep -q "bash scripts/$base" "$KIT_DIR/templates/full/scripts/run-gates.sh" || continue
+  assert_file "installed: scripts/$base" "$GATES/scripts/$base"
+done
+
+# 20e — the gate is registered, or nobody ever runs it
+assert_contains "makefile-gates is a registered gate" \
+  "$(cat "$KIT_DIR/scripts/run-gates.sh")" "makefile-gates"
+
+# ═════════════════════════════════════════════════════════════════════════════
+echo ""
+echo "${BOLD}21. verify-claims does not repeat identical work${RESET}"
+# Features share layers on purpose. Re-running an identical command against the
+# same checkout returns the same answer at the same cost: six features x three
+# layers meant eighteen executions to observe three results.
+
+DEDUP="$WORK/dedup"; make_fixture "$DEDUP"
+bash "$KIT_DIR/bin/harness-init.sh" --target "$DEDUP" --level full >/dev/null 2>&1
+cd "$DEDUP" || exit 1
+
+dedup_claims() {
+  FEATS="$1" python3 - <<'PYEOF2'
+import json, os
+d = json.load(open("feature_list.json"))
+d["features"] = json.loads(os.environ["FEATS"])
+json.dump(d, open("feature_list.json", "w"), indent=2)
+PYEOF2
+}
+
+COUNTER="$DEDUP/counter.txt"
+SHARED='{"label":"suite","cmd":"printf x >> \"$COUNTER\"","repair":"r"}'
+
+# 21a — three features, one shared command, one execution
+: > "$COUNTER"
+dedup_claims "[{\"id\":\"D1\",\"state\":\"passing\",\"behavior\":\"b\",\"evidence\":[\"e\"],\"layers\":[$SHARED]},
+               {\"id\":\"D2\",\"state\":\"passing\",\"behavior\":\"b\",\"evidence\":[\"e\"],\"layers\":[$SHARED]},
+               {\"id\":\"D3\",\"state\":\"passing\",\"behavior\":\"b\",\"evidence\":[\"e\"],\"layers\":[$SHARED]}]"
+OUT21="$(COUNTER="$COUNTER" bash scripts/verify-claims.sh 2>&1)"; RC21=$?
+assert_eq "shared-layer claims still exit 0" "0" "$RC21"
+assert_eq "an identical command runs once, not three times" "1" "$(wc -c < "$COUNTER" | tr -d ' ')"
+
+# 21b — reusing a verdict must not make features disappear from the report
+assert_contains "every feature is still reported" "$OUT21" "D3"
+
+# 21c — genuinely different commands are genuinely different verifications
+: > "$COUNTER"
+dedup_claims "[{\"id\":\"D1\",\"state\":\"passing\",\"behavior\":\"b\",\"evidence\":[\"e\"],\"layers\":[{\"label\":\"a\",\"cmd\":\"printf x >> \\\"\$COUNTER\\\"\",\"repair\":\"r\"}]},
+               {\"id\":\"D2\",\"state\":\"passing\",\"behavior\":\"b\",\"evidence\":[\"e\"],\"layers\":[{\"label\":\"b\",\"cmd\":\"printf y >> \\\"\$COUNTER\\\"\",\"repair\":\"r\"}]}]"
+COUNTER="$COUNTER" bash scripts/verify-claims.sh >/dev/null 2>&1
+assert_eq "two distinct commands both run" "2" "$(wc -c < "$COUNTER" | tr -d ' ')"
+
+# 21d — the risk of deduplicating is certifying green what never passed
+dedup_claims '[{"id":"D1","state":"passing","behavior":"b","evidence":["e"],"layers":[{"label":"s","cmd":"false","repair":"r"}]},
+               {"id":"D2","state":"passing","behavior":"b","evidence":["e"],"layers":[{"label":"s","cmd":"false","repair":"r"}]}]'
+OUTF="$(bash scripts/verify-claims.sh 2>&1)"; RCF=$?
+assert_eq "a shared failing command still fails" "1" "$RCF"
+assert_contains "it fails once per feature that declares it" "$OUTF" "2 layer(s) failed"
 
 # ═════════════════════════════════════════════════════════════════════════════
 echo ""

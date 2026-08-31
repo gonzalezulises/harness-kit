@@ -11,6 +11,27 @@ Longer decisions get their own file in `docs/decisions/`.
 
 ---
 
+## 2026-08-31 — A declared gate must be able to fail
+
+**Context.** `harness-init.sh` defaulted `E2E_CMD` to `echo 'TODO: ...'` with no `; false`,
+while AGENTS.md declares layer 3 mandatory for changes crossing component boundaries. Three
+scaffolded repos carried a mandatory e2e layer that exited 0 without opening a browser. The
+neighbouring line, `VERIFY_CMD`, had `; false` all along — it was a one-line omission the kit
+could not notice.
+
+**Decision.** The e2e default fails closed; `scripts/verify-makefile-gates.sh` rejects any
+target that announces a TODO and still exits 0, registered in `make gates`; and the suite
+asserts every registered template script actually reaches the scaffolded repo. Detail in
+[the Agent Note](.agents/notes/implemented/process/2026-08-31-una-puerta-declarada-debe-poder-fallar.md).
+
+**Alternatives rejected.** Turning run-gates' SKIP into FAIL — it is the mechanism that lets the
+kit and its installations share one run-gates.sh (`verify-version-sync.sh` is the kit's own), and
+it would have failed every new repo. Writing the checker as a stack test — the kit installs into
+Node, Rust and Go repos, so its own verifiers must be bash.
+
+**Consequences.** A freshly scaffolded `make e2e` fails until someone implements it. That is the
+difference between a visible TODO and a phantom verification.
+
 ## 2026-08-30 — release-please cuts releases; a gate guards the version's four copies
 
 **Context.** Releases were manual: edit `VERSION`, `.harness/kit-version` and `CHANGELOG.md`,

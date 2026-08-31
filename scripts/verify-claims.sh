@@ -140,8 +140,30 @@ if [[ -z "${CLAIMS_TSV//[$'\n'[:space:]]/}" ]]; then
 fi
 
 # ── Re-run every claim ───────────────────────────────────────────────────────
+# One run, one result per distinct command. Features share layers on purpose, and re-running
+# an identical command against the same checkout returns the same answer at the same cost.
+# Measured on a real repo: six features x three layers meant eighteen executions to observe
+# three results — 10.2 of the 12.6 minutes of its required gate.
+#
+# Deduplicating is not weakening: every layer's verdict is still required, and a reused
+# failure still fails each feature that leans on it. Only the repetition disappears. The
+# cache lives and dies with this run, so nothing carries over from a previous commit.
+CACHE_DIR="$WORK_CLAIMS/cache"
+mkdir -p "$CACHE_DIR"
+CACHE_CMDS="$CACHE_DIR/commands"
+: > "$CACHE_CMDS"
+
+# Exact whole-line match: no hashing, so two commands cannot collide into one verdict.
+# Layer commands are single-line by construction (tabs are stripped when claims are collected).
+slot_for_command() {
+  local hit
+  hit="$(grep -nFx -- "$1" "$CACHE_CMDS" 2>/dev/null | head -1)" || true
+  [[ -n "$hit" ]] && printf '%s' "${hit%%:*}"
+}
+
 echo "${BOLD}Re-verifying claimed features${RESET}"
 CHECKED=0
+REUSED=0
 FAILED=0
 UNVERIFIABLE=0
 LAST_ID=""
@@ -177,11 +199,23 @@ while IFS=$'\t' read -r fid problem label cmd; do
   # Output is captured rather than discarded: a failure whose reason you cannot
   # see is a failure you cannot act on, and in CI there is no way to re-run it by
   # hand. Only the tail is shown, so a passing run stays quiet.
-  LAYER_LOG="$WORK_CLAIMS/layer.log"
-  if ( eval "$cmd" >"$LAYER_LOG" 2>&1 ); then
-    echo "  ${GREEN}ok${RESET}   $label"
+  SLOT="$(slot_for_command "$cmd")"
+  if [[ -n "$SLOT" ]]; then
+    REUSED=$((REUSED + 1))
+    NOTE=" ${YELLOW}(reused)${RESET}"
   else
-    echo "  ${RED}FAIL${RESET} $label  \$ $cmd"
+    printf '%s\n' "$cmd" >> "$CACHE_CMDS"
+    SLOT="$(wc -l < "$CACHE_CMDS" | tr -d '[:space:]')"
+    ( eval "$cmd" >"$CACHE_DIR/$SLOT.log" 2>&1 )
+    printf '%s' "$?" > "$CACHE_DIR/$SLOT.exit"
+    NOTE=""
+  fi
+
+  LAYER_LOG="$CACHE_DIR/$SLOT.log"
+  if [[ "$(cat "$CACHE_DIR/$SLOT.exit")" -eq 0 ]]; then
+    echo "  ${GREEN}ok${RESET}   $label$NOTE"
+  else
+    echo "  ${RED}FAIL${RESET} $label$NOTE  \$ $cmd"
     if [[ -s "$LAYER_LOG" ]]; then
       echo "  ${BOLD}last output:${RESET}"
       tail -15 "$LAYER_LOG" | sed 's/^/    /'
@@ -215,4 +249,7 @@ if [[ "$CHECKED" -eq 0 ]]; then
 fi
 
 echo "${GREEN}${BOLD}$CHECKED claimed feature(s) re-verified.${RESET} Every passing state is backed by a run."
+if [[ "$REUSED" -gt 0 ]]; then
+  echo "$REUSED layer(s) reused an identical command already run in this same checkout."
+fi
 exit 0

@@ -26,6 +26,7 @@ GATES=(
   "decisions-append-only|quick full|bash scripts/verify-decisions.sh"
   "agent-notes-tree|quick full|bash scripts/verify-agent-notes.sh"
   "arch-boundaries|quick full|bash scripts/check-arch.sh"
+  "makefile-gates|quick full|bash scripts/verify-makefile-gates.sh"
   "version-sync|quick full|bash scripts/verify-version-sync.sh"
   "claims-reverified|full|bash scripts/verify-claims.sh"
   "make-check|full|make check"
