@@ -249,10 +249,12 @@ para el de observabilidad.
 ## Verificar el kit
 
 ```bash
-make check                          # 149 aserciones end-to-end
-bash packs/gherkin/verify-pack.sh   # 15 modos de falla, todos deben bloquear
+make check   # el repo entero: sus aserciones más las matrices de todos los packs
+
+# O una matriz suelta, cuando sólo cambiaste ese pack:
+bash packs/gherkin/verify-pack.sh
 bash packs/load-testing/verify-pack.sh
-bash packs/sentry/verify-pack.sh    # 55 modos de falla, todos deben bloquear
+bash packs/sentry/verify-pack.sh
 ```
 
 Sin mocks: construye repositorios desechables, corre los scripts reales y afirma sobre
