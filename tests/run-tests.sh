@@ -939,6 +939,66 @@ fi
 
 # ═════════════════════════════════════════════════════════════════════════════
 echo ""
+echo "${BOLD}20. Declared gates must do real work${RESET}"
+# A target that announces what it would do exits 0, and the contract counts a
+# verification that never ran. `make e2e` shipped as `echo 'TODO: ...'` and three
+# repos inherited a mandatory layer that could not fail.
+
+GATES="$WORK/gates"; make_fixture "$GATES"
+bash "$KIT_DIR/bin/harness-init.sh" --target "$GATES" --level full >/dev/null 2>&1
+cd "$GATES" || exit 1
+
+# 20a — the fixture has no e2e script, so init had to choose a default
+if make e2e >/dev/null 2>&1; then
+  bad "scaffolded e2e without a command must FAIL, not pass silently"
+else
+  ok "scaffolded e2e without a command fails closed"
+fi
+
+# 20b — and it must say what to do about it
+OUT20="$(make e2e 2>&1)"
+assert_contains "the empty e2e explains itself" "$OUT20" "e2e"
+
+# 20c — the gate that catches this class for every target
+cat > Makefile.broken <<'MKEOF'
+.PHONY: real
+real:
+	pnpm test
+
+.PHONY: empty
+empty:
+	echo 'TODO: set the end-to-end command'
+MKEOF
+OUTB="$(MAKEFILE_UNDER_TEST=Makefile.broken bash scripts/verify-makefile-gates.sh 2>&1)"; RCB=$?
+assert_eq "a placeholder target is rejected" "1" "$RCB"
+assert_contains "the offending target is named" "$OUTB" "empty"
+
+# 20d — and a healthy Makefile is accepted
+cat > Makefile.ok <<'MKEOF'
+.PHONY: real
+real:
+	pnpm test
+MKEOF
+MAKEFILE_UNDER_TEST=Makefile.ok bash scripts/verify-makefile-gates.sh >/dev/null 2>&1
+assert_eq "a Makefile whose targets all work is accepted" "0" "$?"
+rm -f Makefile.broken Makefile.ok
+
+# 20f — a template script the installer forgets is a gate that SKIPs forever.
+# run-gates.sh skips a gate whose script is missing (deliberate: version-sync is the
+# kit's own and must not run in scaffolded repos), so the omission is silent by design.
+for tpl in "$KIT_DIR"/templates/full/scripts/*.sh; do
+  base="$(basename "$tpl")"
+  # Registered gates are the ones that must travel; helpers are pulled in by name elsewhere.
+  grep -q "bash scripts/$base" "$KIT_DIR/templates/full/scripts/run-gates.sh" || continue
+  assert_file "installed: scripts/$base" "$GATES/scripts/$base"
+done
+
+# 20e — the gate is registered, or nobody ever runs it
+assert_contains "makefile-gates is a registered gate" \
+  "$(cat "$KIT_DIR/scripts/run-gates.sh")" "makefile-gates"
+
+# ═════════════════════════════════════════════════════════════════════════════
+echo ""
 echo "${BOLD}21. verify-claims does not repeat identical work${RESET}"
 # Features share layers on purpose. Re-running an identical command against the
 # same checkout returns the same answer at the same cost: six features x three

@@ -8,7 +8,7 @@ SHELL := /usr/bin/env bash
 
 .PHONY: setup
 setup: ## Install all dependencies from a clean checkout
-	
+	@echo "Nothing to install: the kit is bash and python3 only. Try: make check"
 
 .PHONY: dev
 dev: ## Start the local dev server

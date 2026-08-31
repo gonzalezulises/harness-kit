@@ -96,7 +96,10 @@ fi
 [[ -n "$VERIFY_CMD" ]]  || VERIFY_CMD="echo 'TODO: set the verification command'; false"
 [[ -n "$START_CMD" ]]   || START_CMD="echo 'TODO: set the start command'"
 [[ -n "$TEST_CMD" ]]    || TEST_CMD="$VERIFY_CMD"
-[[ -n "$E2E_CMD" ]]     || E2E_CMD="echo 'TODO: set the end-to-end command'"
+# Fail-closed, like VERIFY_CMD above: a scaffolded gate with no command must block, not pass.
+# Shipping this without `; false` gave three repos a mandatory e2e layer that exited 0 without
+# opening a browser, and the contract counted it as a verification that ran.
+[[ -n "$E2E_CMD" ]]     || E2E_CMD="echo 'TODO: set the end-to-end command'; false"
 [[ -n "$INSTALL_CMD" ]] || INSTALL_CMD=""
 
 if [[ -z "$PROJECT_PURPOSE" ]]; then
@@ -195,6 +198,7 @@ if [[ "$LEVEL" == "full" ]]; then
   render "$F/.github/rulesets/required-quality-integrity.json" \
                                               "$TARGET/.github/rulesets/required-quality-integrity.json"
   render "$F/scripts/check-arch.sh"           "$TARGET/scripts/check-arch.sh"
+  render "$F/scripts/verify-makefile-gates.sh" "$TARGET/scripts/verify-makefile-gates.sh"
   render "$F/scripts/run-gates.sh"            "$TARGET/scripts/run-gates.sh"
   render "$F/scripts/verify-agent-notes.sh"   "$TARGET/scripts/verify-agent-notes.sh"
   render "$F/scripts/pre-commit-staged.sh"    "$TARGET/scripts/pre-commit-staged.sh"
