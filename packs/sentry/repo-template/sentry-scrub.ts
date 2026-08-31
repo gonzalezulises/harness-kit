@@ -94,8 +94,13 @@ function decodeSafely(value: string): string {
  * la petición, el nombre de la transacción, el Referer y los breadcrumbs de
  * navegación, que son los que registran cada cambio de ruta del App Router.
  */
-export function scrubEvent<T extends Record<string, unknown>>(event: T): T {
-  const target = event as Record<string, unknown>;
+export function scrubEvent<T>(event: T): T {
+  // Genérico sin restricción: los tipos de evento de Sentry (ErrorEvent,
+  // TransactionEvent) no llevan index signature, así que exigir
+  // Record<string, unknown> los rechaza en beforeSend. Se muta en su sitio y se
+  // devuelve el mismo objeto, que es el contrato que Sentry espera.
+  if (event === null || typeof event !== "object") return event;
+  const target = event as unknown as Record<string, unknown>;
 
   const request = target.request as { url?: string; headers?: Record<string, string> } | undefined;
   if (request?.url) request.url = scrubUrl(request.url);
