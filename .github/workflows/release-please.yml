@@ -17,7 +17,7 @@ jobs:
       released: ${{ steps.release.outputs.release_created }}
       pr_branch: ${{ steps.release.outputs.pr && fromJSON(steps.release.outputs.pr).headBranchName || '' }}
     steps:
-      - uses: googleapis/release-please-action@v4
+      - uses: googleapis/release-please-action@v5
         id: release
         with:
           config-file: release-please-config.json
