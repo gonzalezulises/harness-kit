@@ -1059,6 +1059,93 @@ OUTF="$(bash scripts/verify-claims.sh 2>&1)"; RCF=$?
 assert_eq "a shared failing command still fails" "1" "$RCF"
 assert_contains "it fails once per feature that declares it" "$OUTF" "2 layer(s) failed"
 
+# ── 15 — verify-delivery-doc: the runbook must describe THIS release ─────────
+# Fixture reproduces the real handover that motivated the gate: a v1.2.5 pass
+# whose runbook still carried a v1.2.4 deploy command, a section about an
+# already-applied migration, no mention of the one being shipped, and a dead link.
+echo ""
+echo "${BOLD}15 — verify-delivery-doc${RESET}"
+
+DD="$WORK/delivery"; mkdir -p "$DD/scripts" "$DD/supabase/migrations"
+cd "$DD" || exit 1
+git init -q . && git config user.email t@t && git config user.name t
+cp "$KIT_DIR/templates/full/scripts/verify-delivery-doc.sh" scripts/
+printf '{\n  "version": "1.2.5"\n}\n' > package.json
+cat > README.md <<'DOC'
+# X
+
+## Desplegar v1.2.5
+
+```bash
+just ecr-push-tag v1.2.5
+```
+
+### La migración de v1.2.1 (solo si vienen de v1.2.0)
+
+| Hacer | No hacer |
+|---|---|
+| Los pasos | `just ecr-push-tag v1.2.4` |
+
+Ver [`GUIA.md`](./GUIA.md).
+DOC
+printf -- '-- vieja\n' > supabase/migrations/20260916120000_a.sql
+git add -A >/dev/null && git commit -qm base && git tag v1.2.4
+printf -- '-- nueva\n' > supabase/migrations/20260917120000_b.sql
+git add -A >/dev/null && git commit -qm nueva
+
+OUT15="$(bash scripts/verify-delivery-doc.sh 2>&1)"; RC15=$?
+assert_eq "a runbook describing the previous release fails" "1" "$RC15"
+assert_contains "it names the stale deploy tag"        "$OUT15" "ecr-push-tag v1.2.4"
+assert_contains "it names the unmentioned migration"   "$OUT15" "20260917120000"
+assert_contains "it flags the section about an older version" "$OUT15" "v1.2.1"
+assert_contains "it flags the dead relative link"      "$OUT15" "GUIA.md"
+
+# A base that does not resolve must stop the run, never pass quietly: reporting
+# "no new migrations" for a release that ships one is the silence this prevents.
+DELIVERY_BASE=deadbeef bash scripts/verify-delivery-doc.sh >/dev/null 2>&1
+assert_eq "an unresolvable DELIVERY_BASE is NOT_CONFIGURED, not a pass" "3" "$?"
+
+# The same document, corrected, is the green path.
+cat > README.md <<'DOC'
+# X
+
+## Desplegar v1.2.5
+
+```bash
+just ecr-push-tag v1.2.5
+```
+
+Migración de este pase: `20260917120000`.
+
+### Ya en v1.2.1: lo que trajo aquel pase
+
+Histórico.
+DOC
+touch GUIA.md && git add -A >/dev/null && git commit -qm fix
+OUT15B="$(bash scripts/verify-delivery-doc.sh 2>&1)"; RC15B=$?
+assert_eq "the corrected runbook passes" "0" "$RC15B"
+assert_contains "and says which release it describes" "$OUT15B" "1.2.5"
+
+# A changelog citing each release's own tag is history, not a stale command.
+printf '# CHANGELOG\n\n- v1.2.4: `just ecr-push-tag v1.2.4`\n' > CHANGELOG.md
+git add -A >/dev/null && git commit -qm changelog
+bash scripts/verify-delivery-doc.sh >/dev/null 2>&1
+assert_eq "a changelog's own tags are not flagged" "0" "$?"
+
+# A repo that publishes no runbook stands down loudly instead of failing: a gate
+# that cries wolf on those gets silenced, and takes the real signal with it.
+rm -f README.md && printf '# X\n\nNo runbook here.\n' > README.md
+git add -A >/dev/null && git commit -qm noheading
+OUT15C="$(bash scripts/verify-delivery-doc.sh 2>&1)"
+assert_eq "no runbook heading is a skip, not a failure" "0" "$?"
+assert_contains "and the skip says why"  "$OUT15C" "publishes no deploy runbook"
+
+# Unless the repo declares it does deliver one — then the missing heading is the finding.
+DELIVERY_DOC_REQUIRED=1 bash scripts/verify-delivery-doc.sh >/dev/null 2>&1
+assert_eq "a delivering repo cannot lose its runbook silently" "1" "$?"
+
+cd "$KIT_DIR" || exit 1
+
 # ═════════════════════════════════════════════════════════════════════════════
 echo ""
 echo "${BOLD}────────────────────────────────────────${RESET}"

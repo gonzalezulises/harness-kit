@@ -201,6 +201,8 @@ if [[ "$LEVEL" == "full" ]]; then
   render "$F/scripts/verify-makefile-gates.sh" "$TARGET/scripts/verify-makefile-gates.sh"
   render "$F/scripts/run-gates.sh"            "$TARGET/scripts/run-gates.sh"
   render "$F/scripts/verify-agent-notes.sh"   "$TARGET/scripts/verify-agent-notes.sh"
+  render "$F/scripts/verify-delivery-doc.sh" "$TARGET/scripts/verify-delivery-doc.sh"
+  render "$F/scripts/verify-impact.template.mjs" "$TARGET/scripts/verify-impact.template.mjs"
   render "$F/scripts/pre-commit-staged.sh"    "$TARGET/scripts/pre-commit-staged.sh"
   render "$F/scripts/install-githooks.sh"     "$TARGET/scripts/install-githooks.sh"
   render "$F/.agents/notes/README.md"         "$TARGET/.agents/notes/README.md"
