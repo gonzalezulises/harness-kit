@@ -120,20 +120,20 @@ fi
 # And inside the scanned docs, a line quoted with «>» reads as a record of a past
 # release, not an instruction — so blockquoted tags are history too. Everything
 # else is a command someone may run today.
-TAG_DOCS="${DELIVERY_TAG_DOCS:-$DOC ${DELIVERY_EXTRA_DOCS:-}}"
-SCANNED=""
-for f in $TAG_DOCS; do [[ -f "$f" ]] && SCANNED="$SCANNED $f"; done
-if [[ -z "${SCANNED// /}" ]]; then
+read -r -a TAG_DOCS <<<"${DELIVERY_TAG_DOCS:-$DOC ${DELIVERY_EXTRA_DOCS:-}}"
+SCANNED=()
+for f in "${TAG_DOCS[@]}"; do [[ -f "$f" ]] && SCANNED+=("$f"); done
+if [[ "${#SCANNED[@]}" -eq 0 ]]; then
   skip "no delivery docs to scan for version tags"
 else
-  STALE_TAGS="$(grep -nHE '(ecr-push-tag|docker (build|push)|--tag[= ])[^|]*v?[0-9]+\.[0-9]+\.[0-9]+' $SCANNED 2>/dev/null \
+  STALE_TAGS="$(grep -nHE '(ecr-push-tag|docker (build|push)|--tag[= ])[^|]*v?[0-9]+\.[0-9]+\.[0-9]+' "${SCANNED[@]}" 2>/dev/null \
     | grep -vE ':[[:space:]]*>' \
     | grep -vE "v?${VERSION//./\\.}" || true)"
   if [[ -z "$STALE_TAGS" ]]; then
     ok "every live version-tagged command uses $VERSION"
   else
     fail "a version-tagged command does not use $VERSION:"
-    sed 's/^/           /' <<<"$STALE_TAGS"
+    while IFS= read -r l; do printf '           %s\n' "$l"; done <<<"$STALE_TAGS"
     echo "           If it documents a past release, quote the line with «>»."
   fi
 fi
@@ -191,7 +191,6 @@ fi
 # «### La migración de v1.2.1 (solo si vienen de v1.2.0)» sitting inside a v1.2.5
 # runbook reads as current. Past releases belong in a changelog or behind wording
 # that dates them.
-MAJOR_MINOR="${VERSION%.*}"
 STALE_SECTIONS="$(grep -nE '^### ' <<<"$SECTION" \
   | grep -E 'v?[0-9]+\.[0-9]+\.[0-9]+' \
   | grep -vF "$VERSION" \
@@ -200,7 +199,7 @@ if [[ -z "$STALE_SECTIONS" ]]; then
   ok "no subsection presents an older version as this release"
 else
   fail "a subsection names another version without dating it as past:"
-  sed 's/^/           /' <<<"$STALE_SECTIONS"
+  while IFS= read -r l; do printf '           %s\n' "$l"; done <<<"$STALE_SECTIONS"
   echo "           Prefix it with «Ya en» / «Previously», or move it to the changelog."
 fi
 
