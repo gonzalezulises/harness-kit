@@ -62,6 +62,7 @@ GATES=(
   "version-sync|quick full|required|bash scripts/verify-version-sync.sh"
   "delivery-doc|quick full|required|bash scripts/verify-delivery-doc.sh"
   "context-routes|quick full|required|bash scripts/verify-context-routes.sh"
+  "oracles-falsifiable|quick full|required|bash scripts/verify-oracles.sh"
   "claims-reverified|full|required|bash scripts/verify-claims.sh"
   "make-check|full|required|make check"
 )

@@ -9,6 +9,44 @@ already says.
 
 ---
 
+## 2026-09-03 — An oracle must carry proof it can fail
+
+**Context.** `AGENTS.md` already required it — "una prueba que solo se ha visto
+pasar no cuenta: hay que verla fallar contra el estado defectuoso" — and it had
+been a convention, which means it held exactly as long as someone remembered it.
+
+The failure that made it worth a gate: a rule was fixed so a supplier list
+reading «8D/D6» matched an «8D» catalogue entry. Unit tests green, full suite
+green, the reasoning sound. Run against the live catalogue, the same rule matched
+two products of opposite polarity — a battery cannot have its terminals on both
+sides. The tests knew only the cases their author imagined, and their author was
+the one who had got it wrong.
+
+**Decision.** `verify-oracles.sh`, a registered gate over `.harness/oracles/`.
+A criterion marked critical must be TEST_READY, answer the eight questions of V2
+§9.3, name tests that exist, and carry a `falsification` block: the defect that
+must make those tests fail, and the commit at which someone watched them fail.
+
+The eight answers are checked for presence. One field is checked for truth: the
+gate verifies `proved_sha` is in this history and that **no named test has been
+modified since it**. Edit the test after proving it can fail and the proof no
+longer covers the test that exists — the criterion goes stale and blocks.
+
+**Alternatives rejected.** Validating the eight answers more strictly, which
+would only get better prose; the questions do their work when a person answers
+them, and no schema makes that happen. Running the mutation automatically, which
+means letting a gate patch the working tree — power this harness should not hold
+for a check that runs on every commit. And leaving it as the convention it
+already was: it was already written down, and was not followed.
+
+**Consequences.** Oracles need curation or the folder becomes ceremony: one per
+critical criterion, not one per requirement. The staleness check will fire on
+legitimate test refactors, and the repair is the right one — break it again and
+watch it fail. A pasted SHA defeats this gate, and the script says so out loud
+rather than implying a guarantee it cannot give.
+
+---
+
 ## 2026-09-03 — Only PASS satisfies a gate, and a governed change must cite what governs it
 
 **Context.** Two gaps left by the delivery-doc work, both drawn from the same
