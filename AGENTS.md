@@ -117,8 +117,29 @@ the mechanical gates.
 | `make e2e` | End-to-end suite. |
 | `make session-start` / `session-end` | Open and close the session trace. |
 | `make gates` (`A=full` for everything) | Run the gate registry — every mechanically checkable convention lives there. |
+| `bash scripts/verify-context-routes.sh --list` | Print which documents govern the paths this diff touches. Read them before writing. |
 | `make verify-agent-notes` | Agent Notes tree/format gate. |
 | `make hooks-install` | Opt-in staged-only git hooks with formatter autofix. |
+
+## Gate states
+
+Only **PASS** satisfies a gate. `make gates` distinguishes PASS, FAIL,
+NOT_CONFIGURED, TOOL_FAILURE, INCOMPLETE, POLICY, UNKNOWN and NOT_EXECUTED, and
+everything that is not PASS blocks. Never report a non-PASS state as a pass, and
+never repair one by loosening the gate: FAIL means fix the code, TOOL_FAILURE
+means fix the environment, INCOMPLETE means nothing was verified.
+
+## Governed paths
+
+`.harness/context-routes.json` records which documents govern which paths. A
+change under a governed path must cite one of them — in a commit message on the
+branch, or in the Agent Note it carries; `make gates` enforces it. Run
+`scripts/verify-context-routes.sh --list` at the start of the work to see the
+reading list for your diff.
+
+A document does not stop being in force because the change looks obviously
+right. If one forbids what you are doing, amend it where it lives, with an owner
+and a date, and cite the amendment — or comply.
 
 ## Agent Notes
 

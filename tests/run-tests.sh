@@ -1146,6 +1146,142 @@ assert_eq "a delivering repo cannot lose its runbook silently" "1" "$?"
 
 cd "$KIT_DIR" || exit 1
 
+# ── 16 — run-gates: only PASS satisfies a gate ───────────────────────────────
+# The runner used to know two answers, so a gate that could not check anything
+# looked the same as one that checked and was clean. verify-delivery-doc shipped
+# with exactly that hole: handed an unresolvable ref, it printed "no new
+# migrations" for a release that shipped one.
+echo ""
+echo "${BOLD}16 — run-gates state machine${RESET}"
+
+RG="$WORK/rungates"; mkdir -p "$RG/scripts"
+cd "$RG" || exit 1
+cp "$KIT_DIR/templates/full/scripts/run-gates.sh" scripts/
+mk_gate() { printf '#!/usr/bin/env bash\nexit %s\n' "$2" > "scripts/$1"; chmod +x "scripts/$1"; }
+reg() { python3 - "$@" <<'PYX'
+import re, sys, pathlib
+p = pathlib.Path("scripts/run-gates.sh"); t = p.read_text()
+rows = "\n".join(f'  "{r}"' for r in sys.argv[1:])
+t = re.sub(r"GATES=\(\n.*?\n\)", f"GATES=(\n{rows}\n)", t, count=1, flags=re.S)
+p.write_text(t)
+PYX
+}
+
+mk_gate g-pass.sh 0
+mk_gate g-fail.sh 1
+mk_gate g-config.sh 2
+mk_gate g-tool.sh 3
+mk_gate g-incomplete.sh 4
+mk_gate g-policy.sh 5
+mk_gate g-weird.sh 42
+
+reg "only-pass|quick|required|bash scripts/g-pass.sh"
+OUT16="$(bash scripts/run-gates.sh quick 2>&1)"
+assert_eq "a passing gate exits 0" "0" "$?"
+assert_contains "and reports PASS" "$OUT16" "PASS"
+
+# Each non-zero code keeps its own name, because each sends you somewhere else:
+# FAIL means fix the code, TOOL_FAILURE means fix the machine.
+for pair in "g-fail.sh:FAIL" "g-config.sh:NOT_CONFIGURED" "g-tool.sh:TOOL_FAILURE" \
+            "g-incomplete.sh:INCOMPLETE" "g-policy.sh:POLICY" "g-weird.sh:UNKNOWN"; do
+  s="${pair%%:*}"; want="${pair##*:}"
+  reg "probe|quick|required|bash scripts/$s"
+  O="$(bash scripts/run-gates.sh quick 2>&1)"; RC=$?
+  assert_eq "$want blocks the run" "1" "$RC"
+  assert_contains "$want is reported by name" "$O" "$want"
+done
+
+# An unknown exit code must never be read as success — that is the whole point.
+reg "probe|quick|required|bash scripts/g-weird.sh"
+assert_contains "an unknown state says nothing was verified" \
+  "$(bash scripts/run-gates.sh quick 2>&1)" "not verified"
+
+# A required gate that is simply absent is a finding, not a skip.
+reg "ghost|quick|required|bash scripts/does-not-exist.sh"
+O16B="$(bash scripts/run-gates.sh quick 2>&1)"; RC16B=$?
+assert_eq "a missing REQUIRED gate blocks" "1" "$RC16B"
+assert_contains "and is named NOT_EXECUTED" "$O16B" "NOT_EXECUTED"
+
+# Optional is the only way to stand a gate down, and it has to be declared.
+reg "ghost|quick|optional|bash scripts/does-not-exist.sh"
+O16C="$(bash scripts/run-gates.sh quick 2>&1)"
+assert_eq "a missing OPTIONAL gate does not block" "0" "$?"
+assert_contains "and says it is not installed" "$O16C" "not installed"
+
+# Mixed run: one clean gate cannot carry a broken one.
+reg "ok|quick|required|bash scripts/g-pass.sh" "broken|quick|required|bash scripts/g-tool.sh"
+bash scripts/run-gates.sh quick >/dev/null 2>&1
+assert_eq "a passing gate does not offset a blocking one" "1" "$?"
+
+cd "$KIT_DIR" || exit 1
+
+# ── 17 — verify-context-routes: a governed change must cite what governs it ───
+# Reproduces the real failure: a fix that invented engineering tolerances while
+# DECISIONS.md §D2 forbade exactly that, one grep away and never opened.
+echo ""
+echo "${BOLD}17 — verify-context-routes${RESET}"
+
+CR="$WORK/routes"; mkdir -p "$CR/scripts" "$CR/.harness" "$CR/lib/rules" "$CR/docs"
+cd "$CR" || exit 1
+git init -q . && git config user.email t@t && git config user.name t
+cp "$KIT_DIR/templates/full/scripts/verify-context-routes.sh" scripts/
+cp "$KIT_DIR/templates/full/.harness/context-routes.json" .harness/
+printf '# D2\nEl comparador no inventa tolerancias.\n' > docs/DECISIONS.md
+printf 'export const x = 1;\n' > lib/rules/base.ts
+git add -A >/dev/null && git commit -qm base && git branch -M main
+
+git checkout -qb feat/tolerances
+printf 'export const WIDTH_MIN = 80;\n' > lib/rules/spec-plausibility.ts
+git add -A >/dev/null && git commit -qm "feat: valida rangos fisicos del ancho"
+O17="$(bash scripts/verify-context-routes.sh 2>&1)"; RC17=$?
+assert_eq "a governed change citing nothing fails" "1" "$RC17"
+assert_contains "it names the documents that govern it" "$O17" "DECISIONS.md"
+assert_contains "and says why they govern"             "$O17" "does not repeal a decision"
+
+git commit -q --amend -m "feat: rangos por compatibility_rules
+
+DECISIONS.md D2 prohibe inventar tolerancias, asi que los rangos los aporta
+Compras y no el codigo."
+assert_eq "the same change, citing its source, passes" "0" \
+  "$(bash scripts/verify-context-routes.sh >/dev/null 2>&1; echo $?)"
+
+# An Agent Note carries the citation just as well as a commit message.
+git checkout -q main && git checkout -qb feat/via-note
+mkdir -p .agents/notes/implemented/bug-fix
+printf 'export const z = 3;\n' > lib/rules/other.ts
+printf '# Why\n\nGoverned by DECISIONS.md and left in force.\n' \
+  > .agents/notes/implemented/bug-fix/note.md
+git add -A >/dev/null && git commit -qm "fix: something"
+assert_eq "a citation inside an Agent Note counts" "0" \
+  "$(bash scripts/verify-context-routes.sh >/dev/null 2>&1; echo $?)"
+
+# Ungoverned paths must not be nagged: a gate that fires on everything gets
+# silenced, and takes the real signal with it.
+git checkout -q main && git checkout -qb docs/only
+printf 'hola\n' > LEEME.md && git add -A >/dev/null && git commit -qm "docs: nota"
+assert_eq "an ungoverned change is not nagged" "0" \
+  "$(bash scripts/verify-context-routes.sh >/dev/null 2>&1; echo $?)"
+
+# The advisory mode reads the same map but never blocks.
+git checkout -q main && git checkout -qb feat/list
+printf 'export const w = 4;\n' > lib/rules/more.ts
+git add -A >/dev/null && git commit -qm wip
+O17L="$(bash scripts/verify-context-routes.sh --list 2>&1)"
+assert_eq "--list advises without blocking" "0" "$?"
+assert_contains "and prints the reading list" "$O17L" "DECISIONS.md"
+
+# Neither a bad base nor a missing map may look clean.
+git checkout -q main
+ROUTES_BASE=deadbeef bash scripts/verify-context-routes.sh >/dev/null 2>&1
+assert_eq "an unresolvable base never passes" "2" "$?"
+CONTEXT_ROUTES=.harness/nope.json bash scripts/verify-context-routes.sh >/dev/null 2>&1
+assert_eq "a missing route map is NOT_CONFIGURED" "2" "$?"
+printf 'not json at all' > .harness/broken.json
+CONTEXT_ROUTES=.harness/broken.json bash scripts/verify-context-routes.sh >/dev/null 2>&1
+assert_eq "a malformed route map is NOT_CONFIGURED" "2" "$?"
+
+cd "$KIT_DIR" || exit 1
+
 # ═════════════════════════════════════════════════════════════════════════════
 echo ""
 echo "${BOLD}────────────────────────────────────────${RESET}"

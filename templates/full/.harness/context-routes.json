@@ -1,0 +1,34 @@
+{
+  "$comment": [
+    "Which documents govern which paths. Read by scripts/verify-context-routes.sh:",
+    "a change under `paths` must cite one of its `read` documents, in a commit",
+    "message on the branch or in the Agent Note it carries.",
+    "",
+    "This is the mechanical half of rules/fuentes.md. The prose states the",
+    "precedence; this file makes forgetting to look a failing gate.",
+    "",
+    "Adapt to your repo. A route with paths that never match is dead weight, and",
+    "a route that fires on every change trains people to paste the citation",
+    "without reading — keep them narrow and few, and add one only when you can",
+    "name the mistake it prevents.",
+    "",
+    "Patterns: exact paths, fnmatch globs, or `dir/**` for a whole subtree."
+  ],
+  "routes": [
+    {
+      "paths": ["lib/rules/**", "lib/**/rules/**"],
+      "read": ["docs/DECISIONS.md", "docs/adr", "docs/architecture"],
+      "why": "Business rules decide verdicts, and their trade-offs are already recorded. An external report describes a symptom; it does not repeal a decision."
+    },
+    {
+      "paths": ["supabase/migrations/**", "migrations/**", "db/migrate/**"],
+      "read": ["docs/DECISIONS.md", "docs/adr"],
+      "why": "A migration changes what the data means for everyone downstream, and it cannot be taken back by editing a file."
+    },
+    {
+      "paths": [".github/workflows/**", "scripts/run-gates.sh", "scripts/verify-*.sh"],
+      "read": ["AGENTS.md", "DECISIONS.md"],
+      "why": "Changing a gate changes what the harness is willing to let through. Weakening one is the change that hides every other."
+    }
+  ]
+}
