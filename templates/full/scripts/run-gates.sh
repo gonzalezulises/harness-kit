@@ -28,6 +28,7 @@ GATES=(
   "arch-boundaries|quick full|bash scripts/check-arch.sh"
   "makefile-gates|quick full|bash scripts/verify-makefile-gates.sh"
   "version-sync|quick full|bash scripts/verify-version-sync.sh"
+  "delivery-doc|quick full|bash scripts/verify-delivery-doc.sh"
   "claims-reverified|full|bash scripts/verify-claims.sh"
   "make-check|full|make check"
 )

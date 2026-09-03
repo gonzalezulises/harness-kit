@@ -7,6 +7,52 @@ Record a decision when the answer was not obvious, when you rejected a plausible
 alternative, or when the reason lives outside the code. Do not record what the code
 already says.
 
+---
+
+## 2026-09-03 — Verify the delivery, not only the code
+
+**Context.** A release went out with green code and a runbook that described the *previous*
+release. It carried `ecr-push-tag v1.2.4` inside a v1.2.5 pass — a command that would have
+deployed the wrong image — a section explaining a migration already applied, and none
+explaining the one being shipped. Every gate passed. Two careful readings missed it, and the
+error was found only because an unrelated sync check aborted.
+
+The post-mortem found nine failures in that session with three roots, and one pattern that
+matters more than any of them: **wherever an executable verifier existed, it worked** —
+`make check`, the gates, the sync's alignment check, an improvised impact script, even the
+punctuation hook. Every one of the nine happened in the zone the kit does not verify: prose,
+delivery documents, and claims about external systems.
+
+The irony that settled it: `verify-version-sync.sh` already exists here, reasoning that "the
+version lives in four places and they must agree, and a release that bumps some and not the
+others ships silently". That reasoning was applied to the kit and never handed to the
+repositories the kit installs.
+
+**Decision.** Three additions, each closing one root.
+
+- `verify-delivery-doc.sh`, a registered gate: the deploy runbook's heading names the current
+  version; every live version-tagged command uses it; every migration new since the last
+  delivery is named in the document; no subsection presents an older version as this release;
+  relative links resolve. Fail-closed, including an unresolvable `DELIVERY_BASE` — the first
+  draft skipped on one and reported "no new migrations" for a release that shipped one.
+- `rules/fuentes.md`: which source wins when two disagree. Repo documentation outranks an
+  external report; a deployment's own record outranks a README. A black-box audit describes
+  symptoms, and the cause it proposes is its hypothesis, not authority.
+- `verify-impact.template.mjs`: a rule change ships with a run against real data listing which
+  verdicts flip, read permissive-side first. This is what caught a rule that was correct in
+  general and wrong in a specific, shippable way — after the unit tests were green.
+
+**Alternatives rejected.** More review, longer checklists, an auditor subagent. None would have
+caught any of the nine: the stale tag survived two readings of the table it sat in. Prose
+review is precisely what failed, so more of it is not the repair.
+
+**Consequences.** Delivery documents are now gated like code, which means a stale runbook fails
+a build instead of reaching an operator. The gate needs per-repo configuration
+(`DELIVERY_BASE`, `DELIVERY_EXTRA_DOCS`, `CLIENT_ONLY_PATHS`); unconfigured it skips loudly
+rather than passing quietly. And `verify-impact` is deliberately a template, not a gate: what
+counts as an acceptable flip is judgement, and a gate that pretends otherwise would be
+rubber-stamped.
+
 Longer decisions get their own file in `docs/decisions/`.
 
 ---
