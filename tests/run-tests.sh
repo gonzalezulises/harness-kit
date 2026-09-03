@@ -1282,6 +1282,148 @@ assert_eq "a malformed route map is NOT_CONFIGURED" "2" "$?"
 
 cd "$KIT_DIR" || exit 1
 
+# ── 18 — verify-oracles: a critical criterion must be proved falsifiable ─────
+# AGENTS.md already required it: a test only ever seen passing does not count.
+# This is that convention with a gate behind it.
+echo ""
+echo "${BOLD}18 — verify-oracles${RESET}"
+
+OR="$WORK/oracles"; mkdir -p "$OR/scripts" "$OR/.harness/oracles" "$OR/test"
+cd "$OR" || exit 1
+git init -q . && git config user.email t@t && git config user.name t
+cp "$KIT_DIR/templates/full/scripts/verify-oracles.sh" scripts/
+printf 'it("works", () => {});\n' > test/rule.test.ts
+git add -A >/dev/null && git commit -qm base
+
+# An empty folder is an honest answer, not a silence: the gate arrives before
+# the criteria do.
+rm -rf .harness/oracles && mkdir -p .harness/oracles
+assert_eq "no oracles is a pass, stated out loud" "0" \
+  "$(bash scripts/verify-oracles.sh >/dev/null 2>&1; echo $?)"
+
+write_oracle() { cat > .harness/oracles/AC-001.yaml; }
+
+# TEST_READY with unanswered questions must not pass — that is the form-filling
+# this gate exists to refuse.
+write_oracle <<'YML'
+id: AC-001
+requirement: "Opposite polarity never matches"
+criticality: critical
+status: TEST_READY
+observable: "The offer is excluded"
+oracle:
+  expected: "mismatch"
+cases:
+  negative:
+    - "25 against 35"
+context: "A catalogue entry in group 25"
+side_effects:
+  must_not:
+    - "no other verdict changes"
+false_positive: "TBD"
+owner: "Compras"
+evidence:
+  formats: ["junit"]
+tests:
+  - "test/rule.test.ts"
+YML
+O18="$(bash scripts/verify-oracles.sh 2>&1)"; RC18=$?
+assert_eq "an unanswered question blocks TEST_READY" "1" "$RC18"
+assert_contains "and the message quotes the question" "$O18" "false positive"
+
+# A placeholder is not an answer.
+assert_contains "«TBD» does not count as answered" "$O18" "AC-001"
+
+# All eight answered, but no proof it can fail.
+write_oracle <<'YML'
+id: AC-001
+requirement: "Opposite polarity never matches"
+criticality: critical
+status: TEST_READY
+observable: "The offer is excluded from the ranking"
+oracle:
+  expected: "mismatch"
+cases:
+  positive:
+    - "25 against 25"
+  negative:
+    - "25 against 35"
+context: "A catalogue entry in group 25"
+side_effects:
+  must_not:
+    - "no other verdict changes"
+false_positive: "It would pass if the test asserted on its own fixture"
+owner: "Compras"
+evidence:
+  formats: ["junit"]
+tests:
+  - "test/rule.test.ts"
+YML
+O18B="$(bash scripts/verify-oracles.sh 2>&1)"
+assert_eq "a critical criterion with no falsification blocks" "1" "$?"
+assert_contains "and says what a test only seen passing proves" "$O18B" "has not been shown to test anything"
+
+add_falsification() {
+  cat >> .harness/oracles/AC-001.yaml <<YML
+falsification:
+  defect: "Compare with string equality again"
+  proved_sha: "$1"
+  output: "1 failed"
+YML
+}
+
+git add -A >/dev/null && git commit -qm "oracle"
+SHA_OK="$(git rev-parse HEAD)"
+add_falsification "$SHA_OK"
+git add -A >/dev/null && git commit -qm "prove"
+assert_eq "a proved criterion passes" "0" \
+  "$(bash scripts/verify-oracles.sh >/dev/null 2>&1; echo $?)"
+
+# ── The case this gate exists for ────────────────────────────────────────────
+# Editing the test after proving it can fail leaves a proof that no longer covers
+# the test that exists. That is STALE, and STALE is not green.
+printf 'it("works", () => { expect(1).toBe(1); });\n' > test/rule.test.ts
+git add -A >/dev/null && git commit -qm "loosen the test"
+O18C="$(bash scripts/verify-oracles.sh 2>&1)"; RC18C=$?
+assert_eq "editing the test after the proof goes stale" "1" "$RC18C"
+assert_contains "and names the test that moved" "$O18C" "test/rule.test.ts"
+assert_contains "and says the proof no longer covers it" "$O18C" "predates its own tests"
+
+# A SHA from nowhere is not a proof either.
+sed -i.bak "s/proved_sha: .*/proved_sha: \"deadbeefdeadbeefdeadbeefdeadbeefdeadbeef\"/" .harness/oracles/AC-001.yaml
+rm -f .harness/oracles/AC-001.yaml.bak
+O18D="$(bash scripts/verify-oracles.sh 2>&1)"
+assert_eq "a SHA outside this history blocks" "1" "$?"
+assert_contains "and says so plainly" "$O18D" "not in this history"
+
+# A named test that does not exist is a wish, not a criterion.
+git checkout -q -- test/rule.test.ts 2>/dev/null
+sed -i.bak "s|proved_sha: .*|proved_sha: \"$SHA_OK\"|" .harness/oracles/AC-001.yaml
+sed -i.bak "s|- \"test/rule.test.ts\"|- \"test/does-not-exist.ts\"|" .harness/oracles/AC-001.yaml
+rm -f .harness/oracles/AC-001.yaml.bak
+assert_eq "a test that does not exist blocks" "1" \
+  "$(bash scripts/verify-oracles.sh >/dev/null 2>&1; echo $?)"
+
+# A critical criterion still in DRAFT is unfinished thinking, not a failing test.
+sed -i.bak 's/status: TEST_READY/status: DRAFT/' .harness/oracles/AC-001.yaml
+rm -f .harness/oracles/AC-001.yaml.bak
+O18E="$(bash scripts/verify-oracles.sh 2>&1)"
+assert_eq "a critical DRAFT blocks" "1" "$?"
+assert_contains "and says no code should rely on it yet" "$O18E" "no production code should rely on it"
+
+# RETIRED keeps its history without being enforced.
+sed -i.bak 's/status: DRAFT/status: RETIRED/' .harness/oracles/AC-001.yaml
+rm -f .harness/oracles/AC-001.yaml.bak
+assert_eq "a retired criterion is not enforced" "0" \
+  "$(bash scripts/verify-oracles.sh >/dev/null 2>&1; echo $?)"
+
+# --list reports without blocking.
+O18F="$(bash scripts/verify-oracles.sh --list 2>&1)"
+assert_eq "--list never blocks" "0" "$?"
+assert_contains "and shows the status" "$O18F" "RETIRED"
+
+cd "$KIT_DIR" || exit 1
+
 # ═════════════════════════════════════════════════════════════════════════════
 echo ""
 echo "${BOLD}────────────────────────────────────────${RESET}"
