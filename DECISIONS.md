@@ -9,6 +9,57 @@ already says.
 
 ---
 
+## 2026-09-03 — Only PASS satisfies a gate, and a governed change must cite what governs it
+
+**Context.** Two gaps left by the delivery-doc work, both drawn from the same
+post-mortem.
+
+The runner knew two answers: exit zero, or everything else as FAIL. A gate whose
+script was absent reported SKIP, which never failed the run. Both collapses hide
+the state that matters most — the gate that never checked anything. That is not
+hypothetical: `verify-delivery-doc.sh` shipped with a branch that, handed a ref it
+could not resolve, printed "no new migrations" for a release that shipped one. A
+green line for work never done.
+
+Separately, four failures in that session had one shape: the right answer was
+already written in a file nobody opened. A fix invented engineering tolerances
+while `DECISIONS.md` §D2 forbade exactly that, one grep away. `rules/fuentes.md`
+now states the precedence in prose, and prose depends on the reader remembering
+to look, which is precisely what failed.
+
+**Decision.** Two changes.
+
+- `run-gates.sh` reports one of PASS, FAIL, NOT_CONFIGURED, TOOL_FAILURE,
+  INCOMPLETE, POLICY, UNKNOWN or NOT_EXECUTED, mapped from the V2 exit-code
+  contract, and **only PASS lets the run go green**. FAIL and TOOL_FAILURE both
+  block but stay distinct, because one says fix your code and the other says fix
+  your machine; sending people to the wrong one wastes the diagnosis. Each gate
+  now declares itself `required` or `optional`: a required gate that is missing is
+  NOT_EXECUTED and blocks, so a gate cannot go absent quietly.
+- `verify-context-routes.sh` reads `.harness/context-routes.json` — which
+  documents govern which paths — and fails a change under governed paths that
+  cites none of them, in a commit message on the branch or in an Agent Note it
+  carries. Config is validated before the diff is computed: the first draft parsed
+  the map only when a diff existed, so a corrupt map passed on a commit with
+  nothing governed, which is the same silence.
+
+**Alternatives rejected.** For the runner, keeping FAIL as the single non-pass
+state and documenting the nuance — the nuance was already documented and still
+produced a false green. For the routes, a checklist in `AGENTS.md` asking the
+agent to consult the sources: that is what `fuentes.md` is, and it depends on
+memory. Also rejected: making the citation prove reading. It cannot. To write
+«DECISIONS.md §D2» you must go find §D2, and going to find it is the whole
+intervention; claiming more would be lying about what the gate enforces.
+
+**Consequences.** A gate can no longer be silently absent or silently
+inconclusive, which will surface half-installed harnesses that used to look
+green. Route maps need per-repo curation: a route that never matches is dead
+weight, and one that fires on every change trains people to paste the citation
+without reading — so they are kept few and narrow, added only when the mistake
+they prevent can be named.
+
+---
+
 ## 2026-09-03 — Verify the delivery, not only the code
 
 **Context.** A release went out with green code and a runbook that described the *previous*
