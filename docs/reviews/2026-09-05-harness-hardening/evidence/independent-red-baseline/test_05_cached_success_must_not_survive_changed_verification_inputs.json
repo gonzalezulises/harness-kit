@@ -1,0 +1,31 @@
+{
+  "test": "__main__.RegressionTests.test_05_cached_success_must_not_survive_changed_verification_inputs",
+  "fixtures": [
+    {
+      "path": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_05_cached_success_must_not_survive_changed_verification_inputs-stale-cache-_jqsyoe5",
+      "base_sha": "99e0f94f1b29f681b7b4d2b7b4466321baa0113a"
+    }
+  ],
+  "calls": [
+    {
+      "cwd": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_05_cached_success_must_not_survive_changed_verification_inputs-stale-cache-_jqsyoe5",
+      "argv": [
+        "bash",
+        "scripts/verify-claims.sh"
+      ],
+      "explicit_env": {},
+      "exit": 0,
+      "stdout": "Re-verifying claimed features\n\n── F1\n  ok   before\n  ok   mutation\n  ok   after (reused)\n\n1 claimed feature(s) re-verified. Every passing state is backed by a run.\n1 layer(s) reused an identical command already run in this same checkout.\n",
+      "stderr": "",
+      "before": {
+        "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"fixture base receipt\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"before\",\n          \"cmd\": \"test -f ready && echo ready\",\n          \"repair\": \"restore ready\"\n        },\n        {\n          \"label\": \"mutation\",\n          \"cmd\": \"rm ready\",\n          \"repair\": \"remove obsolete output\"\n        },\n        {\n          \"label\": \"after\",\n          \"cmd\": \"test -f ready && echo ready\",\n          \"repair\": \"restore ready\"\n        }\n      ]\n    }\n  ]\n}\n"
+      },
+      "after": {
+        "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"fixture base receipt\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"before\",\n          \"cmd\": \"test -f ready && echo ready\",\n          \"repair\": \"restore ready\"\n        },\n        {\n          \"label\": \"mutation\",\n          \"cmd\": \"rm ready\",\n          \"repair\": \"remove obsolete output\"\n        },\n        {\n          \"label\": \"after\",\n          \"cmd\": \"test -f ready && echo ready\",\n          \"repair\": \"restore ready\"\n        }\n      ]\n    }\n  ]\n}\n"
+      }
+    }
+  ],
+  "observations": {
+    "direct_final_command_exit": 1
+  }
+}

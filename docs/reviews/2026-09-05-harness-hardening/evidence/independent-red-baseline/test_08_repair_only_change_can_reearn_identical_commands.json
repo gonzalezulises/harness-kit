@@ -1,0 +1,64 @@
+{
+  "test": "__main__.RegressionTests.test_08_repair_only_change_can_reearn_identical_commands",
+  "fixtures": [
+    {
+      "path": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_08_repair_only_change_can_reearn_identical_commands-repair-only-picejed0",
+      "base_sha": "2d657799a834bacfdd6eb2a99f7139b35a89fc3a"
+    }
+  ],
+  "calls": [
+    {
+      "cwd": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_08_repair_only_change_can_reearn_identical_commands-repair-only-picejed0",
+      "argv": [
+        "bash",
+        "scripts/verify-claims.sh"
+      ],
+      "explicit_env": {},
+      "exit": 0,
+      "stdout": "NO_CLAIMS — no feature is marked passing, so there was nothing to re-verify.\nThis is not a pass: it means the repo claims nothing yet.\n",
+      "stderr": "",
+      "before": {
+        "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"active\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"echo verified\",\n          \"repair\": \"Correct inputs and rerun\"\n        }\n      ]\n    }\n  ]\n}\n"
+      },
+      "after": {
+        "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"active\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"echo verified\",\n          \"repair\": \"Correct inputs and rerun\"\n        }\n      ]\n    }\n  ]\n}\n"
+      }
+    },
+    {
+      "cwd": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_08_repair_only_change_can_reearn_identical_commands-repair-only-picejed0",
+      "argv": [
+        "bash",
+        "scripts/verify-feature.sh",
+        "F1"
+      ],
+      "explicit_env": {},
+      "exit": 0,
+      "stdout": "Verifying F1\n\n── Layer: unit\n$ echo verified\nverified\nLayer 'unit' passed.\n\nF1 -> passing (evidence recorded in feature_list.json)\nNext: update PROGRESS.md and commit.\n",
+      "stderr": "",
+      "before": {
+        "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"active\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"echo verified\",\n          \"repair\": \"Correct inputs and rerun\"\n        }\n      ]\n    }\n  ]\n}\n"
+      },
+      "after": {
+        "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"all layers passed — commit 2d65779, 2026-09-05T22:32:42Z\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"echo verified\",\n          \"repair\": \"Correct inputs and rerun\"\n        }\n      ]\n    }\n  ],\n  \"last_updated\": \"2026-09-05\"\n}\n"
+      }
+    },
+    {
+      "cwd": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_08_repair_only_change_can_reearn_identical_commands-repair-only-picejed0",
+      "argv": [
+        "bash",
+        "scripts/verify-claims.sh"
+      ],
+      "explicit_env": {},
+      "exit": 5,
+      "stdout": "",
+      "stderr": "WEAKENED_VERIFICATION\n  F1 is still marked passing, but its verification changed.\n    was: echo verified\n    now: echo verified\n\nThe recorded evidence certifies the command that ran at the time. Changing\nthe command invalidates it. Set the feature back to 'active' and re-run\nscripts/verify-feature.sh so the new command earns its own receipt.\n",
+      "before": {
+        "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"all layers passed — commit 2d65779, 2026-09-05T22:32:42Z\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"echo verified\",\n          \"repair\": \"Correct inputs and rerun\"\n        }\n      ]\n    }\n  ],\n  \"last_updated\": \"2026-09-05\"\n}\n"
+      },
+      "after": {
+        "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"all layers passed — commit 2d65779, 2026-09-05T22:32:42Z\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"echo verified\",\n          \"repair\": \"Correct inputs and rerun\"\n        }\n      ]\n    }\n  ],\n  \"last_updated\": \"2026-09-05\"\n}\n"
+      }
+    }
+  ],
+  "observations": {}
+}

@@ -1,0 +1,54 @@
+{
+  "scope": "DOCUMENT_CONTRACT_ONLY",
+  "runtime_verified": false,
+  "records": [
+    {
+      "stage": "before",
+      "autonomy_policy_valid": true,
+      "taxonomy_valid": true,
+      "coverage_proof_omission_accepted": true,
+      "continuations": {
+        "BLOCKED_BY_HUMAN_SIGNOFF": {
+          "configured": "new_verified_evidence_or_owner_decision",
+          "old_evidence_alone_value_accepted": true
+        },
+        "BLOCKED_BY_BASELINE_ACCEPTANCE": {
+          "configured": "new_verified_evidence_or_owner_decision",
+          "old_evidence_alone_value_accepted": true
+        },
+        "BLOCKED_BY_BUDGET_EXHAUSTION": {
+          "configured": "new_verified_evidence_or_owner_decision",
+          "old_evidence_alone_value_accepted": true
+        }
+      }
+    },
+    {
+      "stage": "after",
+      "autonomy_policy_valid": true,
+      "taxonomy_valid": true,
+      "coverage_proof_omission_accepted": false,
+      "continuations": {
+        "BLOCKED_BY_HUMAN_SIGNOFF": {
+          "configured": "human_approval_receipt_verified",
+          "old_evidence_alone_value_accepted": false
+        },
+        "BLOCKED_BY_BASELINE_ACCEPTANCE": {
+          "configured": "human_approval_receipt_verified",
+          "old_evidence_alone_value_accepted": false
+        },
+        "BLOCKED_BY_BUDGET_EXHAUSTION": {
+          "configured": "explicit_budget_reauthorization_verified",
+          "old_evidence_alone_value_accepted": false
+        }
+      }
+    }
+  ],
+  "checks": 16,
+  "failed": 0,
+  "reviewed_sha256": {
+    "policies/autonomy-policy.v1.yaml": "8bfc73b58350b306e2d0da11166a86fca0501eae76a7baaa3e1536f93bc442a5",
+    "policies/stop-taxonomy.v1.yaml": "361d32e28edacb91880b5bdbb420ea21b7075121c9cc479b224f947c8ee60f37",
+    "schemas/autonomy-policy.schema.json": "84fd34c6fe44dfb161847fedac25eba7e81738d6f823c16f7e80a09a20f85992",
+    "schemas/stop-taxonomy.schema.json": "21cd00bfaaaa9591f02ae9f4055339cec53a988ba1d9b9057e7f55953aeac059"
+  }
+}

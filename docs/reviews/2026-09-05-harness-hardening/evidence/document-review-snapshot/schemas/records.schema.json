@@ -1,0 +1,474 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:harness-kit:records:1",
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "authority_binding": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "precedence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "semantic_role": {
+          "enum": [
+            "normative",
+            "derived",
+            "evidence"
+          ]
+        },
+        "repository_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "approval_receipt_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "source",
+        "version",
+        "sha256",
+        "precedence",
+        "semantic_role",
+        "repository_id",
+        "approval_receipt_sha256"
+      ],
+      "additionalProperties": false
+    },
+    "identity": {
+      "type": "object",
+      "properties": {
+        "content_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "canonical_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "semantic_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "schema_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "normalizer_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "repository_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "content_sha256",
+        "canonical_sha256",
+        "semantic_sha256",
+        "schema_sha256",
+        "normalizer_sha256",
+        "repository_id"
+      ],
+      "additionalProperties": false
+    },
+    "proof": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "trusted_policy_binding",
+            "authority_unchanged",
+            "ac_unchanged",
+            "scope_semantics_unchanged",
+            "threat_model_unchanged",
+            "architecture_unchanged",
+            "product_contract_unchanged",
+            "typed_tree_equivalence",
+            "derived_output_recomputed",
+            "expected_manifest_delta_only",
+            "append_only_lineage",
+            "fresh_verification",
+            "bounded_grant_verified",
+            "same_defect_and_rule",
+            "durable_regression",
+            "expectations_and_coverage_preserved",
+            "independent_review_verified",
+            "human_facing_signoff_satisfied",
+            "adapter_binding_preserved",
+            "no_product_delta",
+            "revocation_and_budget_checked"
+          ]
+        },
+        "input_sha256": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "output_sha256": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "verifier_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "receipt_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "kind",
+        "input_sha256",
+        "output_sha256",
+        "verifier_sha256",
+        "receipt_sha256"
+      ],
+      "additionalProperties": false
+    },
+    "human_gate": {
+      "type": "object",
+      "properties": {
+        "gate_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "approved_artifact_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "authority_binding_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "approval_receipt_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "repository_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "continuation_grant_sha256": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "gate_id",
+        "approved_artifact_sha256",
+        "authority_binding_sha256",
+        "approval_receipt_sha256",
+        "repository_id",
+        "continuation_grant_sha256"
+      ],
+      "additionalProperties": false
+    },
+    "continuation_grant": {
+      "type": "object",
+      "properties": {
+        "grant_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority_binding_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "repository_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scope_semantic_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "ac_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "threat_model_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "architecture_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "defect_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "defect_class": {
+          "type": "string",
+          "minLength": 1
+        },
+        "violated_rule": {
+          "type": "string",
+          "minLength": 1
+        },
+        "allowed_paths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "allowed_actions": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "bounded_remediation",
+              "regenerate_golden",
+              "rerun_review",
+              "continue_to_authorized_slice"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "max_operations": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "approval_receipt_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "regression_required": {
+          "const": true
+        }
+      },
+      "required": [
+        "grant_id",
+        "authority_binding_sha256",
+        "repository_id",
+        "scope_semantic_sha256",
+        "ac_sha256",
+        "threat_model_sha256",
+        "architecture_sha256",
+        "defect_id",
+        "defect_class",
+        "violated_rule",
+        "allowed_paths",
+        "allowed_actions",
+        "max_operations",
+        "expires_at",
+        "approval_receipt_sha256",
+        "regression_required"
+      ],
+      "additionalProperties": false
+    },
+    "release_objective": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "release_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "repository_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "policy_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "components": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "required_slices": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "target_state": {
+          "const": "PRODUCTION_PASS"
+        },
+        "integration_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "required_human_gates": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "production_environment": {
+          "type": "string",
+          "minLength": 1
+        },
+        "deployment_capability_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "smoke_capability_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "certification_capability_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authorization_receipt_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "schema_version",
+        "release_id",
+        "repository_id",
+        "policy_sha256",
+        "components",
+        "required_slices",
+        "target_state",
+        "integration_ref",
+        "required_human_gates",
+        "production_environment",
+        "deployment_capability_id",
+        "smoke_capability_id",
+        "certification_capability_id",
+        "authorization_receipt_sha256"
+      ],
+      "additionalProperties": false
+    },
+    "stop_record": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operation_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "gate_state": {
+          "enum": [
+            "FAIL",
+            "NOT_CONFIGURED",
+            "TOOL_FAILURE",
+            "INCOMPLETE",
+            "POLICY",
+            "UNKNOWN",
+            "NOT_EXECUTED"
+          ]
+        },
+        "reason_code": {
+          "enum": [
+            "BLOCKED_BY_NEW_NORMATIVE_DECISION",
+            "BLOCKED_BY_AUTHORITY_CONFLICT",
+            "BLOCKED_BY_UNDEFINED_DOMAIN_MEANING",
+            "BLOCKED_BY_ARCHITECTURE_CHANGE",
+            "BLOCKED_BY_SECURITY_RISK",
+            "BLOCKED_BY_SHARED_SEMANTICS_CHANGE",
+            "BLOCKED_BY_HUMAN_SIGNOFF",
+            "BLOCKED_BY_BASELINE_ACCEPTANCE",
+            "BLOCKED_BY_MISSING_AUTHORITY_BINDING",
+            "BLOCKED_BY_UNPROVEN_EQUIVALENCE",
+            "BLOCKED_BY_INVALID_SCHEMA",
+            "BLOCKED_BY_JOURNAL_INTEGRITY",
+            "BLOCKED_BY_STALE_LEASE",
+            "BLOCKED_BY_BUDGET_EXHAUSTION",
+            "BLOCKED_BY_REQUIRED_CAPABILITY",
+            "AUTO_REMEDIABLE_CANONICALIZATION",
+            "AUTO_REMEDIABLE_DERIVED_BINDING",
+            "AUTO_REMEDIABLE_STALE_EVIDENCE",
+            "AUTO_REMEDIABLE_HARNESS_STABILITY",
+            "AUTO_REMEDIABLE_BOUNDED_DEFECT",
+            "AUTO_REMEDIABLE_ADAPTER_COMPATIBILITY"
+          ]
+        },
+        "policy_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "evidence_sha256": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "gate_satisfied": {
+          "const": false
+        }
+      },
+      "required": [
+        "schema_version",
+        "run_id",
+        "operation_key",
+        "gate_state",
+        "reason_code",
+        "policy_sha256",
+        "evidence_sha256",
+        "gate_satisfied"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

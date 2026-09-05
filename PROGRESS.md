@@ -3,7 +3,30 @@
 The durable memory of this repository. Every session reads this first and writes to it
 last. If it disagrees with your recollection, this file wins.
 
-## Current State
+## Current State — 2026-09-05 review
+
+- **Audited base:** `88ea1e6c45faf5b5db9e29935eef6e25e50f633b` on `main`;
+  `VERSION` and `.harness/kit-version` are `2.2.5`.
+- **Review:** [Harness hardening and autonomy](docs/reviews/2026-09-05-harness-hardening/README.md).
+  Audit, proposed architecture, H01–H09 migration, inactive YAML/schema contracts,
+  independent findings and reproducible RED probes are available for review.
+- **Verification:** baseline `./init.sh` 273 assertions; `make check` with pinned
+  k6 v2.1.0 exits 0 (273 core + 15 Gherkin + 55 load + 68 Sentry = 411 passing
+  assertions; 2 authenticated-gh load cases omitted). Quick gates: 8 PASS.
+  These existing suites do not cover the newly reproduced false-success cases.
+- **Execution status:** `HARNESS_REVIEW_BLOCKED`, as required by the user's
+  execution condition for material architecture/compatibility contradictions.
+  M01–M04 runtime and verified replay are absent here; replacing mutable state
+  authority is not a mechanical rebind.
+- **Next action:** resolve MIGRATION-01: optional local v2 pack, v1 preserved,
+  `feature_list.json` projected from replay in opted-in repositories, historical
+  receipts `LEGACY_UNVERIFIED` until a new real verification. Then execute the
+  milestones sequentially, with RED-before-fix and independent review.
+- **Feature ledger:** fourteen existing `passing` records preserved byte-for-byte;
+  no new feature promoted, no runtime policy activated, no baseline accepted.
+  Audit proposals are not shipped features or approvals.
+
+## Previous snapshot — retained as history
 
 - **Last commit:** `b8c2ceb` — Merge pull request #12 (release 2.2.0)
 - **Released:** `v2.2.0` — first release cut by release-please, tag and GitHub
@@ -26,8 +49,28 @@ last. If it disagrees with your recollection, this file wins.
 
 ## In Progress
 
-_Nothing active. All fourteen features are `passing`, each promoted by
-`verify-feature.sh` with recorded evidence — none set by hand._
+The hardening review is delivered as a proposal; implementation awaits
+MIGRATION-01. No feature is active. The fourteen legacy claims are preserved,
+not recertified under the proposed v2 contract.
+
+## Session log — 2026-09-05 (audit before increasing autonomy)
+
+Reviewed the exact GitHub tree and existing fail-closed controls. Independent
+adversarial fixtures reproduced seven High verifier bypasses; local fixtures
+added two High architecture-check failures and a full-install gate omission.
+The audit also distinguishes source-reading findings from executed probes.
+
+Existing tests remain green while the new safety expectations are RED. The
+review does not register those diagnostic tests as passing production gates.
+Evidence, source hashes, limitations and reproduction commands are in the
+[evidence folder](docs/reviews/2026-09-05-harness-hardening/evidence/README.md).
+
+The proposed transition preserves the kit's installer and legacy consumers.
+It requires one architecture decision because the requested replay-based
+authority does not exist in this repository. The
+[Agent Note](.agents/notes/proposed/architecture/2026-09-05-harness-hardening-transition.md)
+records alternatives and compatibility consequences. No accepted decision in
+`DECISIONS.md` or existing verification contract was rewritten.
 
 ## Session log — 2026-08-31 (installed in two real repos; the canary had never worked)
 
@@ -260,7 +303,10 @@ four ever disagree. Rationale in
 
 ## Blockers
 
-_(none)_
+MIGRATION-01 is pending for the hardening evolution. See the current state and
+[review decision](docs/reviews/2026-09-05-harness-hardening/README.md#5-decisión-mínima-requerida).
+Existing product/service access limitations in older session entries retain
+their historical context; this audit does not certify them as resolved.
 
 ---
 

@@ -1,0 +1,25 @@
+{
+  "test": "__main__.StateRegressionTests.test_02_wip_violation_blocks_before_execution",
+  "fixture": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/supplemental-state-baseline/fixtures/test_02_wip_violation_blocks_before_execution-ojc5prpw",
+  "calls": [
+    {
+      "cwd": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/supplemental-state-baseline/fixtures/test_02_wip_violation_blocks_before_execution-ojc5prpw",
+      "argv": [
+        "bash",
+        "scripts/verify-feature.sh",
+        "F1"
+      ],
+      "exit": 0,
+      "stdout": "Verifying F1\n\n── Layer: unit\n$ printf F1 > first-executed\nLayer 'unit' passed.\n\nF1 -> passing (evidence recorded in feature_list.json)\nNext: update PROGRESS.md and commit.\n",
+      "stderr": "",
+      "before": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"active\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf F1 > first-executed\",\n          \"repair\": \"Check the fixture input.\"\n        }\n      ]\n    },\n    {\n      \"id\": \"F2\",\n      \"state\": \"active\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf F2 > second-executed\",\n          \"repair\": \"Check the fixture input.\"\n        }\n      ]\n    }\n  ]\n}\n",
+      "after": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"all layers passed — commit f0d0149, 2026-09-05T22:46:29Z\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf F1 > first-executed\",\n          \"repair\": \"Check the fixture input.\"\n        }\n      ]\n    },\n    {\n      \"id\": \"F2\",\n      \"state\": \"active\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf F2 > second-executed\",\n          \"repair\": \"Check the fixture input.\"\n        }\n      ]\n    }\n  ],\n  \"last_updated\": \"2026-09-05\"\n}\n"
+    }
+  ],
+  "observations": {
+    "rejected": false,
+    "no_layer_execution": false,
+    "state_and_evidence_unchanged": false
+  },
+  "base_sha": "f0d014949edb9e361a7f2baae6c46590209734d0"
+}

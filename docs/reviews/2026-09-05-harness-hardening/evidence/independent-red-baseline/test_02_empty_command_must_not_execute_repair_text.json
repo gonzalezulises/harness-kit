@@ -1,0 +1,30 @@
+{
+  "test": "__main__.RegressionTests.test_02_empty_command_must_not_execute_repair_text",
+  "fixtures": [
+    {
+      "path": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_02_empty_command_must_not_execute_repair_text-empty-command-wno673xi",
+      "base_sha": "150307d7e8e7f765d9853a1d4fb9d550265640a7"
+    }
+  ],
+  "calls": [
+    {
+      "cwd": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_02_empty_command_must_not_execute_repair_text-empty-command-wno673xi",
+      "argv": [
+        "bash",
+        "scripts/verify-feature.sh",
+        "F1"
+      ],
+      "explicit_env": {},
+      "exit": 0,
+      "stdout": "Verifying F1\n\n── Layer: unit\n$ printf \"repair text ran\\n\" > repair-executed\nLayer 'unit' passed.\n\nF1 -> passing (evidence recorded in feature_list.json)\nNext: update PROGRESS.md and commit.\n",
+      "stderr": "",
+      "before": {
+        "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"active\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"\",\n          \"repair\": \"printf \\\"repair text ran\\\\n\\\" > repair-executed\"\n        }\n      ]\n    }\n  ]\n}\n"
+      },
+      "after": {
+        "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"all layers passed — commit 150307d, 2026-09-05T22:32:41Z\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"\",\n          \"repair\": \"printf \\\"repair text ran\\\\n\\\" > repair-executed\"\n        }\n      ]\n    }\n  ],\n  \"last_updated\": \"2026-09-05\"\n}\n"
+      }
+    }
+  ],
+  "observations": {}
+}

@@ -1,0 +1,194 @@
+{
+  "scope": "INACTIVE_PROPOSAL_STRUCTURE_ONLY",
+  "runtime_verified": false,
+  "dependencies": {
+    "PyYAML": "6.0.3",
+    "jsonschema": "4.26.0"
+  },
+  "source_sha256": {
+    "policies/autonomy-policy.v1.yaml": "dfdee08dfcd9d7ac5b1a4f508408806841a3ebbc907a5805e5b3dc35dcbb6df2",
+    "policies/mechanical-change-policy.v1.yaml": "7445dbd2e9fcb170298c9849a64d27259af412707e9ac8494a518b7cba9a2762",
+    "policies/release-execution-policy.v1.yaml": "8cc23386ac65f955393dd19d5e192786a244b1b09ef1e0b2926b5dbeb3445dd0",
+    "policies/stop-taxonomy.v1.yaml": "245d711e9689ef04afc95bdcb5a1747e48068a8eae6fbd0a2aafd2474c929540",
+    "schemas/autonomy-policy.schema.json": "3ddb297683af0b20c93cd07f811f7ad45019ddfe77d6812f891937ee082ca7cd",
+    "schemas/mechanical-change-policy.schema.json": "4378a593375582bb765c81b38ca259a2acd071b8a922812e2ef5f000d9c28469",
+    "schemas/records.schema.json": "3a3c3ffb8697ac6a9aba56a66998088db0c8070cf806e2bad33160d2e69b40ba",
+    "schemas/release-execution-policy.schema.json": "86048801114f9ee093429afd12091a9edca67e66119330aa743a9588c3e16fea",
+    "schemas/stop-taxonomy.schema.json": "52df0e89761e4633be3babbcfaf6a3a1f37719563fd972925b8b7dfd613effdd"
+  },
+  "checks": 32,
+  "failed": 0,
+  "records": [
+    {
+      "case": "schema:autonomy-policy.schema.json",
+      "result": "PASS"
+    },
+    {
+      "case": "schema:mechanical-change-policy.schema.json",
+      "result": "PASS"
+    },
+    {
+      "case": "schema:records.schema.json",
+      "result": "PASS"
+    },
+    {
+      "case": "schema:release-execution-policy.schema.json",
+      "result": "PASS"
+    },
+    {
+      "case": "schema:stop-taxonomy.schema.json",
+      "result": "PASS"
+    },
+    {
+      "case": "inactive-proposal:autonomy-policy.v1.yaml",
+      "result": "PASS"
+    },
+    {
+      "case": "inactive-proposal:mechanical-change-policy.v1.yaml",
+      "result": "PASS"
+    },
+    {
+      "case": "inactive-proposal:release-execution-policy.v1.yaml",
+      "result": "PASS"
+    },
+    {
+      "case": "inactive-proposal:stop-taxonomy.v1.yaml",
+      "result": "PASS"
+    },
+    {
+      "case": "autonomy-policy:activation-is-not-approval",
+      "result": "PASS",
+      "expected": "schema rejection",
+      "violations": 1
+    },
+    {
+      "case": "autonomy-policy:unknown-field",
+      "result": "PASS",
+      "expected": "schema rejection",
+      "violations": 1
+    },
+    {
+      "case": "mechanical-change-policy:activation-is-not-approval",
+      "result": "PASS",
+      "expected": "schema rejection",
+      "violations": 1
+    },
+    {
+      "case": "mechanical-change-policy:unknown-field",
+      "result": "PASS",
+      "expected": "schema rejection",
+      "violations": 1
+    },
+    {
+      "case": "release-execution-policy:activation-is-not-approval",
+      "result": "PASS",
+      "expected": "schema rejection",
+      "violations": 1
+    },
+    {
+      "case": "release-execution-policy:unknown-field",
+      "result": "PASS",
+      "expected": "schema rejection",
+      "violations": 1
+    },
+    {
+      "case": "stop-taxonomy:activation-is-not-approval",
+      "result": "PASS",
+      "expected": "schema rejection",
+      "violations": 1
+    },
+    {
+      "case": "stop-taxonomy:unknown-field",
+      "result": "PASS",
+      "expected": "schema rejection",
+      "violations": 1
+    },
+    {
+      "case": "semantic-cannot-be-mechanical",
+      "result": "PASS",
+      "expected": "schema rejection",
+      "violations": 1
+    },
+    {
+      "case": "unknown-class",
+      "result": "PASS",
+      "expected": "schema rejection",
+      "violations": 1
+    },
+    {
+      "case": "no-equivalence-proof",
+      "result": "PASS",
+      "expected": "schema rejection",
+      "violations": 1
+    },
+    {
+      "case": "no-budget-reset-by-rebind",
+      "result": "PASS",
+      "expected": "schema rejection",
+      "violations": 1
+    },
+    {
+      "case": "boolean-cannot-be-authority",
+      "result": "PASS",
+      "expected": "schema rejection",
+      "violations": 1
+    },
+    {
+      "case": "no-arbitrary-shell-capability",
+      "result": "PASS",
+      "expected": "schema rejection",
+      "violations": 1
+    },
+    {
+      "case": "authority-invariant-required",
+      "result": "PASS",
+      "expected": "schema rejection",
+      "violations": 1
+    },
+    {
+      "case": "no-human-text-normalization",
+      "result": "PASS",
+      "expected": "schema rejection",
+      "violations": 1
+    },
+    {
+      "case": "no-copying-old-pass",
+      "result": "PASS",
+      "expected": "schema rejection",
+      "violations": 1
+    },
+    {
+      "case": "smoke-required-for-production",
+      "result": "PASS",
+      "expected": "schema rejection",
+      "violations": 1
+    },
+    {
+      "case": "deployment-identity-required",
+      "result": "PASS",
+      "expected": "schema rejection",
+      "violations": 1
+    },
+    {
+      "case": "no-auto-baseline",
+      "result": "PASS",
+      "expected": "schema rejection",
+      "violations": 1
+    },
+    {
+      "case": "incomplete-never-satisfies-gate",
+      "result": "PASS",
+      "expected": "schema rejection",
+      "violations": 1
+    },
+    {
+      "case": "human-gate-structure-only",
+      "result": "PASS"
+    },
+    {
+      "case": "human-gate-boolean-cannot-replace-receipt",
+      "result": "PASS",
+      "violations": 2
+    }
+  ]
+}

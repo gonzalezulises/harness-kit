@@ -1,0 +1,1196 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:harness-kit:autonomy-policy:1",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "document_status": {
+      "const": "PROPOSED_NON_AUTHORITATIVE"
+    },
+    "activation": {
+      "const": false
+    },
+    "policy_id": {
+      "const": "harness-autonomy"
+    },
+    "classification": {
+      "type": "object",
+      "properties": {
+        "unit": {
+          "const": "artifact_operation"
+        },
+        "composition": {
+          "const": "most_restrictive"
+        },
+        "labels_are_proof": {
+          "const": false
+        },
+        "unproven": {
+          "const": "DENY_UNPROVEN"
+        }
+      },
+      "required": [
+        "unit",
+        "composition",
+        "labels_are_proof",
+        "unproven"
+      ],
+      "additionalProperties": false
+    },
+    "class_policies": {
+      "type": "object",
+      "properties": {
+        "SEMANTIC": {
+          "type": "object",
+          "properties": {
+            "disposition": {
+              "const": "HUMAN_REQUIRED"
+            },
+            "required_proofs": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "trusted_policy_binding",
+                  "authority_unchanged",
+                  "ac_unchanged",
+                  "scope_semantics_unchanged",
+                  "threat_model_unchanged",
+                  "architecture_unchanged",
+                  "product_contract_unchanged",
+                  "typed_tree_equivalence",
+                  "derived_output_recomputed",
+                  "expected_manifest_delta_only",
+                  "append_only_lineage",
+                  "fresh_verification",
+                  "bounded_grant_verified",
+                  "same_defect_and_rule",
+                  "durable_regression",
+                  "expectations_and_coverage_preserved",
+                  "independent_review_verified",
+                  "human_facing_signoff_satisfied",
+                  "adapter_binding_preserved",
+                  "no_product_delta",
+                  "revocation_and_budget_checked"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true,
+              "allOf": [
+                {
+                  "contains": {
+                    "const": "trusted_policy_binding"
+                  }
+                }
+              ]
+            }
+          },
+          "required": [
+            "disposition",
+            "required_proofs"
+          ],
+          "additionalProperties": false
+        },
+        "ARCHITECTURAL": {
+          "type": "object",
+          "properties": {
+            "disposition": {
+              "const": "HUMAN_REQUIRED"
+            },
+            "required_proofs": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "trusted_policy_binding",
+                  "authority_unchanged",
+                  "ac_unchanged",
+                  "scope_semantics_unchanged",
+                  "threat_model_unchanged",
+                  "architecture_unchanged",
+                  "product_contract_unchanged",
+                  "typed_tree_equivalence",
+                  "derived_output_recomputed",
+                  "expected_manifest_delta_only",
+                  "append_only_lineage",
+                  "fresh_verification",
+                  "bounded_grant_verified",
+                  "same_defect_and_rule",
+                  "durable_regression",
+                  "expectations_and_coverage_preserved",
+                  "independent_review_verified",
+                  "human_facing_signoff_satisfied",
+                  "adapter_binding_preserved",
+                  "no_product_delta",
+                  "revocation_and_budget_checked"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true,
+              "allOf": [
+                {
+                  "contains": {
+                    "const": "trusted_policy_binding"
+                  }
+                }
+              ]
+            }
+          },
+          "required": [
+            "disposition",
+            "required_proofs"
+          ],
+          "additionalProperties": false
+        },
+        "SECURITY_RELEVANT": {
+          "type": "object",
+          "properties": {
+            "disposition": {
+              "const": "HUMAN_REQUIRED"
+            },
+            "required_proofs": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "trusted_policy_binding",
+                  "authority_unchanged",
+                  "ac_unchanged",
+                  "scope_semantics_unchanged",
+                  "threat_model_unchanged",
+                  "architecture_unchanged",
+                  "product_contract_unchanged",
+                  "typed_tree_equivalence",
+                  "derived_output_recomputed",
+                  "expected_manifest_delta_only",
+                  "append_only_lineage",
+                  "fresh_verification",
+                  "bounded_grant_verified",
+                  "same_defect_and_rule",
+                  "durable_regression",
+                  "expectations_and_coverage_preserved",
+                  "independent_review_verified",
+                  "human_facing_signoff_satisfied",
+                  "adapter_binding_preserved",
+                  "no_product_delta",
+                  "revocation_and_budget_checked"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true,
+              "allOf": [
+                {
+                  "contains": {
+                    "const": "trusted_policy_binding"
+                  }
+                }
+              ]
+            }
+          },
+          "required": [
+            "disposition",
+            "required_proofs"
+          ],
+          "additionalProperties": false
+        },
+        "SHARED_SEMANTICS": {
+          "type": "object",
+          "properties": {
+            "disposition": {
+              "const": "HUMAN_REQUIRED"
+            },
+            "required_proofs": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "trusted_policy_binding",
+                  "authority_unchanged",
+                  "ac_unchanged",
+                  "scope_semantics_unchanged",
+                  "threat_model_unchanged",
+                  "architecture_unchanged",
+                  "product_contract_unchanged",
+                  "typed_tree_equivalence",
+                  "derived_output_recomputed",
+                  "expected_manifest_delta_only",
+                  "append_only_lineage",
+                  "fresh_verification",
+                  "bounded_grant_verified",
+                  "same_defect_and_rule",
+                  "durable_regression",
+                  "expectations_and_coverage_preserved",
+                  "independent_review_verified",
+                  "human_facing_signoff_satisfied",
+                  "adapter_binding_preserved",
+                  "no_product_delta",
+                  "revocation_and_budget_checked"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true,
+              "allOf": [
+                {
+                  "contains": {
+                    "const": "trusted_policy_binding"
+                  }
+                }
+              ]
+            }
+          },
+          "required": [
+            "disposition",
+            "required_proofs"
+          ],
+          "additionalProperties": false
+        },
+        "MECHANICAL_CANONICALIZATION": {
+          "type": "object",
+          "properties": {
+            "disposition": {
+              "const": "VERIFIED_MECHANICAL"
+            },
+            "required_proofs": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "trusted_policy_binding",
+                  "authority_unchanged",
+                  "ac_unchanged",
+                  "scope_semantics_unchanged",
+                  "threat_model_unchanged",
+                  "architecture_unchanged",
+                  "product_contract_unchanged",
+                  "typed_tree_equivalence",
+                  "derived_output_recomputed",
+                  "expected_manifest_delta_only",
+                  "append_only_lineage",
+                  "fresh_verification",
+                  "bounded_grant_verified",
+                  "same_defect_and_rule",
+                  "durable_regression",
+                  "expectations_and_coverage_preserved",
+                  "independent_review_verified",
+                  "human_facing_signoff_satisfied",
+                  "adapter_binding_preserved",
+                  "no_product_delta",
+                  "revocation_and_budget_checked"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true,
+              "allOf": [
+                {
+                  "contains": {
+                    "const": "trusted_policy_binding"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "authority_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "ac_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "scope_semantics_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "threat_model_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "architecture_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "product_contract_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "revocation_and_budget_checked"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "typed_tree_equivalence"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "derived_output_recomputed"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "expected_manifest_delta_only"
+                  }
+                }
+              ]
+            }
+          },
+          "required": [
+            "disposition",
+            "required_proofs"
+          ],
+          "additionalProperties": false
+        },
+        "DERIVED_BINDING_UPDATE": {
+          "type": "object",
+          "properties": {
+            "disposition": {
+              "const": "VERIFIED_MECHANICAL"
+            },
+            "required_proofs": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "trusted_policy_binding",
+                  "authority_unchanged",
+                  "ac_unchanged",
+                  "scope_semantics_unchanged",
+                  "threat_model_unchanged",
+                  "architecture_unchanged",
+                  "product_contract_unchanged",
+                  "typed_tree_equivalence",
+                  "derived_output_recomputed",
+                  "expected_manifest_delta_only",
+                  "append_only_lineage",
+                  "fresh_verification",
+                  "bounded_grant_verified",
+                  "same_defect_and_rule",
+                  "durable_regression",
+                  "expectations_and_coverage_preserved",
+                  "independent_review_verified",
+                  "human_facing_signoff_satisfied",
+                  "adapter_binding_preserved",
+                  "no_product_delta",
+                  "revocation_and_budget_checked"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true,
+              "allOf": [
+                {
+                  "contains": {
+                    "const": "trusted_policy_binding"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "authority_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "ac_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "scope_semantics_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "threat_model_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "architecture_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "product_contract_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "revocation_and_budget_checked"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "derived_output_recomputed"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "expected_manifest_delta_only"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "append_only_lineage"
+                  }
+                }
+              ]
+            }
+          },
+          "required": [
+            "disposition",
+            "required_proofs"
+          ],
+          "additionalProperties": false
+        },
+        "EVIDENCE_REFRESH": {
+          "type": "object",
+          "properties": {
+            "disposition": {
+              "const": "VERIFIED_MECHANICAL"
+            },
+            "required_proofs": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "trusted_policy_binding",
+                  "authority_unchanged",
+                  "ac_unchanged",
+                  "scope_semantics_unchanged",
+                  "threat_model_unchanged",
+                  "architecture_unchanged",
+                  "product_contract_unchanged",
+                  "typed_tree_equivalence",
+                  "derived_output_recomputed",
+                  "expected_manifest_delta_only",
+                  "append_only_lineage",
+                  "fresh_verification",
+                  "bounded_grant_verified",
+                  "same_defect_and_rule",
+                  "durable_regression",
+                  "expectations_and_coverage_preserved",
+                  "independent_review_verified",
+                  "human_facing_signoff_satisfied",
+                  "adapter_binding_preserved",
+                  "no_product_delta",
+                  "revocation_and_budget_checked"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true,
+              "allOf": [
+                {
+                  "contains": {
+                    "const": "trusted_policy_binding"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "authority_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "ac_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "scope_semantics_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "threat_model_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "architecture_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "product_contract_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "revocation_and_budget_checked"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "fresh_verification"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "append_only_lineage"
+                  }
+                }
+              ]
+            }
+          },
+          "required": [
+            "disposition",
+            "required_proofs"
+          ],
+          "additionalProperties": false
+        },
+        "STALE_RUN_REPLACEMENT": {
+          "type": "object",
+          "properties": {
+            "disposition": {
+              "const": "VERIFIED_MECHANICAL"
+            },
+            "required_proofs": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "trusted_policy_binding",
+                  "authority_unchanged",
+                  "ac_unchanged",
+                  "scope_semantics_unchanged",
+                  "threat_model_unchanged",
+                  "architecture_unchanged",
+                  "product_contract_unchanged",
+                  "typed_tree_equivalence",
+                  "derived_output_recomputed",
+                  "expected_manifest_delta_only",
+                  "append_only_lineage",
+                  "fresh_verification",
+                  "bounded_grant_verified",
+                  "same_defect_and_rule",
+                  "durable_regression",
+                  "expectations_and_coverage_preserved",
+                  "independent_review_verified",
+                  "human_facing_signoff_satisfied",
+                  "adapter_binding_preserved",
+                  "no_product_delta",
+                  "revocation_and_budget_checked"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true,
+              "allOf": [
+                {
+                  "contains": {
+                    "const": "trusted_policy_binding"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "authority_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "ac_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "scope_semantics_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "threat_model_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "architecture_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "product_contract_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "revocation_and_budget_checked"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "fresh_verification"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "append_only_lineage"
+                  }
+                }
+              ]
+            }
+          },
+          "required": [
+            "disposition",
+            "required_proofs"
+          ],
+          "additionalProperties": false
+        },
+        "HARNESS_STABILITY": {
+          "type": "object",
+          "properties": {
+            "disposition": {
+              "const": "BOUNDED_GRANT"
+            },
+            "required_proofs": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "trusted_policy_binding",
+                  "authority_unchanged",
+                  "ac_unchanged",
+                  "scope_semantics_unchanged",
+                  "threat_model_unchanged",
+                  "architecture_unchanged",
+                  "product_contract_unchanged",
+                  "typed_tree_equivalence",
+                  "derived_output_recomputed",
+                  "expected_manifest_delta_only",
+                  "append_only_lineage",
+                  "fresh_verification",
+                  "bounded_grant_verified",
+                  "same_defect_and_rule",
+                  "durable_regression",
+                  "expectations_and_coverage_preserved",
+                  "independent_review_verified",
+                  "human_facing_signoff_satisfied",
+                  "adapter_binding_preserved",
+                  "no_product_delta",
+                  "revocation_and_budget_checked"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true,
+              "allOf": [
+                {
+                  "contains": {
+                    "const": "trusted_policy_binding"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "authority_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "ac_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "scope_semantics_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "threat_model_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "architecture_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "product_contract_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "revocation_and_budget_checked"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "bounded_grant_verified"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "expectations_and_coverage_preserved"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "durable_regression"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "independent_review_verified"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "no_product_delta"
+                  }
+                }
+              ]
+            }
+          },
+          "required": [
+            "disposition",
+            "required_proofs"
+          ],
+          "additionalProperties": false
+        },
+        "BOUNDED_REMEDIATION": {
+          "type": "object",
+          "properties": {
+            "disposition": {
+              "const": "BOUNDED_GRANT"
+            },
+            "required_proofs": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "trusted_policy_binding",
+                  "authority_unchanged",
+                  "ac_unchanged",
+                  "scope_semantics_unchanged",
+                  "threat_model_unchanged",
+                  "architecture_unchanged",
+                  "product_contract_unchanged",
+                  "typed_tree_equivalence",
+                  "derived_output_recomputed",
+                  "expected_manifest_delta_only",
+                  "append_only_lineage",
+                  "fresh_verification",
+                  "bounded_grant_verified",
+                  "same_defect_and_rule",
+                  "durable_regression",
+                  "expectations_and_coverage_preserved",
+                  "independent_review_verified",
+                  "human_facing_signoff_satisfied",
+                  "adapter_binding_preserved",
+                  "no_product_delta",
+                  "revocation_and_budget_checked"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true,
+              "allOf": [
+                {
+                  "contains": {
+                    "const": "trusted_policy_binding"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "authority_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "ac_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "scope_semantics_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "threat_model_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "architecture_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "product_contract_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "revocation_and_budget_checked"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "bounded_grant_verified"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "same_defect_and_rule"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "durable_regression"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "independent_review_verified"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "human_facing_signoff_satisfied"
+                  }
+                }
+              ]
+            }
+          },
+          "required": [
+            "disposition",
+            "required_proofs"
+          ],
+          "additionalProperties": false
+        },
+        "DOCUMENTATION_ONLY": {
+          "type": "object",
+          "properties": {
+            "disposition": {
+              "const": "VERIFIED_MECHANICAL"
+            },
+            "required_proofs": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "trusted_policy_binding",
+                  "authority_unchanged",
+                  "ac_unchanged",
+                  "scope_semantics_unchanged",
+                  "threat_model_unchanged",
+                  "architecture_unchanged",
+                  "product_contract_unchanged",
+                  "typed_tree_equivalence",
+                  "derived_output_recomputed",
+                  "expected_manifest_delta_only",
+                  "append_only_lineage",
+                  "fresh_verification",
+                  "bounded_grant_verified",
+                  "same_defect_and_rule",
+                  "durable_regression",
+                  "expectations_and_coverage_preserved",
+                  "independent_review_verified",
+                  "human_facing_signoff_satisfied",
+                  "adapter_binding_preserved",
+                  "no_product_delta",
+                  "revocation_and_budget_checked"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true,
+              "allOf": [
+                {
+                  "contains": {
+                    "const": "trusted_policy_binding"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "authority_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "ac_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "scope_semantics_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "threat_model_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "architecture_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "product_contract_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "revocation_and_budget_checked"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "append_only_lineage"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "human_facing_signoff_satisfied"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "no_product_delta"
+                  }
+                }
+              ]
+            }
+          },
+          "required": [
+            "disposition",
+            "required_proofs"
+          ],
+          "additionalProperties": false
+        },
+        "ADAPTER_COMPATIBILITY": {
+          "type": "object",
+          "properties": {
+            "disposition": {
+              "const": "BOUNDED_GRANT"
+            },
+            "required_proofs": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "trusted_policy_binding",
+                  "authority_unchanged",
+                  "ac_unchanged",
+                  "scope_semantics_unchanged",
+                  "threat_model_unchanged",
+                  "architecture_unchanged",
+                  "product_contract_unchanged",
+                  "typed_tree_equivalence",
+                  "derived_output_recomputed",
+                  "expected_manifest_delta_only",
+                  "append_only_lineage",
+                  "fresh_verification",
+                  "bounded_grant_verified",
+                  "same_defect_and_rule",
+                  "durable_regression",
+                  "expectations_and_coverage_preserved",
+                  "independent_review_verified",
+                  "human_facing_signoff_satisfied",
+                  "adapter_binding_preserved",
+                  "no_product_delta",
+                  "revocation_and_budget_checked"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true,
+              "allOf": [
+                {
+                  "contains": {
+                    "const": "trusted_policy_binding"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "authority_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "ac_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "scope_semantics_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "threat_model_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "architecture_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "product_contract_unchanged"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "revocation_and_budget_checked"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "bounded_grant_verified"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "adapter_binding_preserved"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "independent_review_verified"
+                  }
+                },
+                {
+                  "contains": {
+                    "const": "no_product_delta"
+                  }
+                }
+              ]
+            }
+          },
+          "required": [
+            "disposition",
+            "required_proofs"
+          ],
+          "additionalProperties": false
+        },
+        "UNKNOWN": {
+          "type": "object",
+          "properties": {
+            "disposition": {
+              "const": "DENY_UNPROVEN"
+            },
+            "required_proofs": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "trusted_policy_binding",
+                  "authority_unchanged",
+                  "ac_unchanged",
+                  "scope_semantics_unchanged",
+                  "threat_model_unchanged",
+                  "architecture_unchanged",
+                  "product_contract_unchanged",
+                  "typed_tree_equivalence",
+                  "derived_output_recomputed",
+                  "expected_manifest_delta_only",
+                  "append_only_lineage",
+                  "fresh_verification",
+                  "bounded_grant_verified",
+                  "same_defect_and_rule",
+                  "durable_regression",
+                  "expectations_and_coverage_preserved",
+                  "independent_review_verified",
+                  "human_facing_signoff_satisfied",
+                  "adapter_binding_preserved",
+                  "no_product_delta",
+                  "revocation_and_budget_checked"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true,
+              "allOf": [
+                {
+                  "contains": {
+                    "const": "trusted_policy_binding"
+                  }
+                }
+              ]
+            }
+          },
+          "required": [
+            "disposition",
+            "required_proofs"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "SEMANTIC",
+        "ARCHITECTURAL",
+        "SECURITY_RELEVANT",
+        "SHARED_SEMANTICS",
+        "MECHANICAL_CANONICALIZATION",
+        "DERIVED_BINDING_UPDATE",
+        "EVIDENCE_REFRESH",
+        "STALE_RUN_REPLACEMENT",
+        "HARNESS_STABILITY",
+        "BOUNDED_REMEDIATION",
+        "DOCUMENTATION_ONLY",
+        "ADAPTER_COMPATIBILITY",
+        "UNKNOWN"
+      ],
+      "additionalProperties": false
+    },
+    "budgets": {
+      "type": "object",
+      "properties": {
+        "buckets": {
+          "const": [
+            "product_semantic_review",
+            "harness_implementation_review",
+            "mechanical_verification"
+          ]
+        },
+        "limits_source": {
+          "const": "approved_objective_policy"
+        },
+        "global_ceiling_required": {
+          "const": true
+        },
+        "rebind_resets_budget": {
+          "const": false
+        },
+        "exhaustion": {
+          "const": "BLOCKED_BY_BUDGET_EXHAUSTION"
+        }
+      },
+      "required": [
+        "buckets",
+        "limits_source",
+        "global_ceiling_required",
+        "rebind_resets_budget",
+        "exhaustion"
+      ],
+      "additionalProperties": false
+    },
+    "human_gates": {
+      "type": "object",
+      "properties": {
+        "baseline_acceptance": {
+          "const": "always_explicit"
+        },
+        "new_semantics": {
+          "const": "always_explicit"
+        },
+        "continuation": {
+          "const": "verified_bounded_grant"
+        },
+        "approval_boolean_is_authority": {
+          "const": false
+        }
+      },
+      "required": [
+        "baseline_acceptance",
+        "new_semantics",
+        "continuation",
+        "approval_boolean_is_authority"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "document_status",
+    "activation",
+    "policy_id",
+    "classification",
+    "class_policies",
+    "budgets",
+    "human_gates"
+  ],
+  "additionalProperties": false
+}

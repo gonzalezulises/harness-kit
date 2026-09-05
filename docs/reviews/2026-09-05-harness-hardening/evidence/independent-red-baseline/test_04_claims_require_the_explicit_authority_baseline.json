@@ -1,0 +1,54 @@
+{
+  "test": "__main__.RegressionTests.test_04_claims_require_the_explicit_authority_baseline",
+  "fixtures": [
+    {
+      "path": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_04_claims_require_the_explicit_authority_baseline-missing-8kngo7zc",
+      "base_sha": "e80f5971feafcd66cb9a958f12a02b82ca2a10f7"
+    },
+    {
+      "path": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_04_claims_require_the_explicit_authority_baseline-malformed-re2x38lf",
+      "base_sha": "e80f5971feafcd66cb9a958f12a02b82ca2a10f7"
+    }
+  ],
+  "calls": [
+    {
+      "cwd": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_04_claims_require_the_explicit_authority_baseline-missing-8kngo7zc",
+      "argv": [
+        "bash",
+        "scripts/verify-claims.sh"
+      ],
+      "explicit_env": {
+        "CLAIMS_BASE_FILE": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_04_claims_require_the_explicit_authority_baseline-missing-8kngo7zc/missing-base.json"
+      },
+      "exit": 0,
+      "stdout": "Re-verifying claimed features\n\n── F1\n  ok   unit\n\n1 claimed feature(s) re-verified. Every passing state is backed by a run.\n",
+      "stderr": "",
+      "before": {
+        "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"fixture base receipt\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf checked > layer-executed\",\n          \"repair\": \"check inputs\"\n        }\n      ]\n    }\n  ]\n}\n"
+      },
+      "after": {
+        "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"fixture base receipt\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf checked > layer-executed\",\n          \"repair\": \"check inputs\"\n        }\n      ]\n    }\n  ]\n}\n"
+      }
+    },
+    {
+      "cwd": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_04_claims_require_the_explicit_authority_baseline-malformed-re2x38lf",
+      "argv": [
+        "bash",
+        "scripts/verify-claims.sh"
+      ],
+      "explicit_env": {
+        "CLAIMS_BASE_FILE": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_04_claims_require_the_explicit_authority_baseline-malformed-re2x38lf/malformed-base.json"
+      },
+      "exit": 0,
+      "stdout": "Re-verifying claimed features\n\n── F1\n  ok   unit\n\n1 claimed feature(s) re-verified. Every passing state is backed by a run.\n",
+      "stderr": "",
+      "before": {
+        "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"fixture base receipt\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf checked > layer-executed\",\n          \"repair\": \"check inputs\"\n        }\n      ]\n    }\n  ]\n}\n"
+      },
+      "after": {
+        "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"fixture base receipt\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf checked > layer-executed\",\n          \"repair\": \"check inputs\"\n        }\n      ]\n    }\n  ]\n}\n"
+      }
+    }
+  ],
+  "observations": {}
+}

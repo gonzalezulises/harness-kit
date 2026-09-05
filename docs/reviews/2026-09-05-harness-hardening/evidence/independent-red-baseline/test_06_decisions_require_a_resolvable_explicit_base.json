@@ -1,0 +1,53 @@
+{
+  "test": "__main__.RegressionTests.test_06_decisions_require_a_resolvable_explicit_base",
+  "fixtures": [
+    {
+      "path": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_06_decisions_require_a_resolvable_explicit_base-unresolvable-ref-qmcfjyit",
+      "base_sha": "0a744169c809165082014368f9329e070f7bea51"
+    },
+    {
+      "path": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_06_decisions_require_a_resolvable_explicit_base-missing-base-file-9zbuupp3",
+      "base_sha": "0a744169c809165082014368f9329e070f7bea51"
+    }
+  ],
+  "calls": [
+    {
+      "cwd": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_06_decisions_require_a_resolvable_explicit_base-unresolvable-ref-qmcfjyit",
+      "argv": [
+        "bash",
+        "scripts/verify-decisions.sh",
+        "missing-ref"
+      ],
+      "explicit_env": {},
+      "exit": 0,
+      "stdout": "NO_LEDGER — DECISIONS.md does not exist at missing-ref. Nothing to protect yet.\n",
+      "stderr": "",
+      "before": {
+        "DECISIONS.md": "# Decisions\n\n## D1\nNo owner approval required.\n"
+      },
+      "after": {
+        "DECISIONS.md": "# Decisions\n\n## D1\nNo owner approval required.\n"
+      }
+    },
+    {
+      "cwd": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_06_decisions_require_a_resolvable_explicit_base-missing-base-file-9zbuupp3",
+      "argv": [
+        "bash",
+        "scripts/verify-decisions.sh"
+      ],
+      "explicit_env": {
+        "DECISIONS_BASE_FILE": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_06_decisions_require_a_resolvable_explicit_base-missing-base-file-9zbuupp3/missing-base.md"
+      },
+      "exit": 0,
+      "stdout": "NO_LEDGER — no ledger at /workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_06_decisions_require_a_resolvable_explicit_base-missing-base-file-9zbuupp3/missing-base.md. Nothing to protect yet.\n",
+      "stderr": "",
+      "before": {
+        "DECISIONS.md": "# Decisions\n\n## D1\nNo owner approval required.\n"
+      },
+      "after": {
+        "DECISIONS.md": "# Decisions\n\n## D1\nNo owner approval required.\n"
+      }
+    }
+  ],
+  "observations": {}
+}

@@ -1,0 +1,26 @@
+{
+  "bounded_required_proofs": [
+    "trusted_policy_binding",
+    "authority_unchanged",
+    "ac_unchanged",
+    "scope_semantics_unchanged",
+    "threat_model_unchanged",
+    "architecture_unchanged",
+    "product_contract_unchanged",
+    "revocation_and_budget_checked",
+    "bounded_grant_verified",
+    "same_defect_and_rule",
+    "durable_regression",
+    "independent_review_verified",
+    "human_facing_signoff_satisfied"
+  ],
+  "bounded_yaml_requires_expectations_coverage": false,
+  "bounded_schema_requires_expectations_coverage": false,
+  "affected_continuations": {
+    "BLOCKED_BY_HUMAN_SIGNOFF": "new_verified_evidence_or_owner_decision",
+    "BLOCKED_BY_BASELINE_ACCEPTANCE": "new_verified_evidence_or_owner_decision",
+    "BLOCKED_BY_BUDGET_EXHAUSTION": "new_verified_evidence_or_owner_decision"
+  },
+  "taxonomy_data_matches_schema_const": true,
+  "method": "Direct comparison of published YAML and schema constraints; not a general JSON Schema validation."
+}

@@ -1,0 +1,328 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:harness-kit:mechanical-change-policy:1",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "document_status": {
+      "const": "PROPOSED_NON_AUTHORITATIVE"
+    },
+    "activation": {
+      "const": false
+    },
+    "policy_id": {
+      "const": "harness-mechanical-change"
+    },
+    "parsing": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "const": "yaml12_json_typed_v1"
+        },
+        "duplicate_keys": {
+          "const": "reject"
+        },
+        "aliases": {
+          "const": "reject"
+        },
+        "custom_tags": {
+          "const": "reject"
+        },
+        "multiple_documents": {
+          "const": "reject"
+        },
+        "non_string_keys": {
+          "const": "reject"
+        },
+        "non_finite_numbers": {
+          "const": "reject"
+        },
+        "unknown_fields": {
+          "const": "reject"
+        },
+        "string_normalization": {
+          "const": "none"
+        },
+        "array_order": {
+          "const": "preserve"
+        },
+        "numeric_normalization": {
+          "const": "schema_declared_exact_only"
+        }
+      },
+      "required": [
+        "profile",
+        "duplicate_keys",
+        "aliases",
+        "custom_tags",
+        "multiple_documents",
+        "non_string_keys",
+        "non_finite_numbers",
+        "unknown_fields",
+        "string_normalization",
+        "array_order",
+        "numeric_normalization"
+      ],
+      "additionalProperties": false
+    },
+    "identity": {
+      "type": "object",
+      "properties": {
+        "integrity": {
+          "const": "content_sha256"
+        },
+        "semantic_equality": {
+          "const": "typed_tree_and_semantic_sha256"
+        },
+        "reproducibility": {
+          "const": "canonical_sha256"
+        },
+        "history": {
+          "const": "original_bytes_and_all_bindings"
+        },
+        "domain_separation": {
+          "const": [
+            "repository_id",
+            "schema_sha256",
+            "normalizer_sha256"
+          ]
+        }
+      },
+      "required": [
+        "integrity",
+        "semantic_equality",
+        "reproducibility",
+        "history",
+        "domain_separation"
+      ],
+      "additionalProperties": false
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "canonical_serialize",
+          "recompute_derived_sha256",
+          "refresh_manifest",
+          "refresh_receipt",
+          "rebind_desired_state",
+          "replace_stale_run",
+          "replay_same_scope"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "required_invariants": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "trusted_policy_binding",
+          "authority_unchanged",
+          "ac_unchanged",
+          "scope_semantics_unchanged",
+          "threat_model_unchanged",
+          "architecture_unchanged",
+          "product_contract_unchanged",
+          "typed_tree_equivalence",
+          "derived_output_recomputed",
+          "expected_manifest_delta_only",
+          "append_only_lineage",
+          "fresh_verification",
+          "bounded_grant_verified",
+          "same_defect_and_rule",
+          "durable_regression",
+          "expectations_and_coverage_preserved",
+          "independent_review_verified",
+          "human_facing_signoff_satisfied",
+          "adapter_binding_preserved",
+          "no_product_delta",
+          "revocation_and_budget_checked"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true,
+      "allOf": [
+        {
+          "contains": {
+            "const": "trusted_policy_binding"
+          }
+        },
+        {
+          "contains": {
+            "const": "authority_unchanged"
+          }
+        },
+        {
+          "contains": {
+            "const": "ac_unchanged"
+          }
+        },
+        {
+          "contains": {
+            "const": "scope_semantics_unchanged"
+          }
+        },
+        {
+          "contains": {
+            "const": "threat_model_unchanged"
+          }
+        },
+        {
+          "contains": {
+            "const": "architecture_unchanged"
+          }
+        },
+        {
+          "contains": {
+            "const": "product_contract_unchanged"
+          }
+        },
+        {
+          "contains": {
+            "const": "revocation_and_budget_checked"
+          }
+        }
+      ]
+    },
+    "proof_source": {
+      "const": "runtime_recomputed_from_trusted_inputs"
+    },
+    "forbidden": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "modify_authority_source",
+          "replace_trust_anchor",
+          "change_schema_or_normalizer",
+          "change_threshold_formula_weight_score",
+          "normalize_human_text",
+          "rename_field_without_approved_alias",
+          "change_enum_without_approved_alias",
+          "rewrite_history",
+          "reuse_pass_for_unverified_commit",
+          "arbitrary_shell"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true,
+      "allOf": [
+        {
+          "contains": {
+            "const": "modify_authority_source"
+          }
+        },
+        {
+          "contains": {
+            "const": "replace_trust_anchor"
+          }
+        },
+        {
+          "contains": {
+            "const": "change_schema_or_normalizer"
+          }
+        },
+        {
+          "contains": {
+            "const": "change_threshold_formula_weight_score"
+          }
+        },
+        {
+          "contains": {
+            "const": "normalize_human_text"
+          }
+        },
+        {
+          "contains": {
+            "const": "rename_field_without_approved_alias"
+          }
+        },
+        {
+          "contains": {
+            "const": "change_enum_without_approved_alias"
+          }
+        },
+        {
+          "contains": {
+            "const": "rewrite_history"
+          }
+        },
+        {
+          "contains": {
+            "const": "reuse_pass_for_unverified_commit"
+          }
+        },
+        {
+          "contains": {
+            "const": "arbitrary_shell"
+          }
+        }
+      ]
+    },
+    "stale_run": {
+      "type": "object",
+      "properties": {
+        "nonterminal": {
+          "const": "append_rejected_then_new_run"
+        },
+        "already_terminal": {
+          "const": "preserve_verdict_append_new_lineage"
+        },
+        "copy_old_pass": {
+          "const": false
+        },
+        "fresh_verification_required": {
+          "const": true
+        }
+      },
+      "required": [
+        "nonterminal",
+        "already_terminal",
+        "copy_old_pass",
+        "fresh_verification_required"
+      ],
+      "additionalProperties": false
+    },
+    "historical_evidence": {
+      "type": "object",
+      "properties": {
+        "preserve_original_bytes": {
+          "const": true
+        },
+        "append_only": {
+          "const": true
+        },
+        "content_addressed": {
+          "const": true
+        },
+        "trusted_checkpoint_required": {
+          "const": true
+        }
+      },
+      "required": [
+        "preserve_original_bytes",
+        "append_only",
+        "content_addressed",
+        "trusted_checkpoint_required"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "document_status",
+    "activation",
+    "policy_id",
+    "parsing",
+    "identity",
+    "capabilities",
+    "required_invariants",
+    "proof_source",
+    "forbidden",
+    "stale_run",
+    "historical_evidence"
+  ],
+  "additionalProperties": false
+}

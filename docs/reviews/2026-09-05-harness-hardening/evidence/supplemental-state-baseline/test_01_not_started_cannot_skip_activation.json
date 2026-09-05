@@ -1,0 +1,25 @@
+{
+  "test": "__main__.StateRegressionTests.test_01_not_started_cannot_skip_activation",
+  "fixture": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/supplemental-state-baseline/fixtures/test_01_not_started_cannot_skip_activation-uy31i84j",
+  "calls": [
+    {
+      "cwd": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/supplemental-state-baseline/fixtures/test_01_not_started_cannot_skip_activation-uy31i84j",
+      "argv": [
+        "bash",
+        "scripts/verify-feature.sh",
+        "F1"
+      ],
+      "exit": 0,
+      "stdout": "Verifying F1\n\n── Layer: unit\n$ printf ran > layer-executed\nLayer 'unit' passed.\n\nF1 -> passing (evidence recorded in feature_list.json)\nNext: update PROGRESS.md and commit.\n",
+      "stderr": "",
+      "before": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"not_started\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf ran > layer-executed\",\n          \"repair\": \"Check the fixture input.\"\n        }\n      ]\n    }\n  ]\n}\n",
+      "after": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"all layers passed — commit 1091835, 2026-09-05T22:46:29Z\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf ran > layer-executed\",\n          \"repair\": \"Check the fixture input.\"\n        }\n      ]\n    }\n  ],\n  \"last_updated\": \"2026-09-05\"\n}\n"
+    }
+  ],
+  "observations": {
+    "rejected": false,
+    "no_layer_execution": false,
+    "state_and_evidence_unchanged": false
+  },
+  "base_sha": "1091835959094207a77eda5242d6f7194ebec63e"
+}

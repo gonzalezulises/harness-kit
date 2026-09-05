@@ -1,0 +1,32 @@
+test_09_exit0_rule_must_reject_false_command (__main__.LocalRegressions.test_09_exit0_rule_must_reject_false_command) ... FAIL
+test_10_invalid_arch_root_must_not_pass (__main__.LocalRegressions.test_10_invalid_arch_root_must_not_pass) ... FAIL
+test_11_full_scaffold_must_supply_its_required_gates (__main__.LocalRegressions.test_11_full_scaffold_must_supply_its_required_gates) ... FAIL
+
+======================================================================
+FAIL: test_09_exit0_rule_must_reject_false_command (__main__.LocalRegressions.test_09_exit0_rule_must_reject_false_command)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/local_red_regressions.py", line 65, in test_09_exit0_rule_must_reject_false_command
+    self.assertNotEqual(result.returncode, 0, 'R08: false must fail an expect: exit0 rule')
+AssertionError: 0 == 0 : R08: false must fail an expect: exit0 rule
+
+======================================================================
+FAIL: test_10_invalid_arch_root_must_not_pass (__main__.LocalRegressions.test_10_invalid_arch_root_must_not_pass)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/local_red_regressions.py", line 69, in test_10_invalid_arch_root_must_not_pass
+    self.assertNotEqual(result.returncode, 0,
+AssertionError: 0 == 0 : R09: parser failure must not become zero successful rules
+
+======================================================================
+FAIL: test_11_full_scaffold_must_supply_its_required_gates (__main__.LocalRegressions.test_11_full_scaffold_must_supply_its_required_gates)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/local_red_regressions.py", line 89, in test_11_full_scaffold_must_supply_its_required_gates
+    self.assertEqual(result.returncode, 0,
+AssertionError: 1 != 0 : R11: successful configured full installation must not omit a required gate
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.720s
+
+FAILED (failures=3)

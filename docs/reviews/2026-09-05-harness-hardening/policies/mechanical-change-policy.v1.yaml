@@ -1,0 +1,65 @@
+# Design proposal only: no runtime activation or human approval is implied.
+schema_version: 1.0.0
+document_status: PROPOSED_NON_AUTHORITATIVE
+activation: false
+policy_id: harness-mechanical-change
+parsing:
+  profile: yaml12_json_typed_v1
+  duplicate_keys: reject
+  aliases: reject
+  custom_tags: reject
+  multiple_documents: reject
+  non_string_keys: reject
+  non_finite_numbers: reject
+  unknown_fields: reject
+  string_normalization: none
+  array_order: preserve
+  numeric_normalization: schema_declared_exact_only
+identity:
+  integrity: content_sha256
+  semantic_equality: typed_tree_and_semantic_sha256
+  reproducibility: canonical_sha256
+  history: original_bytes_and_all_bindings
+  domain_separation:
+  - repository_id
+  - schema_sha256
+  - normalizer_sha256
+capabilities:
+- canonical_serialize
+- recompute_derived_sha256
+- refresh_manifest
+- refresh_receipt
+- rebind_desired_state
+- replace_stale_run
+- replay_same_scope
+required_invariants:
+- trusted_policy_binding
+- authority_unchanged
+- ac_unchanged
+- scope_semantics_unchanged
+- threat_model_unchanged
+- architecture_unchanged
+- product_contract_unchanged
+- revocation_and_budget_checked
+proof_source: runtime_recomputed_from_trusted_inputs
+forbidden:
+- modify_authority_source
+- replace_trust_anchor
+- change_schema_or_normalizer
+- change_threshold_formula_weight_score
+- normalize_human_text
+- rename_field_without_approved_alias
+- change_enum_without_approved_alias
+- rewrite_history
+- reuse_pass_for_unverified_commit
+- arbitrary_shell
+stale_run:
+  nonterminal: append_rejected_then_new_run
+  already_terminal: preserve_verdict_append_new_lineage
+  copy_old_pass: false
+  fresh_verification_required: true
+historical_evidence:
+  preserve_original_bytes: true
+  append_only: true
+  content_addressed: true
+  trusted_checkpoint_required: true

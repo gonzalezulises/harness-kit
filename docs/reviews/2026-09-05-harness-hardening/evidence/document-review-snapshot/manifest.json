@@ -1,0 +1,19 @@
+{
+  "captured_at_utc": "2026-09-05T22:47:27.188240+00:00",
+  "source": "/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening",
+  "sha256": {
+    "README.md": "b63569fbd854d587e8940af0ed2a175e93b6bc17a4698d2ebbabd092530f6c3c",
+    "architecture.md": "b93c048685b108ad79a584e46164a5a2edc868e6eb83ff844dffd97fea8ff45c",
+    "migration-plan.md": "c4721133d068a3b373dd735c10952375fc226fbbaaa2e21e718210abb9b3afe4",
+    "stop-taxonomy.md": "75483261d9af98527a16006416d83ae981675144817d3323c62f69a2b5cbf82a",
+    "test-matrix.md": "731c136e0b84aec832c201d43ddc8de752fd86419d4b76f37a3e3670f9830b0b",
+    "policies/autonomy-policy.v1.yaml": "dfdee08dfcd9d7ac5b1a4f508408806841a3ebbc907a5805e5b3dc35dcbb6df2",
+    "policies/mechanical-change-policy.v1.yaml": "7445dbd2e9fcb170298c9849a64d27259af412707e9ac8494a518b7cba9a2762",
+    "policies/stop-taxonomy.v1.yaml": "245d711e9689ef04afc95bdcb5a1747e48068a8eae6fbd0a2aafd2474c929540",
+    "policies/release-execution-policy.v1.yaml": "8cc23386ac65f955393dd19d5e192786a244b1b09ef1e0b2926b5dbeb3445dd0",
+    "schemas/autonomy-policy.schema.json": "3ddb297683af0b20c93cd07f811f7ad45019ddfe77d6812f891937ee082ca7cd",
+    "schemas/stop-taxonomy.schema.json": "52df0e89761e4633be3babbcfaf6a3a1f37719563fd972925b8b7dfd613effdd",
+    "schemas/records.schema.json": "3a3c3ffb8697ac6a9aba56a66998088db0c8070cf806e2bad33160d2e69b40ba",
+    "schemas/README.md": "84311dee222d82d3cf3a31ae715f44b11bb6a65f95013d29e7624fcde7364b27"
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:harness-kit:release-execution-policy:1",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "document_status": {
+      "const": "PROPOSED_NON_AUTHORITATIVE"
+    },
+    "activation": {
+      "const": false
+    },
+    "policy_id": {
+      "const": "harness-release-execution"
+    },
+    "objective_states": {
+      "const": [
+        "DEFINED",
+        "EXECUTING",
+        "INTEGRATION_PENDING",
+        "INTEGRATION_VERIFIED",
+        "DEPLOYMENT_PENDING",
+        "DEPLOYED",
+        "CERTIFICATION_PENDING",
+        "PRODUCTION_PASS",
+        "BLOCKED",
+        "RECOVERY_REQUIRED"
+      ]
+    },
+    "next_action": {
+      "const": "first_unsatisfied_obligation_from_verified_replay"
+    },
+    "nonterminal_milestones": {
+      "const": [
+        "SLICE_PASS",
+        "PR_MERGED",
+        "PREVIEW_PASS"
+      ]
+    },
+    "production_pass_requires": {
+      "const": [
+        "all_required_slices_pass",
+        "integrated_commit_verified",
+        "required_human_gates_verified",
+        "authorized_production_deployment",
+        "deployment_identity_matches",
+        "production_smoke_pass",
+        "postdeploy_certification_pass"
+      ]
+    },
+    "evidence_binding": {
+      "const": [
+        "repository_id",
+        "release_id",
+        "integrated_commit_sha",
+        "artifact_sha256",
+        "deployment_id",
+        "environment",
+        "policy_sha256"
+      ]
+    },
+    "production_authorization": {
+      "const": "explicit_owner_grant_and_external_gate_if_required"
+    },
+    "baseline_acceptance": {
+      "const": "separate_explicit_human_gate"
+    },
+    "recovery": {
+      "type": "object",
+      "properties": {
+        "resume": {
+          "const": "idempotent_operation_keys"
+        },
+        "stale_evidence": {
+          "const": "new_run_and_reverification"
+        },
+        "postdeploy_failure": {
+          "const": "RECOVERY_REQUIRED"
+        },
+        "rollback": {
+          "const": "authorized_capability_with_new_receipt"
+        },
+        "rewrite_history": {
+          "const": false
+        }
+      },
+      "required": [
+        "resume",
+        "stale_evidence",
+        "postdeploy_failure",
+        "rollback",
+        "rewrite_history"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "document_status",
+    "activation",
+    "policy_id",
+    "objective_states",
+    "next_action",
+    "nonterminal_milestones",
+    "production_pass_requires",
+    "evidence_binding",
+    "production_authorization",
+    "baseline_acceptance",
+    "recovery"
+  ],
+  "additionalProperties": false
+}

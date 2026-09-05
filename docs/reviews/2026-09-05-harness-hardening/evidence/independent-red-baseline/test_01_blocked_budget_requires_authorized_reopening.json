@@ -1,0 +1,72 @@
+{
+  "test": "__main__.RegressionTests.test_01_blocked_budget_requires_authorized_reopening",
+  "fixtures": [
+    {
+      "path": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_01_blocked_budget_requires_authorized_reopening-exhausted-3tm1vh7l",
+      "base_sha": "ab1fbfbdd534771922ef63671d352894e7cbb035"
+    }
+  ],
+  "calls": [
+    {
+      "cwd": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_01_blocked_budget_requires_authorized_reopening-exhausted-3tm1vh7l",
+      "argv": [
+        "bash",
+        "scripts/verify-feature.sh",
+        "F1"
+      ],
+      "explicit_env": {},
+      "exit": 1,
+      "stdout": "Verifying F1\n\n── Layer: unit\n$ printf \"attempt\\n\" >> attempts.log; test -f corrected-input\n\nFAILED at layer: unit\nHow to fix: check inputs\n\nReview rounds spent: 1/2.\n\nFeature 'F1' stays in its current state. Do not advance to the\nnext layer, and do not mark it passing.\n",
+      "stderr": "",
+      "before": {
+        "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"active\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf \\\"attempt\\\\n\\\" >> attempts.log; test -f corrected-input\",\n          \"repair\": \"check inputs\"\n        }\n      ],\n      \"budgets\": {\n        \"review_rounds_max\": 2,\n        \"repeated_blocker_max\": 9,\n        \"stop_condition\": \"Stop. Owner approval required before more work.\"\n      }\n    }\n  ]\n}\n"
+      },
+      "after": {
+        "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"active\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf \\\"attempt\\\\n\\\" >> attempts.log; test -f corrected-input\",\n          \"repair\": \"check inputs\"\n        }\n      ],\n      \"budgets\": {\n        \"review_rounds_max\": 2,\n        \"repeated_blocker_max\": 9,\n        \"stop_condition\": \"Stop. Owner approval required before more work.\"\n      },\n      \"ledger\": {\n        \"review_rounds\": 1,\n        \"blockers\": [\n          {\n            \"signature\": \"layer:unit\",\n            \"count\": 1\n          }\n        ]\n      }\n    }\n  ]\n}\n"
+      }
+    },
+    {
+      "cwd": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_01_blocked_budget_requires_authorized_reopening-exhausted-3tm1vh7l",
+      "argv": [
+        "bash",
+        "scripts/verify-feature.sh",
+        "F1"
+      ],
+      "explicit_env": {},
+      "exit": 3,
+      "stdout": "Verifying F1\n\n── Layer: unit\n$ printf \"attempt\\n\" >> attempts.log; test -f corrected-input\n\nFAILED at layer: unit\nHow to fix: check inputs\n\nBUDGET_EXHAUSTED — 2 review rounds spent, budget is 2.\nStop condition: Stop. Owner approval required before more work.\n\nF1 is now blocked. Stop working on it.\nDo not retry, do not refactor around it, do not open a new approach.\nEscalate to a human, or split the feature into something smaller.\n",
+      "stderr": "",
+      "before": {
+        "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"active\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf \\\"attempt\\\\n\\\" >> attempts.log; test -f corrected-input\",\n          \"repair\": \"check inputs\"\n        }\n      ],\n      \"budgets\": {\n        \"review_rounds_max\": 2,\n        \"repeated_blocker_max\": 9,\n        \"stop_condition\": \"Stop. Owner approval required before more work.\"\n      },\n      \"ledger\": {\n        \"review_rounds\": 1,\n        \"blockers\": [\n          {\n            \"signature\": \"layer:unit\",\n            \"count\": 1\n          }\n        ]\n      }\n    }\n  ]\n}\n"
+      },
+      "after": {
+        "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"blocked\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf \\\"attempt\\\\n\\\" >> attempts.log; test -f corrected-input\",\n          \"repair\": \"check inputs\"\n        }\n      ],\n      \"budgets\": {\n        \"review_rounds_max\": 2,\n        \"repeated_blocker_max\": 9,\n        \"stop_condition\": \"Stop. Owner approval required before more work.\"\n      },\n      \"ledger\": {\n        \"review_rounds\": 2,\n        \"blockers\": [\n          {\n            \"signature\": \"layer:unit\",\n            \"count\": 2\n          }\n        ]\n      }\n    }\n  ]\n}\n"
+      }
+    },
+    {
+      "cwd": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_01_blocked_budget_requires_authorized_reopening-exhausted-3tm1vh7l",
+      "argv": [
+        "bash",
+        "scripts/verify-feature.sh",
+        "F1"
+      ],
+      "explicit_env": {},
+      "exit": 0,
+      "stdout": "Verifying F1\n\n── Layer: unit\n$ printf \"attempt\\n\" >> attempts.log; test -f corrected-input\nLayer 'unit' passed.\n\nF1 -> passing (evidence recorded in feature_list.json)\nNext: update PROGRESS.md and commit.\n",
+      "stderr": "",
+      "before": {
+        "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"blocked\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf \\\"attempt\\\\n\\\" >> attempts.log; test -f corrected-input\",\n          \"repair\": \"check inputs\"\n        }\n      ],\n      \"budgets\": {\n        \"review_rounds_max\": 2,\n        \"repeated_blocker_max\": 9,\n        \"stop_condition\": \"Stop. Owner approval required before more work.\"\n      },\n      \"ledger\": {\n        \"review_rounds\": 2,\n        \"blockers\": [\n          {\n            \"signature\": \"layer:unit\",\n            \"count\": 2\n          }\n        ]\n      }\n    }\n  ]\n}\n"
+      },
+      "after": {
+        "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"all layers passed — commit ab1fbfb, 2026-09-05T22:32:41Z\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf \\\"attempt\\\\n\\\" >> attempts.log; test -f corrected-input\",\n          \"repair\": \"check inputs\"\n        }\n      ],\n      \"budgets\": {\n        \"review_rounds_max\": 2,\n        \"repeated_blocker_max\": 9,\n        \"stop_condition\": \"Stop. Owner approval required before more work.\"\n      },\n      \"ledger\": {\n        \"review_rounds\": 0,\n        \"blockers\": []\n      }\n    }\n  ],\n  \"last_updated\": \"2026-09-05\"\n}\n"
+      }
+    }
+  ],
+  "observations": {
+    "rejected": false,
+    "attempts_unchanged": false,
+    "still_blocked": false,
+    "ledger_preserved": false,
+    "actual_attempts": 3
+  }
+}

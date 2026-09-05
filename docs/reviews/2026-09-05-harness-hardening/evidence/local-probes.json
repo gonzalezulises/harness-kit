@@ -1,0 +1,311 @@
+{
+  "source_revision": "88ea1e6c45faf5b5db9e29935eef6e25e50f633b",
+  "source_sha256": {
+    ".agents/notes/README.md": "2e5fdf6bf916ed0c9a11f5c22c2f6c4364fa6dc88b7bfea1f4f1c4a5c35282b3",
+    ".agents/notes/implemented/bug-fix/2026-08-30-ci-ambient-env-in-pack-tests.md": "82257c544d2276214de7a716578ecdd551b04f779bc56a2e089180c792b57ff5",
+    ".agents/notes/implemented/bug-fix/2026-08-30-esm-syntax-check-node-versions.md": "76d55d129d612f1ac68b19ff85700dd1e97e5be6af3fa98d9df8186933a597ce",
+    ".agents/notes/implemented/bug-fix/2026-08-30-json-readers-must-honour-depth.md": "015f4e095ec588c42e10f99259c706299886dd816cf99dfb8eb314f1579dc6a5",
+    ".agents/notes/implemented/bug-fix/2026-08-30-mawk-interval-regex-decisions-split.md": "71b03c4743b23e6c360ad6c21686f1d757e39e751f4c0030cd66663e69cd949e",
+    ".agents/notes/implemented/bug-fix/2026-08-30-secret-scanner-value-filters.md": "f665e6ac44655776e6abe17dd4e2dd8d277e0242e178ae1e33dc373d436430c5",
+    ".agents/notes/implemented/bug-fix/2026-08-30-skipped-cases-must-reach-the-summary.md": "dff532ea2ff82ade37906a42d17b3bc28f85682a33ab46cee5f05bfd5eefdbf0",
+    ".agents/notes/implemented/bug-fix/2026-08-31-audit-counters-must-return-an-integer.md": "53d1c99a98cbff135b6d4dbf00f233226d91cd3db44e45b8fd92a67c4ddfef50",
+    ".agents/notes/implemented/bug-fix/2026-08-31-canary-dsn-lost-in-a-subshell.md": "833127509a4c3517d51934987802b121d76745f4b1f7c0fac7b4b43a5f80d16c",
+    ".agents/notes/implemented/bug-fix/2026-08-31-canary-event-id-must-be-unique.md": "7063b1284b4942706d9636918164189d4fe84d7de182d76287bd33f8541c02a3",
+    ".agents/notes/implemented/bug-fix/2026-08-31-unknown-pack-must-fail-loudly.md": "0b1650598b7a1eb747aa592c6ab4a03f24eff05cd59899d312b0a86bbd95bba5",
+    ".agents/notes/implemented/feature/2026-08-30-sentry-observability-pack.md": "353119bfc00b1f636f2fc5b31b792790ff96f089bdb973a36488bc1d5e453310",
+    ".agents/notes/implemented/process/2026-08-30-gate-registry-agent-notes-staged-hooks.md": "693b001f087eec0f27d3968e25f1eb46abc385bee6bbfa5fe1e4d7dd3f22248d",
+    ".agents/notes/implemented/process/2026-08-30-release-please-with-a-version-sync-gate.md": "f9f0fd2e2c84738633f0d279a31c8f76cd5b75edbf6fc9eafbed9ac507b49bf4",
+    ".agents/notes/implemented/process/2026-08-30-release-pr-needs-reopen-to-run-checks.md": "b2a5f7d7ec9f8830968f9871b0ec465cd7a3c2cf913e827d93180c3b05314317",
+    ".agents/notes/implemented/process/2026-08-31-una-puerta-declarada-debe-poder-fallar.md": "f169c48990f6792d9f7278eafb60a63e42e12b12465fbd9e6d9769f5b5884b54",
+    ".claude/settings.json": "3e40cc106cdfadc91c3acfae2616890a5b66236a4fc7ddfcd967738bb2d6f590",
+    ".github/dependabot.yml": "10dc322686ef30dff1614554b455a1f9fd362ea9f35f942648ed60c03e44fba5",
+    ".github/rulesets/required-quality-check.json": "889471d526da4cd4d114a4f98442b82fbbcde4fb1a8264f2e534eba18d7ec4b3",
+    ".github/rulesets/required-quality-integrity.json": "87235402ac06996686503735936af47dc34cd000759e6db52fece524634865a2",
+    ".github/workflows/release-please.yml": "7f258344da087b990154a6c2d32c7752cd8e7d8dd424906a71824c52eba8273a",
+    ".github/workflows/required-quality.yml": "8e88d7c7df4a7290343412291f0646b58ce97a507c41b4061421f09b9ca310e6",
+    ".gitignore": "0c6af6c84944f1984c7bf20ad41f7ce5f17f9d9946fe637f346658872660f5c2",
+    ".harness/arch-rules.json": "87f16057f1644c77c88cf33b241dd0135e33e1744644638a6c8aa7b56bdb4a8f",
+    ".harness/context-routes.json": "c89745a0409b3adc65e50a9cb2b99a9e77047470ccde7be351f6f109d199e85d",
+    ".harness/kit-version": "f56c797a25f16ade37ae22d56124b085d6bc58d05cc9f73d2075f474c170204b",
+    ".harness/traces/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".python-version": "49a506dd32096b010d75205acf3430c9ae6c40351888129499e5a5e487126c93",
+    ".release-please-manifest.json": "6e902ee18e7b61e42fb9eeef900810f6d19da995ae409a8e58855fda3f4fefe4",
+    "AGENTS.md": "fd362b44b16c3af9679161cb6b95833305733a7d355e15325dfa8936e685a2ea",
+    "CHANGELOG.md": "4e7268d3484f4a6f927969444052a2890a26d0683d8e3bf8ea4a75cac3a1239e",
+    "CLAUDE.md": "336cc4fbf19beaada7ccf9986414fa91851a8d7a07dfb3ccbe800a69eed0ab49",
+    "CREDITS.md": "9719d1ed222d62d78e9d6e801eab5b7dfa9fafecc6de3be1219cea69b4eeecd8",
+    "DECISIONS.md": "8911c01cb616e262a4ad244868555f75372edf93d4bdaeb2f992c03d6ae88a94",
+    "LICENSE": "86036cb714ed31ba2f5ba18e8fa2715eefb79da193a0789c90b4588d0609967e",
+    "Makefile": "738787c5c5109aa7af766edf1398ea4ab2773c8ec88bff8f55c287ff76439f7e",
+    "PROGRESS.md": "c0d1a5f170bb96bab17e201a3c72ab1479085400c1fc635e770ece9280d8111b",
+    "README.md": "116ba1a4e540fdeae3336579ec1dff9e0858d6765d2f0b472f67d953de0b8fd0",
+    "VERSION": "f56c797a25f16ade37ae22d56124b085d6bc58d05cc9f73d2075f474c170204b",
+    "bin/ARCHITECTURE.md": "bfc1db17fc413e590b6f9e0bdc0eba5452e5b688c89d8acfc24db77a6f3a6772",
+    "bin/harness-activate.sh": "a123624214620c2bac13f2cc1825625f41bf915fe355a73ca26b4d1b36147cf1",
+    "bin/harness-audit.sh": "49aa8b0b60c03ae0eb16bcba6efc4bf5571919d83d534cfc9feca8711c284295",
+    "bin/harness-init.sh": "155966a4ccc0c00d37f3d4a196fb8cf3d963b312cbd22125d83d8cf06bd35dd1",
+    "bin/harness-protect.sh": "6e4a3491bfe7f115e7a6d67c0a9ebc03776e795a732f2b18570c73403e1e18d8",
+    "bin/harness-status.sh": "3cfd980b1a075a5c792bfc146e7c6a2cdb4939e6d5088a2f90f2dcadce35204e",
+    "clean-state-checklist.md": "af135a9125ee3b0008406e7b9f8dcfed6b5f90934b5c262ce9b7439a2c409389",
+    "docs/ciclo-desarrollo-harness.drawio": "efd2c58602caa0ce8ed94d8c71c2c1c9cc489be6477f8336dd4630923d133563",
+    "docs/ciclo-desarrollo-harness.drawio.pdf": "1a62f48301a2ecde0168f6d850ee8cce06aa46e006c4ee7bc9c2e492e932dccb",
+    "docs/decisions/README.md": "2b2e749cd6d012b12e34e3cba98a0075f18b30dec6152a0a209d4c90bb351e14",
+    "docs/evidence/2026-08-14-gate-canary.md": "3b4c09493615b03599506237dc6a9f6c78f47d25fea503a973903a2c6ccf31ad",
+    "docs/initializer-playbook.md": "9df3b269923a46fa2e1cd35b061dfd1abf12238e533db631d88cc01e158bbadc",
+    "docs/method-map.md": "29937249bfe8e1eda44bb52e4104f32358eb336707d60c10a3da3f69e394126e",
+    "docs/prompt-calibration.md": "24455194d88fca606a242fe444fb2187fabe3d361c08a84e17fe8b33a481e60b",
+    "docs/quality-document.md": "56242c81b6459120e6d2eb1d1d2886145543b9b713946aa85bccd43a59fac229",
+    "docs/startup-flow.md": "d7f5e71f599816766af0bb401809b6256dc9517d1f9463056730ed0aafb028b6",
+    "feature_list.json": "54ce91287a316e64cb4a2f4552af55a46f8d79d737d734a965753cdc6acd658f",
+    "init.sh": "1c14db3e0ccb3e55262cbe415d17afcae1156f53879e55d61f568a85b7c42ae3",
+    "packs/gherkin/index.md": "83bf62f39bb9f0c70c9630d30f9e14f6414104dcaf5ef12539cdaa1e54223c9b",
+    "packs/gherkin/repo-template/bin/gherkin-check": "74f8575143adff26150f8d2cd66ae6e2d6326a12f166fd039e6e54792b8da511",
+    "packs/gherkin/repo-template/bin/gherkin-validate.mjs": "61adf1c0a533f8d3e5bb5c4cc0d1db97a89fb1898108468388e1d66c2b82ed0b",
+    "packs/gherkin/repo-template/features/cart.feature": "e04cd8f2cc6681fbe72e5060af31257936fe7e59e2b159e545cd5285fe4a2a65",
+    "packs/gherkin/repo-template/features/steps/cart.mjs": "0467ce507b297f914b6a8592fce917eac91012dd18d9bf36230de4815fc8e824",
+    "packs/gherkin/verify-pack.sh": "4bddb364e3412436707ef0aa891ef0626e49136b7159a51c6473149c2baef743",
+    "packs/load-testing/index.md": "45d60346514f2706959f4ef580bbde356056a8dc5f593d204d5161026eedaa63",
+    "packs/load-testing/repo-template/.env.perf.example": "a5361b81ab7501bcad2dbd6b6a1a1e7d5e75c12b708afa13bae3de5733521edc",
+    "packs/load-testing/repo-template/.github/workflows/perf.yml": "9c6a06daf30621786f8c51a0a6d2113121a436b4ae3d43bb4dd5044bcc9acee2",
+    "packs/load-testing/repo-template/bin/perf-check": "ad8358f1fdfaafe936108bb2189c463835afde2fd2eda00ff934577f64b77543",
+    "packs/load-testing/repo-template/bin/perf-discover": "b961e73d39c4626827e44397f911769abc16e511bb146e32ab1820f18da35671",
+    "packs/load-testing/repo-template/bin/perf-init.sh": "466364781edeea39eddc306621cc665b2d11ca160cd0db103fa34bc54ea64482",
+    "packs/load-testing/repo-template/bin/perf-resolve-target": "28a5e94a38ccdf34aa1b8ccfa661984310cb0042ae76da4a52210048f4fb1b69",
+    "packs/load-testing/repo-template/index.md": "b5de71e16d88b975b79ecc9256d72be952afcd5ff8d1f21ff7249ed38ea7858e",
+    "packs/load-testing/repo-template/tests/load/lib/abort.js": "c85750d0fe23f630a5d7278ee67d0d6bb5fd6e5d1e6a3f04ef858daa9ff2fbf1",
+    "packs/load-testing/repo-template/tests/load/lib/guard.js": "c21f45bf95ba263b13d1e50f50eb7d2f1531a69c5b7b739028b89afbda29eed9",
+    "packs/load-testing/repo-template/tests/load/lib/metrics.js": "70e7472345c23a78e9a590dda445d6528c5f643e574f47cd22853e79deb6a499",
+    "packs/load-testing/repo-template/tests/load/lib/session.js": "3a0b03844f48c7b46756b02b19def8ee21ddc63c6ff64aaef4f0102d14d88cbb",
+    "packs/load-testing/repo-template/tests/load/lib/summary.js": "a354c65d5a02bd70bdf5b5352e768407e7b5b7499db0ef473f3ea6da5ad355fb",
+    "packs/load-testing/repo-template/tests/load/lib/target.js": "2d2ce06ab72a90da6208b90dd3bd04ad14a0cd9d8c9a66cbbc08bc14217e3bf6",
+    "packs/load-testing/repo-template/tests/load/load.js": "c015606d200293d2d88c228805cc98239a2b3775ab5b5379c2fe364d26d4cefe",
+    "packs/load-testing/repo-template/tests/load/smoke.js": "f4c30768635426f8da77183dca799b8a8f11578d948c71815858ef2308d3721a",
+    "packs/load-testing/sops/index.md": "3d220dd218eb9437e5bebe78792763175d1ab61bb4060195bf9466e9380a2a1f",
+    "packs/load-testing/sops/perf-gate-loop.md": "e49c2cc504cc191db2443914ebd8735bd4e2376cbbdfd741317f9a4f983cc8b4",
+    "packs/load-testing/verify-pack.sh": "db3e68f00b9188f014b2fef89f2f0dc7700a2c10c2c7353e3e7d2b171c66eb49",
+    "packs/openai-advanced/index.md": "727bbb0a93b47638718810f27c825dbe8cef960da2d6aeb5309bb88234433ee9",
+    "packs/openai-advanced/repo-template/AGENTS.md": "7ed239c30d9ff3079f0942165a5522454308a080ec768134f3af51a76edd45f5",
+    "packs/openai-advanced/repo-template/ARCHITECTURE.md": "4beb85f31c0c41cdbab40444c2968ea068cf0c9158276606440cf073485bdb44",
+    "packs/openai-advanced/repo-template/docs/DESIGN.md": "5dc649721976580ba73c700f1f6b7f275d32d8cc1db95e841b0feec054caee3b",
+    "packs/openai-advanced/repo-template/docs/FRONTEND.md": "07bb82522f2b718d384a1ec4a5e284cbda0fdac91b0e3f7045d3aa8b528521ec",
+    "packs/openai-advanced/repo-template/docs/PLANS.md": "24af08354962e43ee796fddbc03b961d30b705296e54627153b3a27bdb69dd30",
+    "packs/openai-advanced/repo-template/docs/PRODUCT_SENSE.md": "1268136bc0bf10c2f444d5c82f90004f3913892facd9d71eb91d207c4f91e66a",
+    "packs/openai-advanced/repo-template/docs/QUALITY_SCORE.md": "57f91c7f38cdef135476201074d174301827d5a0047ba9d0b88efbd18ccccc0e",
+    "packs/openai-advanced/repo-template/docs/RELIABILITY.md": "cdeacc47b63c8bbfb99c0c56a35522c128ce14ae03a021501a66a3b5f8375931",
+    "packs/openai-advanced/repo-template/docs/SECURITY.md": "78587db36fe1c0840fd53e31a06a2cb41a98d614ea0dcc1a747da437ffc01739",
+    "packs/openai-advanced/repo-template/docs/design-docs/core-beliefs.md": "125c5cdea1cf957c2d4533e769d0bdfa58153f338b0871a3302867aa18b89df0",
+    "packs/openai-advanced/repo-template/docs/design-docs/index.md": "e3483bd844d17d4904a962b2b965da341e4d9d0adc669c9e589c338dc30448a0",
+    "packs/openai-advanced/repo-template/docs/exec-plans/active/index.md": "de89037107d7c088fd842cefa677a1eb2f7f57a557bf1b329e2b47dbc3aa7e1a",
+    "packs/openai-advanced/repo-template/docs/exec-plans/completed/index.md": "749831cc04bb237ab489106f2a00a3cc7bc6455da0ddd0907be6b7f5485e6147",
+    "packs/openai-advanced/repo-template/docs/exec-plans/tech-debt-tracker.md": "569cc13bc03b099e8e472289fb4ffd3c2ca04e5591d62f6b39b9046e213e36ec",
+    "packs/openai-advanced/repo-template/docs/generated/db-schema.md": "eec6bb4da4c4d077582f01e4f27c143f7785b20c60fbdc18fa731ed709969ee3",
+    "packs/openai-advanced/repo-template/docs/product-specs/index.md": "05f25616e46bf6e5f9ac32241a23525fef2d9a34c9b06393503ffdb85c329048",
+    "packs/openai-advanced/repo-template/docs/product-specs/new-user-onboarding.md": "47113dfbabaf05806a8e22f082ca5da4fe29121f405ef99fb10f17227a968d12",
+    "packs/openai-advanced/repo-template/docs/references/design-system-reference-llms.txt": "f189f24b8845de1b4a8720319c8c6d96171007ccb1461394a698cbc3a4b48b6e",
+    "packs/openai-advanced/repo-template/docs/references/nixpacks-llms.txt": "75ae8fb5e121b3d6db0cc1dea4a705997c63c1ec34a53b635da5766567bd7371",
+    "packs/openai-advanced/repo-template/docs/references/uv-llms.txt": "720640eb48cad56b55fc2ce091614d93d3017ddfcfa092710677d132b202551b",
+    "packs/openai-advanced/repo-template/index.md": "22cccdc23f86c3ea8fe966afb11b0b2fb3eafbe295768b0b2a9d444b8d18c911",
+    "packs/openai-advanced/sops/chrome-devtools-validation-loop.md": "1a052d147885e38e1dfe598bde4b9873100163735e7b90ae792be1f3b792f488",
+    "packs/openai-advanced/sops/encode-knowledge-into-repo.md": "956a094497967d0eeb35459d9432b31d09bda1ff07513d16cbe2ef55c3bf3779",
+    "packs/openai-advanced/sops/index.md": "d92ad856fc346835df57c2c947e8341622b68e8dcc96ad17ef4a2a7df36aaaf0",
+    "packs/openai-advanced/sops/layered-domain-architecture.md": "730e9e02151d0c961451035a686e824fef22815b92cb6be29dbcba6c7a1d7bd6",
+    "packs/openai-advanced/sops/observability-feedback-loop.md": "e5bfc8c608f2282c894c4bd35eebe755e74186eeb2fe1f8ec23cb09d94d3cb3c",
+    "packs/sentry/index.md": "b66935104ac83c742f77a403288a098fda6441b65e6db26510b0024bdfca74d8",
+    "packs/sentry/repo-template/.env.sentry.example": "4e30259e0226cba3cb68a9ffc835bc5825c788cff14c58ac1de93aa3b0ccda13",
+    "packs/sentry/repo-template/.github/workflows/observability.yml": "3ecfab76e840dbd8e1c45521d82a384f1e673cbd3ca2f68ee0126ffcfcf6c57f",
+    "packs/sentry/repo-template/bin/sentry-check": "f0fad66354b679c85c52edb9476a393117fe179417fbe810188b6865a3ce05e6",
+    "packs/sentry/repo-template/bin/sentry-heartbeat": "5279f9d956ae1fb17536d1829e9da24e938899cadaa9063cae32ae0a380ea436",
+    "packs/sentry/repo-template/bin/sentry-to-issues": "194520fc94ab8bbe59b7502c9d16a17c2e45d78e9d34913b8cc0c4ad46daf4c4",
+    "packs/sentry/repo-template/instrumentation-client.ts": "54290c2b96fc5ca01937b9370f2688c333c352abe9444eae5f1e68e2632618b9",
+    "packs/sentry/repo-template/instrumentation.ts": "37198d0c4217938f2437f8593b213b07ade71410f5ecf832d74e1dc06ea16fd4",
+    "packs/sentry/repo-template/sentry.edge.config.ts": "9b8b94ba568c9d52faa8173aa766816209e5148ae982826d34248f8b19e81ecc",
+    "packs/sentry/repo-template/sentry.server.config.ts": "0dded2905620fb9d3c7f6567b5dd7233bee9d5386e77cbed83c102e4180bb72e",
+    "packs/sentry/verify-pack.sh": "d0092479f648b14e0b8194f899e53f93d6e3bfc1ea7517c9a1c4fa13bfbf3f9f",
+    "release-please-config.json": "18327e2c74c7e4fbc48d5e740d22afe7ee112a9e3f857444b1a564ac0bc15a63",
+    "scripts/check-arch.sh": "14fcbce241577e361de0610e96a5897d37d31cf6c1a072232e69ff77ec6bd41f",
+    "scripts/clean-state-check.sh": "3d9a90cb5cd2df8199e44833bc224cbc6952ac1bbac719469c078141360dafae",
+    "scripts/install-githooks.sh": "31340ca1017ccef41b781ebace026c68d6c521fb0ed8e610faaa5b7b2dbb80a3",
+    "scripts/pre-commit-staged.sh": "a2eaf92aedbbf14824315da307c035c60b6d0a869cbb8c108eab695c33a0acfe",
+    "scripts/run-gates.sh": "518c9638a9d09a57aba1f458b35016436f4f3881a85c95a4a21496b761b41862",
+    "scripts/session-trace.sh": "fb715af352deaf329d70f500915904224092d631b499fc0cf6887cfc3774b6c8",
+    "scripts/sync-version.sh": "2875362785659ae928045ab076770e814bf6ffb6577591092690fab1b0b59c47",
+    "scripts/verify-agent-notes.sh": "8e3d524183fe75ab5ec22331dead517ed92c891fb4152a98924a48f41476956f",
+    "scripts/verify-claims.sh": "490df3894b603871bbefe2b019d7478b1628e66b32f1984cf84201d7dc13a940",
+    "scripts/verify-context-routes.sh": "76ddeb583d744d174584d134726f6d01cc284940c2a3b3645ab969e2a4abf3e9",
+    "scripts/verify-decisions.sh": "4ebffe568fc05764a20ca0a80eedb4faf7b16db9a54d10c2acb571801757da87",
+    "scripts/verify-delivery-doc.sh": "3a87237c9ee3a416fb18e0d925f8c2f30cecc7653cc4935d64668093f8ea98ea",
+    "scripts/verify-feature.sh": "3de5c857ac0f8bd574803cf53fb0aa3d6c430241f426a03a11321dd930011635",
+    "scripts/verify-makefile-gates.sh": "c853c18d43188363ac2bfcbc05e13de322a611eaf6fb38487179d76b3e20813a",
+    "scripts/verify-oracles.sh": "456b3aae510c2182239d39e6c26777740f69c0948e03d16bfb52b815fb64e532",
+    "scripts/verify-version-sync.sh": "911edabc096924b15c3877772e1f1d3ecb60b3215e014ed14ca505620698f4d5",
+    "session-handoff.md": "b12a82200556567d8a395fcc3c2fee72e2b31c98ce2fc5f3c7be07071d01fa92",
+    "templates/evaluator-rubric.md": "16216e392ad0a9c7b5bd2953e01129ee2cd581d4526609a6cb262d16809e2f3f",
+    "templates/full/.agents/notes/README.md": "2e5fdf6bf916ed0c9a11f5c22c2f6c4364fa6dc88b7bfea1f4f1c4a5c35282b3",
+    "templates/full/.github/rulesets/required-quality-check.json": "889471d526da4cd4d114a4f98442b82fbbcde4fb1a8264f2e534eba18d7ec4b3",
+    "templates/full/.github/rulesets/required-quality-integrity.json": "87235402ac06996686503735936af47dc34cd000759e6db52fece524634865a2",
+    "templates/full/.github/workflows/required-quality.yml": "8fa7cc3de805f601032b18fc1e3d6be37bb7cfa591a7f5ae8aa44cb247ebbb17",
+    "templates/full/.harness/arch-rules.json": "87f16057f1644c77c88cf33b241dd0135e33e1744644638a6c8aa7b56bdb4a8f",
+    "templates/full/.harness/context-routes.json": "c89745a0409b3adc65e50a9cb2b99a9e77047470ccde7be351f6f109d199e85d",
+    "templates/full/.harness/oracles/AC-000.example.yaml.txt": "b44e4b096ce3d001e3899d0b56f7593240e2c76ee471b61dc1aa544b0c8c16a4",
+    "templates/full/.harness/oracles/README.md": "e820909b3548691125c6dbaa0293225bcef1cc44091c2b0e38a84b3dd68f499b",
+    "templates/full/AGENTS-appendix.md": "3861087c5f41c1a3e5d48012bf8a98198e48442c6a07b0ec9b70c1d3843daf83",
+    "templates/full/Makefile": "84abc4f6eaf8fe627965dc8888be2917a27fbe88231920b76ff11b469dc1b0f5",
+    "templates/full/docs/quality-document.md": "92eb598dc88357b4eba3e5e3eb65390c012a5645ea0fc18b16bbde665ed53923",
+    "templates/full/scripts/check-arch.sh": "14fcbce241577e361de0610e96a5897d37d31cf6c1a072232e69ff77ec6bd41f",
+    "templates/full/scripts/clean-state-check.sh": "8074a62de1143f120f9fe8bde57ba2599819b7a6b12f4a57fdd3973d9a1137c5",
+    "templates/full/scripts/install-githooks.sh": "31340ca1017ccef41b781ebace026c68d6c521fb0ed8e610faaa5b7b2dbb80a3",
+    "templates/full/scripts/pre-commit-staged.sh": "a2eaf92aedbbf14824315da307c035c60b6d0a869cbb8c108eab695c33a0acfe",
+    "templates/full/scripts/run-gates.sh": "518c9638a9d09a57aba1f458b35016436f4f3881a85c95a4a21496b761b41862",
+    "templates/full/scripts/session-trace.sh": "fb715af352deaf329d70f500915904224092d631b499fc0cf6887cfc3774b6c8",
+    "templates/full/scripts/verify-agent-notes.sh": "8e3d524183fe75ab5ec22331dead517ed92c891fb4152a98924a48f41476956f",
+    "templates/full/scripts/verify-claims.sh": "490df3894b603871bbefe2b019d7478b1628e66b32f1984cf84201d7dc13a940",
+    "templates/full/scripts/verify-context-routes.sh": "76ddeb583d744d174584d134726f6d01cc284940c2a3b3645ab969e2a4abf3e9",
+    "templates/full/scripts/verify-decisions.sh": "4ebffe568fc05764a20ca0a80eedb4faf7b16db9a54d10c2acb571801757da87",
+    "templates/full/scripts/verify-delivery-doc.sh": "3a87237c9ee3a416fb18e0d925f8c2f30cecc7653cc4935d64668093f8ea98ea",
+    "templates/full/scripts/verify-feature.sh": "3de5c857ac0f8bd574803cf53fb0aa3d6c430241f426a03a11321dd930011635",
+    "templates/full/scripts/verify-impact.template.mjs": "e3dd677d928cd51bff32a291ba54b8f3ec921828fe63d3684bd5931a517dfbd3",
+    "templates/full/scripts/verify-makefile-gates.sh": "c853c18d43188363ac2bfcbc05e13de322a611eaf6fb38487179d76b3e20813a",
+    "templates/full/scripts/verify-oracles.sh": "456b3aae510c2182239d39e6c26777740f69c0948e03d16bfb52b815fb64e532",
+    "templates/full/templates/evaluator-rubric.md": "16216e392ad0a9c7b5bd2953e01129ee2cd581d4526609a6cb262d16809e2f3f",
+    "templates/full/templates/sprint-contract.md": "9b34728654bf6ef71b8c42e5272d338eea61a3b24179d1fd44705203a4e9b069",
+    "templates/minimal/AGENTS.md": "f9e862c47912fe90500fc7ff43b37eb5af8712addbcb7cb568d4c5d817f835d8",
+    "templates/minimal/CLAUDE.md": "b2152e1f7ebaedffa02c1e695c55c674448dd1ecd42be1555ad4e29fcad0735e",
+    "templates/minimal/DECISIONS.md": "76b620e209b9ec299786b194824744c62dc55d115b3376e7a0732ea16aa86420",
+    "templates/minimal/PROGRESS.md": "e43746d628aadf0c9a449dafdc077dac4006cf1523e96521a1298f929f8aa001",
+    "templates/minimal/clean-state-checklist.md": "7ce5c9c0e4c1b04e4f92c62276dfdb2042be9994624a857c989706ce88a4c6be",
+    "templates/minimal/docs-decisions-README.md": "2b2e749cd6d012b12e34e3cba98a0075f18b30dec6152a0a209d4c90bb351e14",
+    "templates/minimal/feature_list.json": "0184f3ac7325d116b29dcc4afb22a8f5d89e2f7f444506261da9b3c2cdb5f308",
+    "templates/minimal/init.sh": "04fff490cc6650120ce70b120961f1bbf513797b4d1e063bf7cb8354a9796195",
+    "templates/minimal/session-handoff.md": "8050e5caa89dbe4dbbffdf85afcf6c74742d17d4d1e6ecb16404648d9f99c89b",
+    "templates/sprint-contract.md": "9d218ccca79e3763771f567e680115670eed345f6594db1766b47bd8d5063df0",
+    "tests/run-tests.sh": "4edc667e57826eb7559a48457a1f123eb02fbe1dabf130c85ebaab4233f342a0"
+  },
+  "source_unchanged_after_run": true,
+  "tests_run": 3,
+  "failure_count": 3,
+  "error_count": 0,
+  "successful": false,
+  "records": [
+    {
+      "test": "__main__.LocalRegressions.test_09_exit0_rule_must_reject_false_command",
+      "calls": [
+        {
+          "argv": [
+            "bash",
+            "/workspace/scratch/adce1c53b293/harness-kit/scripts/check-arch.sh",
+            "/workspace/scratch/adce1c53b293/reviewer-probes/local-corrected/fixtures/test_09_exit0_rule_must_reject_false_command-rkprwtxg"
+          ],
+          "cwd": "/workspace/scratch/adce1c53b293/reviewer-probes/local-corrected/fixtures/test_09_exit0_rule_must_reject_false_command-rkprwtxg",
+          "exit": 0,
+          "stdout": "Architecture Rules\n  [OK] reject-false\n\n1 architecture rule(s) hold.\n",
+          "stderr": ""
+        }
+      ],
+      "inputs": {
+        ".harness/arch-rules.json": {
+          "rules": [
+            {
+              "id": "reject-false",
+              "check": "false",
+              "expect": "exit0",
+              "what": "command failed",
+              "why": "exit status is authoritative",
+              "fix": "repair command"
+            }
+          ]
+        }
+      },
+      "fixture": "/workspace/scratch/adce1c53b293/reviewer-probes/local-corrected/fixtures/test_09_exit0_rule_must_reject_false_command-rkprwtxg"
+    },
+    {
+      "test": "__main__.LocalRegressions.test_10_invalid_arch_root_must_not_pass",
+      "calls": [
+        {
+          "argv": [
+            "bash",
+            "/workspace/scratch/adce1c53b293/harness-kit/scripts/check-arch.sh",
+            "/workspace/scratch/adce1c53b293/reviewer-probes/local-corrected/fixtures/test_10_invalid_arch_root_must_not_pass-mspx1qe8"
+          ],
+          "cwd": "/workspace/scratch/adce1c53b293/reviewer-probes/local-corrected/fixtures/test_10_invalid_arch_root_must_not_pass-mspx1qe8",
+          "exit": 0,
+          "stdout": "Architecture Rules\n\n0 architecture rule(s) hold.\n",
+          "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 6, in <module>\nAttributeError: 'list' object has no attribute 'get'\n"
+        }
+      ],
+      "inputs": {
+        ".harness/arch-rules.json": [
+          {
+            "id": "root-list",
+            "check": "false",
+            "expect": "exit0"
+          }
+        ]
+      },
+      "fixture": "/workspace/scratch/adce1c53b293/reviewer-probes/local-corrected/fixtures/test_10_invalid_arch_root_must_not_pass-mspx1qe8"
+    },
+    {
+      "test": "__main__.LocalRegressions.test_11_full_scaffold_must_supply_its_required_gates",
+      "calls": [
+        {
+          "argv": [
+            "bash",
+            "/workspace/scratch/adce1c53b293/harness-kit/bin/harness-init.sh",
+            "--target",
+            "/workspace/scratch/adce1c53b293/reviewer-probes/local-corrected/fixtures/test_11_full_scaffold_must_supply_its_required_gates-9xtdfffh",
+            "--level",
+            "full",
+            "--purpose",
+            "a configured local audit fixture"
+          ],
+          "cwd": "/workspace/scratch/adce1c53b293/reviewer-probes/local-corrected/fixtures/test_11_full_scaffold_must_supply_its_required_gates-9xtdfffh",
+          "exit": 0,
+          "stdout": "Harness init\n  target: /workspace/scratch/adce1c53b293/reviewer-probes/local-corrected/fixtures/test_11_full_scaffold_must_supply_its_required_gates-9xtdfffh\n  level:  full\n  verify: npm run check\n\n  write   AGENTS.md\n  write   CLAUDE.md\n  write   init.sh\n  write   PROGRESS.md\n  write   feature_list.json\n  write   clean-state-checklist.md\n  write   session-handoff.md\n  write   DECISIONS.md\n  write   docs/decisions/README.md\n  write   Makefile\n  write   scripts/verify-feature.sh\n  write   scripts/verify-claims.sh\n  write   scripts/verify-decisions.sh\n  write   .github/workflows/required-quality.yml\n  write   .github/rulesets/required-quality-check.json\n  write   .github/rulesets/required-quality-integrity.json\n  write   scripts/check-arch.sh\n  write   scripts/verify-makefile-gates.sh\n  write   scripts/run-gates.sh\n  write   scripts/verify-agent-notes.sh\n  write   scripts/verify-delivery-doc.sh\n  write   scripts/verify-context-routes.sh\n  write   scripts/verify-oracles.sh\n  write   .harness/oracles/README.md\n  write   .harness/oracles/AC-000.example.yaml.txt\n  write   .harness/context-routes.json\n  write   scripts/verify-impact.template.mjs\n  write   scripts/pre-commit-staged.sh\n  write   scripts/install-githooks.sh\n  write   .agents/notes/README.md\n  write   scripts/clean-state-check.sh\n  write   scripts/session-trace.sh\n  write   scripts/harness-audit.sh\n  write   .harness/arch-rules.json\n  write   templates/sprint-contract.md\n  write   templates/evaluator-rubric.md\n  write   docs/quality-document.md\n  write   .harness/traces/.gitkeep\n  write   .gitignore\n\nDone. Next steps:\n  1. Edit AGENTS.md — replace the purpose line with what this project actually does.\n  2. Replace the placeholder features in feature_list.json with the real backlog.\n  3. Confirm the verification command is right: npm run check\n  4. Score the result:  /workspace/scratch/adce1c53b293/harness-kit/bin/harness-audit.sh /workspace/scratch/adce1c53b293/reviewer-probes/local-corrected/fixtures/test_11_full_scaffold_must_supply_its_required_gates-9xtdfffh\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "bash",
+            "scripts/run-gates.sh",
+            "quick"
+          ],
+          "cwd": "/workspace/scratch/adce1c53b293/reviewer-probes/local-corrected/fixtures/test_11_full_scaffold_must_supply_its_required_gates-9xtdfffh",
+          "exit": 1,
+          "stdout": "── gates · aggregate quick\n\n  decisions-append-only    PASS (0s)\n  agent-notes-tree         PASS (0s)\n  arch-boundaries          PASS (0s)\n  makefile-gates           PASS (0s)\n  version-sync             NOT_EXECUTED  (missing scripts/verify-version-sync.sh)\n      a required gate is missing from this repo — install it or declare it optional\n  delivery-doc             PASS (0s)\n  context-routes           PASS (0s)\n  oracles-falsifiable      PASS (0s)\n\n── 7 pass · 1 blocking · 0 optional not installed\n\nBlocking:\n  · version-sync NOT_EXECUTED\n\nOnly PASS satisfies a gate. A state that is not PASS was not verified,\nand an unverified gate is not a passing one.\n",
+          "stderr": ""
+        }
+      ],
+      "inputs": {
+        "package.json": {
+          "name": "audit-fixture",
+          "version": "1.0.0",
+          "private": true,
+          "scripts": {
+            "check": "echo checked",
+            "test": "echo tested",
+            "e2e": "echo exercised",
+            "dev": "echo ready"
+          }
+        },
+        "README.md": "# Configured local fixture\n"
+      },
+      "fixture": "/workspace/scratch/adce1c53b293/reviewer-probes/local-corrected/fixtures/test_11_full_scaffold_must_supply_its_required_gates-9xtdfffh",
+      "fixture_commit": "c4a576a1aaa3962a8ed8fd5fe65abbf6d42f91fb",
+      "version_sync_installed": false
+    }
+  ],
+  "failures": [
+    {
+      "test": "test_09_exit0_rule_must_reject_false_command (__main__.LocalRegressions.test_09_exit0_rule_must_reject_false_command)",
+      "traceback": "Traceback (most recent call last):\n  File \"/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/local_red_regressions.py\", line 65, in test_09_exit0_rule_must_reject_false_command\n    self.assertNotEqual(result.returncode, 0, 'R08: false must fail an expect: exit0 rule')\nAssertionError: 0 == 0 : R08: false must fail an expect: exit0 rule\n"
+    },
+    {
+      "test": "test_10_invalid_arch_root_must_not_pass (__main__.LocalRegressions.test_10_invalid_arch_root_must_not_pass)",
+      "traceback": "Traceback (most recent call last):\n  File \"/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/local_red_regressions.py\", line 69, in test_10_invalid_arch_root_must_not_pass\n    self.assertNotEqual(result.returncode, 0,\nAssertionError: 0 == 0 : R09: parser failure must not become zero successful rules\n"
+    },
+    {
+      "test": "test_11_full_scaffold_must_supply_its_required_gates (__main__.LocalRegressions.test_11_full_scaffold_must_supply_its_required_gates)",
+      "traceback": "Traceback (most recent call last):\n  File \"/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/local_red_regressions.py\", line 89, in test_11_full_scaffold_must_supply_its_required_gates\n    self.assertEqual(result.returncode, 0,\nAssertionError: 1 != 0 : R11: successful configured full installation must not omit a required gate\n"
+    }
+  ],
+  "errors": []
+}

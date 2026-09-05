@@ -1,0 +1,160 @@
+# Design proposal only: no runtime activation or human approval is implied.
+schema_version: 1.0.0
+document_status: PROPOSED_NON_AUTHORITATIVE
+activation: false
+policy_id: harness-autonomy
+classification:
+  unit: artifact_operation
+  composition: most_restrictive
+  labels_are_proof: false
+  unproven: DENY_UNPROVEN
+class_policies:
+  SEMANTIC:
+    disposition: HUMAN_REQUIRED
+    required_proofs:
+    - trusted_policy_binding
+  ARCHITECTURAL:
+    disposition: HUMAN_REQUIRED
+    required_proofs:
+    - trusted_policy_binding
+  SECURITY_RELEVANT:
+    disposition: HUMAN_REQUIRED
+    required_proofs:
+    - trusted_policy_binding
+  SHARED_SEMANTICS:
+    disposition: HUMAN_REQUIRED
+    required_proofs:
+    - trusted_policy_binding
+  MECHANICAL_CANONICALIZATION:
+    disposition: VERIFIED_MECHANICAL
+    required_proofs:
+    - trusted_policy_binding
+    - authority_unchanged
+    - ac_unchanged
+    - scope_semantics_unchanged
+    - threat_model_unchanged
+    - architecture_unchanged
+    - product_contract_unchanged
+    - revocation_and_budget_checked
+    - typed_tree_equivalence
+    - derived_output_recomputed
+    - expected_manifest_delta_only
+  DERIVED_BINDING_UPDATE:
+    disposition: VERIFIED_MECHANICAL
+    required_proofs:
+    - trusted_policy_binding
+    - authority_unchanged
+    - ac_unchanged
+    - scope_semantics_unchanged
+    - threat_model_unchanged
+    - architecture_unchanged
+    - product_contract_unchanged
+    - revocation_and_budget_checked
+    - derived_output_recomputed
+    - expected_manifest_delta_only
+    - append_only_lineage
+  EVIDENCE_REFRESH:
+    disposition: VERIFIED_MECHANICAL
+    required_proofs:
+    - trusted_policy_binding
+    - authority_unchanged
+    - ac_unchanged
+    - scope_semantics_unchanged
+    - threat_model_unchanged
+    - architecture_unchanged
+    - product_contract_unchanged
+    - revocation_and_budget_checked
+    - fresh_verification
+    - append_only_lineage
+  STALE_RUN_REPLACEMENT:
+    disposition: VERIFIED_MECHANICAL
+    required_proofs:
+    - trusted_policy_binding
+    - authority_unchanged
+    - ac_unchanged
+    - scope_semantics_unchanged
+    - threat_model_unchanged
+    - architecture_unchanged
+    - product_contract_unchanged
+    - revocation_and_budget_checked
+    - fresh_verification
+    - append_only_lineage
+  HARNESS_STABILITY:
+    disposition: BOUNDED_GRANT
+    required_proofs:
+    - trusted_policy_binding
+    - authority_unchanged
+    - ac_unchanged
+    - scope_semantics_unchanged
+    - threat_model_unchanged
+    - architecture_unchanged
+    - product_contract_unchanged
+    - revocation_and_budget_checked
+    - bounded_grant_verified
+    - expectations_and_coverage_preserved
+    - durable_regression
+    - independent_review_verified
+    - no_product_delta
+  BOUNDED_REMEDIATION:
+    disposition: BOUNDED_GRANT
+    required_proofs:
+    - trusted_policy_binding
+    - authority_unchanged
+    - ac_unchanged
+    - scope_semantics_unchanged
+    - threat_model_unchanged
+    - architecture_unchanged
+    - product_contract_unchanged
+    - revocation_and_budget_checked
+    - bounded_grant_verified
+    - same_defect_and_rule
+    - durable_regression
+    - independent_review_verified
+    - human_facing_signoff_satisfied
+  DOCUMENTATION_ONLY:
+    disposition: VERIFIED_MECHANICAL
+    required_proofs:
+    - trusted_policy_binding
+    - authority_unchanged
+    - ac_unchanged
+    - scope_semantics_unchanged
+    - threat_model_unchanged
+    - architecture_unchanged
+    - product_contract_unchanged
+    - revocation_and_budget_checked
+    - append_only_lineage
+    - human_facing_signoff_satisfied
+    - no_product_delta
+  ADAPTER_COMPATIBILITY:
+    disposition: BOUNDED_GRANT
+    required_proofs:
+    - trusted_policy_binding
+    - authority_unchanged
+    - ac_unchanged
+    - scope_semantics_unchanged
+    - threat_model_unchanged
+    - architecture_unchanged
+    - product_contract_unchanged
+    - revocation_and_budget_checked
+    - bounded_grant_verified
+    - adapter_binding_preserved
+    - independent_review_verified
+    - no_product_delta
+  UNKNOWN:
+    disposition: DENY_UNPROVEN
+    required_proofs:
+    - trusted_policy_binding
+budgets:
+  buckets:
+  - product_semantic_review
+  - harness_implementation_review
+  - mechanical_verification
+  limits_source: approved_objective_policy
+  global_ceiling_required: true
+  rebind_resets_budget: false
+  exhaustion: BLOCKED_BY_BUDGET_EXHAUSTION
+human_gates:
+  baseline_acceptance: always_explicit
+  new_semantics: always_explicit
+  continuation: verified_bounded_grant
+  approval_boolean_is_authority: false

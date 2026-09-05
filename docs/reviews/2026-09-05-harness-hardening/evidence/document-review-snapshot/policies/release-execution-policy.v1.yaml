@@ -1,0 +1,45 @@
+# Design proposal only: no runtime activation or human approval is implied.
+schema_version: 1.0.0
+document_status: PROPOSED_NON_AUTHORITATIVE
+activation: false
+policy_id: harness-release-execution
+objective_states:
+- DEFINED
+- EXECUTING
+- INTEGRATION_PENDING
+- INTEGRATION_VERIFIED
+- DEPLOYMENT_PENDING
+- DEPLOYED
+- CERTIFICATION_PENDING
+- PRODUCTION_PASS
+- BLOCKED
+- RECOVERY_REQUIRED
+next_action: first_unsatisfied_obligation_from_verified_replay
+nonterminal_milestones:
+- SLICE_PASS
+- PR_MERGED
+- PREVIEW_PASS
+production_pass_requires:
+- all_required_slices_pass
+- integrated_commit_verified
+- required_human_gates_verified
+- authorized_production_deployment
+- deployment_identity_matches
+- production_smoke_pass
+- postdeploy_certification_pass
+evidence_binding:
+- repository_id
+- release_id
+- integrated_commit_sha
+- artifact_sha256
+- deployment_id
+- environment
+- policy_sha256
+production_authorization: explicit_owner_grant_and_external_gate_if_required
+baseline_acceptance: separate_explicit_human_gate
+recovery:
+  resume: idempotent_operation_keys
+  stale_evidence: new_run_and_reverification
+  postdeploy_failure: RECOVERY_REQUIRED
+  rollback: authorized_capability_with_new_receipt
+  rewrite_history: false

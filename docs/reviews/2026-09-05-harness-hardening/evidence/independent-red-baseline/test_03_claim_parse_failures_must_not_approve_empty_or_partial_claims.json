@@ -1,0 +1,50 @@
+{
+  "test": "__main__.RegressionTests.test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims",
+  "fixtures": [
+    {
+      "path": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims-invalid-json-m_fxc99f",
+      "base_sha": "2d7f78f4b56a0fe1927ee708c7d278a3401aa4e4"
+    },
+    {
+      "path": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims-partial-schema-error-o4w_1o__",
+      "base_sha": "2d7f78f4b56a0fe1927ee708c7d278a3401aa4e4"
+    }
+  ],
+  "calls": [
+    {
+      "cwd": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims-invalid-json-m_fxc99f",
+      "argv": [
+        "bash",
+        "scripts/verify-claims.sh"
+      ],
+      "explicit_env": {},
+      "exit": 0,
+      "stdout": "NO_CLAIMS — no feature is marked passing, so there was nothing to re-verify.\nThis is not a pass: it means the repo claims nothing yet.\n",
+      "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 2, in <module>\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/__init__.py\", line 293, in load\n    return loads(fp.read(),\n           ^^^^^^^^^^^^^^^^\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/__init__.py\", line 346, in loads\n    return _default_decoder.decode(s)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/decoder.py\", line 338, in decode\n    obj, end = self.raw_decode(s, idx=_w(s, 0).end())\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/decoder.py\", line 354, in raw_decode\n    obj, end = self.scan_once(s, idx)\n               ^^^^^^^^^^^^^^^^^^^^^^\njson.decoder.JSONDecodeError: Expecting property name enclosed in double quotes: line 1 column 3 (char 2)\n",
+      "before": {
+        "feature_list.json": "{ invalid json\n"
+      },
+      "after": {
+        "feature_list.json": "{ invalid json\n"
+      }
+    },
+    {
+      "cwd": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims-partial-schema-error-o4w_1o__",
+      "argv": [
+        "bash",
+        "scripts/verify-claims.sh"
+      ],
+      "explicit_env": {},
+      "exit": 0,
+      "stdout": "Re-verifying claimed features\n\n── F1\n  ok   unit\n\n1 claimed feature(s) re-verified. Every passing state is backed by a run.\n",
+      "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 13, in <module>\nAttributeError: 'int' object has no attribute 'get'\n",
+      "before": {
+        "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"fixture base receipt\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"echo verified\",\n          \"repair\": \"check inputs\"\n        }\n      ]\n    },\n    {\n      \"id\": \"F2\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"fixture base receipt\"\n      ],\n      \"layers\": [\n        123\n      ]\n    }\n  ]\n}\n"
+      },
+      "after": {
+        "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"fixture base receipt\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"echo verified\",\n          \"repair\": \"check inputs\"\n        }\n      ]\n    },\n    {\n      \"id\": \"F2\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"fixture base receipt\"\n      ],\n      \"layers\": [\n        123\n      ]\n    }\n  ]\n}\n"
+      }
+    }
+  ],
+  "observations": {}
+}

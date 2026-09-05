@@ -1,0 +1,37 @@
+{
+  "test": "__main__.RegressionTests.test_07_decision_whitespace_must_not_change_executable_policy",
+  "fixtures": [
+    {
+      "path": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_07_decision_whitespace_must_not_change_executable_policy-indentation-gjpu2tsc",
+      "base_sha": "e464e6a4f91ce0f6a292b3393ac482337be8d32d"
+    }
+  ],
+  "calls": [
+    {
+      "cwd": "/workspace/scratch/adce1c53b293/reviewer-probes/independent/red-baseline/fixtures/test_07_decision_whitespace_must_not_change_executable_policy-indentation-gjpu2tsc",
+      "argv": [
+        "bash",
+        "scripts/verify-decisions.sh",
+        "main"
+      ],
+      "explicit_env": {},
+      "exit": 0,
+      "stdout": "\n1 decision(s) intact.\n",
+      "stderr": "",
+      "before": {
+        "DECISIONS.md": "# Decisions\n\n## D1\nApproved policy example:\n```python\nif authorized:\n    if owner_approved:\n        audit()\n    deploy()\n```\n"
+      },
+      "after": {
+        "DECISIONS.md": "# Decisions\n\n## D1\nApproved policy example:\n```python\nif authorized:\n    if owner_approved:\n        audit()\n    deploy()\n```\n"
+      }
+    }
+  ],
+  "observations": {
+    "executions": {
+      "base": [],
+      "head": [
+        "deploy"
+      ]
+    }
+  }
+}

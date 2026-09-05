@@ -1,0 +1,65 @@
+{
+  "audit_date": "2026-09-05",
+  "repository": "gonzalezulises/harness-kit",
+  "base_commit": "88ea1e6c45faf5b5db9e29935eef6e25e50f633b",
+  "base_tree": "bb2f41402e4a070e82db1fec9b8b655710a887d7",
+  "tracked_files": 178,
+  "unique_blobs": 157,
+  "tracked_bytes": 924441,
+  "checkout": "Exact Git blobs/tree and reconstructed signed commit verified; shallow at audited base",
+  "original_requirement_sha256": "566ae68c093736ddafaf4bf21583e47c822e98c4ed330bc66ac3f2a6b628169a",
+  "requirement_copy_matches": true,
+  "probe_sha256": {
+    "local_red_regressions.py": "8fa060743401e885637b8943057c3e5d2fef8bf8be860eca34b0f988b05459ba",
+    "red_regressions.py": "003293dc09ab60cae9c893573dd638ded89732b498788a3a2778d0642759e9eb",
+    "supplemental_state_red.py": "46681b29d7f44fe26db64297942753b44875683ee1bd0d6f676e88b717508025",
+    "validate_proposals.py": "4e80441782b36bc935139e0899698312b82e662bc8e61b3d3a5ad315dd1645a5"
+  },
+  "tools": {
+    "python": "3.12.13",
+    "git": "git version 2.51.1",
+    "bash": "GNU bash, version 5.2.21(1)-release (x86_64-pc-linux-gnu)",
+    "node": "v24.19.0",
+    "k6": "k6 v2.1.0 (commit/83a87a41e2, go1.26.4, linux/amd64)"
+  },
+  "baseline": {
+    "init_core_passed": 273,
+    "make_check_exit": 0,
+    "core_passed": 273,
+    "gherkin_passed": 15,
+    "load_passed": 55,
+    "sentry_passed": 68,
+    "total_passed": 411,
+    "load_omitted": 2,
+    "omitted_reason": "No authenticated gh",
+    "quick_gate_pass": 8
+  },
+  "independent_actor": {
+    "task": "audit_independent",
+    "scope": "read-only source inspection, adversarial fixtures, separate agent/session",
+    "codex_cli_adapter_tested": false
+  },
+  "remote_observations": {
+    "ruleset_url": "https://api.github.com/repos/gonzalezulises/harness-kit/rulesets/20874477",
+    "base_release_run_url": "https://github.com/gonzalezulises/harness-kit/actions/runs/33785228041",
+    "base_release_run_conclusion": "success",
+    "review_branch_ci_certified": false
+  },
+  "unverified": [
+    "M01-M04 Aurobalance source absent",
+    "Twelve historical runtime scenarios PLANNED",
+    "Real Codex CLI reviewer and auth isolation",
+    "Production deployment and post-deploy certification",
+    "Baseline acceptance"
+  ],
+  "execution_status": "HARNESS_REVIEW_BLOCKED",
+  "policies_activated": false,
+  "baseline_accepted": false,
+  "proposed_contract_checks": 42,
+  "review_red": {
+    "methods": 14,
+    "assertion_failures": 17,
+    "runner_errors": 0,
+    "runtime_fixes_implemented": false
+  }
+}

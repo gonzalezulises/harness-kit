@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:harness-kit:stop-taxonomy:1",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "document_status": {
+      "const": "PROPOSED_NON_AUTHORITATIVE"
+    },
+    "activation": {
+      "const": false
+    },
+    "policy_id": {
+      "const": "harness-stop-taxonomy"
+    },
+    "gate_states": {
+      "const": [
+        "PASS",
+        "FAIL",
+        "NOT_CONFIGURED",
+        "TOOL_FAILURE",
+        "INCOMPLETE",
+        "POLICY",
+        "UNKNOWN",
+        "NOT_EXECUTED"
+      ]
+    },
+    "only_satisfying_state": {
+      "const": "PASS"
+    },
+    "reasons": {
+      "const": [
+        {
+          "code": "BLOCKED_BY_NEW_NORMATIVE_DECISION",
+          "group": "HUMAN_DECISION",
+          "gate_satisfied": false,
+          "continuation": "explicit_human_decision_receipt_verified"
+        },
+        {
+          "code": "BLOCKED_BY_AUTHORITY_CONFLICT",
+          "group": "HUMAN_DECISION",
+          "gate_satisfied": false,
+          "continuation": "explicit_human_decision_receipt_verified"
+        },
+        {
+          "code": "BLOCKED_BY_UNDEFINED_DOMAIN_MEANING",
+          "group": "HUMAN_DECISION",
+          "gate_satisfied": false,
+          "continuation": "explicit_human_decision_receipt_verified"
+        },
+        {
+          "code": "BLOCKED_BY_ARCHITECTURE_CHANGE",
+          "group": "HUMAN_DECISION",
+          "gate_satisfied": false,
+          "continuation": "explicit_human_decision_receipt_verified"
+        },
+        {
+          "code": "BLOCKED_BY_SECURITY_RISK",
+          "group": "HUMAN_DECISION",
+          "gate_satisfied": false,
+          "continuation": "explicit_human_decision_receipt_verified"
+        },
+        {
+          "code": "BLOCKED_BY_SHARED_SEMANTICS_CHANGE",
+          "group": "HUMAN_DECISION",
+          "gate_satisfied": false,
+          "continuation": "explicit_human_decision_receipt_verified"
+        },
+        {
+          "code": "BLOCKED_BY_HUMAN_SIGNOFF",
+          "group": "HUMAN_DECISION",
+          "gate_satisfied": false,
+          "continuation": "human_approval_receipt_verified"
+        },
+        {
+          "code": "BLOCKED_BY_BASELINE_ACCEPTANCE",
+          "group": "HUMAN_DECISION",
+          "gate_satisfied": false,
+          "continuation": "human_approval_receipt_verified"
+        },
+        {
+          "code": "BLOCKED_BY_MISSING_AUTHORITY_BINDING",
+          "group": "UNVERIFIED",
+          "gate_satisfied": false,
+          "continuation": "verified_recovery_under_valid_authority"
+        },
+        {
+          "code": "BLOCKED_BY_UNPROVEN_EQUIVALENCE",
+          "group": "UNVERIFIED",
+          "gate_satisfied": false,
+          "continuation": "verified_recovery_under_valid_authority"
+        },
+        {
+          "code": "BLOCKED_BY_INVALID_SCHEMA",
+          "group": "UNVERIFIED",
+          "gate_satisfied": false,
+          "continuation": "verified_recovery_under_valid_authority"
+        },
+        {
+          "code": "BLOCKED_BY_JOURNAL_INTEGRITY",
+          "group": "UNVERIFIED",
+          "gate_satisfied": false,
+          "continuation": "verified_recovery_under_valid_authority"
+        },
+        {
+          "code": "BLOCKED_BY_STALE_LEASE",
+          "group": "UNVERIFIED",
+          "gate_satisfied": false,
+          "continuation": "verified_recovery_under_valid_authority"
+        },
+        {
+          "code": "BLOCKED_BY_BUDGET_EXHAUSTION",
+          "group": "UNVERIFIED",
+          "gate_satisfied": false,
+          "continuation": "explicit_budget_reauthorization_verified"
+        },
+        {
+          "code": "BLOCKED_BY_REQUIRED_CAPABILITY",
+          "group": "UNVERIFIED",
+          "gate_satisfied": false,
+          "continuation": "verified_recovery_under_valid_authority"
+        },
+        {
+          "code": "AUTO_REMEDIABLE_CANONICALIZATION",
+          "group": "MECHANICAL_RECOVERY",
+          "gate_satisfied": false,
+          "continuation": "verified_capability_and_budget"
+        },
+        {
+          "code": "AUTO_REMEDIABLE_DERIVED_BINDING",
+          "group": "MECHANICAL_RECOVERY",
+          "gate_satisfied": false,
+          "continuation": "verified_capability_and_budget"
+        },
+        {
+          "code": "AUTO_REMEDIABLE_STALE_EVIDENCE",
+          "group": "MECHANICAL_RECOVERY",
+          "gate_satisfied": false,
+          "continuation": "verified_capability_and_budget"
+        },
+        {
+          "code": "AUTO_REMEDIABLE_HARNESS_STABILITY",
+          "group": "MECHANICAL_RECOVERY",
+          "gate_satisfied": false,
+          "continuation": "verified_capability_and_budget"
+        },
+        {
+          "code": "AUTO_REMEDIABLE_BOUNDED_DEFECT",
+          "group": "MECHANICAL_RECOVERY",
+          "gate_satisfied": false,
+          "continuation": "verified_capability_and_budget"
+        },
+        {
+          "code": "AUTO_REMEDIABLE_ADAPTER_COMPATIBILITY",
+          "group": "MECHANICAL_RECOVERY",
+          "gate_satisfied": false,
+          "continuation": "verified_capability_and_budget"
+        }
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "document_status",
+    "activation",
+    "policy_id",
+    "gate_states",
+    "only_satisfying_state",
+    "reasons"
+  ],
+  "additionalProperties": false
+}
