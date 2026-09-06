@@ -1,0 +1,10 @@
+{
+  "exitCode": 1,
+  "passed": 0,
+  "failed": 1,
+  "rawSha256": "cef84b32fa4d99dc79edc7a11b1c362fc7e4eae141e8f1890aa5faa25c25f0e8",
+  "excerptSha256": "ebd17f30fe59676721cae3a7b26cb40db9dcd385f2c3c154bdb00ab2d0cdaab0",
+  "note": "Observed before adding duplicate/changed finding identity guards; supplemental H4 reproduction. The six required pre-fix observations are separately bound to the reviewed source.",
+  "selectedTest": "fix1 H4 conflicting finding identities cannot hide a High behind a Low",
+  "commandRetention": "Exact argv was not retained for this supplemental pre-guard run; do not treat the selected test name as an argv receipt."
+}

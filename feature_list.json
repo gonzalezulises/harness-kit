@@ -727,6 +727,42 @@
       ],
       "notes": "Owner continuation 2026-09-06. Four initial scoped review findings are fixed and independently closed. CI integration uses protected base only. Fixtures do not certify live execution, containment, baseline acceptance or deployment.",
       "user_visible_behavior": "A consumer connects approved remote execution workflows, resumes an uncertain operation without duplicate effects or charges, and derives release progress only from exact authenticated observations."
+    },
+    {
+      "id": "F25",
+      "priority": 25,
+      "area": "autonomy-product-loop",
+      "behavior": "A bounded authorized functional objective progresses through product RED, scoped implementation, verification, independent review, at most two fixes, resumable evidence and PR preparation; only an actual real pilot may establish P0_PRODUCT_LOOP_READY.",
+      "user_visible_behavior": "The pilot exposes truthful offline JSON through harness-status --autonomy --json and stops before human merge or production.",
+      "state": "blocked",
+      "verification": [
+        "Exercise all eight mandatory small causal replays and actual subprocess RED/GREEN in isolated fixture repositories.",
+        "Observe one independent review, bounded remediation, exact gate reuse and atomic nonce behavior.",
+        "Keep real-pilot readiness blocked without enrolled authority, authenticated worker and actual containment."
+      ],
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash docs/implementation/2026-09-06-product-loop/verify-static.sh",
+          "repair": "Fix current source syntax/contracts; do not loosen historical evidence checks."
+        },
+        {
+          "label": "runtime",
+          "cmd": "node --test --test-skip-pattern='^e2e' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-loop.test.mjs",
+          "repair": "Fix the first affected product-loop invariant inside the accepted scope."
+        },
+        {
+          "label": "e2e",
+          "cmd": "node --test --test-name-pattern='^e2e' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-loop.test.mjs",
+          "repair": "Fix the actual isolated process/CLI behavior; fixture success never implies a real authenticated pilot."
+        }
+      ],
+      "evidence": [
+        "Affected source: static PASS; fix1 runtime9/9 and e2e4/4; fix2 focal1/1 with causal RED before each correction.",
+        "Independent scoped review closed H1-H4 in fix1 and mandatory M2 in fix2; no open Critical/High.",
+        "Final make check exit0: core286/0, runtime264/0, installation/canary5/0 and remaining packs pass; selected48 sources unchanged. Startup286/0 reused only for unchanged core inputs. docs/implementation/2026-09-06-product-loop/evidence/verification.json. Real authority/authentication/containment/pilot remain NOT_EXECUTED; automatic remote PR creation UNIMPLEMENTED."
+      ],
+      "notes": "Portable controller and real-process fixtures verified in scoped review. P0 acceptance remains blocked: local handoff is not a published PR and authenticated real pilot is unproved. M1 linked-worktree PR preparation and M3 malformed verifier UTF-8 remain Medium backlog. No P0_PRODUCT_LOOP_READY."
     }
   ]
 }

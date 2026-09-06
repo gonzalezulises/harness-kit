@@ -1,0 +1,11 @@
+✖ known differences block slice approval PASS next slice and baseline promotion (36894.74665ms)
+ℹ tests 1
+ℹ pass 0
+ℹ fail 1
+✖ known differences block slice approval PASS next slice and baseline promotion (36894.74665ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + 'PRODUCT_REPLAYED'
+  - 'BLOCKED_KNOWN_DIFFERENCE'
+    code: 'ERR_ASSERTION',
+    actual: 'PRODUCT_REPLAYED',
+    expected: 'BLOCKED_KNOWN_DIFFERENCE',

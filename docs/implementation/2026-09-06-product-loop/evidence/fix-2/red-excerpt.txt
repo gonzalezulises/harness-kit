@@ -1,0 +1,11 @@
+✖ fix2 M2 coverage binds an observed nested regression GREEN to its containing VERIFY receipt (25750.488352ms)
+ℹ tests 1
+ℹ pass 0
+ℹ fail 1
+✖ fix2 M2 coverage binds an observed nested regression GREEN to its containing VERIFY receipt (25750.488352ms)
+  AssertionError [ERR_ASSERTION]: {"status":"PRODUCT_REPLAYED","stage":"BLOCKED_REQUIRED_COVERAGE","coverage":[{"invariantId":"offline-json","surface":"CLI","mutationPath":"product.json","principal":"local-user","negativeTestId":"semantic","applicability":"APPLICABLE","basis":"Invoke the exact local CLI/product bytes and compare typed JSON and exit
+  + 'BLOCKED_REQUIRED_COVERAGE'
+  - 'PR_PREPARATION'
+    code: 'ERR_ASSERTION',
+    actual: 'BLOCKED_REQUIRED_COVERAGE',
+    expected: 'PR_PREPARATION',

@@ -1,0 +1,7 @@
+--- a/packs/autonomy/repo-template/scripts/quality-orchestrator/product.mjs
++++ b/packs/autonomy/repo-template/scripts/quality-orchestrator/product.mjs
+@@ -272,3 +272,3 @@
+   noteProductControlCycle:h=>safe(()=>{const i=loaded(h);persist(i,{type:'CONTROL'});return projection(i);}),
+-  requestProductPromotion:(h,kind)=>safe(()=>{must(['SLICE_APPROVAL','PASS','NEXT_SLICE','BASELINE_PROMOTION'].includes(kind),'unsupported promotion');const i=loaded(h),s=read(i);fresh(i,s);must(!s.differences.length,'known difference blocks every promotion','BLOCKED_KNOWN_DIFFERENCE');must(!openFindings(s).length,'critical/high or AC-invalidating finding remains','BLOCKED_OPEN_FINDINGS');must(s.stage==='HANDOFF_PREPARED','functional evidence is incomplete','INCOMPLETE');must(kind!=='BASELINE_PROMOTION','baseline acceptance always requires owner','HUMAN_REQUIRED');return projection(i);})
++  requestProductPromotion:(h,kind)=>safe(()=>{must(['SLICE_APPROVAL','PASS','NEXT_SLICE','BASELINE_PROMOTION'].includes(kind),'unsupported promotion');const i=loaded(h),s=read(i);fresh(i,s);must(!openFindings(s).length,'critical/high or AC-invalidating finding remains','BLOCKED_OPEN_FINDINGS');must(s.stage==='HANDOFF_PREPARED','functional evidence is incomplete','INCOMPLETE');must(kind!=='BASELINE_PROMOTION','baseline acceptance always requires owner','HUMAN_REQUIRED');return projection(i);})
+  };

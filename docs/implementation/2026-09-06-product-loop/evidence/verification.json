@@ -1,0 +1,155 @@
+{
+  "claim": "VERIFIED",
+  "scope": "Local P0 implemented fixture increment only",
+  "fullGate": {
+    "schema_version": 1,
+    "command": [
+      "make",
+      "check"
+    ],
+    "sourceCommit": "a798c88ad625be2478d24df52c0dc45c51e2d4e4",
+    "sourceManifestSha256": "bd04391721b52efe68223618aafa6c0e69e0cc3794b6811d91648a29c24d0843",
+    "exit_code": 0,
+    "elapsed_seconds": 503.391535318995,
+    "source_unchanged": true,
+    "streams": {
+      "stdout": {
+        "sha256": "c3e0a05cf5cfd06ece20a84e7f376fb8fbb4e0a7721e83f00f65e3181aa11538",
+        "bytes": 76709
+      },
+      "stderr": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    "summary": [
+      "  ok   a muted monitor blocks even when a nested flag reads false (exit 1)",
+      "  ok   commits are counted once each, not once per nested author id",
+      "  ok   a nested crash-free rate below the floor still blocks (exit 1)",
+      "  ok   the gate exposes canary_event_id",
+      "  ok   the event id is 32 characters",
+      "  ok   the event id is hexadecimal",
+      "  ok   two canaries never share an event id",
+      "  ok   the ingest URL is recorded for inspection",
+      "  ok   the ingest URL carries the DSN host",
+      "  ok   the ingest URL carries the project id",
+      "  ok   the ingest URL is not the empty-host shape",
+      "",
+      "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+      "68 passed, 0 failed",
+      "Every failure mode blocks.",
+      "make[1]: Leaving directory '/workspace/scratch/adce1c53b293/harness-product-loop'"
+    ],
+    "verification_summaries": [
+      "286 passed, 0 failed",
+      "# tests 33",
+      "# pass 33",
+      "# fail 0",
+      "# skipped 0",
+      "# tests 231",
+      "# pass 231",
+      "# fail 0",
+      "# skipped 0",
+      "# tests 5",
+      "# pass 5",
+      "# fail 0",
+      "# skipped 0",
+      "15 passed, 0 failed",
+      "68 passed, 0 failed"
+    ],
+    "first_failure_excerpt": "",
+    "error_excerpt": "",
+    "environment": {
+      "NO_COLOR": "1",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "K6_NO_USAGE_REPORT": "true",
+      "unsupportedNpmConfigRemoved": true
+    }
+  },
+  "startup": {
+    "schema_version": 1,
+    "command": [
+      "./init.sh"
+    ],
+    "sourceCommit": "a798c88ad625be2478d24df52c0dc45c51e2d4e4",
+    "sourceManifestSha256": "d97b2825903ebd425c7affa25361d34526d2de6a947d30119386bf6f2e22308b",
+    "exit_code": 0,
+    "elapsed_seconds": 69.09644509200007,
+    "source_unchanged": true,
+    "streams": {
+      "stdout": {
+        "sha256": "8ab736346ddd6f400f3ffa5584d365d30e7f3380922676a3d345540cdb9a22d0",
+        "bytes": 13520
+      },
+      "stderr": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    "summary": [
+      "  ok   and says so plainly",
+      "  ok   a test that does not exist blocks",
+      "  ok   a critical DRAFT blocks",
+      "  ok   and says no code should rely on it yet",
+      "  ok   a retired criterion is not enforced",
+      "  ok   --list never blocks",
+      "  ok   and shows the status",
+      "  ok   H02 live gates, profile, hook, oracle and status regression matrix",
+      "",
+      "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+      "286 passed, 0 failed",
+      "All tests passed.",
+      "Core baseline verification: PASS \u2014 run make check for full verification",
+      "",
+      "== Ready ==",
+      "Start with: make check"
+    ],
+    "verification_summaries": [
+      "286 passed, 0 failed"
+    ],
+    "error_excerpt": "",
+    "environment": {
+      "NO_COLOR": "1",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "K6_NO_USAGE_REPORT": "true",
+      "unsupportedNpmConfigRemoved": true
+    }
+  },
+  "startupReuse": {
+    "unchangedInputs": true,
+    "reconstructSourceManifest": "Remove files[packs/autonomy/verify-pack.sh] from verified-sources.json and serialize sorted keys, indent2, trailing newline; resulting SHA is startup.sourceManifestSha256. init.sh invokes core make test and never verify-pack.sh.",
+    "reason": "The only subsequent source change isolates runtime test-file ordering; no startup input changed."
+  },
+  "verificationIsolation": {
+    "claim": "VERIFIED",
+    "script": "packs/autonomy/verify-pack.sh",
+    "sha256": "51e6b0751c06420b2877086451827dfb4d4d70f894b98e9f7f3da10ce0dc2077",
+    "sameTestFileMultiset": 14,
+    "eachFileExactlyOnce": true,
+    "testBytesUnchanged": true,
+    "shellcheckExit": 0,
+    "bashSyntaxExit": 0,
+    "existingFocalCase": {
+      "argv": [
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "--test-name-pattern=local output fails closed for oversize",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs"
+      ],
+      "exit": 0,
+      "tests": 1
+    },
+    "ruling": "Mechanical ordering repair after two semantic review rounds; no guard or assertion changed. The failed concurrent gate is retained; only one failure identity was recoverable."
+  },
+  "readiness": "NOT_P0_READY",
+  "realPilot": "NOT_EXECUTED",
+  "automaticRemotePrCreation": "UNIMPLEMENTED",
+  "mergeDeployBaselineAcceptance": "NOT_PERFORMED",
+  "knownScopedCriticalHigh": 0,
+  "backlog": [
+    "P0-R1-M1",
+    "P0-R1-M3"
+  ],
+  "authenticatedLoadCasesOmitted": 2
+}

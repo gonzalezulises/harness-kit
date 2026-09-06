@@ -1,0 +1,11 @@
+✖ fix1 H4 conflicting finding identities cannot hide a High behind a Low (15809.34839ms)
+ℹ tests 1
+ℹ pass 0
+ℹ fail 1
+✖ fix1 H4 conflicting finding identities cannot hide a High behind a Low (15809.34839ms)
+  AssertionError [ERR_ASSERTION]: {"status":"PRODUCT_REPLAYED","stage":"HANDOFF_PREPARED","verified":"PASS"}
+  + 'PRODUCT_REPLAYED'
+  - 'POLICY'
+    code: 'ERR_ASSERTION',
+    actual: 'PRODUCT_REPLAYED',
+    expected: 'POLICY',

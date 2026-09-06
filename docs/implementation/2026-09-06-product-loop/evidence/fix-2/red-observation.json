@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-name-pattern=^fix2 M2",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-loop.test.mjs"
+  ],
+  "sourceSha256": "b0e2f92e66e219c1f48d2dbe90477e4fa4cf3fee40dfa932199c516fdb04bfd8",
+  "testSha256": "47b4a3f207c45e71cb1040c499b1dd23db869b31a7eb641d8ad79b503e3df2a4",
+  "exitCode": 1,
+  "rawSha256": "0f1a70ea5dc28e4278b12cb7f01d2ca1c17700ff92e4ec26a861f2fb705a3f12",
+  "excerptSha256": "fad273ebb35f9dd8ba2c3bc9dbcdc588448e5fc8626ba7ab65204a231ea37512",
+  "passed": 0,
+  "failed": 1
+}

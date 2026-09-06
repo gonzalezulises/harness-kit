@@ -1,0 +1,74 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-name-pattern=fix1",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-loop.test.mjs"
+  ],
+  "exitCode": 1,
+  "passed": 0,
+  "failed": 6,
+  "beforeSourceSha256": "12a0fa223f9cb2eafa2887e113079c9ae0393bdb4f12ddca42e2d0be2c7361ca",
+  "testAtRedSha256": "e3a85437b4450e460e03b58bbb79c3d51bd42fc7e03d333c869d578f108dbf88",
+  "rawSha256": "0b710c602e231449c0cfdeea4de520ac0b5c7dc83ea992259e460b59f3a862e5",
+  "observations": [
+    {
+      "case": "\u2716 fix1 H1 terminal FAILED STALE INCOMPLETE runs reject effects and promotions (3559.76333ms)",
+      "errorExcerpt": [
+        "  AssertionError [ERR_ASSERTION]: terminal FAILED must dispatch zero verifier effects",
+        "  1 !== 0",
+        "    code: 'ERR_ASSERTION',",
+        "    actual: 1,",
+        "    expected: 0,"
+      ]
+    },
+    {
+      "case": "\u2716 fix1 H2 difference arriving during review cannot restore canonical PASS (12863.335203ms)",
+      "errorExcerpt": [
+        "  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+        "  'PASS' !== 'UNKNOWN'",
+        "    code: 'ERR_ASSERTION',",
+        "    actual: 'PASS',",
+        "    expected: 'UNKNOWN',"
+      ]
+    },
+    {
+      "case": "\u2716 fix1 H3 a known functional VERIFY RED settles and enters bounded correction (10381.799702ms)",
+      "errorExcerpt": [
+        "  AssertionError [ERR_ASSERTION]: {\"status\":\"BLOCKED_FUNCTIONAL_VERIFICATION\",\"reason\":\"current functional verification failed\"}",
+        "    code: 'ERR_ASSERTION',",
+        "    actual: 'BLOCKED_FUNCTIONAL_VERIFICATION',",
+        "    expected: 'PRODUCT_REPLAYED',"
+      ]
+    },
+    {
+      "case": "\u2716 fix1 H4 a GREEN case cannot borrow another findings RED (38861.703562ms)",
+      "errorExcerpt": [
+        "  AssertionError [ERR_ASSERTION]: {\"status\":\"PRODUCT_REPLAYED\",\"objectiveDigest\":\"15a42d65c0d82d18d4ea6c6b4694cf4221e20ba707789804b9c65431fbba7ffb\",\"stage\":\"HANDOFF_PREPARED\",\"manifestDigest\":\"a015d1db5ad21b1da499c60f1ce0eeafb160f7ddf8436d8",
+        "    code: 'ERR_ASSERTION',",
+        "    actual: 'PRODUCT_REPLAYED',",
+        "    expected: 'BLOCKED_UNREPRODUCED_FINDING',"
+      ]
+    },
+    {
+      "case": "\u2716 e2e fix1 H4 two findings close in separate rounds without losing causal chains or backlog (42145.063495ms)",
+      "errorExcerpt": [
+        "  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:",
+        "      'second-high',",
+        "  -   'semantic-high'",
+        "    code: 'ERR_ASSERTION',",
+        "    actual: [ 'second-high' ],",
+        "    expected: [ 'second-high', 'semantic-high' ],"
+      ]
+    },
+    {
+      "case": "\u2716 fix1 M2 pilot coverage enumerates every surface and binds applicable observed cases (27740.360098ms)",
+      "errorExcerpt": [
+        "  AssertionError [ERR_ASSERTION]: coverage must be a verified projection, not unsigned text",
+        "    code: 'ERR_ASSERTION',",
+        "    actual: false,",
+        "    expected: true,"
+      ]
+    }
+  ]
+}

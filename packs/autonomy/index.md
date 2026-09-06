@@ -106,3 +106,13 @@ saved or certify Codex, containment or production. Current correction evidence i
 in `docs/implementation/2026-09-05-harness-hardening/final-fix-1/README.md`;
 historical canary evidence and coverage limits remain in
 `docs/implementation/2026-09-05-harness-hardening/h09/README.md`.
+
+The bounded product controller is an opt-in `product.v1` journal contract; see
+`scripts/quality-orchestrator/contracts-product-v1.md` in the installed runtime.
+It connects a signed outcome to functional RED, data-only patch authoring,
+verification, independent review, at most two fixes and an isolated local PR
+commit/title/body receipt. Existing journal contracts are unchanged. The CLI
+supports `--autonomy --json` for offline installation observations; missing
+runtime/dependencies exit nonzero. Fixture completion and local PR preparation
+do not establish real model authentication, host containment, a remote PR or
+P0_PRODUCT_LOOP_READY.

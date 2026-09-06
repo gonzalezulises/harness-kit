@@ -1,0 +1,22 @@
+✖ failing tests:
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-loop.test.mjs:62:1
+✖ known differences block slice approval PASS next slice and baseline promotion (3850.724605ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'INCOMPLETE'
+  - 'BLOCKED_KNOWN_DIFFERENCE'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-product-loop/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-loop.test.mjs:62:339)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'INCOMPLETE',
+    expected: 'BLOCKED_KNOWN_DIFFERENCE',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

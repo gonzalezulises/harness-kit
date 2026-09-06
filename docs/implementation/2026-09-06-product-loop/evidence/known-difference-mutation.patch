@@ -1,0 +1,10 @@
+--- packs/autonomy/repo-template/scripts/quality-orchestrator/product.mjs
++++ packs/autonomy/repo-template/scripts/quality-orchestrator/product.mjs
+@@ -230,6 +230,6 @@
+   runProduct:(h,options={})=>safeAsync(async()=>{const opts=z.strictObject({maxSteps:z.number().int().positive().max(30).optional()}).parse(options);for(let n=0;n<(opts.maxSteps||30);n++){const i=loaded(h),s=read(i);fresh(i,s);const step=next(s);if(step.kind==='HANDOFF_PREPARED')return projection(i);await execute(h,step.key);}return projection(loaded(h));}),
+   reportProductDifference:(h,difference)=>safe(()=>{const i=loaded(h);persist(i,productPayloadSchema.parse({type:'DIFFERENCE',difference}));return projection(i);}),
+   noteProductControlCycle:h=>safe(()=>{const i=loaded(h);persist(i,{type:'CONTROL'});return projection(i);}),
+-  requestProductPromotion:(h,kind)=>safe(()=>{must(['SLICE_APPROVAL','PASS','NEXT_SLICE','BASELINE_PROMOTION'].includes(kind),'unsupported promotion');const i=loaded(h),s=read(i);fresh(i,s);must(!s.differences.length,'known difference blocks every promotion','BLOCKED_KNOWN_DIFFERENCE');must(!s.review?.findings.some(blockedFinding),'critical/high or AC-invalidating finding remains','BLOCKED_OPEN_FINDINGS');must(s.stage==='HANDOFF_PREPARED','functional evidence is incomplete','INCOMPLETE');must(kind!=='BASELINE_PROMOTION','baseline acceptance always requires owner','HUMAN_REQUIRED');return projection(i);})
++  requestProductPromotion:(h,kind)=>safe(()=>{must(['SLICE_APPROVAL','PASS','NEXT_SLICE','BASELINE_PROMOTION'].includes(kind),'unsupported promotion');const i=loaded(h),s=read(i);fresh(i,s);must(!s.review?.findings.some(blockedFinding),'critical/high or AC-invalidating finding remains','BLOCKED_OPEN_FINDINGS');must(s.stage==='HANDOFF_PREPARED','functional evidence is incomplete','INCOMPLETE');must(kind!=='BASELINE_PROMOTION','baseline acceptance always requires owner','HUMAN_REQUIRED');return projection(i);})
+  };
+ }

@@ -3,7 +3,35 @@
 The durable memory of this repository. Every session reads this first and writes to it
 last. If it disagrees with your recollection, this file wins.
 
-## Current state — 2026-09-06 execution backend continuation
+## Current state — P0-PRODUCT-LOOP independent increment
+
+Base `a798c88` is the frozen local PR33 continuation. F25 adds the bounded
+product controller, explicit product journal contract and truthful JSON CLI
+diagnostic in this separate branch. The pre-implementation coverage matrix and
+scope are in [the plan](docs/implementation/2026-09-06-product-loop/plan.md).
+Independent scoped review closed four High findings and the mandatory coverage
+gap in two bounded fix rounds. Static, affected runtime9/9 and e2e4/4 passed in
+fix1; the final coverage regression passed1/1 in fix2. Final `make check` exited0
+with286 core,264 runtime and5 installation/canary cases passing, followed by
+all remaining required packs. Startup passed286/0. Selected48 source hashes
+were unchanged during the full gate. F25 is blocked on actual P0 acceptance;
+no feature is active. Two Medium findings remain in the compact review backlog.
+A historical test temporarily mutated shared dependency bytes during parallel
+verification. The first full gate failed262/264; isolating that file preserved
+the exact14-file test set and assertions. The full gate then passed. See the
+[compact verification receipt](docs/implementation/2026-09-06-product-loop/evidence/verification.json).
+
+The CLI fixture exercises actual Bash RED, product bytes, GREEN, one independent
+protocol-fixture review, a High counterexample/regression and a focal re-review.
+It prepares an isolated local Git commit and PR receipt without publishing.
+Automatic remote PR creation is not implemented by this local handoff.
+Fixture completion is separate from real autonomous completion. Real P0 remains
+NOT_EXECUTED / NOT_P0_READY: accepted product authority, authenticated model
+sessions, actual containment and a published PR have not been demonstrated.
+No prior authentication, broad-review or publication block is retried here.
+Casabat is untouched. Distribution has its own branch and is not part of F25.
+
+## Previous verified state — 2026-09-06 execution backend continuation
 
 F24 now connects the fixed GitHub execution transport, Codex stdio worker and
 H07/H08 evidence bridge. Independent backend review identified four concrete

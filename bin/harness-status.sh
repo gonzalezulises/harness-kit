@@ -4,18 +4,33 @@
 set -uo pipefail
 TARGET=.
 AUTONOMY_ONLY=0
+JSON_ONLY=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --target) [[ $# -ge 2 ]] || exit 64; TARGET="$2"; shift 2 ;;
+    --json) JSON_ONLY=1; shift ;;
     --autonomy) AUTONOMY_ONLY=1; shift ;;
     -h|--help) sed -n '2,3p' "$0"; exit 0 ;;
     *) TARGET="$1"; shift ;;
   esac
 done
 KIT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-python3 -I - "$TARGET" "$KIT" "$AUTONOMY_ONLY" <<'PY'
+python3 -I - "$TARGET" "$KIT" "$AUTONOMY_ONLY" "$JSON_ONLY" <<'PY'
 import json, os, pathlib, shutil, signal, subprocess, sys
 root=pathlib.Path(sys.argv[1]).resolve(); kit=pathlib.Path(sys.argv[2])
+if sys.argv[4]=='1':
+    result={'version':1,'kind':'harness-autonomy-installation','authority':'NOT_VERIFIED','readiness':'NOT_VERIFIED','production':'NOT_EXECUTED','runtime':{'status':'NOT_INSTALLED','bundleDigest':None},'containment':'UNAVAILABLE','realProductLoop':'NOT_EXECUTED'}
+    if sys.argv[3]!='1':
+        result['error']='--json requires --autonomy'; print(json.dumps(result)); sys.exit(64)
+    runtime=root/'scripts/quality-orchestrator'
+    if runtime.is_dir():
+        try:
+            probe=subprocess.run(['node','--input-type=module','-e',"if(Number(process.versions.node.split('.')[0])<22)throw Error('Node >=22 required');const m=await import('./index.mjs');process.stdout.write(m.installedBundleDigest());"],cwd=runtime,capture_output=True,text=True,timeout=15)
+            import re
+            if probe.returncode or not re.fullmatch('[a-f0-9]{64}',probe.stdout): raise ValueError('runtime or dependencies unavailable')
+            result['runtime']={'status':'LOADED','bundleDigest':probe.stdout}
+        except (OSError,ValueError,subprocess.TimeoutExpired): result['runtime']['status']='TOOL_FAILURE'
+    print(json.dumps(result,sort_keys=True)); sys.exit(0 if result['runtime']['status']=='LOADED' else 1)
 if not root.is_dir(): print('harness-status: no such directory',file=sys.stderr); sys.exit(64)
 runtime=root/'scripts/quality-orchestrator'
 if sys.argv[3]=='1' or runtime.exists():

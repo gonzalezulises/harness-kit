@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "command": [
+    "make",
+    "check"
+  ],
+  "sourceCommit": "a798c88ad625be2478d24df52c0dc45c51e2d4e4",
+  "sourceManifestSha256": "d97b2825903ebd425c7affa25361d34526d2de6a947d30119386bf6f2e22308b",
+  "exit_code": 2,
+  "elapsed_seconds": 452.05841531599435,
+  "source_unchanged": true,
+  "streams": {
+    "stdout": {
+      "sha256": "a2e73d457a279f0956e3b8b46e3d33b650f98c8bf3cc5f4acb924a1b9c87ce2b",
+      "bytes": 67955
+    },
+    "stderr": {
+      "sha256": "cc3fad534bf684d534e64c27f46dc4bbdbffc850d67aa23d12129a68f69d1a8e",
+      "bytes": 86
+    }
+  },
+  "summary": [
+    "# Subtest: e2e case 9: fabricated execution receipt cannot authorize independent review",
+    "ok 264 - e2e case 9: fabricated execution receipt cannot authorize independent review",
+    "  ---",
+    "  duration_ms: 3588.928313",
+    "  type: 'test'",
+    "  ...",
+    "1..264",
+    "# tests 264",
+    "# suites 0",
+    "# pass 262",
+    "# fail 2",
+    "# cancelled 0",
+    "# skipped 0",
+    "# todo 0",
+    "# duration_ms 379927.603262",
+    "make[1]: Leaving directory '/workspace/scratch/adce1c53b293/harness-product-loop'"
+  ],
+  "verification_summaries": [
+    "286 passed, 0 failed",
+    "# tests 264",
+    "# pass 262",
+    "# fail 2",
+    "# skipped 0"
+  ],
+  "error_excerpt": "make[1]: *** [Makefile:33: check-core] Error 1\nmake: *** [Makefile:26: check] Error 2\n",
+  "environment": {
+    "NO_COLOR": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "K6_NO_USAGE_REPORT": "true",
+    "unsupportedNpmConfigRemoved": true
+  },
+  "failure_stdout_excerpt": "atch\nok 261 - local output fails closed for mismatch\n  ---\n  duration_ms: 1163.114721\n  type: 'test'\n  ...\n# Subtest: local output fails closed for location\nok 262 - local output fails closed for location\n  ---\n  duration_ms: 1213.447493\n  type: 'test'\n  ...\n# Subtest: local output fails closed for oversize\nnot ok 263 - local output fails closed for oversize\n  ---\n  duration_ms: 411.368158\n  type: 'test'\n  location: '/workspace/scratch/adce1c53b293/harness-product-loop/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:101:97'\n  failureType: 'testCodeFailure'\n  error: |-\n    adapter or dependency bytes changed\n    + actual - expected\n    \n    + 'BLOCKED_BY_RUNTIME_BINDING'\n    - 'REVIEW_POLICY_DESCRIBED'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'REVIEW_POLICY_DESCRIBED'\n  actual: 'BLOCKED_BY_RUNTIME_BINDING'\n  operator: 'strictEqual'\n  stack: |-\n    Object.bind (file:///workspace/scratch/adce1c53b293/harness-product-loop/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:31:62)\n    TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-product-loop/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:102:24)\n    Test.runInAsyncScope (node:async_hooks:227:14)\n    Test.run (node:internal/test_runner/test:1382:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:960:18)\n    Test.postRun (node:internal/test_runner/test:1522:19)\n    Test.run (node:internal/test_runner/test:1447:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)\n  ...\n# Subtest: e2e case 9: fabricated execution receipt cannot authorize independent review\nok 264 - e2e case 9: fabricated execution receipt cannot authorize independent review\n  ---\n  duration_ms: 3588.928313\n  type: 'test'\n  ...\n1..264\n# tests 264\n# suites 0\n# pass 262\n# fail 2\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 379927.603262\nmake[1]: Leaving directory '/workspace/scratch/adce1c53b293/harness-product-loop'\n"
+}

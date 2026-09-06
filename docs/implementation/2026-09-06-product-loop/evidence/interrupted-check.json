@@ -1,0 +1,11 @@
+{
+  "command": [
+    "make",
+    "check"
+  ],
+  "exit_code": 130,
+  "status": "INTERRUPTED_FOR_REQUIRED_COVERAGE_FIX",
+  "sourceManifestSha256": "ceb885c23b6ef16aaf3ee47b429e612414aefc80ff5850c284e99f10d481dd36",
+  "authority": "Local control observation only",
+  "reason": "Focal review left M2 incomplete; stopped the owned verification before source changes. No success or reusable full-gate evidence claimed."
+}

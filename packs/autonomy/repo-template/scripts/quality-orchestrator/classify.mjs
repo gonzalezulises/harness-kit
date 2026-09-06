@@ -6,6 +6,7 @@ import { capabilityBoundary } from './capabilities.mjs';
 import { continuationBoundary } from './continuation.mjs';
 import { reviewBoundary } from './review.mjs';
 import {executionBoundary} from './execution.mjs';
+import {productBoundary} from './product.mjs';
 import { releaseBoundary } from './release.mjs';
 const bytes=z.custom(v=>Buffer.isBuffer(v)||v instanceof Uint8Array);
 const path=z.string().min(1).refine(v=>!v.startsWith('/')&&!v.includes('\\')&&!v.includes('\0')&&v.split('/').every(s=>s && s!=='.' && s!=='..'));
@@ -103,5 +104,6 @@ export function openRuntime(host) {
   if(host.actions){try{if(!host.journal)throw Error('journal required for Actions');execution=executionBoundary(host.actions,auth,journalInternal);}catch(error){return stop('BLOCKED_BY_MISSING_AUTHORITY_BINDING',error.message);}}
   if(host.review){try{if(!host.journal)throw Error('journal required for review');Object.assign(runtime,reviewBoundary(host.review,runtime,auth,execution,journalInternal,reviewInternal));}catch(error){return stop(error.reviewStatus||'BLOCKED_BY_MISSING_AUTHORITY_BINDING',error.message);}}
   if(host.journal)Object.assign(runtime,releaseBoundary(runtime,auth,journalInternal,execution,reviewInternal));
+  try{Object.assign(runtime,productBoundary(host.product,runtime,auth,journalInternal));}catch(error){return stop('BLOCKED_BY_MISSING_AUTHORITY_BINDING',error.message);}
   return Object.freeze(runtime);
 }

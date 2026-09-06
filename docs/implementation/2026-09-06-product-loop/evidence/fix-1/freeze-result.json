@@ -1,0 +1,84 @@
+{
+  "sourceSha256": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/product.mjs": "b0e2f92e66e219c1f48d2dbe90477e4fa4cf3fee40dfa932199c516fdb04bfd8",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/product.schema.mjs": "e577a5fa7d1c6e2210b22c32dfc847afa99a96e3a6bacee35046da76ad8b9a0b",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/contracts-product-v1.md": "f6a61be90ea3568ad98a61b1a74132a360d98c67b31b764152d838009bff3269",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-loop.test.mjs": "898ca9677545ff62461f31659a4a86030bb8ed3b615ece0ee67102506edb2b0c",
+    "docs/implementation/2026-09-06-product-loop/verify-static.sh": "8b6568a92f8d4a1ebbccb1cfd4f76052181693f87225c364667061f8c14355bb",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/journal.mjs": "45d58afff96fbab523b068a392cab39368e2016dc702aa1fca154b31c28fb7ee"
+  },
+  "results": [
+    {
+      "argv": [
+        "bash",
+        "docs/implementation/2026-09-06-product-loop/verify-static.sh"
+      ],
+      "exitCode": 0,
+      "phase": "static",
+      "rawSha256": "f2e874e0c5d3dc4ff3b26a5a041883e1af647acf68c72e8fb326e71318ab7051",
+      "summary": [
+        "F24 syntax, unchanged journal runtime binding and preserved H07/H08 evidence: PASS",
+        "Product syntax and distinct opt-in journal binding: PASS"
+      ]
+    },
+    {
+      "argv": [
+        "node",
+        "--test",
+        "--test-name-pattern=^(fix1|known differences block|two unsuccessful fixes|gate reuse)",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-loop.test.mjs"
+      ],
+      "exitCode": 0,
+      "phase": "runtime",
+      "rawSha256": "fbb69ad8439c141e457e5024ae969fa23d52461a52a86a2ddf5e57fc2ffa8c7a",
+      "summary": [
+        "\u2139 tests 9",
+        "\u2139 suites 0",
+        "\u2139 pass 9",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 todo 0",
+        "\u2139 duration_ms 177520.464928"
+      ]
+    },
+    {
+      "argv": [
+        "node",
+        "--test",
+        "--test-name-pattern=^e2e",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-loop.test.mjs"
+      ],
+      "exitCode": 0,
+      "phase": "e2e",
+      "rawSha256": "36f1c121253b6f4699bc9d39084d9489ca59df5c96b9df2843287574fba3c306",
+      "summary": [
+        "\u2139 tests 4",
+        "\u2139 suites 0",
+        "\u2139 pass 4",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 todo 0",
+        "\u2139 duration_ms 113649.936457"
+      ]
+    }
+  ],
+  "evidenceSha256": {
+    "docs/implementation/2026-09-06-product-loop/evidence/fix-1/corrections.patch": "7be0655230ee9a563a7a9bb0dc50715106b6d1eb6ac79131f9f16e09760f7bc5",
+    "docs/implementation/2026-09-06-product-loop/evidence/fix-1/current-red-excerpt.txt": "76255403b34ec859b8a6a6c8135200ee3988faba873e28c5d2f925024ee9d266",
+    "docs/implementation/2026-09-06-product-loop/evidence/fix-1/identity-red-excerpt.txt": "ebd17f30fe59676721cae3a7b26cb40db9dcd385f2c3c154bdb00ab2d0cdaab0",
+    "docs/implementation/2026-09-06-product-loop/evidence/fix-1/identity-red-observation.json": "ffb2ee005921114d0ae0e1c584bffac2b86a0843785e9030b035ddd033c7e672",
+    "docs/implementation/2026-09-06-product-loop/evidence/fix-1/initial-red-observations.json": "e148fb208ac952fe0460ba0b32fd26138ad0060bd79001778e76b1c677696cb9",
+    "docs/implementation/2026-09-06-product-loop/evidence/fix-1/initial-red-test-reconstruction.patch": "dc92cf80ff07f02259f780e7a2496612a1661c5eea2dc52930a4b1ac68859768",
+    "docs/implementation/2026-09-06-product-loop/evidence/fix-1/known-difference-mutation.mjs": "ab6d904c7a9c2811b7d4e10b747ca3566d4b614a827b399c3e26464636fce549",
+    "docs/implementation/2026-09-06-product-loop/evidence/fix-1/known-difference-mutation.patch": "6d4f162c409ee37a47a73d524a1cfe39b20bebd3a5e9354c05a0b9e53d3758ef",
+    "docs/implementation/2026-09-06-product-loop/evidence/fix-1/oracle-observation.json": "fde0fdddc69a69f5406f4f57bc0024dae43aa1e512de5eae146c463669686de7",
+    "docs/implementation/2026-09-06-product-loop/evidence/fix-1/red-receipt.json": "fd17a99a47adfeee402a27e2a7ceb305696fe6937c164e3cd018644f17d9bc3a"
+  },
+  "fullGate": "ROOT_PENDING",
+  "scopedReview": "ROOT_PENDING",
+  "readiness": "NOT_P0_READY",
+  "realPilot": "NOT_EXECUTED",
+  "remotePR": "NOT_EXECUTED"
+}

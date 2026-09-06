@@ -1,0 +1,31 @@
+id: AC-P0-PRODUCT-LOOP
+requirement: Product lifecycle progress requires current bound functional evidence and cannot bypass unresolved differences or Critical/High findings
+criticality: critical
+status: TEST_READY
+observable: Product RED, scoped bytes, GREEN, independent review and bounded remediation advance a replayed objective while unsafe or unproved promotions remain blocked
+oracle:
+  expected: Only verified observations at exact source, authority, scope, toolchain, lock, configuration and verifier bindings may satisfy product obligations
+cases:
+  positive:
+  - An isolated fixture performs actual RED and GREEN subprocesses, a scoped product change and resume without repeating an unchanged gate
+  negative:
+  - Text green, open Critical/High, known differences, changed SHA, direct path bypass and missing deployed identity cannot certify product completion
+  boundary:
+  - Two processes share one nonce atomically, review has one full pass and at most two fixes, and two control-only cycles exhaust value progress
+context: New explicit product journal contract with fixture authority and isolated local repositories; real authenticated pilot and OS containment remain distinct prerequisites
+side_effects:
+  must:
+  - Preserve v1 journal meaning, append-only history, closed argv and scope, exact bindings, causal regressions and compact evidence
+  must_not:
+  - Modify Casabat, manufacture owner authority, retry cancelled authentication, bypass containment, repeat broad reviews or perform merge/deploy/production effects
+false_positive: Passing checks or model reports without the required functional and independent evidence must leave PASS and all related promotions blocked
+owner: harness-kit maintainers under AGENTS.md and the owner P0-PRODUCT-LOOP requirement
+evidence:
+  formats:
+  - Exact current test hashes, causal source or patch, observed command and nonzero exit, minimal real error excerpt, structured GREEN result and reproduction instructions
+tests:
+- packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-loop.test.mjs
+falsification:
+  defect: Removing only the known-difference promotion guard permits PRODUCT_REPLAYED after a valid completed handoff acquires a known difference; the exact current test observes ERR_ASSERTION and exit1 instead of allowing any of the four prohibited promotions
+  proved_sha: 0a51623b5db42951a6091847a179262182abd67d
+  receipt: docs/implementation/2026-09-06-product-loop/evidence/fix-2/red-receipt.json

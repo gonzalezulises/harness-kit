@@ -1,0 +1,88 @@
+{
+  "scope": "P0 delta over a798c88 only; no global-review replacement",
+  "reviewer": "/root/review_product_increment",
+  "source_manifest_sha256": "d0d7ac02a4c39a81c65cd7866d8f6fb5bd082c16b8c0d5f032cece22825eb177",
+  "initial_report_sha256": "ef22aef268c02d1148a460127970dbcbdbc2ee66661e25fde5c89b2e319bae3d",
+  "initial_verdict": {
+    "spec": "ISSUES_FOUND",
+    "quality": "NEEDS_FIXES"
+  },
+  "findings": [
+    {
+      "id": "P0-R1-H1",
+      "severity": "High",
+      "claim": "OBSERVED",
+      "problem": "A terminal FAILED journal allowed one product verifier effect",
+      "counterexample": "close-run FAILED then executeProductStep red:0 produced IMPLEMENT and one effect; assertion 1 != 0",
+      "status": "ADDRESSED_IN_FIX_1"
+    },
+    {
+      "id": "P0-R1-H2",
+      "severity": "High",
+      "claim": "INFERRED",
+      "problem": "An in-flight review could restore PASS with a known difference",
+      "status": "ADDRESSED_IN_FIX_1"
+    },
+    {
+      "id": "P0-R1-H3",
+      "severity": "High",
+      "claim": "INFERRED",
+      "problem": "A known functional VERIFY RED remained a pending intent with no bounded repair path",
+      "status": "ADDRESSED_IN_FIX_1"
+    },
+    {
+      "id": "P0-R1-H4",
+      "severity": "High",
+      "claim": "INFERRED",
+      "problem": "Staged finding closure lost causal links and could borrow another finding RED",
+      "status": "ADDRESSED_IN_FIX_1"
+    },
+    {
+      "id": "P0-R1-M1",
+      "severity": "Medium",
+      "claim": "INFERRED",
+      "problem": "PR preparation does not resolve the common objects directory for a linked source worktree",
+      "status": "BACKLOG"
+    },
+    {
+      "id": "P0-R1-M2",
+      "severity": "Medium",
+      "claim": "INFERRED",
+      "problem": "Pilot surface inventory and observed-case bindings are incomplete",
+      "status": "ADDRESSED_IN_FIX_2",
+      "ruling": "Required AC coverage makes this blocking for the requested increment",
+      "resolution": "Current nested regression GREEN joins by exact finding/case identity, current manifest and containing VERIFY receipt; independent focal review approved fix2."
+    },
+    {
+      "id": "P0-R1-M3",
+      "severity": "Medium",
+      "claim": "INFERRED",
+      "problem": "Malformed verifier UTF-8 terminates supervisor instead of returning controlled tool failure",
+      "status": "BACKLOG"
+    }
+  ],
+  "fix_rounds_limit": 2,
+  "current_fix_round": 2,
+  "global_review": "INCOMPLETE",
+  "real_pilot": "NOT_EXECUTED",
+  "readiness": "NOT_P0_READY",
+  "fix_1_review_sha256": "4d710258c70614c9ca8d0f89774a322e360781cf76ed03da3f5e48ea0d19161b",
+  "fix_1_verdict": {
+    "high_open": 0,
+    "required_ac_open": [
+      "P0-R1-M2"
+    ],
+    "quality": "NEEDS_FIXES"
+  },
+  "fix_2_review_sha256": "c29a8766efef630f93813ad5a7acef884ea7e89551979f9d904149c20edf29e6",
+  "final_scoped_verdict": {
+    "spec": "APPROVED_FOR_IMPLEMENTED_FIXTURE_SCOPE",
+    "quality": "APPROVED",
+    "openCriticalHigh": 0,
+    "backlog": [
+      "P0-R1-M1",
+      "P0-R1-M3"
+    ],
+    "realAcceptance": "NOT_EXECUTED"
+  }
+}

@@ -6,6 +6,7 @@ import { canonical, digestData, freeze } from './identity.mjs';
 import { RUNTIME_BINDING, stop } from './authority.mjs';
 import { budgetKindSchema, checkBudget, emptyCounts, mechanicalBudget } from './budget.mjs';
 import {descriptorSchema,executionDomain} from './execution.schema.mjs';
+import {productEventOperationSchema} from './product.schema.mjs';
 import { continuationWireSchema, grantExpectation } from './continuation.mjs';
 const hash=z.string().regex(/^[a-f0-9]{64}$/),id=z.string().min(1).max(200),integer=z.number().int().nonnegative().safe();
 const operationKey=id.refine(v=>!v.startsWith('reconcile:'));
@@ -26,6 +27,8 @@ const operation=z.discriminatedUnion('kind',[start,replace,reserve,close,outcome
 export const eventSchema=z.strictObject({version:z.literal(1),repositoryId:id,objectiveId:id,journalId:id,sequence:integer.refine(v=>v>0),previousDigest:hash.nullable(),authorityDigest:hash,runtimeDigest:hash,actorId:id,issuedAt:integer,requestDigest:hash,operation,digest:hash});
 export const witnessSchema=z.strictObject({version:z.literal(1),repositoryId:id,objectiveId:id,journalId:id,sequence:integer,headDigest:hash.nullable(),previousWitnessDigest:hash.nullable(),authorityDigest:hash,runtimeDigest:hash,issuedAt:integer});
 export const JOURNAL_RUNTIME_BINDING=digestData({protocol:'harness.journal.v1',runtimeBinding:RUNTIME_BINDING,contracts:{event:z.toJSONSchema(eventSchema,{unrepresentable:'any'}),run:z.toJSONSchema(runSchema),witness:z.toJSONSchema(witnessSchema)}});
+export const productEventSchema=eventSchema.extend({version:z.literal(2),operation:z.union([operation,productEventOperationSchema])});
+export const PRODUCT_JOURNAL_RUNTIME_BINDING=digestData({protocol:'harness.journal.product.v1',parent:JOURNAL_RUNTIME_BINDING,event:z.toJSONSchema(productEventSchema,{unrepresentable:'any'})});
 const rawHash=bytes=>createHash('sha256').update(bytes).digest('hex');
 const fail=(status,reason)=>{throw Object.assign(Error(reason),{journalStatus:status});};
 const must=(condition,reason,status='INCOMPLETE')=>{if(!condition)fail(status,reason);};
@@ -36,12 +39,14 @@ function parseCanonical(bytes,schema) {
 // Only the host constructor calls this factory. Host readers are trusted acquisition
 // adapters; returned data is still checked here. They never decide verification.
 export function journalBoundary(host,runtime,auth,contextPaths,internal={}) {
-  const config=z.strictObject({directory:z.string().min(1),objectiveId:id,journalId:id,actorId:id,budgetLimit:integer,readFinalBinding:z.custom(v=>typeof v==='function'),readLatestWitness:z.custom(v=>typeof v==='function').optional(),compareAndAppendWitness:z.custom(v=>typeof v==='function').optional(),reconcileOperation:z.custom(v=>typeof v==='function').optional()}).parse(host);
+  const config=z.strictObject({contract:z.literal('product.v1').optional(),directory:z.string().min(1),objectiveId:id,journalId:id,actorId:id,budgetLimit:integer,readFinalBinding:z.custom(v=>typeof v==='function'),readLatestWitness:z.custom(v=>typeof v==='function').optional(),compareAndAppendWitness:z.custom(v=>typeof v==='function').optional(),reconcileOperation:z.custom(v=>typeof v==='function').optional()}).parse(host);
   must(path.isAbsolute(config.directory),'host journal directory must be absolute','POLICY');
   const directory=config.directory,objects=path.join(directory,'objects'),log=path.join(directory,'events.jsonl'),headFile=path.join(directory,'HEAD'),lockFile=path.join(directory,'LOCK'),floorFile=path.join(directory,'WITNESS');
   fs.mkdirSync(objects,{recursive:true,mode:0o700});
   const scopeDigest=digestData({objectiveId:config.objectiveId,journalId:config.journalId});
-  const common={version:1,repositoryId:auth.repositoryId,objectiveId:config.objectiveId,journalId:config.journalId,authorityDigest:auth.authorityDigest,runtimeDigest:JOURNAL_RUNTIME_BINDING};
+  const product=config.contract==='product.v1',decodeEvent=product?productEventSchema:eventSchema,decodeOperation=product?z.union([operation,productEventOperationSchema]):operation;
+  must(!product||!config.readLatestWitness&&!config.compareAndAppendWitness,'product journal does not yet support external witness','POLICY');
+  const common={version:product?2:1,repositoryId:auth.repositoryId,objectiveId:config.objectiveId,journalId:config.journalId,authorityDigest:auth.authorityDigest,runtimeDigest:product?PRODUCT_JOURNAL_RUNTIME_BINDING:JOURNAL_RUNTIME_BINDING};
   const safe=fn=>{try{return fn();}catch(error){return stop(error.journalStatus||'INCOMPLETE',error.message);}};
   function context(handle) {
     const checked=runtime.inspectContext(handle);must(checked.status==='VERIFIED_CONTEXT',checked.reason||'verified context required',checked.status);return checked;
@@ -87,7 +92,7 @@ export function journalBoundary(host,runtime,auth,contextPaths,internal={}) {
     const data=fs.existsSync(log)?fs.readFileSync(log):Buffer.alloc(0);
     must(data.length===0||data.at(-1)===10,'partial journal tail retained; authorized recovery required');
     for(const line of data.length?data.subarray(0,-1).toString('utf8').split('\n'):[]) {
-      const event=parseCanonical(Buffer.from(line),eventSchema),{digest,...body}=event;
+      const event=parseCanonical(Buffer.from(line),decodeEvent),{digest,...body}=event;
       must(digestData(body)===digest,'event content digest mismatch');
       must(Object.entries(common).every(([key,value])=>event[key]===value)&&event.actorId===config.actorId,'event runtime/repository/authority/actor mismatch');
       must(event.sequence===state.sequence+1&&event.previousDigest===state.headDigest,'event sequence or previous digest mismatch');
@@ -96,6 +101,7 @@ export function journalBoundary(host,runtime,auth,contextPaths,internal={}) {
       const op=event.operation;must(event.requestDigest===digestData(op),'operation request digest mismatch');must(!keys.has(op.operationKey),'duplicate operation key');
       const current=state.runs.at(-1);
       continuationTransition(state,op,ctx,event.issuedAt);
+      if(op.kind==='product-step'){must(product&&internal.productTransition,'product reducer unavailable','POLICY');internal.productTransition(state,op,ctx,event.issuedAt);}
       if(op.kind==='start') {
         must(state.sequence===0&&op.baselineDigest===verified.baselineDigest&&op.budgetLimit===config.budgetLimit,'invalid objective genesis');
         validateBinding(op.run.binding,ctx);must(canonical(op.run)===canonical(makeRun(null,op.run.binding,op.operationKey)),'invalid initial run');state.runs.push({...op.run});
@@ -164,9 +170,9 @@ export function journalBoundary(host,runtime,auth,contextPaths,internal={}) {
     must(new Set(value.features.map(f=>f.id)).size===value.features.length,'duplicate legacy feature ids','POLICY');return value.features;
   }
   const receipt=event=>freeze({status:'APPENDED',sequence:event.sequence,headDigest:event.digest,operationKey:event.operation.operationKey,requestDigest:event.requestDigest});
-  function append(expectedHead,op,ctx) {
-    return exclusive(()=>{
-      const before=read(ctx);op=operation.parse(op);const existing=before.keys.get(op.operationKey);
+  function append(expectedHead,op,ctx) {return exclusive(()=>appendOwned(expectedHead,op,ctx));}
+  function appendOwned(expectedHead,op,ctx) {
+      const before=read(ctx);op=decodeOperation.parse(op);const existing=before.keys.get(op.operationKey);
       if(existing){must(existing.requestDigest===digestData(op),'operation key reused with different inputs','POLICY');return receipt(existing);}
       must(expectedHead===before.state.headDigest,'journal head changed','CONFLICT');
       const issuedAt=auth.freshness();must(typeof issuedAt==='number','fresh authority required','BLOCKED_BY_STALE_AUTHORITY');
@@ -177,11 +183,11 @@ export function journalBoundary(host,runtime,auth,contextPaths,internal={}) {
       writeExclusive(path.join(objects,event.digest+'.json'),encoded);
       const fd=fs.openSync(log,'a',0o600);try{fs.writeFileSync(fd,encoded+'\n');fs.fsyncSync(fd);}finally{fs.closeSync(fd);}syncDirectory(directory);
       writeIndex(headFile,{sequence:event.sequence,headDigest:event.digest});return receipt(event);
-    });
   }
   function validateTransition(before,op,ctx) {
     const state=before.state,current=state.runs.at(-1);
     continuationTransition(state,op,ctx,auth.freshness());
+    if(op.kind==='product-step'){must(product&&internal.productTransition,'product reducer unavailable','POLICY');internal.productTransition(state,op,ctx,auth.freshness());}
     if(op.kind==='start'){must(state.sequence===0&&op.baselineDigest===state.baselineDigest&&op.budgetLimit===config.budgetLimit,'objective already started','POLICY');validateBinding(op.run.binding,ctx);}
     else {must(state.sequence>0,'objective not started','POLICY');
       if(op.kind==='replace-run'){must(current.runId===op.oldRunId,'only current run can be replaced','POLICY');must(!state.pending.length,'unreconciled operation intent');validateBinding(op.run.binding,ctx);must(canonical(current.binding)!==canonical(op.run.binding),'run is not stale','POLICY');}
@@ -221,7 +227,8 @@ export function journalBoundary(host,runtime,auth,contextPaths,internal={}) {
     const subject={domain:'harness.journal-lock-recovery.v1',...common,headDigest:state.headDigest,lockDigest:rawHash(raw)};
     return {status:'RECOVERY_DESCRIBED',subjectDigest:digestData(subject),scopeDigest:digestData({action:'release-dead-local-owner',objectiveId:config.objectiveId,journalId:config.journalId}),pid:lock.pid,headDigest:state.headDigest,lockDigest:subject.lockDigest};
   }
-  Object.assign(internal,{read,append,finalBinding,putObject,getObject,
+  Object.assign(internal,{read,append,finalBinding,putObject,getObject,productContract:product,
+    productCustody:fn=>{must(product,'product journal required','POLICY');return exclusive(()=>fn(appendOwned));},
     retainAcknowledgement:(descriptorDigest,ack)=>{hash.parse(descriptorDigest);const digest=putObject(ack);writeExclusive(path.join(objects,'ack-'+descriptorDigest+'.json'),canonical({digest}));},
     readAcknowledgement:descriptorDigest=>{hash.parse(descriptorDigest);const file=path.join(objects,'ack-'+descriptorDigest+'.json');return fs.existsSync(file)?getObject(JSON.parse(fs.readFileSync(file,'utf8')).digest):null;}
   });

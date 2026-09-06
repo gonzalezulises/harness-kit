@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "command": [
+    "node",
+    "--import",
+    "./docs/implementation/2026-09-06-product-loop/evidence/known-difference-mutation.mjs",
+    "--test",
+    "--test-name-pattern=known differences block",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-loop.test.mjs"
+  ],
+  "exit_code": 1,
+  "tests": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-loop.test.mjs": "f680fdd17611a9031c33f029d69c6533106d426f9ed42e11665778db6b2faa95"
+  },
+  "source": {
+    "docs/implementation/2026-09-06-product-loop/evidence/known-difference-mutation.patch": "0c89ba044c3a11edb87c5161844a18f8739d96f9f4d31ec58dbbc1914322f4b4",
+    "docs/implementation/2026-09-06-product-loop/evidence/known-difference-mutation.mjs": "64b80751280cb34bedb4135f9a47dadd5dc3667c7c9cb47d8638d8cc6acd71ac"
+  },
+  "logs": {
+    "docs/implementation/2026-09-06-product-loop/evidence/current-red-excerpt.txt": "2422deea925ec7a491cef7fe6b2ca6066b307cbc728bfd806c442f78fd0ca3c1"
+  }
+}

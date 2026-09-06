@@ -1,0 +1,85 @@
+{
+  "sourceSha256": {
+    "bin/harness-status.sh": "f25018004e944a68b5a29150c4390f359e93c9d08cc8fa47ea8b3442ec58feef",
+    "packs/autonomy/index.md": "b33190f98e6836cc116d4df14d67d8e3800228c00c4158314eef4f2cbb59ab54",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/classify.mjs": "497fb60b930dc8a3ac00062d297d865ccbfa6f713f31ed1ad050ff315fe90e49",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/codex-worker.mjs": "c15f2e7ed4076f0ee6add17384d1499cd3d1f2805ad62d23c29cafb7d11a3ce7",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/journal.mjs": "45d58afff96fbab523b068a392cab39368e2016dc702aa1fca154b31c28fb7ee",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/product.mjs": "12a0fa223f9cb2eafa2887e113079c9ae0393bdb4f12ddca42e2d0be2c7361ca",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/product.schema.mjs": "6d9a24a865fb001dcd5cae4f718997741072781c51db65a2a15fc36c1a45929b",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/contracts-product-v1.md": "8385f3a25b0bdff43b05db0670f84f27f45740a3eebc3b4198e60311d5497243",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-loop.test.mjs": "02db1350164ec2ca239e99a22b3ee8f8d3c0ea9b0d4b94dfca6c47dedacb0575",
+    "docs/implementation/2026-09-06-product-loop/verify-static.sh": "8b6568a92f8d4a1ebbccb1cfd4f76052181693f87225c364667061f8c14355bb",
+    ".agents/notes/implemented/feature/2026-09-06-product-loop.md": "f6499b0623cfd45d35847ef317da808e27132bedeeee0dd7f9304c7003dfb7ca"
+  },
+  "results": [
+    {
+      "phase": "static",
+      "argv": [
+        "bash",
+        "docs/implementation/2026-09-06-product-loop/verify-static.sh"
+      ],
+      "result": "PASS",
+      "tests": null,
+      "failures": 0,
+      "rawSha256": "f2e874e0c5d3dc4ff3b26a5a041883e1af647acf68c72e8fb326e71318ab7051",
+      "summary": [
+        "F24 syntax, unchanged journal runtime binding and preserved H07/H08 evidence: PASS",
+        "Product syntax and distinct opt-in journal binding: PASS"
+      ]
+    },
+    {
+      "phase": "runtime",
+      "argv": [
+        "node",
+        "--test",
+        "--test-skip-pattern=^e2e",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-loop.test.mjs"
+      ],
+      "result": "PASS",
+      "tests": 14,
+      "failures": 0,
+      "rawSha256": "2af128fee54276a4538baf8fa7c6195c536961a37ff8952b01b700de2908b269",
+      "summary": [
+        "\u2139 tests 14",
+        "\u2139 suites 0",
+        "\u2139 pass 14",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 todo 0",
+        "\u2139 duration_ms 129356.174315"
+      ]
+    },
+    {
+      "phase": "e2e",
+      "argv": [
+        "node",
+        "--test",
+        "--test-name-pattern=^e2e",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-loop.test.mjs"
+      ],
+      "result": "PASS",
+      "tests": 3,
+      "failures": 0,
+      "rawSha256": "c4e69f35401c4f9b2bafa149ce1a81d853463596c09ca013d27eb110700eb04d",
+      "summary": [
+        "\u2139 tests 3",
+        "\u2139 suites 0",
+        "\u2139 pass 3",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 todo 0",
+        "\u2139 duration_ms 65201.016648"
+      ]
+    }
+  ],
+  "historicalTrackedDiffExit": 0,
+  "currentRedReceipt": "docs/implementation/2026-09-06-product-loop/evidence/red-receipt-current.json",
+  "currentRedReceiptSha256": "f12024661abe38a72a48563ab9a8f9edbd99d18171091145cef8081723eafaea",
+  "ready": "NOT_P0_READY",
+  "realPilot": "NOT_EXECUTED",
+  "remotePR": "NOT_EXECUTED",
+  "fullGate": "ROOT_PENDING"
+}

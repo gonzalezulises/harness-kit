@@ -1,0 +1,56 @@
+{
+  "sourceSha256": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/product.mjs": "50a2ec1b54da1c1e5591dd97d0cbb7aae3a5d1d6609cbdbe8dd7963da794a1bc",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-loop.test.mjs": "47b4a3f207c45e71cb1040c499b1dd23db869b31a7eb641d8ad79b503e3df2a4",
+    "docs/implementation/2026-09-06-product-loop/verify-static.sh": "8b6568a92f8d4a1ebbccb1cfd4f76052181693f87225c364667061f8c14355bb"
+  },
+  "results": [
+    {
+      "argv": [
+        "bash",
+        "docs/implementation/2026-09-06-product-loop/verify-static.sh"
+      ],
+      "exitCode": 0,
+      "phase": "static",
+      "rawSha256": "f2e874e0c5d3dc4ff3b26a5a041883e1af647acf68c72e8fb326e71318ab7051",
+      "summary": [
+        "F24 syntax, unchanged journal runtime binding and preserved H07/H08 evidence: PASS",
+        "Product syntax and distinct opt-in journal binding: PASS"
+      ]
+    },
+    {
+      "argv": [
+        "node",
+        "--test",
+        "--test-name-pattern=^fix2 M2",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-loop.test.mjs"
+      ],
+      "exitCode": 0,
+      "phase": "runtime",
+      "rawSha256": "d71553639e299f5de2698e0eb55a40ba7a247f41f4514345f2dbdff6acba54fc",
+      "summary": [
+        "\u2139 tests 1",
+        "\u2139 suites 0",
+        "\u2139 pass 1",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 todo 0",
+        "\u2139 duration_ms 25018.429395"
+      ]
+    }
+  ],
+  "evidenceSha256": {
+    "docs/implementation/2026-09-06-product-loop/evidence/fix-2/correction.patch": "5109cc25c71fc7fce0d042ba2ee1ccb19eb3836a7cfa46e6d304f75c4cc42a6f",
+    "docs/implementation/2026-09-06-product-loop/evidence/fix-2/current-red-excerpt.txt": "653e5a0a674fbb75948a4156f7bc97edf20c1c23f0e76e96caf6493d03d716d3",
+    "docs/implementation/2026-09-06-product-loop/evidence/fix-2/known-difference-mutation.mjs": "c06da6a3f9c4f52ddc13549c7cf7536f1ec24df2bfb3354bfb687d64576e14b7",
+    "docs/implementation/2026-09-06-product-loop/evidence/fix-2/known-difference-mutation.patch": "8b7b3b09824b1ffd80116b1f35bfc60b3ab45ca60e352a7539114bd8a8638574",
+    "docs/implementation/2026-09-06-product-loop/evidence/fix-2/oracle-observation.json": "134825f509e1b4d452455ea0be7d42bd1b701c62b6715e270eb53c5e38976e9a",
+    "docs/implementation/2026-09-06-product-loop/evidence/fix-2/red-excerpt.txt": "fad273ebb35f9dd8ba2c3bc9dbcdc588448e5fc8626ba7ab65204a231ea37512",
+    "docs/implementation/2026-09-06-product-loop/evidence/fix-2/red-observation.json": "a3c2caa42594293f6247f3cfed64ddd89e11f27fb4a83b59e535ae360168733a",
+    "docs/implementation/2026-09-06-product-loop/evidence/fix-2/red-receipt.json": "7ae5782a91ac8e29ed0df43badce830030a52861b014d845da386451922c97dc"
+  },
+  "readiness": "NOT_P0_READY",
+  "fullGate": "ROOT_PENDING",
+  "scopedReview": "ROOT_PENDING"
+}
