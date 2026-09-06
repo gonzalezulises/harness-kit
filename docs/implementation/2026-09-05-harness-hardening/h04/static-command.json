@@ -1,0 +1,5 @@
+[
+  "bash",
+  "-c",
+  "for source in packs/autonomy/repo-template/scripts/quality-orchestrator/{authority,classify,index,journal}.mjs; do node --check \"$source\" || exit; done; bash -n scripts/verify-feature.sh templates/full/scripts/verify-feature.sh"
+]

@@ -1,0 +1,32 @@
+✖ legacy bytes and receipts are retained without retroactive PASS and projection is read-only (36.313234ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 199.586447
+
+✖ failing tests:
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/journal.test.mjs:131:1
+✖ legacy bytes and receipts are retained without retroactive PASS and projection is read-only (36.313234ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'LEGACY_UNVERIFIED'
+  - 'blocked'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/journal.test.mjs:134:92)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'LEGACY_UNVERIFIED',
+    expected: 'blocked',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

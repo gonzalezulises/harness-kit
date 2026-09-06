@@ -1,8 +1,9 @@
-# Optional autonomy identity and authority pack
+# Optional autonomy runtime pack
 
 H03 supplies pure typed identity, scoped cryptographic approval verification and
 conservative batch classification. It does not execute effects, run commands,
-issue permits, replay journals, grant budgets or certify a release. H04–H09 build
+issue permits or certify a release. H04 adds journal/replay, objective budget
+reservations, mechanical fresh runs and lossless legacy migration. H05–H09 build
 on this boundary. Archived policy proposals remain inactive and unchanged.
 
 The single installable package is `repo-template/scripts/quality-orchestrator/`.
@@ -35,7 +36,8 @@ dependencies; it never downloads packages or skips its tests. The kit's full
 install these optional dependencies before that aggregate command. Legacy
 minimal/full scaffolds do not receive this package or a new Node prerequisite.
 
-Read `repo-template/scripts/quality-orchestrator/contracts-v1.md` before embedding
+Read `repo-template/scripts/quality-orchestrator/contracts-v1.md` and
+`contracts-journal-v1.md` in that directory before embedding
 this runtime. Host trust is operator-established, not selected by request JSON.
 No CLI generates an owner key, adopts policy, or accepts a baseline. Test keys
 exist only in the test fixture helper and do not enroll production authority.

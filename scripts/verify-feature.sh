@@ -28,6 +28,13 @@ if [[ "$FEATURE_ID" == "--ratio" ]]; then MODE="ratio"; FEATURE_ID=""; fi
 [[ "$MODE" == "ratio" || -n "$FEATURE_ID" ]] || {
   echo "usage: $0 <feature-id> | --ratio" >&2; exit 64; }
 
+# H09 installs this host-owned marker only when v2 is explicitly adopted.
+# Even malformed markers fail closed: legacy writers cannot certify replay state.
+if [[ "$MODE" != "ratio" && ( -e .harness/autonomy-v2.json || -L .harness/autonomy-v2.json ) ]]; then
+  echo "verify-feature: adopted v2 state is read-only here; use the verified runtime" >&2
+  exit 67
+fi
+
 WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
 

@@ -1,0 +1,99 @@
+✔ journal appends exclusively and replay is deterministic local diagnostic (45.020356ms)
+✔ idempotency returns original event while changed inputs and stale CAS block (19.753466ms)
+✔ replay rejects alter damage (9.680574ms)
+✔ replay rejects omit damage (10.741688ms)
+✔ replay rejects reorder damage (9.888238ms)
+✔ replay rejects partial damage (8.293299ms)
+✔ replay rejects object damage (8.935851ms)
+✔ head index is reconstructed from complete log after interrupted publication (17.729173ms)
+✔ exclusive existing object is verified before reuse (6.789123ms)
+✔ an existing ownership lock never expires into permission (7.05924ms)
+✔ signed latest checkpoint authenticates exact chain and stale signed prefix is rejected (24.105437ms)
+✔ checkpoint rejects signature (13.197599ms)
+✔ checkpoint rejects repository (8.186863ms)
+✔ checkpoint rejects runtime (12.149849ms)
+✔ checkpoint rejects kind (13.908912ms)
+✔ checkpoint rejects role (9.954996ms)
+✔ checkpoint rejects head (10.103123ms)
+✔ checkpoint rejects extra (9.16038ms)
+✔ witness is fetched on every strong replay; unavailable freshness does not fall back (7.795175ms)
+✔ fresh mechanical run preserves terminal verdict, acceptance, lineage and objective budget (44.710813ms)
+✔ fresh run rejects semantic (6.43178ms)
+✔ fresh run rejects missing (5.665547ms)
+✔ fresh run rejects foreign (8.084594ms)
+✔ fresh run rejects stale-authority (7.249218ms)
+✔ fresh run rejects caller-summary (5.391304ms)
+✔ incomplete intent cannot be blindly repeated or resolved by candidate evidence (27.314296ms)
+✔ closed event contract forbids caller actor, arbitrary PASS and budget configuration (9.000967ms)
+✔ legacy bytes and receipts are retained without retroactive PASS and projection is read-only (9.850793ms)
+✔ adopted v2 marker blocks legacy direct writer before layer effects in source and scaffold (10.927531ms)
+✖ stale run cannot reserve against changed current workspace bytes (7.239264ms)
+✖ witness publication uses host compare-and-append and verifies returned signed data (4.122044ms)
+✖ process crash after durable append retains intent and lock; scoped recovery repairs index (153.944584ms)
+✖ recovery requires scoped approval and does not remove a live owner lock (4.516351ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 29
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 729.008831
+
+✖ failing tests:
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/journal.test.mjs:145:1
+✖ stale run cannot reserve against changed current workspace bytes (7.239264ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'APPENDED'
+  - 'BLOCKED_BY_STALE_RUN'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/journal.test.mjs:147:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'APPENDED',
+    expected: 'BLOCKED_BY_STALE_RUN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/journal.test.mjs:149:1
+✖ witness publication uses host compare-and-append and verifies returned signed data (4.122044ms)
+  TypeError: s.j.publishCheckpoint is not a function
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/journal.test.mjs:154:34)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/journal.test.mjs:157:1
+✖ process crash after durable append retains intent and lock; scoped recovery repairs index (153.944584ms)
+  TypeError: s.j.describeRecovery is not a function
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/journal.test.mjs:166:25)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/journal.test.mjs:171:1
+✖ recovery requires scoped approval and does not remove a live owner lock (4.516351ms)
+  TypeError: s.j.describeRecovery is not a function
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/journal.test.mjs:173:15)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

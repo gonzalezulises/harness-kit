@@ -241,3 +241,44 @@ no open finding. Actual F17 promotion receipts and complete raw verification
 streams are in h03/controller/. The interrupted first attempt and exact remote
 H02 ADOPTION_REQUIRED CI evidence remain separate. No baseline is accepted.
 H04 is next after freezing this atomic publication index.
+
+Task 4: active after H03 independent approval and full-check486/0. H03 index
+tree69e1282c is frozen for exact publication; H04 working-tree changes remain
+unpublished until their own review/gate. Owner priority: concrete minimal
+journal/replay/recovery in the existing package, no speculative platform.
+
+Task 3: published2944519..96438e8, exact local/remote tree69e1282c. H04
+working-tree changes were preserved outside the publication index. PR33 remains
+draft and now records H01–H03 complete, H04 active, H05–H09 pending.
+Exact-head remote CI run34005465297 is in progress; no result claimed yet.
+
+H03 exact-head CI run34005465297/job101411703549 completed with the same
+protected-base ADOPTION_REQUIRED boundary: lint/Gherkin pass; repository full
+pipeline, claims and decision checks skipped. Exact raw log SHA256
+2b76a3e126fb16dfefde94433a28bfc9def6fc10bf9c65ed1fb3154cd925dd98.
+PR33 records this result; no judge fallback, rule weakening or adoption occurred.
+
+Task 4: frozen review treee3f83a2, base96438e8; controller verified13 source and35
+evidence hashes. Independent specification and quality APPROVE, no High/Critical.
+F18 actual ordered static/runtime29/e2e6 layers passed, source unchanged.
+Full make check exit0: 8 quick PASS and521 assertions (core286 + autonomy97 +
+Gherkin15 + load55 + Sentry68); two authenticated-gh load cases explicitly omitted.
+Complete controller receipts and independent review are in h04/controller/.
+
+Two nonblocking Medium findings are assigned to H05 operation/witness integration:
+- H04-M1: a 191–200-character reservation key exceeds the outcome's 200-character
+  bound after the internal reconciliation prefix. Permit210 for internal outcome
+  keys while retaining the candidate200 limit and reserved-prefix rejection.
+- H04-M2: publication verifies intervening checkpoint B against retained floor A,
+  but fails to retain B before verifying successor C. Retain the already verified
+  intermediate checkpoint under ownership; this needs no history-sync framework.
+- Ruling: carry these concrete availability fixes into the immediately following
+  H05 integration and its required test/review cycle, rather than opening another
+  H04 cycle. The owner's original rule permits Medium/Low backlog, and the latest
+  steering asks to avoid unnecessary work. Both findings fail closed and neither
+  grants authority, resets budget or issues PASS. Cost until fixed: affected key
+  lengths or witness interleavings may require an operational stop. They remain
+  explicitly open and must not be described as fixed by the current GREEN suite.
+
+Task 4 is complete locally with that explicit backlog. H05 is next after freezing
+the atomic publication index. No baseline or product deployment was accepted.

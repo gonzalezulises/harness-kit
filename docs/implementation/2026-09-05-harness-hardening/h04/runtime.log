@@ -1,0 +1,37 @@
+✔ journal appends exclusively and replay is deterministic local diagnostic (52.012291ms)
+✔ idempotency returns original event while changed inputs and stale CAS block (19.075221ms)
+✔ replay rejects alter damage (10.192247ms)
+✔ replay rejects omit damage (10.004951ms)
+✔ replay rejects reorder damage (9.23938ms)
+✔ replay rejects partial damage (9.732098ms)
+✔ replay rejects object damage (10.555083ms)
+✔ head index is reconstructed from complete log after interrupted publication (18.736921ms)
+✔ exclusive existing object is verified before reuse (7.744ms)
+✔ an existing ownership lock never expires into permission (6.340968ms)
+✔ signed latest checkpoint authenticates exact chain and stale signed prefix is rejected (26.647017ms)
+✔ checkpoint rejects signature (7.702559ms)
+✔ checkpoint rejects repository (8.836284ms)
+✔ checkpoint rejects runtime (8.946227ms)
+✔ checkpoint rejects kind (8.557182ms)
+✔ checkpoint rejects role (9.276564ms)
+✔ checkpoint rejects head (10.711155ms)
+✔ checkpoint rejects extra (7.240306ms)
+✔ witness is fetched on every strong replay; unavailable freshness does not fall back (6.141713ms)
+✔ fresh run rejects semantic (8.012397ms)
+✔ fresh run rejects missing (7.270221ms)
+✔ fresh run rejects foreign (10.421045ms)
+✔ fresh run rejects stale-authority (5.226671ms)
+✔ fresh run rejects caller-summary (5.894108ms)
+✔ incomplete intent cannot be blindly repeated or resolved by candidate evidence (26.254774ms)
+✔ closed event contract forbids caller actor, arbitrary PASS and budget configuration (10.150876ms)
+✔ stale run cannot reserve against changed current workspace bytes (8.423845ms)
+✔ recovery requires scoped approval and does not remove a live owner lock (10.490799ms)
+✔ terminal verdict cannot be rewritten and an earlier run cannot replace current lineage (22.090195ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 537.227223

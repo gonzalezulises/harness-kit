@@ -1,0 +1,15 @@
+{
+  ".agents/notes/implemented/architecture/2026-09-06-journal-replay-and-stale-runs.md": "c05ec84e7809d0bfafbf064582dec1b8a673d566114893743c2e8ca36f03abeb",
+  ".harness/oracles/AC-H04.yaml": "a5f821a6c41385af359cfac7f61c70ba9d207f46efe28e20b575c48df934190f",
+  "docs/quality-document.md": "76d2d487a96e892cdb30626db2422e6a76688c986db7fcf9ed49521d6cba214b",
+  "packs/autonomy/index.md": "74f2d32c8729eb2627fd31ad25125d2270ce9b0a09e498af949d71c80c1b5936",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/authority.mjs": "1132c6387873a404b7aa517411b46f2baf4fb8e44bf8e1e547b7b9c36d5e2af4",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/classify.mjs": "fc0a98683d4877487c9f11c8c9e7c5af7d05f2cf0d42fdc8cfcb18fbeb832179",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/contracts-journal-v1.md": "f0e23bc7b922e09b66aae32487da5c6032bb92e5ec128d00ca0016474684fcec",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/contracts-v1.md": "c50877646e70fcd34c35fc7ee484321ea75edd19575680a607eb09a7f3c51f1f",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/index.mjs": "a26896e2708f0eb2b63fd51e0a4ae0ec66ee2be2ab29af0afac1a448c3e185e7",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/journal.mjs": "206975c30a859f35191d9b8195ca8d88fd884034f6a8d058c642b547756e4d63",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/journal.test.mjs": "2b1727e3d4e299c78b843732fd1989e641d1366a4e36cce29f35bb3194389318",
+  "scripts/verify-feature.sh": "164c6294ae4ed3e8ed11baed09e0f3b520b782cb796e3b51ff035474d24efbd0",
+  "templates/full/scripts/verify-feature.sh": "164c6294ae4ed3e8ed11baed09e0f3b520b782cb796e3b51ff035474d24efbd0"
+}

@@ -1,0 +1,14 @@
+✔ fresh mechanical run preserves terminal verdict, acceptance, lineage and objective budget (82.95253ms)
+✔ legacy bytes and receipts are retained without retroactive PASS and projection is read-only (52.210543ms)
+✔ adopted v2 marker blocks legacy direct writer before layer effects in source and scaffold (10.951399ms)
+✔ witness publication uses host compare-and-append and verifies returned signed data (24.494728ms)
+✔ process crash after durable append retains intent and lock; scoped recovery repairs index (178.480669ms)
+✔ two real writers with one expected head publish at most one reservation (199.398882ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 697.708139

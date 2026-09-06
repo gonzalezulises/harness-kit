@@ -41,7 +41,7 @@ Status verification owns a new process session/group. On timeout it sends TERM t
 A full scaffold with no default runbook remains valid. A nonempty explicit DELIVERY_DOC is a declared source: missing, non-file or unreadable paths block even when DELIVERY_DOC_REQUIRED is0. Correct the path or restore the readable document rather than silently disabling the check.
 
 
-## Optional H03 runtime
+## Optional autonomy runtime
 
 The opt-in `packs/autonomy` package now provides typed YAML identity, host-pinned
 Ed25519 approval verification and conservative pure change classification. Its
@@ -54,6 +54,9 @@ This package requires Node>=22 and the exact YAML2.9.0/Zod4.5.4 lockfile setup i
 `packs/autonomy/index.md`. It lives entirely below
 `scripts/quality-orchestrator/`, preserving the consumer root package.json.
 Legacy minimal/full installation does not include it. H09 owns automatic
-`--with autonomy` adoption; the current pack is copied explicitly. H04–H09 journal,
-effects, budgets, review and release capabilities are still pending. No runtime
+`--with autonomy` adoption; the current pack is copied explicitly. H04 now adds
+verified journal/replay, mechanical fresh runs, objective reservations and lossless
+legacy projection:35 focused cases, full integration521/0, independent approval.
+Two Medium availability findings are assigned to H05 integration; see the ledger.
+H05–H09 effects, continuation, review and release remain pending. No runtime
 owner keys or product baseline acceptance are created by installation.

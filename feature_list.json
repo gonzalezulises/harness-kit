@@ -523,21 +523,29 @@
       "priority": 18,
       "area": "harness-hardening",
       "behavior": "Verified append-only journal derives run state and imports legacy evidence honestly",
-      "state": "not_started",
+      "state": "passing",
       "layers": [
         {
           "label": "static",
-          "cmd": "bash -n scripts/verify-feature.sh && bash -n scripts/verify-claims.sh && bash -n scripts/verify-decisions.sh && bash -n scripts/check-arch.sh && echo shell-syntax-ok",
-          "repair": "Fix source whitespace or conflict markers."
+          "cmd": "make lint && for runtime_source in packs/autonomy/repo-template/scripts/quality-orchestrator/{authority,classify,index,journal}.mjs; do node --check \"$runtime_source\" || exit; done && for writer_source in scripts/verify-feature.sh templates/full/scripts/verify-feature.sh; do bash -n \"$writer_source\" || exit; done && echo journal-static-ok",
+          "repair": "Fix syntax and lint while preserving closed authority and source/template parity."
         },
         {
           "label": "runtime",
-          "cmd": "bash packs/autonomy/verify-pack.sh",
-          "repair": "Fix the first failing contract without weakening its expectation."
+          "cmd": "node --test '--test-name-pattern=^(?:journal appends|idempotency|replay rejects|head index|exclusive existing|an existing|signed latest|checkpoint rejects|witness is fetched|fresh run rejects|incomplete intent|closed event|stale run|recovery requires|terminal verdict)' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/journal.test.mjs",
+          "repair": "Repair journal replay, freshness, authority or idempotency without weakening adverse assertions."
+        },
+        {
+          "label": "e2e",
+          "cmd": "node --test '--test-name-pattern=^(?:fresh mechanical|process crash|two real writers|legacy bytes|adopted v2|witness publication)' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/journal.test.mjs",
+          "repair": "Repair public fresh-run, witness, crash, concurrency or legacy-guard behavior while preserving evidence and objective budget."
         }
       ],
-      "evidence": [],
-      "notes": "Approved hardening milestone H04; owner mandate 2026-09-05."
+      "evidence": [
+        "all layers passed — commit 96438e8, 2026-09-06T02:11:23Z"
+      ],
+      "notes": "Approved hardening milestone H04; owner mandate 2026-09-05.",
+      "user_visible_behavior": "A consumer resumes a mechanically equivalent final workspace through a fresh run while retaining prior verdicts and objective spending; replay and recovery verify history, and adopted v2 rejects legacy direct writes without recertifying old evidence."
     },
     {
       "id": "F19",

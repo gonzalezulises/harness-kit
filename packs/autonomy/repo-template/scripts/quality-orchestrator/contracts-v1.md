@@ -149,3 +149,8 @@ H04 should import this package and reuse approval/context/identity verification,
 not deserialize handles or add a second signature implementation. New schema,
 policy or proof kinds require a versioned built-in implementation and adversarial
 tests; candidate callbacks or a boolean proof registry are not extension points.
+
+H04 adds optional operator-bound `host.journal` and a closed `journal-checkpoint`
+receipt kind using this same verifier. See `contracts-journal-v1.md` for storage,
+replay, run lineage, recovery and legacy projection boundaries. Existing H03
+context/classification APIs and acceptance semantics are unchanged.

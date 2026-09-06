@@ -1,0 +1,43 @@
+✔ journal appends exclusively and replay is deterministic local diagnostic (50.204196ms)
+✔ idempotency returns original event while changed inputs and stale CAS block (20.294202ms)
+✔ replay rejects alter damage (9.719495ms)
+✔ replay rejects omit damage (10.083713ms)
+✔ replay rejects reorder damage (8.986563ms)
+✔ replay rejects partial damage (9.131106ms)
+✔ replay rejects object damage (8.55897ms)
+✔ head index is reconstructed from complete log after interrupted publication (16.211202ms)
+✔ exclusive existing object is verified before reuse (7.166444ms)
+✔ an existing ownership lock never expires into permission (5.968675ms)
+✔ signed latest checkpoint authenticates exact chain and stale signed prefix is rejected (26.843225ms)
+✔ checkpoint rejects signature (7.902671ms)
+✔ checkpoint rejects repository (8.371975ms)
+✔ checkpoint rejects runtime (10.122901ms)
+✔ checkpoint rejects kind (7.833489ms)
+✔ checkpoint rejects role (9.409727ms)
+✔ checkpoint rejects head (10.689658ms)
+✔ checkpoint rejects extra (6.769448ms)
+✔ witness is fetched on every strong replay; unavailable freshness does not fall back (5.567813ms)
+✔ fresh mechanical run preserves terminal verdict, acceptance, lineage and objective budget (45.103182ms)
+✔ fresh run rejects semantic (8.515867ms)
+✔ fresh run rejects missing (5.864782ms)
+✔ fresh run rejects foreign (7.304247ms)
+✔ fresh run rejects stale-authority (5.658618ms)
+✔ fresh run rejects caller-summary (6.059629ms)
+✔ incomplete intent cannot be blindly repeated or resolved by candidate evidence (23.762335ms)
+✔ closed event contract forbids caller actor, arbitrary PASS and budget configuration (6.661909ms)
+✔ legacy bytes and receipts are retained without retroactive PASS and projection is read-only (50.744504ms)
+✔ adopted v2 marker blocks legacy direct writer before layer effects in source and scaffold (16.944435ms)
+✔ stale run cannot reserve against changed current workspace bytes (8.42292ms)
+✔ witness publication uses host compare-and-append and verifies returned signed data (18.551428ms)
+✔ process crash after durable append retains intent and lock; scoped recovery repairs index (178.986933ms)
+✔ recovery requires scoped approval and does not remove a live owner lock (7.000218ms)
+✔ two real writers with one expected head publish at most one reservation (191.592531ms)
+✔ terminal verdict cannot be rewritten and an earlier run cannot replace current lineage (24.584499ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1000.552663

@@ -27,6 +27,16 @@ The historical implementation-stop text below is resolved by this authorization.
 - Los budgets se toman de autoridad aprobada. Los máximos no se inventan durante una reparación.
 - La matriz completa se ejecuta una vez integrada; pruebas focales por cambio. Repeticiones adicionales sólo para resolver riesgo concreto de concurrencia/tiempo.
 
+## Execution constraint — owner steering, 2026-09-06
+
+Avoid overengineering: implement only the concrete behavior required by H04–H09,
+reuse the single runtime and existing dependency set, and keep unsupported host
+capabilities explicit. No generic plugin engine, daemon, database or speculative
+abstraction. Nonblocking Medium/Low findings may remain in a reasoned backlog;
+High/Critical and required integration gates still block. Preserve exact causal
+evidence once, with references instead of redundant source snapshots. Repeat
+verification only for a required gate or a concrete unresolved risk.
+
 ## Orden y gates
 
 `H01 → H02 → H03 → H04 → H05 → H06 → H07 → H08 → H09`.
@@ -133,16 +143,6 @@ Los paths de módulos v2 siguientes son propuestos; los existentes citados en H0
 - [ ] GREEN: contención bajo full suite, cleanup propio, congelación íntegra; revisión y commit.
 
 **Compatibilidad:** los comandos v1 con shell siguen identificados como legacy; no se convierten automáticamente en capabilities. **Rollback:** suspender nuevas operaciones y terminar/recuperar lease antes de volver a v1. **PASS:** casos 5/6 y matriz adversarial de filesystem/lease sin escapes.
-
-## Execution constraint — owner steering, 2026-09-06
-
-Avoid overengineering: implement only the concrete behavior required by H04–H09,
-reuse the single runtime and existing dependency set, and keep unsupported host
-capabilities explicit. No generic plugin engine, daemon, database or speculative
-abstraction. Nonblocking Medium/Low findings may remain in a reasoned backlog;
-High/Critical and required integration gates still block. Preserve exact causal
-evidence once, with references instead of redundant source snapshots. Repeat
-verification only for a required gate or a concrete unresolved risk.
 
 ## Task 6 — H06 — Continuación acotada y presupuestos
 

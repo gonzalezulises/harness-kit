@@ -1,0 +1,72 @@
+Verifying F18
+
+── Layer: static
+$ make lint && for runtime_source in packs/autonomy/repo-template/scripts/quality-orchestrator/{authority,classify,index,journal}.mjs; do node --check "$runtime_source" || exit; done && for writer_source in scripts/verify-feature.sh templates/full/scripts/verify-feature.sh; do bash -n "$writer_source" || exit; done && echo journal-static-ok
+make[1]: Entering directory '/workspace/scratch/adce1c53b293/harness-kit'
+shellcheck -S warning bin/*.sh scripts/*.sh tests/*.sh \
+  templates/full/scripts/*.sh packs/*/verify-pack.sh
+make[1]: Leaving directory '/workspace/scratch/adce1c53b293/harness-kit'
+journal-static-ok
+Layer 'static' passed.
+
+── Layer: runtime
+$ node --test '--test-name-pattern=^(?:journal appends|idempotency|replay rejects|head index|exclusive existing|an existing|signed latest|checkpoint rejects|witness is fetched|fresh run rejects|incomplete intent|closed event|stale run|recovery requires|terminal verdict)' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/journal.test.mjs
+✔ journal appends exclusively and replay is deterministic local diagnostic (55.908122ms)
+✔ idempotency returns original event while changed inputs and stale CAS block (19.579848ms)
+✔ replay rejects alter damage (10.63383ms)
+✔ replay rejects omit damage (10.362289ms)
+✔ replay rejects reorder damage (9.947086ms)
+✔ replay rejects partial damage (9.840909ms)
+✔ replay rejects object damage (9.978182ms)
+✔ head index is reconstructed from complete log after interrupted publication (16.610023ms)
+✔ exclusive existing object is verified before reuse (7.70179ms)
+✔ an existing ownership lock never expires into permission (6.948329ms)
+✔ signed latest checkpoint authenticates exact chain and stale signed prefix is rejected (32.193706ms)
+✔ checkpoint rejects signature (10.543817ms)
+✔ checkpoint rejects repository (9.393097ms)
+✔ checkpoint rejects runtime (10.141943ms)
+✔ checkpoint rejects kind (8.112046ms)
+✔ checkpoint rejects role (12.600053ms)
+✔ checkpoint rejects head (11.210145ms)
+✔ checkpoint rejects extra (7.929116ms)
+✔ witness is fetched on every strong replay; unavailable freshness does not fall back (6.10263ms)
+✔ fresh run rejects semantic (8.580368ms)
+✔ fresh run rejects missing (7.133302ms)
+✔ fresh run rejects foreign (9.853788ms)
+✔ fresh run rejects stale-authority (5.354675ms)
+✔ fresh run rejects caller-summary (5.839621ms)
+✔ incomplete intent cannot be blindly repeated or resolved by candidate evidence (27.197264ms)
+✔ closed event contract forbids caller actor, arbitrary PASS and budget configuration (9.149108ms)
+✔ stale run cannot reserve against changed current workspace bytes (10.143826ms)
+✔ recovery requires scoped approval and does not remove a live owner lock (9.649106ms)
+✔ terminal verdict cannot be rewritten and an earlier run cannot replace current lineage (25.052367ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 548.544393
+Layer 'runtime' passed.
+
+── Layer: e2e
+$ node --test '--test-name-pattern=^(?:fresh mechanical|process crash|two real writers|legacy bytes|adopted v2|witness publication)' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/journal.test.mjs
+✔ fresh mechanical run preserves terminal verdict, acceptance, lineage and objective budget (92.866111ms)
+✔ legacy bytes and receipts are retained without retroactive PASS and projection is read-only (46.800932ms)
+✔ adopted v2 marker blocks legacy direct writer before layer effects in source and scaffold (13.250092ms)
+✔ witness publication uses host compare-and-append and verifies returned signed data (24.951448ms)
+✔ process crash after durable append retains intent and lock; scoped recovery repairs index (192.809009ms)
+✔ two real writers with one expected head publish at most one reservation (242.642046ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 788.195309
+Layer 'e2e' passed.
+
+F18 -> passing (evidence recorded in feature_list.json)
+Next: update PROGRESS.md and commit.

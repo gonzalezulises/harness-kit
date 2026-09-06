@@ -1,0 +1,19 @@
+{
+  "commit": "96438e86b3d671027c8398b8c10edbb994e8ee59",
+  "base": "88ea1e6c45faf5b5db9e29935eef6e25e50f633b",
+  "run_id": 34005465297,
+  "job_id": 101411703549,
+  "conclusion": "failure",
+  "reason": "ADOPTION_REQUIRED: protected base lacks the required judge contract; no head fallback",
+  "passed": [
+    "Lint every shell script",
+    "Verify the Gherkin pack still blocks every failure mode"
+  ],
+  "skipped": [
+    "Run the repository verification pipeline",
+    "Re-verify every claimed passing state with the protected checker",
+    "Verify no earlier decision was rewritten"
+  ],
+  "log_sha256": "2b76a3e126fb16dfefde94433a28bfc9def6fc10bf9c65ed1fb3154cd925dd98",
+  "baseline_accepted": false
+}

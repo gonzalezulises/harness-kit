@@ -293,3 +293,15 @@ Repair guidance is excluded from layer identity, while exact command bytes and e
 Exact numeric source forms remain distinct. Unsupported schemas, directives, comments and proofs stop. Closed ordinary-data key reorder and source-content digest derivation produce assessments only. Protected authority-source byte changes still require a human; this v1 proof does not rebind their trust anchors. Classification grants neither execution permission nor completed postconditions.
 
 **Consequences.** Initial schemas are deliberately narrow; Node is optional for legacy consumers and dependencies install in the runtime subdirectory. Future contracts extend this same verified boundary. No owner key enrollment, policy adoption, baseline acceptance or deployment authority follows from implementation. See the H03 Agent Note and packs/autonomy/index.md.
+
+---
+
+## 2026-09-06 — H04: journal and mechanical fresh-run recovery
+
+**Context.** Commit/representation changes should not demand another baseline decision or erase spent budget and prior verdicts.
+
+**Decision.** Extend the same runtime with one local journal, closed event/run/checkpoint contracts, exclusive content creation and head CAS. Replay derives state from the complete chain; a mutable HEAD remains only a repairable cache. Reuse H03 authority/context verification and an enrolled, scoped external checkpoint issuer for claims of current witnessed history. Host acquisition adapters provide data, never verification decisions.
+
+Fresh runs re-read the complete final workspace and re-prove mechanical equivalence against the original accepted context. Intent and objective spending precede effects; uncertain outcomes require the original target key. Dead-owner recovery needs exact scoped approval and confirmation that the recorded process is dead. Legacy bytes remain lossless and LEGACY_UNVERIFIED; an adopted-v2 marker blocks direct legacy writes.
+
+**Consequences.** H04 exposes negative terminal states and reservations, with no execution permit or PASS certification. Missing witnesses, uncertain targets, torn tails and interrupted recovery ownership stop. The host owns trusted state/adapter custody; same-UID replacement is outside this guarantee. H09 owns marker adoption. Two nonblocking availability findings are tracked explicitly for H05; no generic synchronization service is introduced.

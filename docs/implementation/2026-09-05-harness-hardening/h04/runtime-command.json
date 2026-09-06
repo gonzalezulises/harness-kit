@@ -1,0 +1,6 @@
+[
+  "node",
+  "--test",
+  "--test-name-pattern=^(?:journal appends|idempotency|replay rejects|head index|exclusive existing|an existing|signed latest|checkpoint rejects|witness is fetched|fresh run rejects|incomplete intent|closed event|stale run|recovery requires|terminal verdict)",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/journal.test.mjs"
+]

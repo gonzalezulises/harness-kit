@@ -1,0 +1,6 @@
+[
+  "node",
+  "--test",
+  "--test-name-pattern=^(?:fresh mechanical|process crash|two real writers|legacy bytes|adopted v2|witness publication)",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/journal.test.mjs"
+]

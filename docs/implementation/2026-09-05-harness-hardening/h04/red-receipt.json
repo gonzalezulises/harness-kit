@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "command": [
+    "bash",
+    "docs/implementation/2026-09-05-harness-hardening/h04/reproduce-red.sh"
+  ],
+  "exit_code": 1,
+  "tests": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/journal.test.mjs": "2b1727e3d4e299c78b843732fd1989e641d1366a4e36cce29f35bb3194389318"
+  },
+  "source": {
+    "docs/implementation/2026-09-05-harness-hardening/h04/red-source/authority.mjs": "1132c6387873a404b7aa517411b46f2baf4fb8e44bf8e1e547b7b9c36d5e2af4",
+    "docs/implementation/2026-09-05-harness-hardening/h04/red-source/classify.mjs": "fc0a98683d4877487c9f11c8c9e7c5af7d05f2cf0d42fdc8cfcb18fbeb832179",
+    "docs/implementation/2026-09-05-harness-hardening/h04/red-source/identity.mjs": "f6bc4cf109851e22bece790619fe736808d7af52b06f79e9b00047e0106cfb21",
+    "docs/implementation/2026-09-05-harness-hardening/h04/red-source/index.mjs": "a26896e2708f0eb2b63fd51e0a4ae0ec66ee2be2ab29af0afac1a448c3e185e7",
+    "docs/implementation/2026-09-05-harness-hardening/h04/red-source/journal.mjs": "42bfe6c11be4ad6da0fa566acf2e607735104ef19a72583fbf1d3a9a3e16a7fa",
+    "docs/implementation/2026-09-05-harness-hardening/h04/red-source/package-lock.json": "19d4495481f1a940a52ab63684bc400b938cc7c6bc744be889fa453030ba622c",
+    "docs/implementation/2026-09-05-harness-hardening/h04/red-source/package.json": "6c8370fa233ab09d20b96330d90a9541d0b3f2c71aa19025988677b879262296",
+    "docs/implementation/2026-09-05-harness-hardening/h04/red-source/schemas/digest.v1.json": "3739807b2640848ddfcdf441eb72ca4801b77ebcfe22b5a2434bd9b2aac97972",
+    "docs/implementation/2026-09-05-harness-hardening/h04/red-source/schemas/record.v1.json": "6a9d79d9cc43b5a1f197e43f2915adc5e855fb902435fce1ee15532dccadbc4b",
+    "docs/implementation/2026-09-05-harness-hardening/h04/red-source/tests/helpers.mjs": "8eab979a11d050cc4f835a4824e42daa71e93bf4a18e0c2b45577ed589a48afc",
+    "docs/implementation/2026-09-05-harness-hardening/h04/red-source/tests/journal.test.mjs": "2b1727e3d4e299c78b843732fd1989e641d1366a4e36cce29f35bb3194389318"
+  },
+  "logs": {
+    "docs/implementation/2026-09-05-harness-hardening/h04/causal-red.log": "cf0f183b327bce5fa2504426ce915cfa620f5ecc62dffb485e7ad28465d5a13b",
+    "docs/implementation/2026-09-05-harness-hardening/h04/causal-red.status": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+  }
+}
