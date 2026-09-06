@@ -1,0 +1,17 @@
+test_01_blocked_budget_requires_authorized_reopening (h01_review_regressions.RegressionTests.test_01_blocked_budget_requires_authorized_reopening) ... ok
+test_02_empty_command_must_not_execute_repair_text (h01_review_regressions.RegressionTests.test_02_empty_command_must_not_execute_repair_text) ... ok
+test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims (h01_review_regressions.RegressionTests.test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims) ... ok
+test_04_claims_require_the_explicit_authority_baseline (h01_review_regressions.RegressionTests.test_04_claims_require_the_explicit_authority_baseline) ... ok
+test_05_cached_success_must_not_survive_changed_verification_inputs (h01_review_regressions.RegressionTests.test_05_cached_success_must_not_survive_changed_verification_inputs) ... ok
+test_06_decisions_require_a_resolvable_explicit_base (h01_review_regressions.RegressionTests.test_06_decisions_require_a_resolvable_explicit_base) ... ok
+test_07_decision_whitespace_must_not_change_executable_policy (h01_review_regressions.RegressionTests.test_07_decision_whitespace_must_not_change_executable_policy) ... ok
+test_09_exit0_rule_must_reject_false_command (h01_local_regressions.LocalRegressions.test_09_exit0_rule_must_reject_false_command) ... ok
+test_10_invalid_arch_root_must_not_pass (h01_local_regressions.LocalRegressions.test_10_invalid_arch_root_must_not_pass) ... ok
+test_01_not_started_cannot_skip_activation (h01_state_regressions.StateRegressionTests.test_01_not_started_cannot_skip_activation) ... ok
+test_02_wip_violation_blocks_before_execution (h01_state_regressions.StateRegressionTests.test_02_wip_violation_blocks_before_execution) ... ok
+test_03_duplicate_ids_cannot_promote_unexecuted_feature (h01_state_regressions.StateRegressionTests.test_03_duplicate_ids_cannot_promote_unexecuted_feature) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.817s
+
+OK

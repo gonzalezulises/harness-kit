@@ -1,0 +1,106 @@
+{
+  "source_repo": "/workspace/scratch/adce1c53b293/harness-kit",
+  "source_revision": "9ee4eaaf6b19ded4b5e32349d77ba8fdaf6af79e",
+  "source_sha256": {
+    "verify-feature.sh": "3de5c857ac0f8bd574803cf53fb0aa3d6c430241f426a03a11321dd930011635"
+  },
+  "source_unchanged_after_run": true,
+  "tests_run": 3,
+  "failure_count": 3,
+  "error_count": 0,
+  "successful": false,
+  "records": [
+    {
+      "test": "__main__.StateRegressionTests.test_01_not_started_cannot_skip_activation",
+      "fixture": "/workspace/scratch/adce1c53b293/h01-evidence/state-red/fixtures/test_01_not_started_cannot_skip_activation-0j_cdqx8",
+      "calls": [
+        {
+          "cwd": "/workspace/scratch/adce1c53b293/h01-evidence/state-red/fixtures/test_01_not_started_cannot_skip_activation-0j_cdqx8",
+          "argv": [
+            "bash",
+            "scripts/verify-feature.sh",
+            "F1"
+          ],
+          "exit": 0,
+          "stdout": "Verifying F1\n\n── Layer: unit\n$ printf ran > layer-executed\nLayer 'unit' passed.\n\nF1 -> passing (evidence recorded in feature_list.json)\nNext: update PROGRESS.md and commit.\n",
+          "stderr": "",
+          "before": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"not_started\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf ran > layer-executed\",\n          \"repair\": \"Check the fixture input.\"\n        }\n      ]\n    }\n  ]\n}\n",
+          "after": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"all layers passed — commit 22b4a8d, 2026-09-05T23:39:36Z\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf ran > layer-executed\",\n          \"repair\": \"Check the fixture input.\"\n        }\n      ]\n    }\n  ],\n  \"last_updated\": \"2026-09-05\"\n}\n"
+        }
+      ],
+      "observations": {
+        "rejected": false,
+        "no_layer_execution": false,
+        "state_and_evidence_unchanged": false
+      },
+      "base_sha": "22b4a8df1f4c1f23a7720788f9edcdefeedbefd5"
+    },
+    {
+      "test": "__main__.StateRegressionTests.test_02_wip_violation_blocks_before_execution",
+      "fixture": "/workspace/scratch/adce1c53b293/h01-evidence/state-red/fixtures/test_02_wip_violation_blocks_before_execution-_ck_k0nj",
+      "calls": [
+        {
+          "cwd": "/workspace/scratch/adce1c53b293/h01-evidence/state-red/fixtures/test_02_wip_violation_blocks_before_execution-_ck_k0nj",
+          "argv": [
+            "bash",
+            "scripts/verify-feature.sh",
+            "F1"
+          ],
+          "exit": 0,
+          "stdout": "Verifying F1\n\n── Layer: unit\n$ printf F1 > first-executed\nLayer 'unit' passed.\n\nF1 -> passing (evidence recorded in feature_list.json)\nNext: update PROGRESS.md and commit.\n",
+          "stderr": "",
+          "before": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"active\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf F1 > first-executed\",\n          \"repair\": \"Check the fixture input.\"\n        }\n      ]\n    },\n    {\n      \"id\": \"F2\",\n      \"state\": \"active\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf F2 > second-executed\",\n          \"repair\": \"Check the fixture input.\"\n        }\n      ]\n    }\n  ]\n}\n",
+          "after": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"all layers passed — commit 046d09f, 2026-09-05T23:39:36Z\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf F1 > first-executed\",\n          \"repair\": \"Check the fixture input.\"\n        }\n      ]\n    },\n    {\n      \"id\": \"F2\",\n      \"state\": \"active\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf F2 > second-executed\",\n          \"repair\": \"Check the fixture input.\"\n        }\n      ]\n    }\n  ],\n  \"last_updated\": \"2026-09-05\"\n}\n"
+        }
+      ],
+      "observations": {
+        "rejected": false,
+        "no_layer_execution": false,
+        "state_and_evidence_unchanged": false
+      },
+      "base_sha": "046d09f4a4a698f3259677a59c07d82ce970649b"
+    },
+    {
+      "test": "__main__.StateRegressionTests.test_03_duplicate_ids_cannot_promote_unexecuted_feature",
+      "fixture": "/workspace/scratch/adce1c53b293/h01-evidence/state-red/fixtures/test_03_duplicate_ids_cannot_promote_unexecuted_feature-66pjol7r",
+      "calls": [
+        {
+          "cwd": "/workspace/scratch/adce1c53b293/h01-evidence/state-red/fixtures/test_03_duplicate_ids_cannot_promote_unexecuted_feature-66pjol7r",
+          "argv": [
+            "bash",
+            "scripts/verify-feature.sh",
+            "F1"
+          ],
+          "exit": 0,
+          "stdout": "Verifying F1\n\n── Layer: unit\n$ printf first > first-executed\nLayer 'unit' passed.\n\nF1 -> passing (evidence recorded in feature_list.json)\nNext: update PROGRESS.md and commit.\n",
+          "stderr": "",
+          "before": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"active\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf first > first-executed\",\n          \"repair\": \"Check the fixture input.\"\n        }\n      ]\n    },\n    {\n      \"id\": \"F1\",\n      \"state\": \"not_started\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf second > second-executed; false\",\n          \"repair\": \"Check the fixture input.\"\n        }\n      ]\n    }\n  ]\n}\n",
+          "after": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"all layers passed — commit cfa8f1c, 2026-09-05T23:39:36Z\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf first > first-executed\",\n          \"repair\": \"Check the fixture input.\"\n        }\n      ]\n    },\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"all layers passed — commit cfa8f1c, 2026-09-05T23:39:36Z\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf second > second-executed; false\",\n          \"repair\": \"Check the fixture input.\"\n        }\n      ]\n    }\n  ],\n  \"last_updated\": \"2026-09-05\"\n}\n"
+        }
+      ],
+      "observations": {
+        "rejected": false,
+        "no_layer_execution": false,
+        "state_and_evidence_unchanged": false,
+        "second_layer_executed": false,
+        "passing_records": 2
+      },
+      "base_sha": "cfa8f1c56fb1bd794f7115a98d4fb034d24317aa"
+    }
+  ],
+  "failures": [
+    {
+      "test": "test_01_not_started_cannot_skip_activation (__main__.StateRegressionTests.test_01_not_started_cannot_skip_activation)",
+      "traceback": "Traceback (most recent call last):\n  File \"/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/supplemental_state_red.py\", line 90, in test_01_not_started_cannot_skip_activation\n    self.assertTrue(all(observations.values()),\nAssertionError: False is not true : not_started must not execute or become passing without activation: {'rejected': False, 'no_layer_execution': False, 'state_and_evidence_unchanged': False}\n"
+    },
+    {
+      "test": "test_02_wip_violation_blocks_before_execution (__main__.StateRegressionTests.test_02_wip_violation_blocks_before_execution)",
+      "traceback": "Traceback (most recent call last):\n  File \"/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/supplemental_state_red.py\", line 101, in test_02_wip_violation_blocks_before_execution\n    self.assertTrue(all(observations.values()),\nAssertionError: False is not true : Two active features must block before the chosen feature executes: {'rejected': False, 'no_layer_execution': False, 'state_and_evidence_unchanged': False}\n"
+    },
+    {
+      "test": "test_03_duplicate_ids_cannot_promote_unexecuted_feature (__main__.StateRegressionTests.test_03_duplicate_ids_cannot_promote_unexecuted_feature)",
+      "traceback": "Traceback (most recent call last):\n  File \"/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/supplemental_state_red.py\", line 116, in test_03_duplicate_ids_cannot_promote_unexecuted_feature\n    self.assertTrue(observations['rejected'] and observations['no_layer_execution']\nAssertionError: False is not true : IDs must be unique before execution; an unexecuted false layer cannot acquire a receipt: {'rejected': False, 'no_layer_execution': False, 'state_and_evidence_unchanged': False, 'second_layer_executed': False, 'passing_records': 2}\n"
+    }
+  ],
+  "errors": []
+}

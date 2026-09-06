@@ -1,0 +1,17 @@
+{
+  "scope": "Current kit worktree and existing feature-list templates only; no external consumers inspected.",
+  "records": [
+    {
+      "path": "feature_list.json",
+      "features": 23,
+      "duplicate_ids": [],
+      "multiline_layers": []
+    },
+    {
+      "path": "templates/minimal/feature_list.json",
+      "features": 2,
+      "duplicate_ids": [],
+      "multiline_layers": []
+    }
+  ]
+}

@@ -3,7 +3,19 @@
 The durable memory of this repository. Every session reads this first and writes to it
 last. If it disagrees with your recollection, this file wins.
 
-## Current State — 2026-09-05 review
+## Current State — 2026-09-06 implementation
+
+The owner instructed **“Implementa todas las mejoras”** after the audit and MIGRATION-01 proposal. The architecture decision is approved; the previous implementation block is resolved. H01–H09 execute sequentially on PR #33. F15/H01 is complete after independent review and actual three-layer verification; H02 is next. Remaining milestones are not started.
+
+Startup verification: `./init.sh` exit 0, 273 core assertions. The [implementation ledger](docs/implementation/2026-09-05-harness-hardening/ledger.md) records current tests, reviews, rulings and next action. No baseline accepted and no consumer deployment authorized.
+
+F09 is now `blocked`: its historical two-attempt verification does not certify
+the stricter recovery boundary required by H01. Its original contract and
+receipts are preserved in the recorded audit revision and an exact snapshot.
+F15 verifies the replacement behavior; the other thirteen legacy records are
+unchanged. New green tests do not recertify superseded behavior.
+
+## Previous review snapshot — retained as history
 
 - **Audited base:** `88ea1e6c45faf5b5db9e29935eef6e25e50f633b` on `main`;
   `VERSION` and `.harness/kit-version` are `2.2.5`.
@@ -49,9 +61,13 @@ last. If it disagrees with your recollection, this file wins.
 
 ## In Progress
 
-The hardening review is delivered as a proposal; implementation awaits
-MIGRATION-01. No feature is active. The fourteen legacy claims are preserved,
-not recertified under the proposed v2 contract.
+H01/F15 has passed static, focal runtime and shipped-CLI/scaffold e2e verification.
+The full check passed 421 assertions, with two authenticated-gh cases explicitly
+omitted. Independent review approved specification and quality with no open
+High/Critical findings. H02/F16 is next. Legacy contracts and receipts remain
+preserved; F09 stays blocked under the approved recovery boundary.
+Current implementation evidence and independent reviews are recorded in the
+implementation ledger linked above.
 
 ## Session log — 2026-09-05 (audit before increasing autonomy)
 
@@ -303,10 +319,12 @@ four ever disagree. Rationale in
 
 ## Blockers
 
-MIGRATION-01 is pending for the hardening evolution. See the current state and
-[review decision](docs/reviews/2026-09-05-harness-hardening/README.md#5-decisión-mínima-requerida).
-Existing product/service access limitations in older session entries retain
-their historical context; this audit does not certify them as resolved.
+MIGRATION-01 is approved. Live authenticated Codex validation was not executed:
+tool network approval was cancelled before a decision. The available namespace
+and Landlock probes do not provide the required containment on this host.
+Implementation and local contract tests continue; external acceptance remains
+unverified. Existing service limitations in older entries retain their
+historical context.
 
 ---
 

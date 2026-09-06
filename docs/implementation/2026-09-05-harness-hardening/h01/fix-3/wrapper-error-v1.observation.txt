@@ -1,0 +1,3 @@
+A first GREEN wrapper invocation did not launch the test runner because its shell command contained an unmatched double quote.
+Observed shell output: /bin/bash: -c: line 9: unexpected EOF while looking for matching `"'
+No RED/GREEN assertion result was inferred from this invocation. The corrected command used new v2 evidence names.

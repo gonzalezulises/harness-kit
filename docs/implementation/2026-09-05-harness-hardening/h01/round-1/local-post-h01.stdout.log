@@ -1,0 +1,18 @@
+test_09_exit0_rule_must_reject_false_command (__main__.LocalRegressions.test_09_exit0_rule_must_reject_false_command) ... ok
+test_10_invalid_arch_root_must_not_pass (__main__.LocalRegressions.test_10_invalid_arch_root_must_not_pass) ... ok
+test_11_full_scaffold_must_supply_its_required_gates (__main__.LocalRegressions.test_11_full_scaffold_must_supply_its_required_gates) ... FAIL
+
+======================================================================
+FAIL: test_11_full_scaffold_must_supply_its_required_gates (__main__.LocalRegressions.test_11_full_scaffold_must_supply_its_required_gates)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/local_red_regressions.py", line 89, in test_11_full_scaffold_must_supply_its_required_gates
+    self.assertEqual(result.returncode, 0,
+AssertionError: 1 != 0 : R11: successful configured full installation must not omit a required gate
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.809s
+
+FAILED (failures=1)
+Evidence: /workspace/scratch/adce1c53b293/h01-evidence/local-post-h01
+Source unchanged: True

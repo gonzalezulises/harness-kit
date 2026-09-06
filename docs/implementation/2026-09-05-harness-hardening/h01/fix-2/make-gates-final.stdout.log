@@ -1,0 +1,13 @@
+bash scripts/run-gates.sh quick
+── gates · aggregate quick
+
+  decisions-append-only    PASS (0s)
+  agent-notes-tree         PASS (1s)
+  arch-boundaries          PASS (0s)
+  makefile-gates           PASS (0s)
+  version-sync             PASS (0s)
+  delivery-doc             PASS (0s)
+  context-routes           PASS (0s)
+  oracles-falsifiable      PASS (0s)
+
+── 8 pass · 0 blocking · 0 optional not installed

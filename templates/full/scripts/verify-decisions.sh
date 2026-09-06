@@ -1,27 +1,14 @@
 #!/usr/bin/env bash
-# verify-decisions.sh — decisions may be added, never quietly rewritten.
-#
-# Usage:
-#   scripts/verify-decisions.sh [base-ref]      # defaults to origin/main, then main
-#
-# PROGRESS.md carries what is true now. DECISIONS.md carries WHY, and it is the
-# one file whose value comes from being append-only. An agent that hits a
-# decision blocking its approach can make the obstacle disappear by editing the
-# reason it existed — and the next session, reading a tidy ledger, has no way to
-# know a constraint was dropped rather than resolved.
-#
-# Adding a decision is normal. Superseding one is normal too: append a new entry
-# that references the old. Editing or deleting an earlier entry is not.
-#
-# Exit codes:
-#   0  every decision recorded in the base is still present, unchanged
-#   1  DECISION_REWRITE_FORBIDDEN — an earlier decision was altered or removed
-#  66  not a git repository
+# verify-decisions.sh — protect the append-only decision ledger.
+# Exit: 0 intact/proven absent, 1 rewrite, 2 invalid authority, 3 tool failure,
+# 66 no repository or no discoverable base.
 
 set -uo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR" || { echo "cannot cd to $ROOT_DIR" >&2; exit 66; }
+git rev-parse --git-dir >/dev/null 2>&1 || {
+  echo "verify-decisions: not a git repository" >&2; exit 66; }
 
 if [[ ! -t 1 ]] || [[ -n "${NO_COLOR:-}" ]]; then
   RED=""; GREEN=""; YELLOW=""; BOLD=""; RESET=""
@@ -30,108 +17,111 @@ else
   BOLD=$'\033[1m'; RESET=$'\033[0m'
 fi
 
-git rev-parse --git-dir >/dev/null 2>&1 || {
-  echo "verify-decisions: not a git repository" >&2; exit 66; }
-
-BASE="${1:-}"
-if [[ -z "$BASE" ]]; then
-  for candidate in origin/main origin/master main master; do
-    if git rev-parse --verify --quiet "$candidate" >/dev/null 2>&1; then
-      BASE="$candidate"; break
-    fi
-  done
-fi
-# DECISIONS_BASE_FILE (set by CI) supersedes the git ref: a depth-1 sha
-# checkout has no origin/main, and the base copy arrives as a file instead.
-if [[ -z "$BASE" && -z "${DECISIONS_BASE_FILE:-}" ]]; then
-  echo "verify-decisions: no base ref found; pass one explicitly" >&2; exit 66
-fi
+PY=""
+for c in python3 python; do command -v "$c" >/dev/null 2>&1 && { PY="$c"; break; }; done
+[[ -n "$PY" ]] || { echo "verify-decisions: needs python3" >&2; exit 3; }
 
 LEDGER="DECISIONS.md"
 WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
+BASE="${1:-}"
+BASE_LABEL=""
+BASE_PRESENT=0
 
-# CI checks out the head at depth 1, so the base commit is not in the local
-# object store and `git show base:FILE` cannot resolve. DECISIONS_BASE_FILE lets
-# the caller hand over the base copy it already checked out instead.
+# A CI-provided file is an explicit authority declaration. Missing is an error,
+# never evidence that the protected ledger did not exist.
 if [[ -n "${DECISIONS_BASE_FILE:-}" ]]; then
-  if [[ ! -f "$DECISIONS_BASE_FILE" ]]; then
-    echo "${YELLOW}NO_LEDGER${RESET} — no ledger at $DECISIONS_BASE_FILE. Nothing to protect yet."
-    exit 0
+  [[ -f "$DECISIONS_BASE_FILE" ]] || {
+    echo "verify-decisions: declared base file is missing: $DECISIONS_BASE_FILE" >&2
+    exit 2
+  }
+  cp "$DECISIONS_BASE_FILE" "$WORK/base.md" || exit 3
+  BASE_LABEL="$DECISIONS_BASE_FILE"
+  BASE_PRESENT=1
+else
+  if [[ -z "$BASE" ]]; then
+    for candidate in origin/main origin/master main master; do
+      if git rev-parse --verify --quiet "$candidate^{commit}" >/dev/null 2>&1; then
+        BASE="$candidate"; break
+      fi
+    done
   fi
-  cp "$DECISIONS_BASE_FILE" "$WORK/base.md"
-  BASE="$DECISIONS_BASE_FILE"
-elif ! git show "$BASE:$LEDGER" > "$WORK/base.md" 2>/dev/null; then
-  echo "${YELLOW}NO_LEDGER${RESET} — $LEDGER does not exist at $BASE. Nothing to protect yet."
+  [[ -n "$BASE" ]] || {
+    echo "verify-decisions: no base ref found; pass one explicitly" >&2; exit 66; }
+  git rev-parse --verify --quiet "$BASE^{commit}" >/dev/null 2>&1 || {
+    echo "verify-decisions: base ref does not resolve to a commit: $BASE" >&2; exit 2; }
+  BASE_LABEL="$BASE"
+  TREE_RESULT="$(git ls-tree -r --name-only "$BASE" -- "$LEDGER" 2>/dev/null)"
+  TREE_RC=$?
+  [[ "$TREE_RC" -eq 0 ]] || {
+    echo "verify-decisions: could not inspect base tree: $BASE" >&2; exit 3; }
+  if [[ "$TREE_RESULT" == "$LEDGER" ]]; then
+    git show "$BASE:$LEDGER" > "$WORK/base.md" 2>/dev/null || {
+      echo "verify-decisions: could not read $LEDGER at $BASE" >&2; exit 3; }
+    BASE_PRESENT=1
+  fi
+fi
+
+if [[ "$BASE_PRESENT" -eq 0 ]]; then
+  echo "${YELLOW}NO_LEDGER${RESET} — $LEDGER is proven absent at $BASE_LABEL. Nothing to protect yet."
   exit 0
 fi
 
-# ── Split a ledger into one file per '## ' entry, keyed by a slug of its heading
-split_entries() {
-  # split_entries <markdown-file> <out-dir>
-  awk -v out="$2" '
-    # A horizontal rule is formatting between entries, not content. Appending a
-    # new decision adds one after the previous entry, which would otherwise read
-    # as that earlier entry having been modified.
-    /^---+[[:space:]]*$/ { next }  # ---+ not -{3,}: mawk has no interval regex
-    /^## / {
-      title = substr($0, 4)
-      gsub(/[^a-zA-Z0-9]+/, "-", title)
-      file = out "/" title
-      n[title]++
-      if (n[title] > 1) file = file "-" n[title]
-      current = file
-      print $0 > current
-      next
-    }
-    current { print $0 > current }
-  ' "$1"
-}
+# Protect the authority ledger as an exact byte prefix. This avoids Markdown
+# parsing aliases and newline normalization: every authority byte is normative,
+# while a syntactically separate level-two decision may be appended.
+"$PY" - "$WORK/base.md" "$LEDGER" "$BASE_LABEL" <<'PYEOF'
+import re, sys
+from pathlib import Path
 
-mkdir -p "$WORK/base" "$WORK/head"
-split_entries "$WORK/base.md" "$WORK/base"
+base_path, head_path = Path(sys.argv[1]), Path(sys.argv[2])
+try:
+    base = base_path.read_bytes()
+except OSError as exc:
+    print("verify-decisions: could not read authority ledger: " + str(exc), file=sys.stderr)
+    raise SystemExit(3)
+try:
+    head = head_path.read_bytes()
+except OSError as exc:
+    print("verify-decisions: unreadable head ledger: " + str(exc), file=sys.stderr)
+    raise SystemExit(2)
 
-if [[ -f "$LEDGER" ]]; then
-  split_entries "$LEDGER" "$WORK/head"
-fi
+base_count = len(re.findall(rb"(?m)^## ", base))
+head_count = len(re.findall(rb"(?m)^## ", head))
+if not head.startswith(base):
+    print("DECISION_REWRITE_FORBIDDEN — authority bytes were altered or removed.", file=sys.stderr)
+    common = 0
+    for left, right in zip(base, head):
+        if left != right: break
+        common += 1
+    headings = [match for match in re.finditer(rb"(?m)^## ([^\r\n]+)", base)
+                if match.start() <= common]
+    if headings:
+        print("Affected authority decision: " + headings[-1].group(1).decode("utf-8", "replace"), file=sys.stderr)
+    print("Append a new decision that supersedes the old one instead of editing it.", file=sys.stderr)
+    raise SystemExit(1)
 
-VIOLATIONS=0
-CHECKED=0
+suffix = head[len(base):]
+if suffix:
+    if base and not base.endswith(b"\n") and not (
+            suffix.startswith(b"\n") or suffix.startswith(b"\r\n")):
+        print("DECISION_REWRITE_FORBIDDEN — appended content must begin after a real line boundary.", file=sys.stderr)
+        raise SystemExit(1)
+    heading_pattern = re.compile(rb"(?m)^## ")
+    heading = heading_pattern.search(head, len(base))
+    if heading is None:
+        print("DECISION_REWRITE_FORBIDDEN — appended bytes do not contain a new decision.", file=sys.stderr)
+        raise SystemExit(1)
+    separator = head[len(base):heading.start()]
+    for line in separator.splitlines():
+        if line.strip() and not re.fullmatch(rb"[ \t]*---+[ \t]*", line):
+            print("DECISION_REWRITE_FORBIDDEN — append a separate level-two decision.", file=sys.stderr)
+            raise SystemExit(1)
 
-for entry in "$WORK/base"/*; do
-  [[ -e "$entry" ]] || continue
-  CHECKED=$((CHECKED + 1))
-  name="$(basename "$entry")"
-  heading="$(head -1 "$entry" | sed 's/^## //')"
-  mirror="$WORK/head/$name"
-
-  if [[ ! -f "$mirror" ]]; then
-    echo "${RED}${BOLD}DECISION_REWRITE_FORBIDDEN${RESET} — removed: ${BOLD}$heading${RESET}"
-    echo "  A decision that no longer applies is superseded by a NEW entry that says so."
-    echo "  Deleting it destroys the only record that the constraint ever existed."
-    VIOLATIONS=$((VIOLATIONS + 1))
-    continue
-  fi
-
-  # Compare content, ignoring pure whitespace reflow.
-  if ! diff -q -b -B "$entry" "$mirror" >/dev/null 2>&1; then
-    echo "${RED}${BOLD}DECISION_REWRITE_FORBIDDEN${RESET} — altered: ${BOLD}$heading${RESET}"
-    diff -u -b -B "$entry" "$mirror" 2>/dev/null | sed -n '4,12p' | sed 's/^/  /'
-    echo "  Append a new decision that supersedes this one instead of editing it."
-    VIOLATIONS=$((VIOLATIONS + 1))
-  fi
-done
-
-echo ""
-if [[ "$VIOLATIONS" -gt 0 ]]; then
-  echo "${RED}${BOLD}$VIOLATIONS decision(s) from $BASE were rewritten or removed.${RESET}"
-  exit 1
-fi
-
-ADDED=$(( $(ls -1 "$WORK/head" 2>/dev/null | wc -l) - CHECKED ))
-if [[ "$ADDED" -gt 0 ]]; then
-  echo "${GREEN}${BOLD}$CHECKED decision(s) intact, $ADDED added.${RESET}"
-else
-  echo "${GREEN}${BOLD}$CHECKED decision(s) intact.${RESET}"
-fi
-exit 0
+added = head_count - base_count
+if added > 0:
+    print(f"{base_count} decision(s) intact, {added} added.")
+else:
+    print(f"{base_count} decision(s) intact.")
+PYEOF
+exit $?

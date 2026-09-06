@@ -1,0 +1,2 @@
+68524760e38b9b36e4c81dcad2cc95d5586b3df727ff8843b16bd052431bf299  tests/h01-hardening-regressions.py
+43912b7b3ecdda473560934fbc285035c46bf3d8f9aa034e1a62902ddf2a901b  .harness/oracles/AC-H01-fail-closed-verifiers.yaml

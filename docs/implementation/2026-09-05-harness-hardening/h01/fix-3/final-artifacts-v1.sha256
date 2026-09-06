@@ -1,0 +1,3 @@
+643119db4c33129246270813bad647c2e21a175d4b58140e7a96d604d29c0e21  tests/h01-hardening-regressions.py
+a3b10de295e4839995cc4300e0d15e028da937c54b86b46727211aa5e24644f0  scripts/verify-decisions.sh
+a3b10de295e4839995cc4300e0d15e028da937c54b86b46727211aa5e24644f0  templates/full/scripts/verify-decisions.sh

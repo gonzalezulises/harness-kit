@@ -1,0 +1,56 @@
+[
+  {
+    "case": "blockers-with-zero-rounds",
+    "rc": 0,
+    "stdout": "Verifying F\n\n\u2500\u2500 Layer: l\n$ touch executed\nLayer 'l' passed.\n\nF -> passing (evidence recorded in feature_list.json)\nNext: update PROGRESS.md and commit.\n",
+    "stderr": "",
+    "executed": true,
+    "after": {
+      "features": [
+        {
+          "id": "F",
+          "state": "passing",
+          "evidence": [
+            "all layers passed \u2014 commit no-git, 2026-09-06T00:20:49Z"
+          ],
+          "budgets": {
+            "review_rounds_max": 2,
+            "repeated_blocker_max": 2,
+            "stop_condition": "stop"
+          },
+          "ledger": {
+            "review_rounds": 0,
+            "blockers": [
+              {
+                "signature": "layer:old",
+                "count": 1
+              }
+            ]
+          },
+          "layers": [
+            {
+              "label": "l",
+              "cmd": "touch executed",
+              "repair": "r"
+            }
+          ]
+        }
+      ],
+      "last_updated": "2026-09-06"
+    }
+  },
+  {
+    "case": "invalid-filter-skipped-on-no-match",
+    "rc": 0,
+    "stdout": "Architecture Rules\n  [OK] R\n\n1 architecture rule(s) hold.\n",
+    "stderr": "",
+    "executed": true
+  },
+  {
+    "case": "append-without-line-boundary",
+    "rc": 0,
+    "stdout": "1 decision(s) intact.\n",
+    "stderr": "",
+    "executed": false
+  }
+]

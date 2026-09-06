@@ -1,0 +1,12 @@
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  /workspace/scratch/adce1c53b293/h01-evidence/local-red.stderr.log
+82eade3f070f21fa170c95aafbc3a67b20876608438f1ca0aa95f328d5fec334  /workspace/scratch/adce1c53b293/h01-evidence/local-red.stdout.log
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  /workspace/scratch/adce1c53b293/h01-evidence/review-red.stderr.log
+738183900c207149f2fb03855c5a663c4e29eca5b299e6dcd7ee4ad65b0e50f4  /workspace/scratch/adce1c53b293/h01-evidence/review-red.stdout.log
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  /workspace/scratch/adce1c53b293/h01-evidence/state-red.stderr.log
+da95d63f96937fdb8aa0a73604c586334a6c89139dfc018de383acd67a9a6652  /workspace/scratch/adce1c53b293/h01-evidence/state-red.stdout.log
+4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865  /workspace/scratch/adce1c53b293/h01-evidence/local-red.exit
+4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865  /workspace/scratch/adce1c53b293/h01-evidence/review-red.exit
+4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865  /workspace/scratch/adce1c53b293/h01-evidence/state-red.exit
+aaa4a71bafe60eaf0c33ac2685430657470d7956e235db2ffbb7953a2702e490  /workspace/scratch/adce1c53b293/h01-evidence/local-red/results.json
+bb14213a4d5e286f44129493461443b1bd165baf46edb9ce01a09f1e799b71c0  /workspace/scratch/adce1c53b293/h01-evidence/review-red/results.json
+89fe13df667e145ad6531649bb6b818513999ecb0a25ce52c38a12742f588fee  /workspace/scratch/adce1c53b293/h01-evidence/state-red/results.json

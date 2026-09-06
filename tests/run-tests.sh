@@ -30,6 +30,10 @@ assert_contains() {
   # assert_contains <label> <haystack> <needle>
   case "$2" in *"$3"*) ok "$1" ;; *) bad "$1 (missing '$3')" ;; esac
 }
+assert_not_contains() {
+  # assert_not_contains <label> <haystack> <needle>
+  case "$2" in *"$3"*) bad "$1 (unexpected '$3')" ;; *) ok "$1" ;; esac
+}
 assert_file() {
   [[ -f "$2" ]] && ok "$1" || bad "$1 (no such file: $2)"
 }
@@ -50,6 +54,14 @@ EOF
 }
 
 echo "${BOLD}harness-kit test suite${RESET}"
+
+H01_FOCAL_LOG="$WORK/h01-focal.log"
+if python3 "$KIT_DIR/tests/h01-hardening-regressions.py" >"$H01_FOCAL_LOG" 2>&1; then
+  ok "H01 verifier hardening regressions"
+else
+  bad "H01 verifier hardening regressions"
+  sed 's/^/    /' "$H01_FOCAL_LOG"
+fi
 
 # ═════════════════════════════════════════════════════════════════════════════
 echo ""
@@ -206,13 +218,16 @@ assert_eq "failing layer exits non-zero" "1" "$RC"
 assert_contains "failure prints repair guidance" "$OUT" "FIX-ME-MARKER"
 assert_contains "failure names the layer" "$OUT" "FAILED at layer"
 STATE2="$(python3 -c "import json;print(json.load(open('feature_list.json'))['features'][1]['state'])")"
-assert_eq "failing feature is NOT promoted" "active" "$STATE2"
+assert_eq "budgeted failure is blocked pending recovery authority" "blocked" "$STATE2"
 
 # 8c — a layer command that calls `exit` must not kill the script silently
 python3 - <<'PYEOF'
 import json
 d = json.load(open("feature_list.json"))
-d["features"][1]["layers"] = [{"label":"static","cmd":"exit 3","repair":"EXIT-MARKER"}]
+f = d["features"][1]
+f["state"] = "active"
+f.pop("ledger", None)
+f["layers"] = [{"label":"static","cmd":"exit 3","repair":"EXIT-MARKER"}]
 json.dump(d, open("feature_list.json","w"), indent=2)
 PYEOF
 OUT3="$(bash scripts/verify-feature.sh F02 2>&1)"
@@ -221,6 +236,28 @@ assert_contains "layer calling exit still prints repair" "$OUT3" "EXIT-MARKER"
 # 8d — unknown feature id
 bash scripts/verify-feature.sh NOPE >/dev/null 2>&1
 assert_eq "unknown feature id exits 66" "66" "$?"
+
+# 8e — multiline commands retain their record boundary and execute as one layer
+python3 - <<'PYEOF'
+import json
+d = json.load(open("feature_list.json"))
+d["features"] = [f for f in d["features"] if f.get("id") != "FML"]
+for feature in d["features"]:
+    if feature.get("state") == "active":
+        feature["state"] = "not_started"
+d["features"].append({"id": "FML", "state": "active", "evidence": [], "layers": [{
+    "label": "multiline",
+    "cmd": "printf 'first\\n' > multiline-executed\nprintf 'second\\n' >> multiline-executed",
+    "repair": "printf repair > repair-must-not-run",
+}]})
+json.dump(d, open("feature_list.json", "w"), indent=2)
+PYEOF
+bash scripts/verify-feature.sh FML >/dev/null 2>&1
+assert_eq "multiline layer command passes" "0" "$?"
+assert_eq "multiline layer keeps both commands" $'first\nsecond' "$(cat multiline-executed)"
+[[ ! -e repair-must-not-run ]] && ok "repair prose never enters the execution channel" \
+                              || bad "repair prose executed as a layer"
+rm -f multiline-executed repair-must-not-run
 
 # ═════════════════════════════════════════════════════════════════════════════
 echo ""
@@ -399,6 +436,9 @@ fb1() {
 import json, os
 d = json.load(open("feature_list.json"))
 d["features"] = [f for f in d["features"] if f.get("id") != "FB1"]
+for feature in d["features"]:
+    if feature.get("state") == "active":
+        feature["state"] = "not_started"
 budgets = {
     "review_rounds_max": int(os.environ["RMAX"]),
     "repeated_blocker_max": int(os.environ["BMAX"]),
@@ -435,40 +475,66 @@ assert_eq "first failure consumes one round" "1" "$(fb1_rounds)"
 assert_contains "first failure still prints repair" "$OUTB" "REPAIR-MARKER"
 assert_contains "first failure reports budget spent" "$OUTB" "Review rounds spent: 1/2"
 
-# 13c — exhausting the review budget stops the loop and escalates
+# 13c — a recorded failure requires verified recovery authority before retry
 OUTC="$(bash scripts/verify-feature.sh FB1 2>&1)"; RCC=$?
-assert_eq "exhausted review budget exits 3" "3" "$RCC"
-assert_contains "exhaustion is named" "$OUTC" "BUDGET_EXHAUSTED"
-assert_contains "exhaustion prints the stop condition" "$OUTC" "escalate to a human"
+assert_eq "ungranted retry exits policy code 5" "5" "$RCC"
+assert_contains "recovery authority requirement is named" "$OUTC" "RECOVERY_AUTHORITY_REQUIRED"
+assert_not_contains "remaining budget is not relabelled exhausted" "$OUTC" "BUDGET_EXHAUSTED"
 STC="$(python3 -c "
 import json
 for f in json.load(open('feature_list.json'))['features']:
     if f.get('id')=='FB1': print(f['state'])
 ")"
-assert_eq "exhausted feature is never promoted" "blocked" "$STC"
+assert_eq "failed feature remains blocked" "blocked" "$STC"
 
-# 13d — the same blocker recurring hits its own ceiling
-fb1 "false" 99 2 "stop and ask for help"
-bash scripts/verify-feature.sh FB1 >/dev/null 2>&1
-OUTD="$(bash scripts/verify-feature.sh FB1 2>&1)"; RCD=$?
-assert_eq "repeated blocker exits 4" "4" "$RCD"
-assert_contains "repeated blocker is named" "$OUTD" "REPEATED_BLOCKER"
-
-# 13e — a green run resets the ledger, so budgets measure the current attempt
-fb1 "false" 9 9 "stop"
-bash scripts/verify-feature.sh FB1 >/dev/null 2>&1
-assert_eq "ledger accumulated before success" "1" "$(fb1_rounds)"
+# Editing blocked back to active and raising the maximum are not authorization
+# grants. The verifier restores the conservative stop state without effects.
 python3 - <<'PYEOF'
 import json
 d = json.load(open("feature_list.json"))
 for f in d["features"]:
     if f.get("id") == "FB1":
-        f["layers"] = [{"label": "static", "cmd": "true", "repair": "n/a"}]
+        f["state"] = "active"
+        f["budgets"]["review_rounds_max"] = 99
+        f["layers"] = [{"label": "static", "cmd": "printf ran > reopened-executed", "repair": "n/a"}]
 json.dump(d, open("feature_list.json", "w"), indent=2)
 PYEOF
+OUT_REOPEN="$(bash scripts/verify-feature.sh FB1 2>&1)"; RC_REOPEN=$?
+assert_eq "state edit and raised maximum do not grant recovery" "5" "$RC_REOPEN"
+[[ ! -e reopened-executed ]] && ok "ungranted recovery rejects before layer effects" \
+                              || bad "failed feature executed after local policy edits"
+ST_REOPEN="$(python3 -c "
+import json
+print(next(f['state'] for f in json.load(open('feature_list.json'))['features'] if f.get('id')=='FB1'))
+")"
+assert_eq "failed ledger restores blocked state" "blocked" "$ST_REOPEN"
+assert_eq "rejected recovery preserves spent rounds" "1" "$(fb1_rounds)"
+
+# 13d — a blocker ceiling reached by the current authorized attempt still stops
+fb1 "false" 99 1 "stop and ask for help"
+OUTD="$(bash scripts/verify-feature.sh FB1 2>&1)"; RCD=$?
+assert_eq "repeated blocker exits 4" "4" "$RCD"
+assert_contains "repeated blocker is named" "$OUTD" "REPEATED_BLOCKER"
+
+# 13e — changing a failed command locally cannot manufacture a green retry
+fb1 "false" 9 9 "stop"
 bash scripts/verify-feature.sh FB1 >/dev/null 2>&1
-assert_eq "success promotes despite prior failures" "0" "$?"
-assert_eq "success resets the review ledger" "0" "$(fb1_rounds)"
+assert_eq "ledger accumulated before attempted recovery" "1" "$(fb1_rounds)"
+python3 - <<'PYEOF'
+import json
+d = json.load(open("feature_list.json"))
+for f in d["features"]:
+    if f.get("id") == "FB1":
+        f["state"] = "active"
+        f["layers"] = [{"label": "static", "cmd": "touch ungranted-green", "repair": "n/a"}]
+json.dump(d, open("feature_list.json", "w"), indent=2)
+PYEOF
+OUTE="$(bash scripts/verify-feature.sh FB1 2>&1)"; RCE=$?
+assert_eq "edited command still needs recovery authority" "5" "$RCE"
+assert_contains "edited command reports recovery requirement" "$OUTE" "RECOVERY_AUTHORITY_REQUIRED"
+[[ ! -e ungranted-green ]] && ok "edited command does not execute without recovery authority" \
+                           || bad "edited command executed without recovery authority"
+assert_eq "rejected recovery preserves prior review rounds" "1" "$(fb1_rounds)"
 
 # 13f — features without budgets keep working exactly as before
 python3 - <<'PYEOF'
@@ -1012,10 +1078,9 @@ assert_contains "makefile-gates is a registered gate" \
 
 # ═════════════════════════════════════════════════════════════════════════════
 echo ""
-echo "${BOLD}21. verify-claims does not repeat identical work${RESET}"
-# Features share layers on purpose. Re-running an identical command against the
-# same checkout returns the same answer at the same cost: six features x three
-# layers meant eighteen executions to observe three results.
+echo "${BOLD}21. verify-claims observes every declared execution${RESET}"
+# Equal command text does not prove equal inputs: a previous layer may mutate
+# the filesystem or environment. Each declaration therefore earns its own run.
 
 DEDUP="$WORK/dedup"; make_fixture "$DEDUP"
 bash "$KIT_DIR/bin/harness-init.sh" --target "$DEDUP" --level full >/dev/null 2>&1
@@ -1033,16 +1098,16 @@ PYEOF2
 COUNTER="$DEDUP/counter.txt"
 SHARED='{"label":"suite","cmd":"printf x >> \"$COUNTER\"","repair":"r"}'
 
-# 21a — three features, one shared command, one execution
+# 21a — three features, one shared command, three observed executions
 : > "$COUNTER"
 dedup_claims "[{\"id\":\"D1\",\"state\":\"passing\",\"behavior\":\"b\",\"evidence\":[\"e\"],\"layers\":[$SHARED]},
                {\"id\":\"D2\",\"state\":\"passing\",\"behavior\":\"b\",\"evidence\":[\"e\"],\"layers\":[$SHARED]},
                {\"id\":\"D3\",\"state\":\"passing\",\"behavior\":\"b\",\"evidence\":[\"e\"],\"layers\":[$SHARED]}]"
 OUT21="$(COUNTER="$COUNTER" bash scripts/verify-claims.sh 2>&1)"; RC21=$?
 assert_eq "shared-layer claims still exit 0" "0" "$RC21"
-assert_eq "an identical command runs once, not three times" "1" "$(wc -c < "$COUNTER" | tr -d ' ')"
+assert_eq "an identical command runs for every declaration" "3" "$(wc -c < "$COUNTER" | tr -d ' ')"
 
-# 21b — reusing a verdict must not make features disappear from the report
+# 21b — every independently observed feature remains visible in the report
 assert_contains "every feature is still reported" "$OUT21" "D3"
 
 # 21c — genuinely different commands are genuinely different verifications
@@ -1052,7 +1117,7 @@ dedup_claims "[{\"id\":\"D1\",\"state\":\"passing\",\"behavior\":\"b\",\"evidenc
 COUNTER="$COUNTER" bash scripts/verify-claims.sh >/dev/null 2>&1
 assert_eq "two distinct commands both run" "2" "$(wc -c < "$COUNTER" | tr -d ' ')"
 
-# 21d — the risk of deduplicating is certifying green what never passed
+# 21d — each feature depending on a shared failure remains a failed claim
 dedup_claims '[{"id":"D1","state":"passing","behavior":"b","evidence":["e"],"layers":[{"label":"s","cmd":"false","repair":"r"}]},
                {"id":"D2","state":"passing","behavior":"b","evidence":["e"],"layers":[{"label":"s","cmd":"false","repair":"r"}]}]'
 OUTF="$(bash scripts/verify-claims.sh 2>&1)"; RCF=$?

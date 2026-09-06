@@ -1,29 +1,12 @@
 #!/usr/bin/env bash
-# verify-claims.sh — re-run every feature the repo claims is already passing.
-#
-# Usage:
-#   scripts/verify-claims.sh
-#
-# verify-feature.sh is the gate an honest agent walks through. This is the gate
-# nobody walks through voluntarily: it assumes every "passing" in feature_list.json
-# is a claim until the layers behind it run again and agree.
-#
-# Run it in CI, on a runner the agent does not control. A state written by hand is
-# a claim; a state that survives this is a receipt.
-#
-# Exit codes (fail-closed — only an observed green run exits 0):
-#   0  every claim re-verified, or there were no claims (stated out loud)
-#   1  FALSE_CLAIM     — a feature marked passing whose layers do not pass
-#   2  NOT_VERIFIABLE  — a claim that cannot be checked at all (no layers, no evidence)
-#   5  WEAKENED_VERIFICATION — a passing feature changed how it is verified
-#  66  feature_list.json missing
-#  69  no python available
+# verify-claims.sh — re-run every feature the repo claims is passing.
+# Exit: 0 verified/no claims, 1 false claim, 2 invalid/unverifiable contract,
+# 3 tool failure, 5 changed verification, 66 missing feature list, 69 no Python.
 
 set -uo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR" || { echo "cannot cd to $ROOT_DIR" >&2; exit 66; }
-
 FL="feature_list.json"
 [[ -f "$FL" ]] || { echo "verify-claims: $FL not found in $ROOT_DIR" >&2; exit 66; }
 
@@ -40,216 +23,311 @@ for c in python3 python; do
 done
 [[ -n "$PY" ]] || { echo "verify-claims: needs python3" >&2; exit 69; }
 
-# ── Was the verification itself weakened? ────────────────────────────────────
-# This script is taken from the protected base, but the commands it runs come
-# from the pull request. Re-running a layer proves nothing if the layer was
-# swapped for `true` in the same change: the state stays `passing` and the
-# receipt now certifies a command that does no work.
-#
-# So a feature that was already `passing` at the base and is still `passing` here
-# must carry the same layers. Changing how something is verified invalidates the
-# earlier receipt — set the feature back to `active` and earn it again.
 WORK_CLAIMS="$(mktemp -d)"
 trap 'rm -rf "$WORK_CLAIMS"' EXIT
 
+# Parse and validate the whole head before emitting any executable record.
+"$PY" - "$FL" "$WORK_CLAIMS/head" <<'PYEOF'
+import json, sys
+from pathlib import Path
+
+path, output = sys.argv[1:3]
+output = Path(output)
+output.mkdir()
+
+def strict_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result: raise ValueError("duplicate object key: " + key)
+        result[key] = value
+    return result
+
+def safe_text(value, where, *, nonempty=False):
+    if not isinstance(value, str) or "\0" in value or (nonempty and not value.strip()):
+        reject(where + (" must be a non-empty NUL-free string" if nonempty else " must be a NUL-free string"))
+
+def reject(message):
+    print("verify-claims: INVALID_FEATURE_LIST — " + message, file=sys.stderr)
+    raise SystemExit(2)
+
+try:
+    with open(path, encoding="utf-8") as fh:
+        data = json.load(fh, object_pairs_hook=strict_object)
+except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as exc:
+    reject(str(exc))
+if not isinstance(data, dict): reject("root must be an object")
+features = data.get("features")
+if not isinstance(features, list): reject("features must be an array")
+states, ids = {"not_started", "active", "blocked", "passing"}, set()
+passing = []
+for i, feature in enumerate(features):
+    where = f"features[{i}]"
+    if not isinstance(feature, dict): reject(where + " must be an object")
+    fid = feature.get("id")
+    safe_text(fid, where + ".id", nonempty=True)
+    if fid in ids: reject("duplicate feature id: " + fid)
+    ids.add(fid)
+    if feature.get("state") not in states: reject(where + ".state is unknown")
+    evidence = feature.get("evidence", [])
+    if not isinstance(evidence, list) or any(not isinstance(v, str) for v in evidence):
+        reject(where + ".evidence must be an array of strings")
+    layers = feature.get("layers", [])
+    if not isinstance(layers, list): reject(where + ".layers must be an array")
+    for j, layer in enumerate(layers):
+        lw = f"{where}.layers[{j}]"
+        if not isinstance(layer, dict): reject(lw + " must be an object")
+        safe_text(layer.get("label", "layer"), lw + ".label", nonempty=True)
+        safe_text(layer.get("cmd"), lw + ".cmd", nonempty=True)
+        safe_text(layer.get("repair", "No repair guidance recorded."), lw + ".repair")
+    budgets = feature.get("budgets")
+    if budgets is not None:
+        if not isinstance(budgets, dict): reject(where + ".budgets must be an object")
+        stop_condition = budgets.get("stop_condition")
+        if not isinstance(stop_condition, str) or "\0" in stop_condition or not stop_condition.strip():
+            reject(where + ".budgets.stop_condition must be a non-empty NUL-free string")
+        for key in ("review_rounds_max", "repeated_blocker_max"):
+            if key in budgets:
+                value = budgets[key]
+                if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+                    reject(f"{where}.budgets.{key} must be a non-negative integer")
+    if "ledger" in feature:
+        ledger = feature["ledger"]
+        if not isinstance(ledger, dict) or not {"review_rounds", "blockers"} <= set(ledger):
+            reject(where + ".ledger must contain review_rounds and blockers")
+        rounds, blockers = ledger["review_rounds"], ledger["blockers"]
+        if isinstance(rounds, bool) or not isinstance(rounds, int) or rounds < 0:
+            reject(where + ".ledger.review_rounds must be a non-negative integer")
+        if not isinstance(blockers, list): reject(where + ".ledger.blockers must be an array")
+        signatures = set()
+        blocker_total = 0
+        for j, blocker in enumerate(blockers):
+            bw = f"{where}.ledger.blockers[{j}]"
+            if not isinstance(blocker, dict): reject(bw + " must be an object")
+            signature, count = blocker.get("signature"), blocker.get("count")
+            if not isinstance(signature, str) or "\0" in signature or not signature.strip(): reject(bw + ".signature must be non-empty and NUL-free")
+            if signature in signatures: reject(where + ".ledger has duplicate blocker signatures")
+            signatures.add(signature)
+            if isinstance(count, bool) or not isinstance(count, int) or count < 1:
+                reject(bw + ".count must be a positive integer")
+            blocker_total += count
+        if blocker_total != rounds:
+            reject(where + ".ledger review_rounds must equal the recorded blocker count")
+    if feature["state"] == "passing": passing.append(feature)
+
+(output / "claim-count").write_text(str(len(passing)), encoding="utf-8")
+for i, feature in enumerate(passing):
+    record = output / f"claim-{i:06d}"
+    record.mkdir()
+    (record / "id").write_text(feature["id"], encoding="utf-8")
+    layers = feature.get("layers", [])
+    problem = "NO_LAYERS" if not layers else ("NO_EVIDENCE" if not feature.get("evidence") else "OK")
+    (record / "problem").write_text(problem, encoding="utf-8")
+    (record / "layer-count").write_text(str(len(layers) if problem == "OK" else 0), encoding="utf-8")
+    if problem == "OK":
+        for j, layer in enumerate(layers):
+            layer_record = record / f"layer-{j:06d}"
+            layer_record.mkdir()
+            (layer_record / "label").write_text(layer.get("label", "layer"), encoding="utf-8")
+            (layer_record / "cmd").write_text(layer["cmd"], encoding="utf-8")
+PYEOF
+HEAD_RC=$?
+[[ "$HEAD_RC" -eq 0 ]] || exit "$HEAD_RC"
+
+# Resolve authority. An explicitly declared source must be readable and valid.
+# A bootstrap without a base is allowed only when a resolved commit proves the
+# feature list did not exist there.
 BASE_FL=""
+BASE_LABEL=""
 if [[ -n "${CLAIMS_BASE_FILE:-}" ]]; then
-  # CI checks the head out at depth 1, so `git show <base>:FILE` cannot resolve.
-  [[ -f "$CLAIMS_BASE_FILE" ]] && BASE_FL="$CLAIMS_BASE_FILE"
+  [[ -f "$CLAIMS_BASE_FILE" ]] || {
+    echo "${RED}verify-claims: declared authority file is missing: $CLAIMS_BASE_FILE${RESET}" >&2
+    exit 2
+  }
+  BASE_FL="$CLAIMS_BASE_FILE"
+  BASE_LABEL="$CLAIMS_BASE_FILE"
 else
   for candidate in origin/main origin/master main master; do
-    git rev-parse --verify --quiet "$candidate" >/dev/null 2>&1 || continue
-    if git show "$candidate:$FL" > "$WORK_CLAIMS/base.json" 2>/dev/null; then
+    git rev-parse --verify --quiet "$candidate^{commit}" >/dev/null 2>&1 || continue
+    BASE_LABEL="$candidate"
+    TREE_RESULT="$(git ls-tree -r --name-only "$candidate" -- "$FL" 2>/dev/null)"
+    TREE_RC=$?
+    [[ "$TREE_RC" -eq 0 ]] || {
+      echo "verify-claims: could not read authority tree at $candidate" >&2; exit 3; }
+    if [[ "$TREE_RESULT" == "$FL" ]]; then
+      git show "$candidate:$FL" > "$WORK_CLAIMS/base.json" 2>/dev/null || {
+        echo "verify-claims: could not read $FL at $candidate" >&2; exit 3; }
       BASE_FL="$WORK_CLAIMS/base.json"
     fi
     break
   done
+  [[ -n "$BASE_LABEL" ]] || {
+    echo "verify-claims: no authority base found; configure CLAIMS_BASE_FILE or a main ref" >&2
+    exit 2
+  }
 fi
 
 if [[ -n "$BASE_FL" ]]; then
-  WEAKENED="$("$PY" - "$BASE_FL" "$FL" <<'PYEOF'
+  "$PY" - "$BASE_FL" "$FL" <<'PYEOF'
 import json, sys
 
-def passing_layers(path):
+def strict_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result: raise ValueError("duplicate object key: " + key)
+        result[key] = value
+    return result
+
+def load(path, role):
     try:
-        data = json.load(open(path))
-    except Exception:
-        return {}
-    out = {}
-    for f in data.get("features", []):
-        if f.get("state") == "passing":
-            out[f.get("id")] = f.get("layers") or []
-    return out
+        with open(path, encoding="utf-8") as fh: data = json.load(fh, object_pairs_hook=strict_object)
+    except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as exc:
+        print(f"verify-claims: invalid {role} authority: {exc}", file=sys.stderr); raise SystemExit(2)
+    if not isinstance(data, dict) or not isinstance(data.get("features"), list):
+        print(f"verify-claims: invalid {role} authority feature list shape", file=sys.stderr); raise SystemExit(2)
+    ids = set()
+    for i, feature in enumerate(data["features"]):
+        where = f"{role}.features[{i}]"
+        if not isinstance(feature, dict):
+            print(f"verify-claims: invalid {where}", file=sys.stderr); raise SystemExit(2)
+        fid = feature.get("id")
+        if not isinstance(fid, str) or "\0" in fid or not fid.strip() or fid in ids:
+            print(f"verify-claims: invalid or duplicate id in {role}", file=sys.stderr); raise SystemExit(2)
+        ids.add(fid)
+        if feature.get("state") not in {"not_started", "active", "blocked", "passing"}:
+            print(f"verify-claims: invalid state in {role}", file=sys.stderr); raise SystemExit(2)
+        evidence = feature.get("evidence", [])
+        if not isinstance(evidence, list) or any(not isinstance(v, str) for v in evidence):
+            print(f"verify-claims: invalid evidence in {where}", file=sys.stderr); raise SystemExit(2)
+        layers = feature.get("layers", [])
+        if not isinstance(layers, list):
+            print(f"verify-claims: invalid layers in {role}", file=sys.stderr); raise SystemExit(2)
+        for j, layer in enumerate(layers):
+            if (not isinstance(layer, dict)
+                    or not isinstance(layer.get("label", "layer"), str)
+                    or "\0" in layer.get("label", "layer")
+                    or not layer.get("label", "layer").strip()
+                    or not isinstance(layer.get("cmd"), str)
+                    or "\0" in layer.get("cmd", "")
+                    or not layer["cmd"].strip()
+                    or not isinstance(layer.get("repair", "No repair guidance recorded."), str)
+                    or "\0" in layer.get("repair", "No repair guidance recorded.")):
+                print(f"verify-claims: invalid layer command in {role}", file=sys.stderr); raise SystemExit(2)
+        budgets = feature.get("budgets")
+        if budgets is not None:
+            if (not isinstance(budgets, dict)
+                    or not isinstance(budgets.get("stop_condition"), str)
+                    or "\0" in budgets.get("stop_condition", "")
+                    or not budgets["stop_condition"].strip()):
+                print(f"verify-claims: invalid budgets in {where}", file=sys.stderr); raise SystemExit(2)
+            for key in ("review_rounds_max", "repeated_blocker_max"):
+                if key in budgets:
+                    value = budgets[key]
+                    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+                        print(f"verify-claims: invalid {key} in {where}", file=sys.stderr); raise SystemExit(2)
+        if "ledger" in feature:
+            ledger = feature["ledger"]
+            if not isinstance(ledger, dict) or not {"review_rounds", "blockers"} <= set(ledger):
+                print(f"verify-claims: invalid ledger in {where}", file=sys.stderr); raise SystemExit(2)
+            rounds, blockers = ledger["review_rounds"], ledger["blockers"]
+            if isinstance(rounds, bool) or not isinstance(rounds, int) or rounds < 0 or not isinstance(blockers, list):
+                print(f"verify-claims: invalid ledger in {where}", file=sys.stderr); raise SystemExit(2)
+            signatures = set()
+            blocker_total = 0
+            for blocker in blockers:
+                if not isinstance(blocker, dict):
+                    print(f"verify-claims: invalid blocker in {where}", file=sys.stderr); raise SystemExit(2)
+                signature, count = blocker.get("signature"), blocker.get("count")
+                if (not isinstance(signature, str) or "\0" in signature or not signature.strip() or signature in signatures
+                        or isinstance(count, bool) or not isinstance(count, int) or count < 1):
+                    print(f"verify-claims: invalid blocker in {where}", file=sys.stderr); raise SystemExit(2)
+                signatures.add(signature)
+                blocker_total += count
+            if blocker_total != rounds:
+                print(f"verify-claims: inconsistent ledger in {where}", file=sys.stderr); raise SystemExit(2)
+    return data
 
-base, head = passing_layers(sys.argv[1]), passing_layers(sys.argv[2])
-for fid, base_layers in base.items():
-    if fid not in head:
-        continue  # dropped, or moved back to active: both are legitimate
-    if json.dumps(base_layers, sort_keys=True) == json.dumps(head[fid], sort_keys=True):
-        continue
-    was = " | ".join(l.get("cmd", "") for l in base_layers) or "(none)"
-    now = " | ".join(l.get("cmd", "") for l in head[fid]) or "(none)"
-    print("%s\t%s\t%s" % (fid, was, now))
+base, head = load(sys.argv[1], "base"), load(sys.argv[2], "head")
+base_passing = {f["id"]: f.get("layers", []) for f in base["features"] if f["state"] == "passing"}
+head_passing = {f["id"]: f.get("layers", []) for f in head["features"] if f["state"] == "passing"}
+changed = []
+for fid, layers in base_passing.items():
+    if fid in head_passing and layers != head_passing[fid]:
+        changed.append((fid, layers, head_passing[fid]))
+if changed:
+    print("WEAKENED_VERIFICATION", file=sys.stderr)
+    for fid, old, new in changed:
+        was = " | ".join(str(v.get("cmd", "")) for v in old) or "(none)"
+        now = " | ".join(str(v.get("cmd", "")) for v in new) or "(none)"
+        print(f"  {fid} is still marked passing, but its verification changed.", file=sys.stderr)
+        print("    was: " + was, file=sys.stderr)
+        print("    now: " + now, file=sys.stderr)
+    raise SystemExit(5)
 PYEOF
-)"
-
-  if [[ -n "${WEAKENED//[$'\n'[:space:]]/}" ]]; then
-    echo "${RED}${BOLD}WEAKENED_VERIFICATION${RESET}" >&2
-    while IFS=$'\t' read -r fid was now; do
-      [[ -z "$fid" ]] && continue
-      echo "  ${BOLD}$fid${RESET} is still marked passing, but its verification changed." >&2
-      echo "    was: $was" >&2
-      echo "    now: $now" >&2
-    done <<< "$WEAKENED"
-    echo "" >&2
-    echo "The recorded evidence certifies the command that ran at the time. Changing" >&2
-    echo "the command invalidates it. Set the feature back to 'active' and re-run" >&2
-    echo "scripts/verify-feature.sh so the new command earns its own receipt." >&2
-    exit 5
-  fi
+  AUTHORITY_RC=$?
+  [[ "$AUTHORITY_RC" -eq 0 ]] || exit "$AUTHORITY_RC"
 fi
 
-# ── Collect the claims ───────────────────────────────────────────────────────
-# One line per claimed feature: id \t problem \t label \t cmd
-# `problem` is OK, or names why the claim is unverifiable before anything runs.
-# Every field carries a token: consecutive tabs collapse under IFS whitespace
-# splitting, so an empty middle field would silently shift the columns left.
-CLAIMS_TSV="$("$PY" - "$FL" <<'PYEOF'
-import json, sys
-data = json.load(open(sys.argv[1]))
-for f in data.get("features", []):
-    if f.get("state") != "passing":
-        continue
-    fid = f.get("id", "?")
-    layers = f.get("layers") or []
-    if not layers:
-        print("%s\tNO_LAYERS\t-\t-" % fid); continue
-    if not (f.get("evidence") or []):
-        print("%s\tNO_EVIDENCE\t-\t-" % fid); continue
-    for l in layers:
-        label = (l.get("label") or "layer").replace("\t", " ")
-        cmd = (l.get("cmd") or "").replace("\t", " ")
-        print("%s\tOK\t%s\t%s" % (fid, label, cmd))
-PYEOF
-)"
-
-if [[ -z "${CLAIMS_TSV//[$'\n'[:space:]]/}" ]]; then
+CLAIM_COUNT="$(cat "$WORK_CLAIMS/head/claim-count")"
+if [[ "$CLAIM_COUNT" -eq 0 ]]; then
   echo "${YELLOW}NO_CLAIMS${RESET} — no feature is marked passing, so there was nothing to re-verify."
   echo "This is not a pass: it means the repo claims nothing yet."
   exit 0
 fi
 
-# ── Re-run every claim ───────────────────────────────────────────────────────
-# One run, one result per distinct command. Features share layers on purpose, and re-running
-# an identical command against the same checkout returns the same answer at the same cost.
-# Measured on a real repo: six features x three layers meant eighteen executions to observe
-# three results — 10.2 of the 12.6 minutes of its required gate.
-#
-# Deduplicating is not weakening: every layer's verdict is still required, and a reused
-# failure still fails each feature that leans on it. Only the repetition disappears. The
-# cache lives and dies with this run, so nothing carries over from a previous commit.
-CACHE_DIR="$WORK_CLAIMS/cache"
-mkdir -p "$CACHE_DIR"
-CACHE_CMDS="$CACHE_DIR/commands"
-: > "$CACHE_CMDS"
-
-# Exact whole-line match: no hashing, so two commands cannot collide into one verdict.
-# Layer commands are single-line by construction (tabs are stripped when claims are collected).
-slot_for_command() {
-  local hit
-  hit="$(grep -nFx -- "$1" "$CACHE_CMDS" 2>/dev/null | head -1)" || true
-  [[ -n "$hit" ]] && printf '%s' "${hit%%:*}"
-}
-
 echo "${BOLD}Re-verifying claimed features${RESET}"
 CHECKED=0
-REUSED=0
 FAILED=0
 UNVERIFIABLE=0
-LAST_ID=""
-
-while IFS=$'\t' read -r fid problem label cmd; do
-  [[ -z "$fid" ]] && continue
-
+for ((i=0; i<CLAIM_COUNT; i++)); do
+  record="$WORK_CLAIMS/head/claim-$(printf '%06d' "$i")"
+  fid="$(cat "$record/id"; printf x)"; fid="${fid%x}"
+  problem="$(cat "$record/problem")"
   if [[ "$problem" != "OK" ]]; then
     echo ""
     echo "${RED}${BOLD}NOT_VERIFIABLE${RESET} — $fid is marked passing but $problem."
-    case "$problem" in
-      NO_LAYERS)   echo "  A claim with no layers cannot be checked by anyone. Add layers or drop the claim." ;;
-      NO_EVIDENCE) echo "  NO_EVIDENCE: passing requires recorded evidence. Re-run scripts/verify-feature.sh $fid." ;;
-    esac
     UNVERIFIABLE=$((UNVERIFIABLE + 1))
     continue
   fi
-
-  if [[ "$fid" != "$LAST_ID" ]]; then
-    echo ""
-    echo "${BOLD}── $fid${RESET}"
-    CHECKED=$((CHECKED + 1))
-    LAST_ID="$fid"
-  fi
-
-  if [[ -z "$cmd" ]]; then
-    echo "  ${RED}layer '$label' has no command — a claim that runs nothing is not a claim.${RESET}"
-    FAILED=$((FAILED + 1))
-    continue
-  fi
-
-  # Subshell: a layer command calling `exit` must not take this script with it.
-  # Output is captured rather than discarded: a failure whose reason you cannot
-  # see is a failure you cannot act on, and in CI there is no way to re-run it by
-  # hand. Only the tail is shown, so a passing run stays quiet.
-  SLOT="$(slot_for_command "$cmd")"
-  if [[ -n "$SLOT" ]]; then
-    REUSED=$((REUSED + 1))
-    NOTE=" ${YELLOW}(reused)${RESET}"
-  else
-    printf '%s\n' "$cmd" >> "$CACHE_CMDS"
-    SLOT="$(wc -l < "$CACHE_CMDS" | tr -d '[:space:]')"
-    ( eval "$cmd" >"$CACHE_DIR/$SLOT.log" 2>&1 )
-    printf '%s' "$?" > "$CACHE_DIR/$SLOT.exit"
-    NOTE=""
-  fi
-
-  LAYER_LOG="$CACHE_DIR/$SLOT.log"
-  if [[ "$(cat "$CACHE_DIR/$SLOT.exit")" -eq 0 ]]; then
-    echo "  ${GREEN}ok${RESET}   $label$NOTE"
-  else
-    echo "  ${RED}FAIL${RESET} $label$NOTE  \$ $cmd"
-    if [[ -s "$LAYER_LOG" ]]; then
-      echo "  ${BOLD}last output:${RESET}"
-      tail -15 "$LAYER_LOG" | sed 's/^/    /'
+  echo ""
+  echo "${BOLD}── $fid${RESET}"
+  CHECKED=$((CHECKED + 1))
+  layer_count="$(cat "$record/layer-count")"
+  for ((j=0; j<layer_count; j++)); do
+    layer="$record/layer-$(printf '%06d' "$j")"
+    label="$(cat "$layer/label"; printf x)"; label="${label%x}"
+    cmd="$(cat "$layer/cmd"; printf x)"; cmd="${cmd%x}"
+    log="$WORK_CLAIMS/claim-$i-layer-$j.log"
+    ( eval "$cmd" >"$log" 2>&1 )
+    rc=$?
+    if [[ "$rc" -eq 0 ]]; then
+      echo "  ${GREEN}ok${RESET}   $label"
     else
-      echo "    (the command produced no output)"
+      echo "  ${RED}FAIL${RESET} $label  \$ $cmd"
+      if [[ -s "$log" ]]; then
+        echo "  ${BOLD}last output:${RESET}"
+        tail -15 "$log" | sed 's/^/    /'
+      else
+        echo "    (the command produced no output)"
+      fi
+      FAILED=$((FAILED + 1))
     fi
-    FAILED=$((FAILED + 1))
-  fi
-done <<< "$CLAIMS_TSV"
+  done
+done
 
-# ── Verdict ──────────────────────────────────────────────────────────────────
 echo ""
 if [[ "$UNVERIFIABLE" -gt 0 ]]; then
   echo "${RED}${BOLD}NOT_VERIFIABLE: $UNVERIFIABLE claim(s) cannot be checked.${RESET}"
   echo "Fail-closed: an unverifiable claim is never a pass."
   exit 2
 fi
-
 if [[ "$FAILED" -gt 0 ]]; then
   echo "${RED}${BOLD}FALSE_CLAIM: $FAILED layer(s) failed across features marked passing.${RESET}"
-  echo "Someone wrote 'passing' without the layers agreeing. Reset those features to"
-  echo "active and re-run scripts/verify-feature.sh so the state becomes a receipt."
+  echo "Reset those features to active and re-run scripts/verify-feature.sh."
   exit 1
 fi
-
-# Sentinel: reaching this line with nothing actually executed would be a silent
-# pass, which is the exact failure this script exists to prevent.
 if [[ "$CHECKED" -eq 0 ]]; then
   echo "${RED}${BOLD}NOT_VERIFIABLE: claims were listed but none executed.${RESET}"
   exit 2
 fi
-
 echo "${GREEN}${BOLD}$CHECKED claimed feature(s) re-verified.${RESET} Every passing state is backed by a run."
-if [[ "$REUSED" -gt 0 ]]; then
-  echo "$REUSED layer(s) reused an identical command already run in this same checkout."
-fi
 exit 0

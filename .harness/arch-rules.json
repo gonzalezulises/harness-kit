@@ -1,10 +1,40 @@
 {
-  "$comment": "Architectural boundary rules, enforced by scripts/check-arch.sh. Each rule runs 'check' and fires when the result does not match 'expect' (empty | nonempty | exit0). Promote every recurring code-review finding into a rule here — a review comment fires once, a rule fires forever. Keep double quotes OUT of the check command: it travels JSON -> shell, and nested quoting is where these rules break.",
+  "$comment": "Architectural boundary rules enforced by scripts/check-arch.sh. Typed match_argv checks declare match and no-match exit codes; filters are ordered Python regular expressions over matched output lines.",
   "rules": [
     {
       "id": "no-secrets-committed",
       "description": "Credentials must never enter version control.",
-      "check": "git grep -nIE '(api[_-]?key|apikey|secret|password|passwd|auth[_-]?token|access[_-]?token)[[:space:]]*[=:][[:space:]]*.?[A-Za-z0-9_/+-]{20,}' -- ':!*.example' ':!*.md' ':!*.lock' ':!*lock.json' ':!.harness/*' 2>/dev/null | grep -vE '(api[_-]?key|apikey|secret|password|passwd|auth[_-]?token|access[_-]?token)[[:space:]]*[=:][[:space:]]*[\"'\\'']?[$]' | grep -E '(api[_-]?key|apikey|secret|password|passwd|auth[_-]?token|access[_-]?token)[[:space:]]*[=:][[:space:]]*[\"'\\'']?[A-Za-z_/+-]*[0-9]' | grep -viE '(api[_-]?key|apikey|secret|password|passwd|auth[_-]?token|access[_-]?token)[[:space:]]*[=:][[:space:]]*[\"'\\'']?(test|fake|dummy|example|placeholder|sample|changeme)[-_]' || true",
+      "check": {
+        "type": "match_argv",
+        "argv": [
+          "git",
+          "grep",
+          "-nIE",
+          "(api[_-]?key|apikey|secret|password|passwd|auth[_-]?token|access[_-]?token)[[:space:]]*[=:][[:space:]]*.?[A-Za-z0-9_/+-]{20,}",
+          "--",
+          ":!*.example",
+          ":!*.md",
+          ":!*.lock",
+          ":!*lock.json",
+          ":!.harness/*"
+        ],
+        "match_exit": 0,
+        "no_match_exit": 1,
+        "filters": [
+          {
+            "action": "exclude",
+            "pattern": "(?i)(api[_-]?key|apikey|secret|password|passwd|auth[_-]?token|access[_-]?token)\\s*[=:]\\s*[\"']?\\$"
+          },
+          {
+            "action": "include",
+            "pattern": "(?i)(api[_-]?key|apikey|secret|password|passwd|auth[_-]?token|access[_-]?token)\\s*[=:]\\s*[\"']?[A-Za-z_/+-]*[0-9]"
+          },
+          {
+            "action": "exclude",
+            "pattern": "(?i)(api[_-]?key|apikey|secret|password|passwd|auth[_-]?token|access[_-]?token)\\s*[=:]\\s*[\"']?(test|fake|dummy|example|placeholder|sample|changeme)[-_]"
+          }
+        ]
+      },
       "expect": "empty",
       "what": "A hardcoded credential appears in a tracked file.",
       "why": "Anything committed stays in git history permanently, even if a later commit deletes it.",
@@ -13,7 +43,17 @@
     {
       "id": "no-env-file-tracked",
       "description": ".env must stay untracked.",
-      "check": "git ls-files --error-unmatch .env 2>/dev/null || true",
+      "check": {
+        "type": "match_argv",
+        "argv": [
+          "git",
+          "ls-files",
+          "--error-unmatch",
+          ".env"
+        ],
+        "match_exit": 0,
+        "no_match_exit": 1
+      },
       "expect": "empty",
       "what": "The .env file is tracked by git.",
       "why": "That is where real credentials live; tracking it publishes them to every clone and fork.",
@@ -22,7 +62,22 @@
     {
       "id": "no-debug-statements",
       "description": "Debug statements must not survive into committed source.",
-      "check": "git grep -nIE '(debugger;|console[.]debug[(]|binding[.]pry|pdb[.]set_trace[(])' -- src app lib packages 2>/dev/null || true",
+      "check": {
+        "type": "match_argv",
+        "argv": [
+          "git",
+          "grep",
+          "-nIE",
+          "(debugger;|console[.]debug[(]|binding[.]pry|pdb[.]set_trace[(])",
+          "--",
+          "src",
+          "app",
+          "lib",
+          "packages"
+        ],
+        "match_exit": 0,
+        "no_match_exit": 1
+      },
       "expect": "empty",
       "what": "A debugger or debug-print statement remains in source.",
       "why": "Debug artifacts change runtime behaviour and are a reliable signal that a session ended without cleanup.",
@@ -31,7 +86,19 @@
     {
       "id": "no-merge-conflict-markers",
       "description": "Conflict markers must never be committed.",
-      "check": "git grep -nIE '^(<<<<<<<|>>>>>>>)[[:space:]]' -- ':!*.md' 2>/dev/null || true",
+      "check": {
+        "type": "match_argv",
+        "argv": [
+          "git",
+          "grep",
+          "-nIE",
+          "^(<<<<<<<|>>>>>>>)[[:space:]]",
+          "--",
+          ":!*.md"
+        ],
+        "match_exit": 0,
+        "no_match_exit": 1
+      },
       "expect": "empty",
       "what": "An unresolved merge conflict marker is present in a tracked file.",
       "why": "The file is syntactically broken; whatever verification passed did not actually cover this path.",

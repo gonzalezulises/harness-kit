@@ -1,0 +1,23 @@
+test_01_blocked_budget_requires_authorized_reopening (__main__.RegressionTests.test_01_blocked_budget_requires_authorized_reopening) ... ok
+test_02_empty_command_must_not_execute_repair_text (__main__.RegressionTests.test_02_empty_command_must_not_execute_repair_text) ... ok
+test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims (__main__.RegressionTests.test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims) ... ok
+test_04_claims_require_the_explicit_authority_baseline (__main__.RegressionTests.test_04_claims_require_the_explicit_authority_baseline) ... ok
+test_05_cached_success_must_not_survive_changed_verification_inputs (__main__.RegressionTests.test_05_cached_success_must_not_survive_changed_verification_inputs) ... ok
+test_06_decisions_require_a_resolvable_explicit_base (__main__.RegressionTests.test_06_decisions_require_a_resolvable_explicit_base) ... ok
+test_07_decision_whitespace_must_not_change_executable_policy (__main__.RegressionTests.test_07_decision_whitespace_must_not_change_executable_policy) ... ok
+test_08_repair_only_change_can_reearn_identical_commands (__main__.RegressionTests.test_08_repair_only_change_can_reearn_identical_commands) ... FAIL
+
+======================================================================
+FAIL: test_08_repair_only_change_can_reearn_identical_commands (__main__.RegressionTests.test_08_repair_only_change_can_reearn_identical_commands)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/red_regressions.py", line 196, in test_08_repair_only_change_can_reearn_identical_commands
+    self.assertEqual(verified.returncode, 0,
+AssertionError: 5 != 0 : Proposed mechanical exception: a fresh run with identical command bytes must not be blocked only by repair prose
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.785s
+
+FAILED (failures=1)
+Evidence: /workspace/scratch/adce1c53b293/h01-evidence/review-post-h01
+Source scripts unchanged: True

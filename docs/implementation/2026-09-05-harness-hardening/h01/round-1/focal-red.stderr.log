@@ -1,0 +1,164 @@
+test_01_blocked_budget_requires_authorized_reopening (h01_review_regressions.RegressionTests.test_01_blocked_budget_requires_authorized_reopening) ... FAIL
+test_02_empty_command_must_not_execute_repair_text (h01_review_regressions.RegressionTests.test_02_empty_command_must_not_execute_repair_text) ... FAIL
+test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims (h01_review_regressions.RegressionTests.test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims) ... 
+  test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims (h01_review_regressions.RegressionTests.test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims) (kind='invalid-json') ... FAIL
+  test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims (h01_review_regressions.RegressionTests.test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims) (kind='partial-schema-error') ... FAIL
+test_04_claims_require_the_explicit_authority_baseline (h01_review_regressions.RegressionTests.test_04_claims_require_the_explicit_authority_baseline) ... 
+  test_04_claims_require_the_explicit_authority_baseline (h01_review_regressions.RegressionTests.test_04_claims_require_the_explicit_authority_baseline) (kind='missing') ... FAIL
+  test_04_claims_require_the_explicit_authority_baseline (h01_review_regressions.RegressionTests.test_04_claims_require_the_explicit_authority_baseline) (kind='malformed') ... FAIL
+test_05_cached_success_must_not_survive_changed_verification_inputs (h01_review_regressions.RegressionTests.test_05_cached_success_must_not_survive_changed_verification_inputs) ... FAIL
+test_06_decisions_require_a_resolvable_explicit_base (h01_review_regressions.RegressionTests.test_06_decisions_require_a_resolvable_explicit_base) ... 
+  test_06_decisions_require_a_resolvable_explicit_base (h01_review_regressions.RegressionTests.test_06_decisions_require_a_resolvable_explicit_base) (kind='unresolvable-ref') ... FAIL
+  test_06_decisions_require_a_resolvable_explicit_base (h01_review_regressions.RegressionTests.test_06_decisions_require_a_resolvable_explicit_base) (kind='missing-base-file') ... FAIL
+test_07_decision_whitespace_must_not_change_executable_policy (h01_review_regressions.RegressionTests.test_07_decision_whitespace_must_not_change_executable_policy) ... FAIL
+test_09_exit0_rule_must_reject_false_command (h01_local_regressions.LocalRegressions.test_09_exit0_rule_must_reject_false_command) ... FAIL
+test_10_invalid_arch_root_must_not_pass (h01_local_regressions.LocalRegressions.test_10_invalid_arch_root_must_not_pass) ... FAIL
+test_01_not_started_cannot_skip_activation (h01_state_regressions.StateRegressionTests.test_01_not_started_cannot_skip_activation) ... FAIL
+test_02_wip_violation_blocks_before_execution (h01_state_regressions.StateRegressionTests.test_02_wip_violation_blocks_before_execution) ... FAIL
+test_03_duplicate_ids_cannot_promote_unexecuted_feature (h01_state_regressions.StateRegressionTests.test_03_duplicate_ids_cannot_promote_unexecuted_feature) ... FAIL
+
+======================================================================
+FAIL: test_01_blocked_budget_requires_authorized_reopening (h01_review_regressions.RegressionTests.test_01_blocked_budget_requires_authorized_reopening)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/red_regressions.py", line 110, in test_01_blocked_budget_requires_authorized_reopening
+    self.assertTrue(all(observed.values()), 'Exhaustion must block execution and preserve the ledger: ' + repr(observed))
+AssertionError: False is not true : Exhaustion must block execution and preserve the ledger: {'rejected': False, 'attempts_unchanged': False, 'still_blocked': False, 'ledger_preserved': False}
+
+======================================================================
+FAIL: test_02_empty_command_must_not_execute_repair_text (h01_review_regressions.RegressionTests.test_02_empty_command_must_not_execute_repair_text)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/red_regressions.py", line 119, in test_02_empty_command_must_not_execute_repair_text
+    self.assertEqual(observed, (True, True, True), 'An empty cmd must fail; repair is data, never an executable layer')
+AssertionError: Tuples differ: (False, False, False) != (True, True, True)
+
+First differing element 0:
+False
+True
+
+- (False, False, False)
++ (True, True, True) : An empty cmd must fail; repair is data, never an executable layer
+
+======================================================================
+FAIL: test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims (h01_review_regressions.RegressionTests.test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims) (kind='invalid-json')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/red_regressions.py", line 132, in test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims
+    self.assertNotEqual(p.returncode, 0, 'Unreadable or partly read claims must be NOT_VERIFIABLE, not green')
+AssertionError: 0 == 0 : Unreadable or partly read claims must be NOT_VERIFIABLE, not green
+
+======================================================================
+FAIL: test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims (h01_review_regressions.RegressionTests.test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims) (kind='partial-schema-error')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/red_regressions.py", line 132, in test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims
+    self.assertNotEqual(p.returncode, 0, 'Unreadable or partly read claims must be NOT_VERIFIABLE, not green')
+AssertionError: 0 == 0 : Unreadable or partly read claims must be NOT_VERIFIABLE, not green
+
+======================================================================
+FAIL: test_04_claims_require_the_explicit_authority_baseline (h01_review_regressions.RegressionTests.test_04_claims_require_the_explicit_authority_baseline) (kind='missing')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/red_regressions.py", line 143, in test_04_claims_require_the_explicit_authority_baseline
+    self.assertEqual((p.returncode != 0, not (d / 'layer-executed').exists()), (True, True),
+AssertionError: Tuples differ: (False, False) != (True, True)
+
+First differing element 0:
+False
+True
+
+- (False, False)
++ (True, True) : A declared unreadable authority baseline must block before head layers run
+
+======================================================================
+FAIL: test_04_claims_require_the_explicit_authority_baseline (h01_review_regressions.RegressionTests.test_04_claims_require_the_explicit_authority_baseline) (kind='malformed')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/red_regressions.py", line 143, in test_04_claims_require_the_explicit_authority_baseline
+    self.assertEqual((p.returncode != 0, not (d / 'layer-executed').exists()), (True, True),
+AssertionError: Tuples differ: (False, False) != (True, True)
+
+First differing element 0:
+False
+True
+
+- (False, False)
++ (True, True) : A declared unreadable authority baseline must block before head layers run
+
+======================================================================
+FAIL: test_05_cached_success_must_not_survive_changed_verification_inputs (h01_review_regressions.RegressionTests.test_05_cached_success_must_not_survive_changed_verification_inputs)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/red_regressions.py", line 157, in test_05_cached_success_must_not_survive_changed_verification_inputs
+    self.assertNotEqual(p.returncode, 0, 'Identical text after input mutation is not deterministic equivalence')
+AssertionError: 0 == 0 : Identical text after input mutation is not deterministic equivalence
+
+======================================================================
+FAIL: test_06_decisions_require_a_resolvable_explicit_base (h01_review_regressions.RegressionTests.test_06_decisions_require_a_resolvable_explicit_base) (kind='unresolvable-ref')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/red_regressions.py", line 168, in test_06_decisions_require_a_resolvable_explicit_base
+    self.assertNotEqual(p.returncode, 0, 'Unknown baseline must not be classified as proven absence of ledger')
+AssertionError: 0 == 0 : Unknown baseline must not be classified as proven absence of ledger
+
+======================================================================
+FAIL: test_06_decisions_require_a_resolvable_explicit_base (h01_review_regressions.RegressionTests.test_06_decisions_require_a_resolvable_explicit_base) (kind='missing-base-file')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/red_regressions.py", line 168, in test_06_decisions_require_a_resolvable_explicit_base
+    self.assertNotEqual(p.returncode, 0, 'Unknown baseline must not be classified as proven absence of ledger')
+AssertionError: 0 == 0 : Unknown baseline must not be classified as proven absence of ledger
+
+======================================================================
+FAIL: test_07_decision_whitespace_must_not_change_executable_policy (h01_review_regressions.RegressionTests.test_07_decision_whitespace_must_not_change_executable_policy)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/red_regressions.py", line 185, in test_07_decision_whitespace_must_not_change_executable_policy
+    self.assertNotEqual(p.returncode, 0, 'Indentation in code is content; semantic changes require an appended decision')
+AssertionError: 0 == 0 : Indentation in code is content; semantic changes require an appended decision
+
+======================================================================
+FAIL: test_09_exit0_rule_must_reject_false_command (h01_local_regressions.LocalRegressions.test_09_exit0_rule_must_reject_false_command)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/local_red_regressions.py", line 65, in test_09_exit0_rule_must_reject_false_command
+    self.assertNotEqual(result.returncode, 0, 'R08: false must fail an expect: exit0 rule')
+AssertionError: 0 == 0 : R08: false must fail an expect: exit0 rule
+
+======================================================================
+FAIL: test_10_invalid_arch_root_must_not_pass (h01_local_regressions.LocalRegressions.test_10_invalid_arch_root_must_not_pass)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/local_red_regressions.py", line 69, in test_10_invalid_arch_root_must_not_pass
+    self.assertNotEqual(result.returncode, 0,
+AssertionError: 0 == 0 : R09: parser failure must not become zero successful rules
+
+======================================================================
+FAIL: test_01_not_started_cannot_skip_activation (h01_state_regressions.StateRegressionTests.test_01_not_started_cannot_skip_activation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/supplemental_state_red.py", line 90, in test_01_not_started_cannot_skip_activation
+    self.assertTrue(all(observations.values()),
+AssertionError: False is not true : not_started must not execute or become passing without activation: {'rejected': False, 'no_layer_execution': False, 'state_and_evidence_unchanged': False}
+
+======================================================================
+FAIL: test_02_wip_violation_blocks_before_execution (h01_state_regressions.StateRegressionTests.test_02_wip_violation_blocks_before_execution)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/supplemental_state_red.py", line 101, in test_02_wip_violation_blocks_before_execution
+    self.assertTrue(all(observations.values()),
+AssertionError: False is not true : Two active features must block before the chosen feature executes: {'rejected': False, 'no_layer_execution': False, 'state_and_evidence_unchanged': False}
+
+======================================================================
+FAIL: test_03_duplicate_ids_cannot_promote_unexecuted_feature (h01_state_regressions.StateRegressionTests.test_03_duplicate_ids_cannot_promote_unexecuted_feature)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/supplemental_state_red.py", line 116, in test_03_duplicate_ids_cannot_promote_unexecuted_feature
+    self.assertTrue(observations['rejected'] and observations['no_layer_execution']
+AssertionError: False is not true : IDs must be unique before execution; an unexecuted false layer cannot acquire a receipt: {'rejected': False, 'no_layer_execution': False, 'state_and_evidence_unchanged': False, 'second_layer_executed': False, 'passing_records': 2}
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.984s
+
+FAILED (failures=15)

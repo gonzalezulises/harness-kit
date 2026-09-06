@@ -256,3 +256,14 @@ not constrain agent behavior or carry state between sessions.
 
 **Consequences.** Every session now starts by reading `PROGRESS.md` and ends by updating
 it. Features cannot be marked done without recorded evidence.
+
+
+---
+
+## 2026-09-05 — MIGRATION-01: implement the optional local autonomy pack
+
+**Context.** The hardening audit found that mutable `feature_list.json` and session telemetry do not provide verified journal replay. The owner reviewed the proposed transition and instructed “Implementa todas las mejoras.”
+
+**Decision.** Implement H01–H09 in this repository, preserving the portable legacy kit and adding an explicitly adopted local pack. In adopted consumers, v2 state is derived from verified replay; legacy evidence is retained as `LEGACY_UNVERIFIED` until new verification. Mechanical transformations require deterministic equivalence, while bounded remediation uses an existing scoped grant. Normative changes and baseline acceptance retain explicit human authority.
+
+**Consequences.** Fix known verifier bypasses before expanding capabilities. No new service, external platform, forced consumer migration, consumer deployment or retrospective baseline approval follows from this mandate. Implementation record and compatibility choices: [approved plan](docs/implementation/2026-09-05-harness-hardening/plan.md) and [ledger](docs/implementation/2026-09-05-harness-hardening/ledger.md).

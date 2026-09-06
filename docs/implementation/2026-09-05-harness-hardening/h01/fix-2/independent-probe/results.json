@@ -1,0 +1,8 @@
+{
+  "case": "horizontal-rule-extends-protected-final-line",
+  "rc": 0,
+  "stdout": "1 decision(s) intact, 1 added.\n",
+  "stderr": "",
+  "base": "## A\nprotected original",
+  "head": "## A\nprotected original---\n## B\nnew decision\n"
+}

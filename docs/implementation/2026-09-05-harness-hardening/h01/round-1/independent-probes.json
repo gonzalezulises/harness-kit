@@ -1,0 +1,79 @@
+[
+  {
+    "rc": 1,
+    "stdout": "Verifying F\n\n\u2500\u2500 Layer: l\n$ touch executed; false\n\nFAILED at layer: l\nHow to fix: r\n",
+    "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 13, in <module>\nKeyError: 'review_rounds'\n",
+    "case": "partial-ledger",
+    "executed": true,
+    "ledger": {}
+  },
+  {
+    "rc": 0,
+    "stdout": "Verifying F\n\n\u2500\u2500 Layer: l\n$ touch executed\nLayer 'l' passed.\n\nF -> passing (evidence recorded in feature_list.json)\nNext: update PROGRESS.md and commit.\n",
+    "stderr": "",
+    "case": "reopen-blocked",
+    "blocked_rc": 67,
+    "executed": true,
+    "final": {
+      "id": "F",
+      "state": "passing",
+      "evidence": [
+        "all layers passed \u2014 commit no-git, 2026-09-05T23:57:26Z"
+      ],
+      "layers": [
+        {
+          "label": "l",
+          "cmd": "touch executed",
+          "repair": "r"
+        }
+      ],
+      "budgets": {
+        "review_rounds_max": 2,
+        "repeated_blocker_max": 2,
+        "stop_condition": "stop"
+      },
+      "ledger": {
+        "review_rounds": 1,
+        "blockers": [
+          {
+            "signature": "layer:l",
+            "count": 1
+          }
+        ]
+      }
+    }
+  },
+  {
+    "rc": 0,
+    "stdout": "Verifying F\n\n\u2500\u2500 Layer: l\n$ touch executed\nLayer 'l' passed.\n\nF -> passing (evidence recorded in feature_list.json)\nNext: update PROGRESS.md and commit.\n",
+    "stderr": "scripts/verify-feature.sh: line 218: warning: command substitution: ignored null byte in input\n",
+    "case": "nul-command",
+    "executed": true
+  },
+  {
+    "rc": 0,
+    "stdout": "Architecture Rules\n  [OK] R\n\n1 architecture rule(s) hold.\n",
+    "stderr": "",
+    "case": "grep-substring"
+  },
+  {
+    "case": "decision-slug-collision",
+    "rc": 0,
+    "stdout": "\n2 decision(s) intact.\n",
+    "stderr": ""
+  },
+  {
+    "case": "exhausted-ledger-budget-edited",
+    "rc": 0,
+    "stdout": "Verifying F\n\n\u2500\u2500 Layer: l\n$ touch executed\nLayer 'l' passed.\n\nF -> passing (evidence recorded in feature_list.json)\nNext: update PROGRESS.md and commit.\n",
+    "stderr": "",
+    "executed": true
+  },
+  {
+    "case": "duplicate-json-key",
+    "rc": 0,
+    "stdout": "Verifying F\n\n\u2500\u2500 Layer: l\n$ touch executed\nLayer 'l' passed.\n\nF -> passing (evidence recorded in feature_list.json)\nNext: update PROGRESS.md and commit.\n",
+    "stderr": "",
+    "executed": true
+  }
+]

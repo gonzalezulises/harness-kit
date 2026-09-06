@@ -1,0 +1,93 @@
+{
+  "source_repo": "/workspace/scratch/adce1c53b293/harness-kit",
+  "source_revision": "9ee4eaaf6b19ded4b5e32349d77ba8fdaf6af79e",
+  "source_sha256": {
+    "verify-feature.sh": "ac65cd4443217a15e565bea2bb08d87630b14501dcbef6449d7e847246210cc3"
+  },
+  "source_unchanged_after_run": true,
+  "tests_run": 3,
+  "failure_count": 0,
+  "error_count": 0,
+  "successful": true,
+  "records": [
+    {
+      "test": "__main__.StateRegressionTests.test_01_not_started_cannot_skip_activation",
+      "fixture": "/workspace/scratch/adce1c53b293/h01-evidence/state-post-h01/fixtures/test_01_not_started_cannot_skip_activation-ztr_k8ol",
+      "calls": [
+        {
+          "cwd": "/workspace/scratch/adce1c53b293/h01-evidence/state-post-h01/fixtures/test_01_not_started_cannot_skip_activation-ztr_k8ol",
+          "argv": [
+            "bash",
+            "scripts/verify-feature.sh",
+            "F1"
+          ],
+          "exit": 67,
+          "stdout": "",
+          "stderr": "verify-feature: feature 'F1' is not_started; activate it before verification\n",
+          "before": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"not_started\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf ran > layer-executed\",\n          \"repair\": \"Check the fixture input.\"\n        }\n      ]\n    }\n  ]\n}\n",
+          "after": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"not_started\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf ran > layer-executed\",\n          \"repair\": \"Check the fixture input.\"\n        }\n      ]\n    }\n  ]\n}\n"
+        }
+      ],
+      "observations": {
+        "rejected": true,
+        "no_layer_execution": true,
+        "state_and_evidence_unchanged": true
+      },
+      "base_sha": "34f4e891398e17e16c0f1ac0a6c72ea222c1c117"
+    },
+    {
+      "test": "__main__.StateRegressionTests.test_02_wip_violation_blocks_before_execution",
+      "fixture": "/workspace/scratch/adce1c53b293/h01-evidence/state-post-h01/fixtures/test_02_wip_violation_blocks_before_execution-lvq4xuf3",
+      "calls": [
+        {
+          "cwd": "/workspace/scratch/adce1c53b293/h01-evidence/state-post-h01/fixtures/test_02_wip_violation_blocks_before_execution-lvq4xuf3",
+          "argv": [
+            "bash",
+            "scripts/verify-feature.sh",
+            "F1"
+          ],
+          "exit": 67,
+          "stdout": "",
+          "stderr": "verify-feature: WIP=1 violation — 2 features are active\n",
+          "before": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"active\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf F1 > first-executed\",\n          \"repair\": \"Check the fixture input.\"\n        }\n      ]\n    },\n    {\n      \"id\": \"F2\",\n      \"state\": \"active\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf F2 > second-executed\",\n          \"repair\": \"Check the fixture input.\"\n        }\n      ]\n    }\n  ]\n}\n",
+          "after": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"active\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf F1 > first-executed\",\n          \"repair\": \"Check the fixture input.\"\n        }\n      ]\n    },\n    {\n      \"id\": \"F2\",\n      \"state\": \"active\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf F2 > second-executed\",\n          \"repair\": \"Check the fixture input.\"\n        }\n      ]\n    }\n  ]\n}\n"
+        }
+      ],
+      "observations": {
+        "rejected": true,
+        "no_layer_execution": true,
+        "state_and_evidence_unchanged": true
+      },
+      "base_sha": "0a5ec6cfd0e863b68596a2d44b451dde963dc029"
+    },
+    {
+      "test": "__main__.StateRegressionTests.test_03_duplicate_ids_cannot_promote_unexecuted_feature",
+      "fixture": "/workspace/scratch/adce1c53b293/h01-evidence/state-post-h01/fixtures/test_03_duplicate_ids_cannot_promote_unexecuted_feature-7b_5_1hj",
+      "calls": [
+        {
+          "cwd": "/workspace/scratch/adce1c53b293/h01-evidence/state-post-h01/fixtures/test_03_duplicate_ids_cannot_promote_unexecuted_feature-7b_5_1hj",
+          "argv": [
+            "bash",
+            "scripts/verify-feature.sh",
+            "F1"
+          ],
+          "exit": 65,
+          "stdout": "",
+          "stderr": "verify-feature: INVALID_FEATURE_LIST — duplicate feature id: F1\n",
+          "before": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"active\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf first > first-executed\",\n          \"repair\": \"Check the fixture input.\"\n        }\n      ]\n    },\n    {\n      \"id\": \"F1\",\n      \"state\": \"not_started\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf second > second-executed; false\",\n          \"repair\": \"Check the fixture input.\"\n        }\n      ]\n    }\n  ]\n}\n",
+          "after": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"active\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf first > first-executed\",\n          \"repair\": \"Check the fixture input.\"\n        }\n      ]\n    },\n    {\n      \"id\": \"F1\",\n      \"state\": \"not_started\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf second > second-executed; false\",\n          \"repair\": \"Check the fixture input.\"\n        }\n      ]\n    }\n  ]\n}\n"
+        }
+      ],
+      "observations": {
+        "rejected": true,
+        "no_layer_execution": true,
+        "state_and_evidence_unchanged": true,
+        "second_layer_executed": false,
+        "passing_records": 0
+      },
+      "base_sha": "29ae8b16a077899b86cb3547872c81544dc30f7f"
+    }
+  ],
+  "failures": [],
+  "errors": []
+}

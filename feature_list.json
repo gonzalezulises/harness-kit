@@ -1,6 +1,6 @@
 {
   "project": "harness-kit",
-  "last_updated": "2026-08-14",
+  "last_updated": "2026-09-06",
   "rules": {
     "single_active_feature": true,
     "passing_requires_evidence": true,
@@ -239,7 +239,7 @@
       "priority": 9,
       "area": "governance",
       "behavior": "A feature declaring budgets cannot be worked on forever: each failed verification spends a review round, a repeated blocker has its own ceiling, and exhausting either sets the feature to blocked with a distinct exit code CI can read.",
-      "state": "passing",
+      "state": "blocked",
       "budgets": {
         "review_rounds_max": 2,
         "repeated_blocker_max": 3,
@@ -429,6 +429,204 @@
         "all layers passed — commit aa73fef, 2026-08-14T19:34:09Z"
       ],
       "notes": "READY_PARTIAL exists because push rules are organization-only: a personal repo gets a real gate that cannot protect itself."
+    },
+    {
+      "id": "F15",
+      "priority": 15,
+      "area": "harness-hardening",
+      "behavior": "Legacy verifiers reject malformed contracts and invalid state before effects",
+      "state": "passing",
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash -n scripts/verify-feature.sh && bash -n scripts/verify-claims.sh && bash -n scripts/verify-decisions.sh && bash -n scripts/check-arch.sh && echo shell-syntax-ok",
+          "repair": "Fix source whitespace or conflict markers."
+        },
+        {
+          "label": "runtime",
+          "cmd": "PYTHONDONTWRITEBYTECODE=1 python3 tests/h01-hardening-regressions.py",
+          "repair": "Fix the first failing contract without weakening its expectation."
+        },
+        {
+          "label": "e2e",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Repair the shipped CLI or scaffold contract; retain negative marker assertions."
+        }
+      ],
+      "evidence": [
+        "all layers passed — commit 9ee4eaa, 2026-09-05T23:57:06Z",
+        "all layers passed — commit 9ee4eaa, 2026-09-06T00:33:22Z",
+        "all layers passed — commit 9ee4eaa, 2026-09-06T00:35:10Z"
+      ],
+      "notes": "Approved hardening milestone H01; owner mandate 2026-09-05."
+    },
+    {
+      "id": "F16",
+      "priority": 16,
+      "area": "harness-hardening",
+      "behavior": "Live gates and installed profiles preserve required verification and scoped changes",
+      "state": "not_started",
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash -n scripts/verify-feature.sh && bash -n scripts/verify-claims.sh && bash -n scripts/verify-decisions.sh && bash -n scripts/check-arch.sh && echo shell-syntax-ok",
+          "repair": "Fix source whitespace or conflict markers."
+        },
+        {
+          "label": "runtime",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Fix the first failing contract without weakening its expectation."
+        }
+      ],
+      "evidence": [],
+      "notes": "Approved hardening milestone H02; owner mandate 2026-09-05."
+    },
+    {
+      "id": "F17",
+      "priority": 17,
+      "area": "harness-hardening",
+      "behavior": "Typed semantic identities classify only demonstrably equivalent changes",
+      "state": "not_started",
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash -n scripts/verify-feature.sh && bash -n scripts/verify-claims.sh && bash -n scripts/verify-decisions.sh && bash -n scripts/check-arch.sh && echo shell-syntax-ok",
+          "repair": "Fix source whitespace or conflict markers."
+        },
+        {
+          "label": "runtime",
+          "cmd": "bash packs/autonomy/verify-pack.sh",
+          "repair": "Fix the first failing contract without weakening its expectation."
+        }
+      ],
+      "evidence": [],
+      "notes": "Approved hardening milestone H03; owner mandate 2026-09-05."
+    },
+    {
+      "id": "F18",
+      "priority": 18,
+      "area": "harness-hardening",
+      "behavior": "Verified append-only journal derives run state and imports legacy evidence honestly",
+      "state": "not_started",
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash -n scripts/verify-feature.sh && bash -n scripts/verify-claims.sh && bash -n scripts/verify-decisions.sh && bash -n scripts/check-arch.sh && echo shell-syntax-ok",
+          "repair": "Fix source whitespace or conflict markers."
+        },
+        {
+          "label": "runtime",
+          "cmd": "bash packs/autonomy/verify-pack.sh",
+          "repair": "Fix the first failing contract without weakening its expectation."
+        }
+      ],
+      "evidence": [],
+      "notes": "Approved hardening milestone H04; owner mandate 2026-09-05."
+    },
+    {
+      "id": "F19",
+      "priority": 19,
+      "area": "harness-hardening",
+      "behavior": "Closed capabilities enforce workspace containment and exclusive fenced leases",
+      "state": "not_started",
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash -n scripts/verify-feature.sh && bash -n scripts/verify-claims.sh && bash -n scripts/verify-decisions.sh && bash -n scripts/check-arch.sh && echo shell-syntax-ok",
+          "repair": "Fix source whitespace or conflict markers."
+        },
+        {
+          "label": "runtime",
+          "cmd": "bash packs/autonomy/verify-pack.sh",
+          "repair": "Fix the first failing contract without weakening its expectation."
+        }
+      ],
+      "evidence": [],
+      "notes": "Approved hardening milestone H05; owner mandate 2026-09-05."
+    },
+    {
+      "id": "F20",
+      "priority": 20,
+      "area": "harness-hardening",
+      "behavior": "Bounded grants and separate budgets continue previously authorized work",
+      "state": "not_started",
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash -n scripts/verify-feature.sh && bash -n scripts/verify-claims.sh && bash -n scripts/verify-decisions.sh && bash -n scripts/check-arch.sh && echo shell-syntax-ok",
+          "repair": "Fix source whitespace or conflict markers."
+        },
+        {
+          "label": "runtime",
+          "cmd": "bash packs/autonomy/verify-pack.sh",
+          "repair": "Fix the first failing contract without weakening its expectation."
+        }
+      ],
+      "evidence": [],
+      "notes": "Approved hardening milestone H06; owner mandate 2026-09-05."
+    },
+    {
+      "id": "F21",
+      "priority": 21,
+      "area": "harness-hardening",
+      "behavior": "Independent Codex review freezes compatible model/config and validates output locally",
+      "state": "not_started",
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash -n scripts/verify-feature.sh && bash -n scripts/verify-claims.sh && bash -n scripts/verify-decisions.sh && bash -n scripts/check-arch.sh && echo shell-syntax-ok",
+          "repair": "Fix source whitespace or conflict markers."
+        },
+        {
+          "label": "runtime",
+          "cmd": "bash packs/autonomy/verify-pack.sh",
+          "repair": "Fix the first failing contract without weakening its expectation."
+        }
+      ],
+      "evidence": [],
+      "notes": "Approved hardening milestone H07; owner mandate 2026-09-05."
+    },
+    {
+      "id": "F22",
+      "priority": 22,
+      "area": "harness-hardening",
+      "behavior": "Release objectives continue through exact integration deployment and certification",
+      "state": "not_started",
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash -n scripts/verify-feature.sh && bash -n scripts/verify-claims.sh && bash -n scripts/verify-decisions.sh && bash -n scripts/check-arch.sh && echo shell-syntax-ok",
+          "repair": "Fix source whitespace or conflict markers."
+        },
+        {
+          "label": "runtime",
+          "cmd": "bash packs/autonomy/verify-pack.sh",
+          "repair": "Fix the first failing contract without weakening its expectation."
+        }
+      ],
+      "evidence": [],
+      "notes": "Approved hardening milestone H08; owner mandate 2026-09-05."
+    },
+    {
+      "id": "F23",
+      "priority": 23,
+      "area": "harness-hardening",
+      "behavior": "Installed optional pack completes a local canary without weakening semantic gates",
+      "state": "not_started",
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash -n scripts/verify-feature.sh && bash -n scripts/verify-claims.sh && bash -n scripts/verify-decisions.sh && bash -n scripts/check-arch.sh && echo shell-syntax-ok",
+          "repair": "Fix source whitespace or conflict markers."
+        },
+        {
+          "label": "runtime",
+          "cmd": "bash packs/autonomy/verify-pack.sh",
+          "repair": "Fix the first failing contract without weakening its expectation."
+        }
+      ],
+      "evidence": [],
+      "notes": "Approved hardening milestone H09; owner mandate 2026-09-05."
     }
   ]
 }

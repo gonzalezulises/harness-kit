@@ -1,0 +1,5 @@
+7bc542d476e9b992b2f43ea15128f183d6cd8c314bae7f14fd58805d546faa5f  /workspace/scratch/adce1c53b293/h01-evidence/review-round2/frozen-tree-f1fa/scripts/check-arch.sh
+922b2cc28a4d86475d659d3fb1ad64c5eaf60fb37d2200bcabdc1b886d6023db  /workspace/scratch/adce1c53b293/h01-evidence/review-round2/frozen-tree-f1fa/scripts/verify-claims.sh
+7f83f009ef0fdd836270d255fc3168175106dc9e6c4c238877372b23ea656817  /workspace/scratch/adce1c53b293/h01-evidence/review-round2/frozen-tree-f1fa/scripts/verify-decisions.sh
+896490f3ff83165aed6f30e696ab469442bcafa4d10529ff436d7c4ab30a2e01  /workspace/scratch/adce1c53b293/h01-evidence/review-round2/frozen-tree-f1fa/scripts/verify-feature.sh
+3754ec927d52c3d4e051e5e8a5b63a6c76dae5fc357173d85ed3c12b487d8f47  tests/h01-hardening-regressions.py

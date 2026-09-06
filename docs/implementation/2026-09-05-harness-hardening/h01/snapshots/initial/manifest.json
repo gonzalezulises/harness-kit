@@ -1,0 +1,11 @@
+{
+  "source_tree_or_commit": "9ee4eaaf6b19ded4b5e32349d77ba8fdaf6af79e",
+  "test_tree": "0ca1ec165e699b155ed4498e6743cf8f4191874b",
+  "files": {
+    "source/scripts/check-arch.sh": "14fcbce241577e361de0610e96a5897d37d31cf6c1a072232e69ff77ec6bd41f",
+    "source/scripts/verify-claims.sh": "490df3894b603871bbefe2b019d7478b1628e66b32f1984cf84201d7dc13a940",
+    "source/scripts/verify-decisions.sh": "4ebffe568fc05764a20ca0a80eedb4faf7b16db9a54d10c2acb571801757da87",
+    "source/scripts/verify-feature.sh": "3de5c857ac0f8bd574803cf53fb0aa3d6c430241f426a03a11321dd930011635",
+    "test-source.py": "30880a15ffceb06d5d69e24d07921357ca568e00b732750a3f258587a69baf9c"
+  }
+}

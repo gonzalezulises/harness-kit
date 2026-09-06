@@ -1,0 +1,176 @@
+test_arch_rule_requires_explicit_exit_contract (__main__.ReviewRoundOneRegressions.test_arch_rule_requires_explicit_exit_contract) ... FAIL
+test_budgeted_first_run_remains_valid (__main__.ReviewRoundOneRegressions.test_budgeted_first_run_remains_valid) ... ok
+test_decision_comparison_preserves_exact_newline_bytes (__main__.ReviewRoundOneRegressions.test_decision_comparison_preserves_exact_newline_bytes) ... FAIL
+test_decision_slug_collision_cannot_discard_entry (__main__.ReviewRoundOneRegressions.test_decision_slug_collision_cannot_discard_entry) ... FAIL
+test_duplicate_arch_keys_reject_before_effects (__main__.ReviewRoundOneRegressions.test_duplicate_arch_keys_reject_before_effects) ... FAIL
+test_duplicate_claim_authority_keys_reject_before_effects (__main__.ReviewRoundOneRegressions.test_duplicate_claim_authority_keys_reject_before_effects) ... FAIL
+test_duplicate_claim_head_keys_reject_before_effects (__main__.ReviewRoundOneRegressions.test_duplicate_claim_head_keys_reject_before_effects) ... FAIL
+test_duplicate_feature_keys_reject_before_effects (__main__.ReviewRoundOneRegressions.test_duplicate_feature_keys_reject_before_effects) ... FAIL
+test_nul_arch_command_rejects_before_effects (__main__.ReviewRoundOneRegressions.test_nul_arch_command_rejects_before_effects) ... FAIL
+test_nul_claim_command_rejects_before_effects (__main__.ReviewRoundOneRegressions.test_nul_claim_command_rejects_before_effects) ... FAIL
+test_nul_feature_command_rejects_before_effects (__main__.ReviewRoundOneRegressions.test_nul_feature_command_rejects_before_effects) ... FAIL
+test_partial_and_null_ledgers_reject_before_effects (__main__.ReviewRoundOneRegressions.test_partial_and_null_ledgers_reject_before_effects) ... 
+  test_partial_and_null_ledgers_reject_before_effects (__main__.ReviewRoundOneRegressions.test_partial_and_null_ledgers_reject_before_effects) (ledger={}) ... FAIL
+  test_partial_and_null_ledgers_reject_before_effects (__main__.ReviewRoundOneRegressions.test_partial_and_null_ledgers_reject_before_effects) (ledger={'review_rounds': 0}) ... FAIL
+  test_partial_and_null_ledgers_reject_before_effects (__main__.ReviewRoundOneRegressions.test_partial_and_null_ledgers_reject_before_effects) (ledger={'blockers': []}) ... FAIL
+  test_partial_and_null_ledgers_reject_before_effects (__main__.ReviewRoundOneRegressions.test_partial_and_null_ledgers_reject_before_effects) (ledger=None) ... FAIL
+test_recorded_attempt_requires_recovery_authority (__main__.ReviewRoundOneRegressions.test_recorded_attempt_requires_recovery_authority) ... 
+  test_recorded_attempt_requires_recovery_authority (__main__.ReviewRoundOneRegressions.test_recorded_attempt_requires_recovery_authority) (name='remaining-budget') ... FAIL
+  test_recorded_attempt_requires_recovery_authority (__main__.ReviewRoundOneRegressions.test_recorded_attempt_requires_recovery_authority) (name='raised-maximum') ... FAIL
+  test_recorded_attempt_requires_recovery_authority (__main__.ReviewRoundOneRegressions.test_recorded_attempt_requires_recovery_authority) (name='removed-budgets') ... FAIL
+test_02_empty_command_must_not_execute_repair_text (h01_review_regressions.RegressionTests.test_02_empty_command_must_not_execute_repair_text) ... ok
+test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims (h01_review_regressions.RegressionTests.test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims) ... ok
+test_04_claims_require_the_explicit_authority_baseline (h01_review_regressions.RegressionTests.test_04_claims_require_the_explicit_authority_baseline) ... ok
+test_05_cached_success_must_not_survive_changed_verification_inputs (h01_review_regressions.RegressionTests.test_05_cached_success_must_not_survive_changed_verification_inputs) ... ok
+test_06_decisions_require_a_resolvable_explicit_base (h01_review_regressions.RegressionTests.test_06_decisions_require_a_resolvable_explicit_base) ... ok
+test_07_decision_whitespace_must_not_change_executable_policy (h01_review_regressions.RegressionTests.test_07_decision_whitespace_must_not_change_executable_policy) ... ok
+test_09_exit0_rule_must_reject_false_command (h01_local_regressions.LocalRegressions.test_09_exit0_rule_must_reject_false_command) ... ok
+test_10_invalid_arch_root_must_not_pass (h01_local_regressions.LocalRegressions.test_10_invalid_arch_root_must_not_pass) ... ok
+test_01_not_started_cannot_skip_activation (h01_state_regressions.StateRegressionTests.test_01_not_started_cannot_skip_activation) ... ok
+test_02_wip_violation_blocks_before_execution (h01_state_regressions.StateRegressionTests.test_02_wip_violation_blocks_before_execution) ... ok
+test_03_duplicate_ids_cannot_promote_unexecuted_feature (h01_state_regressions.StateRegressionTests.test_03_duplicate_ids_cannot_promote_unexecuted_feature) ... ok
+
+======================================================================
+FAIL: test_arch_rule_requires_explicit_exit_contract (__main__.ReviewRoundOneRegressions.test_arch_rule_requires_explicit_exit_contract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h01-hardening-regressions.py", line 176, in test_arch_rule_requires_explicit_exit_contract
+    self.assertNotEqual(result.returncode, 0)
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_decision_comparison_preserves_exact_newline_bytes (__main__.ReviewRoundOneRegressions.test_decision_comparison_preserves_exact_newline_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h01-hardening-regressions.py", line 167, in test_decision_comparison_preserves_exact_newline_bytes
+    self.assertNotEqual(newline.returncode, 0, "CRLF/LF conversion changes protected bytes")
+AssertionError: 0 == 0 : CRLF/LF conversion changes protected bytes
+
+======================================================================
+FAIL: test_decision_slug_collision_cannot_discard_entry (__main__.ReviewRoundOneRegressions.test_decision_slug_collision_cannot_discard_entry)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h01-hardening-regressions.py", line 161, in test_decision_slug_collision_cannot_discard_entry
+    self.assertNotEqual(collision.returncode, 0, "slug collisions cannot discard a protected entry")
+AssertionError: 0 == 0 : slug collisions cannot discard a protected entry
+
+======================================================================
+FAIL: test_duplicate_arch_keys_reject_before_effects (__main__.ReviewRoundOneRegressions.test_duplicate_arch_keys_reject_before_effects)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h01-hardening-regressions.py", line 221, in test_duplicate_arch_keys_reject_before_effects
+    self.assertNotEqual(result.returncode, 0); self.assertFalse((self.work / "executed").exists())
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_duplicate_claim_authority_keys_reject_before_effects (__main__.ReviewRoundOneRegressions.test_duplicate_claim_authority_keys_reject_before_effects)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h01-hardening-regressions.py", line 213, in test_duplicate_claim_authority_keys_reject_before_effects
+    self.assertNotEqual(result.returncode, 0); self.assertFalse((self.work / "authority-executed").exists())
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_duplicate_claim_head_keys_reject_before_effects (__main__.ReviewRoundOneRegressions.test_duplicate_claim_head_keys_reject_before_effects)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h01-hardening-regressions.py", line 202, in test_duplicate_claim_head_keys_reject_before_effects
+    self.assertNotEqual(result.returncode, 0); self.assertFalse((self.work / "executed").exists())
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_duplicate_feature_keys_reject_before_effects (__main__.ReviewRoundOneRegressions.test_duplicate_feature_keys_reject_before_effects)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h01-hardening-regressions.py", line 192, in test_duplicate_feature_keys_reject_before_effects
+    self.assertNotEqual(result.returncode, 0); self.assertFalse((self.work / "executed").exists())
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_nul_arch_command_rejects_before_effects (__main__.ReviewRoundOneRegressions.test_nul_arch_command_rejects_before_effects)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h01-hardening-regressions.py", line 145, in test_nul_arch_command_rejects_before_effects
+    self.assertNotEqual(result.returncode, 0)
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_nul_claim_command_rejects_before_effects (__main__.ReviewRoundOneRegressions.test_nul_claim_command_rejects_before_effects)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h01-hardening-regressions.py", line 135, in test_nul_claim_command_rejects_before_effects
+    self.assertNotEqual(result.returncode, 0)
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_nul_feature_command_rejects_before_effects (__main__.ReviewRoundOneRegressions.test_nul_feature_command_rejects_before_effects)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h01-hardening-regressions.py", line 123, in test_nul_feature_command_rejects_before_effects
+    self.assertNotEqual(result.returncode, 0)
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_partial_and_null_ledgers_reject_before_effects (__main__.ReviewRoundOneRegressions.test_partial_and_null_ledgers_reject_before_effects) (ledger={})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h01-hardening-regressions.py", line 117, in test_partial_and_null_ledgers_reject_before_effects
+    self.assertFalse(marker.exists(), "an unusable ledger must fail preflight")
+AssertionError: True is not false : an unusable ledger must fail preflight
+
+======================================================================
+FAIL: test_partial_and_null_ledgers_reject_before_effects (__main__.ReviewRoundOneRegressions.test_partial_and_null_ledgers_reject_before_effects) (ledger={'review_rounds': 0})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h01-hardening-regressions.py", line 117, in test_partial_and_null_ledgers_reject_before_effects
+    self.assertFalse(marker.exists(), "an unusable ledger must fail preflight")
+AssertionError: True is not false : an unusable ledger must fail preflight
+
+======================================================================
+FAIL: test_partial_and_null_ledgers_reject_before_effects (__main__.ReviewRoundOneRegressions.test_partial_and_null_ledgers_reject_before_effects) (ledger={'blockers': []})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h01-hardening-regressions.py", line 117, in test_partial_and_null_ledgers_reject_before_effects
+    self.assertFalse(marker.exists(), "an unusable ledger must fail preflight")
+AssertionError: True is not false : an unusable ledger must fail preflight
+
+======================================================================
+FAIL: test_partial_and_null_ledgers_reject_before_effects (__main__.ReviewRoundOneRegressions.test_partial_and_null_ledgers_reject_before_effects) (ledger=None)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h01-hardening-regressions.py", line 117, in test_partial_and_null_ledgers_reject_before_effects
+    self.assertFalse(marker.exists(), "an unusable ledger must fail preflight")
+AssertionError: True is not false : an unusable ledger must fail preflight
+
+======================================================================
+FAIL: test_recorded_attempt_requires_recovery_authority (__main__.ReviewRoundOneRegressions.test_recorded_attempt_requires_recovery_authority) (name='remaining-budget')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h01-hardening-regressions.py", line 94, in test_recorded_attempt_requires_recovery_authority
+    self.assertEqual(result.returncode, 5, "recorded work needs verified recovery authority")
+AssertionError: 0 != 5 : recorded work needs verified recovery authority
+
+======================================================================
+FAIL: test_recorded_attempt_requires_recovery_authority (__main__.ReviewRoundOneRegressions.test_recorded_attempt_requires_recovery_authority) (name='raised-maximum')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h01-hardening-regressions.py", line 94, in test_recorded_attempt_requires_recovery_authority
+    self.assertEqual(result.returncode, 5, "recorded work needs verified recovery authority")
+AssertionError: 4 != 5 : recorded work needs verified recovery authority
+
+======================================================================
+FAIL: test_recorded_attempt_requires_recovery_authority (__main__.ReviewRoundOneRegressions.test_recorded_attempt_requires_recovery_authority) (name='removed-budgets')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h01-hardening-regressions.py", line 94, in test_recorded_attempt_requires_recovery_authority
+    self.assertEqual(result.returncode, 5, "recorded work needs verified recovery authority")
+AssertionError: 0 != 5 : recorded work needs verified recovery authority
+
+----------------------------------------------------------------------
+Ran 24 tests in 1.621s
+
+FAILED (failures=17)

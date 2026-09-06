@@ -1,0 +1,10 @@
+test_01_not_started_cannot_skip_activation (__main__.StateRegressionTests.test_01_not_started_cannot_skip_activation) ... ok
+test_02_wip_violation_blocks_before_execution (__main__.StateRegressionTests.test_02_wip_violation_blocks_before_execution) ... ok
+test_03_duplicate_ids_cannot_promote_unexecuted_feature (__main__.StateRegressionTests.test_03_duplicate_ids_cannot_promote_unexecuted_feature) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.131s
+
+OK
+Evidence: /workspace/scratch/adce1c53b293/h01-evidence/state-post-h01
+Source verifier unchanged: True
