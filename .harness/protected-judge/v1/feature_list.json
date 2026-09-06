@@ -1,0 +1,732 @@
+{
+  "project": "harness-kit",
+  "last_updated": "2026-09-06",
+  "rules": {
+    "single_active_feature": true,
+    "passing_requires_evidence": true,
+    "state_set_by_harness_only": true,
+    "completable_in_one_session": true
+  },
+  "states": {
+    "not_started": "Work has not begun.",
+    "active": "The current task. Only one feature may be active at a time.",
+    "blocked": "Cannot continue until a documented blocker is resolved.",
+    "passing": "Verification ran, evidence is recorded."
+  },
+  "features": [
+    {
+      "id": "F01",
+      "priority": 1,
+      "area": "audit",
+      "behavior": "Running bin/harness-audit.sh against any repo prints a score out of a stable denominator, lists every failing check with an actionable fix, and exits 1 when a critical check fails.",
+      "state": "passing",
+      "verification": [
+        "Run bin/harness-audit.sh on a bare repo — expect critical failures and exit 1.",
+        "Run it on a fully scaffolded repo — expect 7/7 critical and exit 0.",
+        "Confirm the total is identical for both (comparable scores)."
+      ],
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash -n bin/harness-audit.sh",
+          "repair": "Fix the reported syntax error. The script must stay bash 3.2 compatible: no associative arrays, no ${var,,}."
+        },
+        {
+          "label": "runtime",
+          "cmd": "bash bin/harness-audit.sh . --json | python3 -c 'import json,sys;json.load(sys.stdin)'",
+          "repair": "JSON output is malformed. Check json_escape handles quotes and backslashes in every check description and fix string."
+        }
+      ],
+      "evidence": [
+        "tests/run-tests.sh sections 2-3 and 12 pass — stable denominator and parseable JSON confirmed 2026-08-05"
+      ],
+      "notes": "74 checks across the five subsystems plus L03-L12."
+    },
+    {
+      "id": "F02",
+      "priority": 2,
+      "area": "scaffold",
+      "behavior": "harness-init.sh writes a working harness into a target repo at the requested level, detects the project's real verification command, and never overwrites an existing file without --force.",
+      "state": "passing",
+      "verification": [
+        "Run with --dry-run and confirm nothing is written.",
+        "Run --level minimal and confirm all 7 critical audit checks pass.",
+        "Run --level full and confirm the audit scores at least 70/74.",
+        "Re-run over an existing AGENTS.md and confirm it is preserved without --force."
+      ],
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash -n bin/harness-init.sh",
+          "repair": "Fix the reported syntax error."
+        },
+        {
+          "label": "runtime",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Read the first failing assertion only. Fix it, re-run. Do not batch fixes across sections."
+        }
+      ],
+      "evidence": [
+        "tests/run-tests.sh sections 4-7 pass — minimal 7/7 critical, full 72/74, clobber protection confirmed 2026-08-05"
+      ],
+      "notes": "Detects npm/pnpm/yarn/bun, uv/poetry/pip, cargo and go."
+    },
+    {
+      "id": "F03",
+      "priority": 3,
+      "area": "gates",
+      "behavior": "verify-feature.sh is the only path to a passing state: it runs each layer in order, stops at the first failure with that layer's repair guidance, and records commit-stamped evidence on success.",
+      "state": "passing",
+      "verification": [
+        "Promote a feature whose layers all pass; confirm state=passing and evidence recorded.",
+        "Fail a layer; confirm the repair text prints and the feature is NOT promoted.",
+        "Use a layer command that calls exit; confirm repair guidance still prints."
+      ],
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash -n templates/full/scripts/verify-feature.sh",
+          "repair": "Fix the reported syntax error."
+        },
+        {
+          "label": "runtime",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Section 8 covers this gate. A failing layer must never promote a feature — that is the whole point of the script."
+        }
+      ],
+      "evidence": [
+        "tests/run-tests.sh section 8 passes — all four gate behaviours confirmed 2026-08-05"
+      ],
+      "notes": "Layer commands run in a subshell so a layer calling exit cannot kill the script before it reports."
+    },
+    {
+      "id": "F04",
+      "priority": 4,
+      "area": "gates",
+      "behavior": "clean-state-check.sh and check-arch.sh block a dirty clock-out: false passing states, WIP=1 violations, stray artifacts, committed secrets and conflict markers all fail with a named fix.",
+      "state": "passing",
+      "verification": [
+        "Mark a feature passing with no evidence; confirm clean-state-check catches it.",
+        "Activate two features; confirm the WIP=1 violation is reported.",
+        "Commit a realistic credential; confirm check-arch reports WHAT/WHY/FIX and names the file."
+      ],
+      "layers": [
+        {
+          "label": "runtime",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Sections 9-10 cover these gates. If a secret rule stops firing, check the regex survives the JSON to shell round-trip — avoid nested quoting in rule commands."
+        }
+      ],
+      "evidence": [
+        "tests/run-tests.sh sections 9-10 pass — 11 assertions confirmed 2026-08-05"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "F05",
+      "priority": 5,
+      "area": "adoption",
+      "behavior": "A user can audit and harness any of their repositories without installing anything: bash, git and python3 only.",
+      "state": "passing",
+      "verification": [
+        "Apply the kit to three real repositories.",
+        "Record the audit score before and after for each.",
+        "Confirm no repository needed a dependency install to run the audit."
+      ],
+      "layers": [
+        {
+          "label": "runtime",
+          "cmd": "bash bin/harness-audit.sh . --json | python3 -c 'import json,sys;d=json.load(sys.stdin);print(d[\"score\"])'",
+          "repair": "If the audit needs anything beyond bash/git/python3, remove the dependency — portability is the point of this kit."
+        }
+      ],
+      "evidence": [
+        "all layers passed — commit 2654584, 2026-08-05T06:46:40Z"
+      ],
+      "notes": "Pilot rollout complete. Aurobalance 32->71/74 (make check exit 0, 97 test files), ADEN-Taller 10->44/74 minimal (check-course.sh exit 0), BootCampIesav1.0 13->72/74 (make check exit 0, 47 tests). No repo needed anything beyond bash, git and python3 to be audited."
+    },
+    {
+      "id": "F06",
+      "priority": 6,
+      "area": "performance",
+      "behavior": "Copying packs/load-testing/repo-template into any repository gives it a performance gate that blocks a merge on a deterministic smoke run, produces delivery evidence from an on-demand load run, and refuses to report success when the target is an authentication screen, the k6 script is broken, or no summary was produced.",
+      "state": "passing",
+      "verification": [
+        "Run packs/load-testing/verify-pack.sh — every failure mode must block.",
+        "Confirm a target that redirects to an auth host aborts instead of measuring it.",
+        "Confirm a k6 script with a runtime error does NOT exit 0 through the gate.",
+        "Confirm a run that produced no summary is treated as a failure, not a pass."
+      ],
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash -n packs/load-testing/repo-template/bin/perf-check",
+          "repair": "Fix the reported syntax error. perf-check must stay bash 3.2 compatible: no associative arrays, no ${var,,}."
+        },
+        {
+          "label": "e2e",
+          "cmd": "bash packs/load-testing/verify-pack.sh",
+          "repair": "A failure mode stopped blocking. Read which case failed: the gate is only worth having while every case in that script still blocks. Requires k6 on PATH (brew install k6)."
+        }
+      ],
+      "evidence": [
+        "all layers passed — commit 84e8c71, 2026-08-07T07:29:01Z"
+      ],
+      "notes": "k6 v2.1.0 exit codes measured, not assumed: thresholds crossed = 99, test.abort() = 108, and a runtime error in the default function = 0. That last one is why lib/metrics.js defines the perf_completed counter with an absolute count>=N threshold: a checks rate threshold does not catch it, because a rate threshold over a metric with no samples evaluates as passing. Also: --no-summary no longer exists in k6 v2 (use --summary-mode disabled)."
+    },
+    {
+      "id": "F07",
+      "priority": 7,
+      "area": "performance",
+      "behavior": "Running bin/perf-init.sh inside any repository installs the performance gate, configures it from the detected stack, and registers the smoke check as required on the default branch — and the resulting gate never deadlocks a pull request that has no deployment to measure.",
+      "state": "passing",
+      "verification": [
+        "Run perf-init.sh --dry-run in a throwaway git repo: prints every action, changes nothing.",
+        "Run it for real: files land, .gitignore updated, second run is idempotent.",
+        "Confirm perf-resolve-target prints nothing and exits 0 when a SHA has no deployment.",
+        "Confirm the CI job reports success (does not block) when no deployment exists."
+      ],
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash -n packs/load-testing/repo-template/bin/perf-init.sh && bash -n packs/load-testing/repo-template/bin/perf-resolve-target",
+          "repair": "Fix the syntax error. Both scripts must stay bash 3.2 compatible."
+        },
+        {
+          "label": "e2e",
+          "cmd": "bash packs/load-testing/verify-pack.sh",
+          "repair": "An installer or resolver case stopped behaving. Read which case failed."
+        }
+      ],
+      "evidence": [
+        "all layers passed — commit 84e8c71, 2026-08-07T07:59:11Z",
+        "all layers passed — commit 84e8c71, 2026-08-07T08:07:47Z"
+      ],
+      "notes": "The gate must be safe to mark as a required status check. A workflow triggered only by deployment_status would deadlock any PR that produces no deployment: the required check never reports, so the PR can never merge. Hence the pull_request trigger plus a resolver that exits cleanly when there is nothing to measure. Verified against a real repo: GET /repos/{r}/deployments?sha={sha} then /deployments/{id}/statuses yields .environment_url for vercel[bot] Preview deployments."
+    },
+    {
+      "id": "F08",
+      "priority": 8,
+      "area": "performance",
+      "behavior": "The gate can measure routes behind an end-user login (Supabase) by minting a real session and presenting it as the cookie @supabase/ssr expects, and bin/perf-discover probes a running app to report which routes are actually measurable — separating real pages from client-side shells and from redirects to a login.",
+      "state": "passing",
+      "verification": [
+        "Round-trip the cookie: k6 encodes it, @supabase/ssr's own decoder reads it back.",
+        "Confirm a missing credential aborts with an actionable message, never measures.",
+        "Run perf-discover against a real running app and confirm it classifies routes.",
+        "Confirm perf-discover flags a client-side shell whose visible text is a loader."
+      ],
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash -n packs/load-testing/repo-template/bin/perf-discover && node --check packs/load-testing/repo-template/tests/load/lib/session.js",
+          "repair": "Fix the reported syntax error."
+        },
+        {
+          "label": "e2e",
+          "cmd": "bash packs/load-testing/verify-pack.sh",
+          "repair": "A session or discovery case regressed. Read which case failed."
+        }
+      ],
+      "evidence": [
+        "all layers passed — commit 84e8c71, 2026-08-07T14:30:57Z",
+        "all layers passed — commit 84e8c71, 2026-08-07T14:56:46Z"
+      ],
+      "notes": "Cookie format taken from the installed @supabase/ssr 0.12.4, not from docs: name is sb-<project-ref>-auth-token, value is 'base64-' + base64url(JSON.stringify(session)), and stringToBase64URL emits NO padding — which matches k6's encoding.b64encode(s,'rawurl') exactly. Discovery exists because measuring casabat-comparador-cliente revealed 7 of 9 routes redirect to /login and '/' is a shell whose entire visible text is 'Comparador de Precios — Casabat Cargando…'; measuring it would have produced an excellent p(95) over an empty page."
+    },
+    {
+      "id": "F09",
+      "priority": 9,
+      "area": "governance",
+      "behavior": "A feature declaring budgets cannot be worked on forever: each failed verification spends a review round, a repeated blocker has its own ceiling, and exhausting either sets the feature to blocked with a distinct exit code CI can read.",
+      "state": "blocked",
+      "budgets": {
+        "review_rounds_max": 2,
+        "repeated_blocker_max": 3,
+        "stop_condition": "Stop, record the blocker in PROGRESS.md, and escalate to a human. Do not retry, do not refactor around it, do not open a new approach."
+      },
+      "verification": [
+        "Set review_rounds_max to 2 and fail a layer twice.",
+        "Confirm the second failure exits 3 and the feature becomes blocked.",
+        "Confirm a green run resets the ledger."
+      ],
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash -n scripts/verify-feature.sh",
+          "repair": "Fix the syntax error. Stay bash 3.2 compatible."
+        },
+        {
+          "label": "suite",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Read the first failing assertion only. Fix that one, re-run. Do not batch fixes."
+        }
+      ],
+      "evidence": [
+        "all layers passed — commit aa73fef, 2026-08-14T19:32:55Z"
+      ],
+      "notes": "Design taken from the Factory Control Plane plan, which specified these limits and never implemented them."
+    },
+    {
+      "id": "F10",
+      "priority": 10,
+      "area": "governance",
+      "behavior": "A passing state written by hand does not survive: CI re-runs the layers behind every claimed feature using the checker from the protected base branch, and reports FALSE_CLAIM when they disagree.",
+      "state": "passing",
+      "budgets": {
+        "review_rounds_max": 2,
+        "repeated_blocker_max": 3,
+        "stop_condition": "Stop, record the blocker in PROGRESS.md, and escalate to a human. Do not retry, do not refactor around it, do not open a new approach."
+      },
+      "verification": [
+        "Mark a feature passing without running its layers.",
+        "Confirm verify-claims.sh exits 1 naming FALSE_CLAIM and the feature.",
+        "Confirm an unverifiable claim (no layers, no evidence) exits 2."
+      ],
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash -n scripts/verify-claims.sh",
+          "repair": "Fix the syntax error."
+        },
+        {
+          "label": "suite",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Read the first failing assertion only. Fix that one, re-run. Do not batch fixes."
+        }
+      ],
+      "evidence": [
+        "all layers passed — commit aa73fef, 2026-08-14T19:33:19Z"
+      ],
+      "notes": "Verified end to end against GitHub: PR blocked in rizo-ma canary."
+    },
+    {
+      "id": "F11",
+      "priority": 11,
+      "area": "governance",
+      "behavior": "The required-quality gate protects its own definition: actions are pinned to 40-hex SHAs, and a push touching the workflow file is rejected before it can become a pull request.",
+      "state": "passing",
+      "budgets": {
+        "review_rounds_max": 2,
+        "repeated_blocker_max": 3,
+        "stop_condition": "Stop, record the blocker in PROGRESS.md, and escalate to a human. Do not retry, do not refactor around it, do not open a new approach."
+      },
+      "verification": [
+        "Run harness-protect.sh against a repository and confirm both rulesets read back as active with zero bypass actors.",
+        "Push a change to the workflow file and confirm the push is rejected.",
+        "Confirm the workflow contains no action referenced by tag."
+      ],
+      "layers": [
+        {
+          "label": "pinned",
+          "cmd": "! grep -E '^\\\\s*uses:' templates/full/.github/workflows/required-quality.yml | grep -qvE 'uses:\\\\s*\\\\S+@[0-9a-f]{40}'",
+          "repair": "Replace the tag reference with the action's 40-hex commit SHA."
+        },
+        {
+          "label": "payloads",
+          "cmd": "python3 -c \"import json;[json.load(open(f)) for f in ['templates/full/.github/rulesets/required-quality-check.json','templates/full/.github/rulesets/required-quality-integrity.json']]\"",
+          "repair": "Fix the malformed ruleset JSON."
+        },
+        {
+          "label": "static",
+          "cmd": "bash -n bin/harness-protect.sh",
+          "repair": "Fix the syntax error."
+        }
+      ],
+      "evidence": [
+        "all layers passed — commit aa73fef, 2026-08-14T19:32:25Z"
+      ],
+      "notes": "GitHub counts a job skipped by its own condition as a PASSING required check; only the push rule closes that."
+    },
+    {
+      "id": "F12",
+      "priority": 12,
+      "area": "quality",
+      "behavior": "An executable specification that did not execute cannot pass: the gate reads the Cucumber messages report instead of the exit code, and blocks zero execution, count mismatch, and every non-passing status.",
+      "state": "passing",
+      "budgets": {
+        "review_rounds_max": 2,
+        "repeated_blocker_max": 3,
+        "stop_condition": "Stop, record the blocker in PROGRESS.md, and escalate to a human. Do not retry, do not refactor around it, do not open a new approach."
+      },
+      "verification": [
+        "Rename the features directory and confirm Cucumber exits 0 while the gate exits 2.",
+        "Run the pack matrix and confirm every failure mode blocks."
+      ],
+      "layers": [
+        {
+          "label": "matrix",
+          "cmd": "bash packs/gherkin/verify-pack.sh",
+          "repair": "A failure mode stopped blocking. The gate is only worth having while every case in that script still blocks."
+        }
+      ],
+      "evidence": [
+        "all layers passed — commit aa73fef, 2026-08-14T19:32:26Z"
+      ],
+      "notes": "Same failure shape as k6: a broken script exits successfully."
+    },
+    {
+      "id": "F13",
+      "priority": 13,
+      "area": "governance",
+      "behavior": "An earlier decision cannot be quietly rewritten: every entry recorded at the base must still be present unchanged, and altering or deleting one is rejected as DECISION_REWRITE_FORBIDDEN.",
+      "state": "passing",
+      "budgets": {
+        "review_rounds_max": 2,
+        "repeated_blocker_max": 3,
+        "stop_condition": "Stop, record the blocker in PROGRESS.md, and escalate to a human. Do not retry, do not refactor around it, do not open a new approach."
+      },
+      "verification": [
+        "Edit an earlier entry in DECISIONS.md and confirm exit 1 naming it.",
+        "Append a new decision and confirm it still passes."
+      ],
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash -n scripts/verify-decisions.sh",
+          "repair": "Fix the syntax error."
+        },
+        {
+          "label": "suite",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Read the first failing assertion only. Fix that one, re-run. Do not batch fixes."
+        }
+      ],
+      "evidence": [
+        "all layers passed — commit aa73fef, 2026-08-14T19:33:44Z"
+      ],
+      "notes": "Adding is free; superseding appends an entry that references the old one."
+    },
+    {
+      "id": "F14",
+      "priority": 14,
+      "area": "experience",
+      "behavior": "One command takes a repository from nothing to governed: it detects the stack and remote, asks once, installs the harness and whatever rulesets the plan allows, and closes by naming the state and what is still the human's job.",
+      "state": "passing",
+      "budgets": {
+        "review_rounds_max": 2,
+        "repeated_blocker_max": 3,
+        "stop_condition": "Stop, record the blocker in PROGRESS.md, and escalate to a human. Do not retry, do not refactor around it, do not open a new approach."
+      },
+      "verification": [
+        "Run harness-activate.sh on a fresh repo and confirm one confirmation covers everything.",
+        "Confirm harness-status.sh reports READY_LOCAL, READY_PARTIAL or READY_DUAL matching the live rulesets.",
+        "Confirm re-running it never overwrites an existing file."
+      ],
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash -n bin/harness-activate.sh && bash -n bin/harness-status.sh",
+          "repair": "Fix the syntax error."
+        },
+        {
+          "label": "suite",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Read the first failing assertion only. Fix that one, re-run. Do not batch fixes."
+        }
+      ],
+      "evidence": [
+        "all layers passed — commit aa73fef, 2026-08-14T19:34:09Z"
+      ],
+      "notes": "READY_PARTIAL exists because push rules are organization-only: a personal repo gets a real gate that cannot protect itself."
+    },
+    {
+      "id": "F15",
+      "priority": 15,
+      "area": "harness-hardening",
+      "behavior": "Legacy verifiers reject malformed contracts and invalid state before effects",
+      "state": "passing",
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash -n scripts/verify-feature.sh && bash -n scripts/verify-claims.sh && bash -n scripts/verify-decisions.sh && bash -n scripts/check-arch.sh && echo shell-syntax-ok",
+          "repair": "Fix source whitespace or conflict markers."
+        },
+        {
+          "label": "runtime",
+          "cmd": "PYTHONDONTWRITEBYTECODE=1 python3 tests/h01-hardening-regressions.py",
+          "repair": "Fix the first failing contract without weakening its expectation."
+        },
+        {
+          "label": "e2e",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Repair the shipped CLI or scaffold contract; retain negative marker assertions."
+        }
+      ],
+      "evidence": [
+        "all layers passed — commit 9ee4eaa, 2026-09-05T23:57:06Z",
+        "all layers passed — commit 9ee4eaa, 2026-09-06T00:33:22Z",
+        "all layers passed — commit 9ee4eaa, 2026-09-06T00:35:10Z"
+      ],
+      "notes": "Approved hardening milestone H01; owner mandate 2026-09-05."
+    },
+    {
+      "id": "F16",
+      "priority": 16,
+      "area": "harness-hardening",
+      "behavior": "Live gates and installed profiles preserve required verification and scoped changes",
+      "state": "passing",
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "make lint",
+          "repair": "Fix the reported shell diagnostics without weakening lint."
+        },
+        {
+          "label": "runtime",
+          "cmd": "PYTHONDONTWRITEBYTECODE=1 python3 tests/h02-hardening-regressions.py",
+          "repair": "Repair the failing gate or index contract while preserving its negative assertions."
+        },
+        {
+          "label": "e2e",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Repair the shipped scaffold or CLI contract; preserve coverage and isolation."
+        }
+      ],
+      "evidence": [
+        "all layers passed — commit fff527b, 2026-09-06T01:20:45Z"
+      ],
+      "notes": "Approved hardening milestone H02; owner mandate 2026-09-05."
+    },
+    {
+      "id": "F17",
+      "priority": 17,
+      "area": "harness-hardening",
+      "behavior": "Typed semantic identities classify only demonstrably equivalent changes",
+      "state": "passing",
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "make lint && for runtime_source in packs/autonomy/repo-template/scripts/quality-orchestrator/*.mjs packs/autonomy/repo-template/scripts/quality-orchestrator/tests/*.mjs; do node --check \"$runtime_source\" || exit; done && echo autonomy-static-ok",
+          "repair": "Fix shell or module syntax without reducing the gate or supported trust boundary."
+        },
+        {
+          "label": "runtime",
+          "cmd": "node --test --test-reporter=tap packs/autonomy/repo-template/scripts/quality-orchestrator/tests/identity.test.mjs packs/autonomy/repo-template/scripts/quality-orchestrator/tests/authority.test.mjs",
+          "repair": "Repair typed identity, authority or freshness behavior while preserving adverse cases."
+        },
+        {
+          "label": "e2e",
+          "cmd": "node --test --test-reporter=tap packs/autonomy/repo-template/scripts/quality-orchestrator/tests/classify.test.mjs",
+          "repair": "Repair the public authority-to-context-to-classification flow; assessments must never authorize execution."
+        }
+      ],
+      "evidence": [
+        "all layers passed — commit 2944519, 2026-09-06T01:46:05Z",
+        "all layers passed — commit 2944519, 2026-09-06T01:56:16Z"
+      ],
+      "notes": "Approved hardening milestone H03; owner mandate 2026-09-05.",
+      "user_visible_behavior": "A consumer imports the public runtime, verifies scoped authority and accepted input bytes, and receives mechanical eligibility only for proven canonical or derived changes; unknown, stale or semantic inputs stop without execution authority."
+    },
+    {
+      "id": "F18",
+      "priority": 18,
+      "area": "harness-hardening",
+      "behavior": "Verified append-only journal derives run state and imports legacy evidence honestly",
+      "state": "passing",
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "make lint && for runtime_source in packs/autonomy/repo-template/scripts/quality-orchestrator/{authority,classify,index,journal}.mjs; do node --check \"$runtime_source\" || exit; done && for writer_source in scripts/verify-feature.sh templates/full/scripts/verify-feature.sh; do bash -n \"$writer_source\" || exit; done && echo journal-static-ok",
+          "repair": "Fix syntax and lint while preserving closed authority and source/template parity."
+        },
+        {
+          "label": "runtime",
+          "cmd": "node --test '--test-name-pattern=^(?:journal appends|idempotency|replay rejects|head index|exclusive existing|an existing|signed latest|checkpoint rejects|witness is fetched|fresh run rejects|incomplete intent|closed event|stale run|recovery requires|terminal verdict)' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/journal.test.mjs",
+          "repair": "Repair journal replay, freshness, authority or idempotency without weakening adverse assertions."
+        },
+        {
+          "label": "e2e",
+          "cmd": "node --test '--test-name-pattern=^(?:fresh mechanical|process crash|two real writers|legacy bytes|adopted v2|witness publication)' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/journal.test.mjs",
+          "repair": "Repair public fresh-run, witness, crash, concurrency or legacy-guard behavior while preserving evidence and objective budget."
+        }
+      ],
+      "evidence": [
+        "all layers passed — commit 96438e8, 2026-09-06T02:11:23Z"
+      ],
+      "notes": "Approved hardening milestone H04; owner mandate 2026-09-05.",
+      "user_visible_behavior": "A consumer resumes a mechanically equivalent final workspace through a fresh run while retaining prior verdicts and objective spending; replay and recovery verify history, and adopted v2 rejects legacy direct writes without recertifying old evidence."
+    },
+    {
+      "id": "F19",
+      "priority": 19,
+      "area": "harness-hardening",
+      "behavior": "Closed capabilities enforce workspace containment and exclusive fenced leases",
+      "state": "passing",
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "make lint && bash docs/implementation/2026-09-06-execution-backends/verify-ci-static.sh",
+          "repair": "Fix syntax and lint without weakening capability scope, receipts or runtime bindings."
+        },
+        {
+          "label": "runtime",
+          "cmd": "node --test --test-reporter=tap --test-skip-pattern='e2e:' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs packs/autonomy/repo-template/scripts/quality-orchestrator/tests/literal-filename.test.mjs",
+          "repair": "Fix the first concrete scope, freshness, fencing or receipt-provenance failure while preserving adverse expectations."
+        },
+        {
+          "label": "e2e",
+          "cmd": "node --test --test-reporter=tap --test-name-pattern='^e2e:' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs",
+          "repair": "Repair exact source/digest publication and actual postcondition reconciliation; uncertain effects remain incomplete."
+        }
+      ],
+      "evidence": [
+        "all layers passed — commit 772f47d, 2026-09-06T02:28:51Z",
+        "all layers passed — commit 772f47d, 2026-09-06T02:35:01Z",
+        "all layers passed — commit 65c0c69, 2026-09-06T04:08:30Z",
+        "all layers passed — commit cca4b16, 2026-09-06T14:29:57Z"
+      ],
+      "notes": "Current static binding updated for the authorized F24 continuation; historical tests and receipts preserved. Original runtime/e2e contracts are revalidated by the harness; no baseline acceptance.",
+      "user_visible_behavior": "A consumer uses the public runtime to prepare and perform an exactly scoped mechanical source/digest write with verified pre/postconditions, and reconciles a completed interrupted publication without repeating writes; unsupported subprocess containment is explicitly blocked."
+    },
+    {
+      "id": "F20",
+      "priority": 20,
+      "area": "harness-hardening",
+      "behavior": "Bounded grants and separate budgets continue previously authorized work",
+      "state": "passing",
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "make lint && bash docs/implementation/2026-09-05-harness-hardening/h06/verify-static.sh && bash docs/implementation/2026-09-05-harness-hardening/h06/fix-1/verify-static.sh",
+          "repair": "Fix syntax and lint without changing grant authority or budget semantics."
+        },
+        {
+          "label": "runtime",
+          "cmd": "node --test --test-skip-pattern='e2e:' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation-authority.test.mjs packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs",
+          "repair": "Fix the first concrete continuation, freshness, regression or budget failure while preserving its adverse expectation."
+        },
+        {
+          "label": "e2e",
+          "cmd": "node --test --test-name-pattern='^e2e:' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation-authority.test.mjs packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs",
+          "repair": "Repair same-grant mechanical continuation and exact interrupted-effect reconciliation without resetting spent budget."
+        }
+      ],
+      "evidence": [
+        "all layers passed — commit 589a4e3, 2026-09-06T02:50:45Z",
+        "all layers passed — commit 589a4e3, 2026-09-06T02:57:16Z"
+      ],
+      "notes": "Approved hardening milestone H06; owner mandate 2026-09-05.",
+      "user_visible_behavior": "A consumer reuses one signed grant across mechanical commit changes and reconciles an interrupted write without a new approval or a budget reset; changed meaning and unaccepted artifact bytes stop."
+    },
+    {
+      "id": "F21",
+      "priority": 21,
+      "area": "harness-hardening",
+      "behavior": "Independent Codex review freezes compatible model/config and validates output locally",
+      "state": "passing",
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "make lint && bash docs/implementation/2026-09-05-harness-hardening/h07/verify-static.sh",
+          "repair": "Fix syntax and lint while preserving reviewer trust and exact binding checks."
+        },
+        {
+          "label": "runtime",
+          "cmd": "node --test --test-skip-pattern='^e2e' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs",
+          "repair": "Fix the first policy, shadow, freshness or local output-validation failure without granting unavailable execution."
+        },
+        {
+          "label": "e2e",
+          "cmd": "node --test --test-name-pattern='^e2e' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs",
+          "repair": "Keep unavailable review non-executed and uncharged; local outputs or forged receipts cannot become authenticated review evidence."
+        }
+      ],
+      "evidence": [
+        "all layers passed — commit 19851a2, 2026-09-06T03:13:46Z"
+      ],
+      "notes": "Approved H07 portable contract implementation; live reviewer/backend and real acceptance remain NOT_EXECUTED, not certified by fixture tests.",
+      "user_visible_behavior": "A consumer prepares an exact trusted Git shadow and frozen review contract, rejects malformed or forged review outputs, and receives an explicit uncharged stop while the live containment/session backend is unavailable."
+    },
+    {
+      "id": "F22",
+      "priority": 22,
+      "area": "harness-hardening",
+      "behavior": "Release objectives continue through exact integration deployment and certification",
+      "state": "passing",
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "make lint && bash docs/implementation/2026-09-05-harness-hardening/h08/verify-static.sh",
+          "repair": "Fix syntax and lint without weakening exact release evidence or approval binding."
+        },
+        {
+          "label": "runtime",
+          "cmd": "node --test --test-skip-pattern='^e2e' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs",
+          "repair": "Fix the first closed obligation, ordering, freshness or mismatch failure; simulations never certify production."
+        },
+        {
+          "label": "e2e",
+          "cmd": "node --test --test-name-pattern='^e2e' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs",
+          "repair": "Preserve actual authority/replay/budget boundaries and explicit refusal without a real deployment/review backend."
+        }
+      ],
+      "evidence": [
+        "all layers passed — commit c8988ac, 2026-09-06T03:28:56Z"
+      ],
+      "notes": "Approved H08 portable obligation/refusal scope; positive production scheduler/backend/authenticated receipt import and live rollback remain unimplemented, real acceptance NOT_EXECUTED.",
+      "user_visible_behavior": "A consumer evaluates release obligations with exact typed bindings and obtains honest uncharged refusal through actual context/journal APIs; simulated progress and raw receipts never certify a production deployment."
+    },
+    {
+      "id": "F23",
+      "priority": 23,
+      "area": "harness-hardening",
+      "behavior": "Installed optional pack completes a local canary without weakening semantic gates",
+      "state": "passing",
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "make lint && bash docs/implementation/2026-09-06-execution-backends/verify-ci-static.sh",
+          "repair": "Fix lint, syntax or exact scoped source consistency without changing authority or consumer-preservation guarantees."
+        },
+        {
+          "label": "runtime",
+          "cmd": "node --test --test-reporter=tap packs/autonomy/tests/installation.test.mjs",
+          "repair": "Fix explicit installation/status behavior while preserving existing consumer bytes and separate authority adoption."
+        },
+        {
+          "label": "e2e",
+          "cmd": "node --test --test-reporter=tap packs/autonomy/tests/canary.test.mjs",
+          "repair": "Fix the installed local canary without converting fixture approvals, unavailable review or production execution into acceptance."
+        }
+      ],
+      "evidence": [
+        "all layers passed — commit 65c0c69, 2026-09-06T03:46:35Z",
+        "all layers passed — commit 65c0c69, 2026-09-06T04:09:40Z",
+        "all layers passed — commit cca4b16, 2026-09-06T14:33:12Z"
+      ],
+      "notes": "Current static binding updated for the authorized F24 continuation; historical tests and receipts preserved. Original runtime/e2e contracts are revalidated by the harness; no baseline acceptance.",
+      "user_visible_behavior": "A consumer explicitly installs autonomy, observes capability/adoption status, reuses one scoped continuation across actual local canonical effects and Git fresh runs, blocks a semantic threshold change, and rolls back fixture adoption without losing v1/v2 evidence."
+    },
+    {
+      "id": "F24",
+      "priority": 24,
+      "area": "harness-hardening",
+      "behavior": "Approved GitHub executions retain durable intent and authenticated review/release evidence",
+      "state": "passing",
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "make lint && bash docs/implementation/2026-09-06-execution-backends/verify-ci-static.sh",
+          "repair": "Fix syntax or lint without weakening provenance or journal compatibility."
+        },
+        {
+          "label": "runtime",
+          "cmd": "node --test --test-skip-pattern='^e2e' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/execution-backend.test.mjs && python3 tests/protected-workflow-regression.py",
+          "repair": "Fix the concrete execution contract failure while preserving adverse expectations."
+        },
+        {
+          "label": "e2e",
+          "cmd": "node --test --test-name-pattern='^e2e' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/execution-backend.test.mjs",
+          "repair": "Repair the public configured-backend flow without recasting fixtures as live acceptance."
+        }
+      ],
+      "evidence": [
+        "all layers passed — commit cca4b16, 2026-09-06T13:56:41Z",
+        "all layers passed — commit cca4b16, 2026-09-06T14:29:11Z"
+      ],
+      "notes": "Owner continuation 2026-09-06. Four initial scoped review findings are fixed and independently closed. CI integration uses protected base only. Fixtures do not certify live execution, containment, baseline acceptance or deployment.",
+      "user_visible_behavior": "A consumer connects approved remote execution workflows, resumes an uncertain operation without duplicate effects or charges, and derives release progress only from exact authenticated observations."
+    }
+  ]
+}

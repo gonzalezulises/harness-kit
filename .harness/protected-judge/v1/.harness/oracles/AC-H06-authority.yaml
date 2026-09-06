@@ -1,0 +1,33 @@
+id: AC-H06-authority
+requirement: Current and recorded approvals require actual cryptographic verification before continuation authority
+criticality: critical
+status: TEST_READY
+observable: Fabricated or altered signatures fail in current approval, continuation and journal replay paths
+oracle:
+  expected: Shared verifier calls node crypto with the pinned public key and rejects invalid signatures
+cases:
+  positive:
+  - Genuine signatures work for all six approval kinds and historical event time remains distinct from current freshness
+  negative:
+  - Zero signatures and altered signed fields fail current and recorded verification
+  - Rehashed journal records cannot turn fabricated grant signatures into replayed authority
+  boundary:
+  - Missing or null public observed defects fail before durable registration
+context: Ephemeral enrolled fixture issuer and accepted local context; no production authority or network
+side_effects:
+  must:
+  - Reject invalid grants before journal registration or budget spending
+  must_not:
+  - Treat a truthy stop object as successful cryptographic verification
+false_positive: The exact reviewed verifier name collision accepts zero signatures and causes current adversarial tests to fail
+owner: harness-kit maintainers under AGENTS.md and DECISIONS.md MIGRATION-01
+evidence:
+  formats:
+  - Preserved reviewed source and exact new test with observed nonzero log and content-bound receipt
+tests:
+- packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation-authority.test.mjs
+
+falsification:
+  defect: The reviewed verify helper shadows node crypto verify and treats a recursive truthy stop object as successful authentication; fabricated current and recorded signatures are accepted. Public continuation also permits missing or null observations. Exact current tests observe seven assertion failures on preserved reviewed source.
+  proved_sha: 589a4e3efe924264825c0f3de4b3820d83b196be
+  receipt: docs/implementation/2026-09-05-harness-hardening/h06/fix-1/red-receipt.json

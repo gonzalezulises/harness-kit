@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "installation": "kit",
+  "gates": {
+    "decisions-append-only": {
+      "applicable": true,
+      "reason": "Required by this installation profile"
+    },
+    "agent-notes-tree": {
+      "applicable": true,
+      "reason": "Required by this installation profile"
+    },
+    "arch-boundaries": {
+      "applicable": true,
+      "reason": "Required by this installation profile"
+    },
+    "makefile-gates": {
+      "applicable": true,
+      "reason": "Required by this installation profile"
+    },
+    "version-sync": {
+      "applicable": true,
+      "reason": "Required by this installation profile"
+    },
+    "delivery-doc": {
+      "applicable": true,
+      "reason": "Required by this installation profile"
+    },
+    "context-routes": {
+      "applicable": true,
+      "reason": "Required by this installation profile"
+    },
+    "oracles-falsifiable": {
+      "applicable": true,
+      "reason": "Required by this installation profile"
+    },
+    "claims-reverified": {
+      "applicable": true,
+      "reason": "Required by this installation profile"
+    },
+    "make-check": {
+      "applicable": true,
+      "reason": "Required by this installation profile"
+    }
+  }
+}
