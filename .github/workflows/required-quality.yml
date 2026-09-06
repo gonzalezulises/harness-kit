@@ -149,6 +149,17 @@ jobs:
           bash "$GITHUB_WORKSPACE/base/scripts/run-gates.sh" quick --target "$GITHUB_WORKSPACE/head"
           : > "$RUNNER_TEMP/gates-observed-zero"
 
+      - name: Set up Node for the optional autonomy pack
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+          package-manager-cache: false
+
+      - name: Install locked autonomy dependencies and warm the offline canary cache
+        shell: bash
+        working-directory: head
+        run: npm ci --prefix packs/autonomy/repo-template/scripts/quality-orchestrator --ignore-scripts --no-audit --no-fund
+
       - name: Run the repository verification pipeline
         id: check
         env:

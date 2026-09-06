@@ -1,0 +1,9 @@
+{
+  "cwd": "/workspace/scratch/adce1c53b293/harness-kit",
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "packs/autonomy/tests/canary.test.mjs"
+  ]
+}

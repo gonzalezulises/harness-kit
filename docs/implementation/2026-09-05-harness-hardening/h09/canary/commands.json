@@ -1,0 +1,574 @@
+[
+  {
+    "cmd": "bash",
+    "args": [
+      "/workspace/scratch/adce1c53b293/harness-kit/bin/harness-init.sh",
+      "--target",
+      "/tmp/h09-canary-BPv09z/consumer",
+      "--level",
+      "full",
+      "--with",
+      "autonomy"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer",
+    "exit": 0,
+    "stdout": "Harness init\n  target: /tmp/h09-canary-BPv09z/consumer\n  level:  full\n  verify: echo 'TODO: set the verification command'; false\n\n  write   AGENTS.md\n  write   CLAUDE.md\n  write   init.sh\n  write   PROGRESS.md\n  skip    feature_list.json (exists — use --force to overwrite)\n  write   clean-state-checklist.md\n  write   session-handoff.md\n  write   DECISIONS.md\n  write   docs/decisions/README.md\n  write   .harness/judge-contract.json\n  write   .harness/installation-profile.json\n  write   scripts/setup-oracles.sh\n  write   requirements-harness.txt\n  write   Makefile\n  write   scripts/verify-feature.sh\n  write   scripts/verify-claims.sh\n  write   scripts/verify-decisions.sh\n  write   .github/workflows/required-quality.yml\n  write   .github/rulesets/required-quality-check.json\n  write   .github/rulesets/required-quality-integrity.json\n  write   scripts/check-arch.sh\n  write   scripts/verify-makefile-gates.sh\n  write   scripts/run-gates.sh\n  write   scripts/verify-agent-notes.sh\n  write   scripts/verify-delivery-doc.sh\n  write   scripts/verify-context-routes.sh\n  write   scripts/verify-oracles.sh\n  write   .harness/oracles/README.md\n  write   .harness/oracles/AC-000.example.yaml.txt\n  write   .harness/context-routes.json\n  write   scripts/verify-impact.template.mjs\n  write   scripts/pre-commit-staged.sh\n  write   scripts/install-githooks.sh\n  write   .agents/notes/README.md\n  write   scripts/clean-state-check.sh\n  write   scripts/session-trace.sh\n  write   scripts/harness-audit.sh\n  write   .harness/arch-rules.json\n  write   templates/sprint-contract.md\n  write   templates/evaluator-rubric.md\n  write   docs/quality-document.md\n  write   .harness/traces/.gitkeep\n  write   .gitignore\n  write   scripts/quality-orchestrator (autonomy; NOT_ADOPTED)\n  setup   npm ci --prefix scripts/quality-orchestrator --ignore-scripts --no-audit --no-fund\n  Authority and baseline acceptance remain separate operator actions.\n\nDone. Next steps:\n  1. Edit AGENTS.md — replace the purpose line with what this project actually does.\n  2. Replace the placeholder features in feature_list.json with the real backlog.\n  3. Confirm the verification command is right: echo 'TODO: set the verification command'; false\n  4. Score the result:  /workspace/scratch/adce1c53b293/harness-kit/bin/harness-audit.sh /tmp/h09-canary-BPv09z/consumer\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "npm",
+    "args": [
+      "ci",
+      "--prefix",
+      "/tmp/h09-canary-BPv09z/consumer/scripts/quality-orchestrator",
+      "--offline",
+      "--ignore-scripts",
+      "--no-audit",
+      "--no-fund"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer",
+    "exit": 0,
+    "stdout": "\nadded 2 packages in 496ms\n",
+    "stderr": "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\n"
+  },
+  {
+    "cmd": "bash",
+    "args": [
+      "/workspace/scratch/adce1c53b293/harness-kit/bin/harness-status.sh",
+      "--target",
+      "/tmp/h09-canary-BPv09z/consumer",
+      "--autonomy"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer",
+    "exit": 0,
+    "stdout": "Autonomy authority: NOT_VERIFIED — installation/marker presence is not authenticated adoption or baseline acceptance\nAutonomy marker: ABSENT\nAutonomy live review/containment/authenticated receipts: UNIMPLEMENTED; acceptance NOT_EXECUTED\nAutonomy positive production scheduler/target/receipts/rollback: UNIMPLEMENTED; acceptance NOT_EXECUTED\nAutonomy: INSTALLED — runtime loaded; bundle beb4accc1de225fd68cbd54f5d774bcf57510deeea2e31fa6daccbf85daeeb36\nInstallation diagnostics only; no feature verification, readiness or authority certification.\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "init",
+      "--template=",
+      "--initial-branch=main"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "Initialized empty Git repository in /tmp/h09-canary-BPv09z/consumer/data/.git/\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "add",
+      "product/record.yaml"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "-c",
+      "core.hooksPath=/dev/null",
+      "commit",
+      "-m",
+      "H09 fixture baseline"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "[main (root-commit) 09a4c96] H09 fixture baseline\n 1 file changed, 4 insertions(+)\n create mode 100644 product/record.yaml\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "09a4c9651d648f1ad0dc1d82d4aae0ef450bd175\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "09a4c9651d648f1ad0dc1d82d4aae0ef450bd175\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "bash",
+    "args": [
+      "scripts/verify-feature.sh",
+      "F01"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer",
+    "exit": 67,
+    "stdout": "",
+    "stderr": "verify-feature: adopted v2 state is read-only here; use the verified runtime\n"
+  },
+  {
+    "cmd": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "args": [
+      "-e",
+      "const fs=require('node:fs');const actual=fs.readFileSync(process.argv[1],'utf8');if(actual!==process.argv[2]){console.error('FIXTURE_REPRESENTATION_RED: expected canonical bytes');process.exit(1)}console.log('LOCAL_CANONICAL_VERIFIED');",
+      "/tmp/h09-canary-BPv09z/consumer/data/product/record.yaml",
+      "enabled: true\nstatus: \"active\"\nthreshold: 100\ntitle: \"hello\"\n"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "FIXTURE_REPRESENTATION_RED: expected canonical bytes\n"
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "09a4c9651d648f1ad0dc1d82d4aae0ef450bd175\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "09a4c9651d648f1ad0dc1d82d4aae0ef450bd175\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "09a4c9651d648f1ad0dc1d82d4aae0ef450bd175\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "09a4c9651d648f1ad0dc1d82d4aae0ef450bd175\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "09a4c9651d648f1ad0dc1d82d4aae0ef450bd175\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "09a4c9651d648f1ad0dc1d82d4aae0ef450bd175\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "09a4c9651d648f1ad0dc1d82d4aae0ef450bd175\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "09a4c9651d648f1ad0dc1d82d4aae0ef450bd175\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "09a4c9651d648f1ad0dc1d82d4aae0ef450bd175\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "args": [
+      "-e",
+      "const fs=require('node:fs');const actual=fs.readFileSync(process.argv[1],'utf8');if(actual!==process.argv[2]){console.error('FIXTURE_REPRESENTATION_RED: expected canonical bytes');process.exit(1)}console.log('LOCAL_CANONICAL_VERIFIED');",
+      "/tmp/h09-canary-BPv09z/consumer/data/product/record.yaml",
+      "enabled: true\nstatus: \"active\"\nthreshold: 100\ntitle: \"hello\"\n"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer",
+    "exit": 0,
+    "stdout": "LOCAL_CANONICAL_VERIFIED\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "add",
+      "product/record.yaml"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "-c",
+      "core.hooksPath=/dev/null",
+      "commit",
+      "-m",
+      "canonical-commit"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "[main b008964] canonical-commit\n 1 file changed, 2 insertions(+), 2 deletions(-)\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "b008964f67967c226ca5f71d771818989d2a6347\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "b008964f67967c226ca5f71d771818989d2a6347\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "b008964f67967c226ca5f71d771818989d2a6347\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "args": [
+      "-e",
+      "const fs=require('node:fs');const actual=fs.readFileSync(process.argv[1],'utf8');if(actual!==process.argv[2]){console.error('FIXTURE_REPRESENTATION_RED: expected canonical bytes');process.exit(1)}console.log('LOCAL_CANONICAL_VERIFIED');",
+      "/tmp/h09-canary-BPv09z/consumer/data/product/record.yaml",
+      "enabled: true\nstatus: \"active\"\nthreshold: 100\ntitle: \"hello\"\n"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "FIXTURE_REPRESENTATION_RED: expected canonical bytes\n"
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "b008964f67967c226ca5f71d771818989d2a6347\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "add",
+      "product/record.yaml"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "-c",
+      "core.hooksPath=/dev/null",
+      "commit",
+      "-m",
+      "bounded-representation-defect"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "[main e0235dd] bounded-representation-defect\n 1 file changed, 3 insertions(+), 3 deletions(-)\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "e0235dd5e752a800458917c2e180b370ca0658bc\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "e0235dd5e752a800458917c2e180b370ca0658bc\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "e0235dd5e752a800458917c2e180b370ca0658bc\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "e0235dd5e752a800458917c2e180b370ca0658bc\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "e0235dd5e752a800458917c2e180b370ca0658bc\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "e0235dd5e752a800458917c2e180b370ca0658bc\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "e0235dd5e752a800458917c2e180b370ca0658bc\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "e0235dd5e752a800458917c2e180b370ca0658bc\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "e0235dd5e752a800458917c2e180b370ca0658bc\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "e0235dd5e752a800458917c2e180b370ca0658bc\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "args": [
+      "-e",
+      "const fs=require('node:fs');const actual=fs.readFileSync(process.argv[1],'utf8');if(actual!==process.argv[2]){console.error('FIXTURE_REPRESENTATION_RED: expected canonical bytes');process.exit(1)}console.log('LOCAL_CANONICAL_VERIFIED');",
+      "/tmp/h09-canary-BPv09z/consumer/data/product/record.yaml",
+      "enabled: true\nstatus: \"active\"\nthreshold: 100\ntitle: \"hello\"\n"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer",
+    "exit": 0,
+    "stdout": "LOCAL_CANONICAL_VERIFIED\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "add",
+      "product/record.yaml"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "-c",
+      "core.hooksPath=/dev/null",
+      "commit",
+      "-m",
+      "final-canonical"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "[main 5cfc6d8] final-canonical\n 1 file changed, 3 insertions(+), 3 deletions(-)\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "5cfc6d86dd46b944fc2af467cae5c695f97428ce\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "5cfc6d86dd46b944fc2af467cae5c695f97428ce\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "5cfc6d86dd46b944fc2af467cae5c695f97428ce\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "5cfc6d86dd46b944fc2af467cae5c695f97428ce\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "5cfc6d86dd46b944fc2af467cae5c695f97428ce\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "/usr/bin/git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer/data",
+    "exit": 0,
+    "stdout": "5cfc6d86dd46b944fc2af467cae5c695f97428ce\n",
+    "stderr": ""
+  },
+  {
+    "cmd": "bash",
+    "args": [
+      "scripts/verify-feature.sh",
+      "--ratio"
+    ],
+    "cwd": "/tmp/h09-canary-BPv09z/consumer",
+    "exit": 0,
+    "stdout": "VCR = 1/1 = 1.00\n",
+    "stderr": ""
+  }
+]

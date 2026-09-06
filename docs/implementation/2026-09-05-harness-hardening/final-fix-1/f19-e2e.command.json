@@ -1,0 +1,10 @@
+{
+  "cwd": "/workspace/scratch/adce1c53b293/harness-kit",
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "--test-name-pattern=^e2e:",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs"
+  ]
+}

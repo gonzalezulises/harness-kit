@@ -1,0 +1,8 @@
+{
+  "agent": "/root/final_review",
+  "status": "INCOMPLETE",
+  "notice": "Agent errored: This content was flagged for possible cybersecurity risk. If this seems wrong, try rephrasing your request. To get authorized for security work, join the Trusted Access for Cyber program: https://chatgpt.com/cyber",
+  "followup": "Administrative handoff only; no further code analysis or probes",
+  "partial_report_sha256": "f2762769e5fdeb491e16d75a59e24ca776f691d5d54c9446849c80fbdb2f7d98",
+  "next_action": "Narrowly scoped local maintenance correction of already confirmed FR-01; interrupted broad review will not be retried"
+}

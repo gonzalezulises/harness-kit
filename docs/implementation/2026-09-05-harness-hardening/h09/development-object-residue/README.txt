@@ -1,0 +1,1 @@
+Objects retained from the earlier successful development canary. They are not members of the final canary event chain. Final complete chain and objects are under canary/FIXTURE_ONLY-state. No prior H01-H08 artifact was changed.

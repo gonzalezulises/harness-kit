@@ -2,7 +2,7 @@
 # harness-activate.sh — one command between "new repo" and "governed repo".
 #
 # Usage:
-#   bin/harness-activate.sh [--target DIR] [--with gherkin] [--yes] [--dry-run]
+#   bin/harness-activate.sh [--target DIR] [--with gherkin|autonomy] [--yes] [--dry-run]
 #
 # Scaffolding, wiring the remote, and installing rulesets were eight manual steps.
 # The step people skipped was replacing the placeholder features, and a harness
@@ -18,6 +18,7 @@ set -uo pipefail
 KIT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 TARGET="."
 WITH_GHERKIN=0
+WITH_AUTONOMY=0
 ASSUME_YES=0
 DRYRUN=0
 
@@ -30,9 +31,10 @@ while [[ $# -gt 0 ]]; do
     --with)
       case "${2:-}" in
         gherkin) WITH_GHERKIN=1 ;;
+        autonomy) WITH_AUTONOMY=1 ;;
         "") echo "harness-activate: --with necesita el nombre de un pack" >&2; exit 64 ;;
         *) echo "harness-activate: pack desconocido '$2'" >&2
-           echo "  Sólo 'gherkin' se instala con --with." >&2
+           echo "  Sólo 'gherkin' y 'autonomy' se instalan con --with." >&2
            echo "  Los demás (sentry, load-testing, openai-advanced) se copian a mano" >&2
            echo "  desde packs/<nombre>/repo-template/ y se verifican con su verify-pack.sh." >&2
            exit 64 ;;
@@ -92,6 +94,7 @@ else
   echo "  Remoto:       ninguno (sólo control local)"
 fi
 [[ $WITH_GHERKIN -eq 1 ]] && echo "  Extra:        pack de Gherkin (specs ejecutables)"
+[[ $WITH_AUTONOMY -eq 1 ]] && echo "  Extra:        autonomy (instalación sin adopción ni aceptación de baseline)"
 echo ""
 echo "Instalaré el contrato para agentes, estado durable, presupuestos anti-loop,"
 echo "la compuerta local y el control de GitHub cuando el plan lo permita."
@@ -117,11 +120,17 @@ echo ""
 echo "${BOLD}────────────────────────────────────────${RESET}"
 
 # ── 1. The harness itself ────────────────────────────────────────────────────
-if ! bash "$KIT_DIR/bin/harness-init.sh" --target "$TARGET" --level full >/dev/null 2>&1; then
+INIT_ARGS=(--target "$TARGET" --level full)
+[[ $WITH_AUTONOMY -eq 1 ]] && INIT_ARGS+=(--with autonomy)
+if ! bash "$KIT_DIR/bin/harness-init.sh" "${INIT_ARGS[@]}" >/dev/null 2>&1; then
   echo "${RED}BLOCKED_TOOL${RESET} — el scaffold falló. Revisa permisos de escritura en $TARGET."
   exit 1
 fi
 echo "  ${GREEN}ok${RESET}   harness instalado"
+if [[ $WITH_AUTONOMY -eq 1 ]]; then
+  echo '  autonomy: runtime conservado/instalado; autoridad y baseline NO verificadas'
+  echo '  npm ci --prefix scripts/quality-orchestrator --ignore-scripts --no-audit --no-fund'
+fi
 
 # ── 2. Optional pack ─────────────────────────────────────────────────────────
 if [[ $WITH_GHERKIN -eq 1 ]]; then

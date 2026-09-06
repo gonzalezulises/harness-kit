@@ -1,0 +1,39 @@
+[
+  {
+    "name": "final-static",
+    "argv": [
+      "bash",
+      "docs/implementation/2026-09-05-harness-hardening/h09/verify-static.sh"
+    ],
+    "exit": 0,
+    "elapsedSeconds": 0.1462327069893945,
+    "stdout": "docs/implementation/2026-09-05-harness-hardening/h09/final-static.stdout.log",
+    "stderr": "docs/implementation/2026-09-05-harness-hardening/h09/final-static.stderr.log"
+  },
+  {
+    "name": "final-runtime",
+    "argv": [
+      "node",
+      "--test",
+      "--test-reporter=tap",
+      "packs/autonomy/tests/installation.test.mjs"
+    ],
+    "exit": 0,
+    "elapsedSeconds": 1.2163289210002404,
+    "stdout": "docs/implementation/2026-09-05-harness-hardening/h09/final-runtime.stdout.log",
+    "stderr": "docs/implementation/2026-09-05-harness-hardening/h09/final-runtime.stderr.log"
+  },
+  {
+    "name": "final-e2e",
+    "argv": [
+      "node",
+      "--test",
+      "--test-reporter=tap",
+      "packs/autonomy/tests/canary.test.mjs"
+    ],
+    "exit": 0,
+    "elapsedSeconds": 7.571878449001815,
+    "stdout": "docs/implementation/2026-09-05-harness-hardening/h09/final-e2e.stdout.log",
+    "stderr": "docs/implementation/2026-09-05-harness-hardening/h09/final-e2e.stderr.log"
+  }
+]

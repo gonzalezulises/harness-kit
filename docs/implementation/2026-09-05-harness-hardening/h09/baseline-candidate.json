@@ -1,0 +1,25 @@
+{
+  "ownerAcceptance": null,
+  "ownerSignature": null,
+  "subject": {
+    "domain": "harness.h09.delivery-candidate.v1",
+    "evidenceManifest": {
+      "path": "docs/implementation/2026-09-05-harness-hardening/h09/evidence-manifest.json",
+      "sha256": "72499db2472bf5f7cf987353df4ac6b0301587770127e132989d1a09f7c5263f"
+    },
+    "fixtureReceiptsAreOwnerAcceptance": false,
+    "positiveProductionBackend": "UNIMPLEMENTED",
+    "positiveReviewBackend": "UNIMPLEMENTED",
+    "publicationCommit": "SUPPLIED_SEPARATELY_BY_COORDINATOR",
+    "realProductionAcceptance": "NOT_EXECUTED",
+    "realReviewAcceptance": "NOT_EXECUTED",
+    "scope": "Review of exact selected installer/status, optional runtime, contracts, tests and adoption documentation only; not whole-repository authority, real owner adoption, real artifact baseline acceptance or deployment authorization",
+    "sourceManifest": {
+      "path": "docs/implementation/2026-09-05-harness-hardening/h09/source-manifest.json",
+      "sha256": "acdbc8c8a05e73b9fafb8cda37ea2e763b302b851ba2283a3ca8bc79b2e9ccb5"
+    },
+    "status": "CANDIDATE_NOT_ACCEPTED",
+    "version": 1
+  },
+  "subjectSha256": "0924aafaf6d00edfc3d050154ebb77a592c28c894dfe867831ed86923f8a9913"
+}

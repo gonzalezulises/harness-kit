@@ -1,0 +1,15 @@
+{
+  "kind": "FEATURE_ABSENT_RED",
+  "command": [
+    "node",
+    "--test",
+    "packs/autonomy/tests/installation.test.mjs"
+  ],
+  "exit": 1,
+  "sha256": {
+    "bin/harness-init.sh": "f4dedd5d2898014c3550361117531c9dde8358e89dbd30c2a2586b5b5f4255ec",
+    "bin/harness-activate.sh": "a123624214620c2bac13f2cc1825625f41bf915fe355a73ca26b4d1b36147cf1",
+    "bin/harness-status.sh": "ab3cb668202e0f5933596e39a97a98d2fa6519d0d652541fe4df47abb9a729ff",
+    "packs/autonomy/tests/installation.test.mjs": "4efebb188e833093badc5695e0ae7a3ed8cc3aa0cc3671ae31ba232e3af5f8c3"
+  }
+}

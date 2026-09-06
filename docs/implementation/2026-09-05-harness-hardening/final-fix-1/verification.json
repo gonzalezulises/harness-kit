@@ -1,0 +1,109 @@
+{
+  "version": 1,
+  "scope": "Bounded local correction and existing installation/canary verification",
+  "runs": {
+    "static-before-runtime": {
+      "command": [
+        "bash",
+        "-c",
+        "make lint && bash docs/implementation/2026-09-05-harness-hardening/h05/verify-static.sh && node --check packs/autonomy/repo-template/scripts/quality-orchestrator/tests/literal-filename.test.mjs && node --check packs/autonomy/tests/installation.test.mjs && node --check packs/autonomy/tests/canary.test.mjs"
+      ],
+      "exit": 2,
+      "seconds": 0.005,
+      "stdoutSha256": "bdaffe4321bee11253c7eab0adf7c6249a82e32f76fd84f8e2521b607ed7b54f",
+      "stderrSha256": "c40e517df2543905ae20531fb1e6a29f7dadb39ccb02b07ec6b6e037b895aae6"
+    },
+    "static-ready": {
+      "command": [
+        "bash",
+        "-c",
+        "make lint && bash docs/implementation/2026-09-05-harness-hardening/final-fix-1/verify-static.sh"
+      ],
+      "exit": 0,
+      "seconds": 3.975,
+      "stdoutSha256": "35e7f2ae3e0e6a4efe6c164b001f26073798f25cbc80baf7ad6797f55b4f3b9a",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "oracle-static": {
+      "command": [
+        "bash",
+        "scripts/verify-oracles.sh"
+      ],
+      "exit": 0,
+      "seconds": 0.108,
+      "stdoutSha256": "dd97c01f38dc60ecea39df5afdf7d8f9928d31e4c42142c6c5d069325944ef82",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "f19-runtime": {
+      "command": [
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "--test-skip-pattern=e2e:",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/literal-filename.test.mjs"
+      ],
+      "exit": 0,
+      "seconds": 24.496,
+      "stdoutSha256": "aa7e74cfc9cd1252fc18e2ad435ac8a516d310297a301a26e3eb0324be903a71",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "f23-runtime": {
+      "command": [
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "packs/autonomy/tests/installation.test.mjs"
+      ],
+      "exit": 0,
+      "seconds": 1.21,
+      "stdoutSha256": "e735e35ff8e10b71dca626e84677284639b9b2d0496570845811ed64d506ec2b",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "f19-e2e": {
+      "command": [
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "--test-name-pattern=^e2e:",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs"
+      ],
+      "exit": 0,
+      "seconds": 6.999,
+      "stdoutSha256": "bae6d1817ebff03affa25a01dd46ec7dcc93dea6cd6fc0c838c5723929ee8e33",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "f23-e2e": {
+      "command": [
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "packs/autonomy/tests/canary.test.mjs"
+      ],
+      "exit": 0,
+      "seconds": 7.333,
+      "stdoutSha256": "3373995fd1ce44b3e04c4cafb2ba144075782707f6ea2cd362ccffaab5a2d594",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "passingTests": {
+    "f19-runtime": 32,
+    "f23-runtime": 4,
+    "f19-e2e": 3,
+    "f23-e2e": 1
+  },
+  "causalRed": {
+    "commandFile": "docs/implementation/2026-09-05-harness-hardening/final-fix-1/red-command.json",
+    "exit": 1,
+    "pass": 1,
+    "fail": 1,
+    "receipt": "docs/implementation/2026-09-05-harness-hardening/final-fix-1/red-receipt.json"
+  },
+  "initialStaticFailure": "Missing existing shellcheck PATH; exit 2 before runtime, retained and repaired using controller tool PATH",
+  "workflowValidation": "Static preservation and setup inspection only; no GitHub action execution",
+  "actualLocalNode": "v24.19.0",
+  "configuredCINode": "22",
+  "rootFinalGates": "NOT_EXECUTED_BY_IMPLEMENTER",
+  "broadFinalReview": "INCOMPLETE",
+  "remoteCI": "NOT_EXECUTED; protected-policy ADOPTION_REQUIRED unresolved"
+}

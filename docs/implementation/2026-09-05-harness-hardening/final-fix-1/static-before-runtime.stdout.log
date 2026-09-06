@@ -1,0 +1,2 @@
+shellcheck -S warning bin/*.sh scripts/*.sh tests/*.sh \
+  templates/full/scripts/*.sh packs/*/verify-pack.sh

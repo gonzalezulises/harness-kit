@@ -1,0 +1,1 @@
+const fs=require('node:fs');const actual=fs.readFileSync(process.argv[1],'utf8');if(actual!==process.argv[2]){console.error('FIXTURE_REPRESENTATION_RED: expected canonical bytes');process.exit(1)}console.log('LOCAL_CANONICAL_VERIFIED');

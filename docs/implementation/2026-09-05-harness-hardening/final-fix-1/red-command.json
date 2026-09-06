@@ -1,0 +1,11 @@
+{
+  "cwd": "/workspace/scratch/adce1c53b293/harness-kit",
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/literal-filename.test.mjs"
+  ],
+  "beforeSourceSha256": "0084e0f78e233c7dbd4ff751afe07faf839f62f475831d46fb35908960d3c6a6",
+  "testSha256": "1db50a3c4fd5af7d6a238ac12757af61e686fe04488756702b2191692dc0953d"
+}

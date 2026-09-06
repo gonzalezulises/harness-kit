@@ -1,0 +1,17 @@
+TAP version 13
+# H09_METRICS {"scope":"installed local fixture only; not real human time saved","actualHumanPrompts":0,"fixtureSignatures":5,"fixtureSignaturesByKind":{"policy-adoption":1,"baseline-acceptance":1,"bounded-grant":3},"humanGateReasonCodes":{"HUMAN_REQUIRED":1},"availabilityStops":{"BLOCKED_BY_REQUIRED_CAPABILITY":2},"staleStops":1,"reusedContinuationGrants":1,"effectRuns":2,"freshRuns":3,"recoveryElapsedMs":1710.4535100000003,"budgetSpent":2,"authenticatedReviewReceipts":0,"productionCertifications":0}
+# Subtest: installed local canary: canonical RED, fresh commits, reused grant, human gate, unavailable release and lossless rollback
+ok 1 - installed local canary: canonical RED, fresh commits, reused grant, human gate, unavailable release and lossless rollback
+  ---
+  duration_ms: 7169.559177
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7248.855817

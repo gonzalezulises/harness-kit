@@ -1,6 +1,6 @@
 # Current harness capabilities and adoption
 
-The portable CLI remains shell-based. `harness-init.sh` installs; `harness-audit.sh` inspects structure without claiming execution; `harness-activate.sh` coordinates installation; `harness-protect.sh` configures authorized GitHub rules; `harness-status.sh` runs local verification and reports separately observed remote rules. No optional autonomy runtime, journal authority or production certification is implemented by H02.
+The portable CLI remains shell-based. `harness-init.sh` installs; `harness-audit.sh` inspects structure without claiming execution; `harness-activate.sh` coordinates installation; `harness-protect.sh` configures authorized GitHub rules; `harness-status.sh` runs local verification and reports separately observed remote rules. H03–H09 add the optional nested autonomy runtime described below; installation alone grants no journal authority or production certification.
 
 | Installation | Applicability | Observed readiness |
 |---|---|---|
@@ -53,9 +53,11 @@ stop; every classification explicitly withholds execution authorization.
 This package requires Node>=22 and the exact YAML2.9.0/Zod4.5.4 lockfile setup in
 `packs/autonomy/index.md`. It lives entirely below
 `scripts/quality-orchestrator/`, preserving the consumer root package.json.
-Legacy minimal/full installation does not include it. H09 owns explicit
-`--with autonomy` installation; authority adoption remains separate. The current
-pack is copied explicitly. H04 now adds
+Legacy minimal/full installation does not include it unless `--with autonomy`
+is explicitly supplied to `harness-init.sh` or `harness-activate.sh`. H09 copies
+the single nested package without node_modules, preserves existing runtime
+directories and root package.json, and never creates the v2 adoption marker.
+Authority adoption remains separate. H04 adds
 verified journal/replay, mechanical fresh runs, objective reservations and lossless
 legacy projection:35 focused cases, full integration521/0, independent approval.
 H05 adds33 focused cases for closed local canonical/source-digest writes, fenced
@@ -71,5 +73,23 @@ authorizes new bytes; new runs do not reset budget. H07 supplies frozen diagnost
 Codex policy, exact Git shadows and strict local output validation:28 focused
 cases and full607/0 passed with independent approval. It has no live launch or
 authenticated receipt backend; matching raw JSON cannot satisfy independent
-review, and unavailable preflight consumes no review budget. H08–H09 release and
-canary remain pending. Installation creates no owner key or baseline acceptance.
+review, and unavailable preflight consumes no review budget. H08 adds a closed
+release obligation evaluator and refusal boundary; its26 focused cases and
+full633/0 are prior verified milestone results. Positive production scheduling,
+target/readback, authenticated receipt issuance/import and live rollback remain
+UNIMPLEMENTED. H09's installed local consumer canary verifies canonical writes,
+fresh runs, continuation reuse, a threshold human gate and preservation of v1/v2
+evidence during local rollback. It exercises actual installed runtime APIs;
+fixture signatures do not certify real human intervention or external systems.
+H07/H08 actual review/production acceptance remains NOT_EXECUTED. The current
+[selected-asset candidate](implementation/2026-09-05-harness-hardening/final-fix-1/baseline-candidate.json)
+is UNSIGNED and CANDIDATE_NOT_ACCEPTED until the owner explicitly accepts its
+exact subject; the H09 candidate is historical. Installation creates no owner
+key or baseline acceptance.
+
+`harness-status.sh --autonomy --target DIR` performs only bounded installation
+diagnostics. It reports missing dependencies, marker presence as unverified,
+and unimplemented positive capabilities. Its zero exit means the nested runtime
+loaded; it is not a readiness gate or authority verification. See
+[pack adoption instructions](../packs/autonomy/index.md) and
+[H09 canary evidence](implementation/2026-09-05-harness-hardening/h09/README.md).

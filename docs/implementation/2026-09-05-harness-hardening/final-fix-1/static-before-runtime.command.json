@@ -1,0 +1,8 @@
+{
+  "cwd": "/workspace/scratch/adce1c53b293/harness-kit",
+  "argv": [
+    "bash",
+    "-c",
+    "make lint && bash docs/implementation/2026-09-05-harness-hardening/h05/verify-static.sh && node --check packs/autonomy/repo-template/scripts/quality-orchestrator/tests/literal-filename.test.mjs && node --check packs/autonomy/tests/installation.test.mjs && node --check packs/autonomy/tests/canary.test.mjs"
+  ]
+}

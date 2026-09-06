@@ -1,0 +1,11 @@
+{
+  "command": [
+    "bash",
+    "-c",
+    "make lint && bash docs/implementation/2026-09-05-harness-hardening/h05/verify-static.sh && node --check packs/autonomy/repo-template/scripts/quality-orchestrator/tests/literal-filename.test.mjs && node --check packs/autonomy/tests/installation.test.mjs && node --check packs/autonomy/tests/canary.test.mjs"
+  ],
+  "exit": 2,
+  "seconds": 0.005,
+  "stdoutSha256": "bdaffe4321bee11253c7eab0adf7c6249a82e32f76fd84f8e2521b607ed7b54f",
+  "stderrSha256": "c40e517df2543905ae20531fb1e6a29f7dadb39ccb02b07ec6b6e037b895aae6"
+}

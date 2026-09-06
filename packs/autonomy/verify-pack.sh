@@ -19,3 +19,4 @@ try {
 }
 JS
 node --test --test-reporter=tap "$RUNTIME_DIR"/tests/*.test.mjs
+node --test --test-reporter=tap "$PACK_DIR"/tests/*.test.mjs

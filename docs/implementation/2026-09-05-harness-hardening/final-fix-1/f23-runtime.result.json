@@ -1,0 +1,12 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "packs/autonomy/tests/installation.test.mjs"
+  ],
+  "exit": 0,
+  "seconds": 1.21,
+  "stdoutSha256": "e735e35ff8e10b71dca626e84677284639b9b2d0496570845811ed64d506ec2b",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

@@ -1,0 +1,224 @@
+{
+  "status": "LOCAL_CANARY_PASS",
+  "realAcceptance": "NOT_EXECUTED",
+  "positiveReviewBackend": "UNIMPLEMENTED",
+  "positiveProductionBackend": "UNIMPLEMENTED",
+  "initialCommit": "09a4c9651d648f1ad0dc1d82d4aae0ef450bd175",
+  "finalCommit": "5cfc6d86dd46b944fc2af467cae5c695f97428ce",
+  "initialBaseline": {
+    "status": "BASELINE_DESCRIBED",
+    "records": [
+      {
+        "path": "record.yaml",
+        "identity": {
+          "status": "IDENTIFIED",
+          "repositoryId": "H09-FIXTURE-ONLY",
+          "schemaId": "record.v1",
+          "schemaSha256": "5aad47be61365c47040cd7506c315b6ac1abcf59fdec35ecc600526fc2e170c9",
+          "normalizerId": "typed-yaml.v1",
+          "contentSha256": "4e46c7ede209b404b7654e68b01fb2367e591705e495097b08aa3856dc28abed",
+          "canonicalSha256": "778de5679e7cf8a57f279cd1d58c20fe33ae84abccb69fac829e5848f55ace9c",
+          "semanticSha256": "15630bf633230a8f122ce2c5808af9068e3d47a29274f98380918a7b072955ed",
+          "value": {
+            "title": "hello",
+            "status": "active",
+            "enabled": true,
+            "threshold": {
+              "type": "number",
+              "lexeme": "100"
+            }
+          }
+        }
+      }
+    ],
+    "digest": "b298549e25166181e04185b940cd8345fbe8b4170ce265c5ffa08a89fe36fa1e"
+  },
+  "finalCandidateBaseline": {
+    "status": "BASELINE_DESCRIBED",
+    "records": [
+      {
+        "path": "record.yaml",
+        "identity": {
+          "status": "IDENTIFIED",
+          "repositoryId": "H09-FIXTURE-ONLY",
+          "schemaId": "record.v1",
+          "schemaSha256": "5aad47be61365c47040cd7506c315b6ac1abcf59fdec35ecc600526fc2e170c9",
+          "normalizerId": "typed-yaml.v1",
+          "contentSha256": "e8bf080cb8b82306eff01aa4625bab3ca35024dd7e7ac3143d67e1cd5549b6b8",
+          "canonicalSha256": "778de5679e7cf8a57f279cd1d58c20fe33ae84abccb69fac829e5848f55ace9c",
+          "semanticSha256": "15630bf633230a8f122ce2c5808af9068e3d47a29274f98380918a7b072955ed",
+          "value": {
+            "title": "hello",
+            "status": "active",
+            "enabled": true,
+            "threshold": {
+              "type": "number",
+              "lexeme": "100"
+            }
+          }
+        }
+      }
+    ],
+    "digest": "5f0573a803814f31dc00c146a4fa13df4697343ae9c1a748ed4c62fa05f0e8b5",
+    "acceptance": "CANDIDATE_NOT_ACCEPTED"
+  },
+  "metrics": {
+    "scope": "installed local fixture only; not real human time saved",
+    "actualHumanPrompts": 0,
+    "fixtureSignatures": 5,
+    "fixtureSignaturesByKind": {
+      "policy-adoption": 1,
+      "baseline-acceptance": 1,
+      "bounded-grant": 3
+    },
+    "humanGateReasonCodes": {
+      "HUMAN_REQUIRED": 1
+    },
+    "availabilityStops": {
+      "BLOCKED_BY_REQUIRED_CAPABILITY": 2
+    },
+    "staleStops": 1,
+    "reusedContinuationGrants": 1,
+    "effectRuns": 2,
+    "freshRuns": 3,
+    "recoveryElapsedMs": 1718.4578119999996,
+    "budgetSpent": 2,
+    "authenticatedReviewReceipts": 0,
+    "productionCertifications": 0
+  },
+  "observations": [
+    {
+      "step": "normal YAML before canonical effect",
+      "kind": "CONTROLLED_LOCAL_FIXTURE_RED",
+      "exit": 1,
+      "sourceSha256": "4e46c7ede209b404b7654e68b01fb2367e591705e495097b08aa3856dc28abed",
+      "oracleSha256": "54c6aa43b8a91e969d2ce50471c915729fe87e5e0a45246d50fca12ec51031c6"
+    },
+    {
+      "step": "canonical-one",
+      "result": {
+        "status": "EFFECT_VERIFIED",
+        "operationKey": "canonical-one",
+        "capability": "canonical-write.v1",
+        "runId": "23764344e4f64cdb9ba9b170238fe5b20b823a264c113b714cdbdb3db4e981fd",
+        "inputDigest": "89c3dabfa48b337398f250f8d0919b2d41c1f47c4c4dd244b948a55d70d31450",
+        "bundleDigest": "beb4accc1de225fd68cbd54f5d774bcf57510deeea2e31fa6daccbf85daeeb36",
+        "preManifestDigest": "4df0253068958486c091992f9e37b335958af31578fef1bfefa19cf1587fa50e",
+        "postManifestDigest": "a144edea767dfdf2862d88c0a16d979675e606e38cf041ba235be77cdd9359a8",
+        "delta": [
+          "record.yaml"
+        ],
+        "postconditions": "VERIFIED",
+        "assurance": "TRUSTED_RUNTIME_EXCLUSIVE",
+        "execution": "EXECUTED"
+      }
+    },
+    {
+      "step": "installed review refusal after actual local shadow",
+      "result": {
+        "status": "BLOCKED_BY_REQUIRED_CAPABILITY",
+        "reason": "tested OS containment and authenticated independent session unavailable",
+        "execution": "NOT_EXECUTED",
+        "acceptance": "NOT_EXECUTED",
+        "rawOutput": null,
+        "executionReceipt": null,
+        "budgetReceipt": null
+      }
+    },
+    {
+      "step": "threshold 100 to 99.9",
+      "result": {
+        "status": "ASSESSMENT",
+        "disposition": "HUMAN_REQUIRED",
+        "reason": "classification does not grant execution permission",
+        "changes": [
+          {
+            "path": "record.yaml",
+            "disposition": "HUMAN_REQUIRED",
+            "reason": "no registered semantic equivalence proof"
+          }
+        ],
+        "executionAuthorized": false,
+        "assurance": "recomputed",
+        "postconditions": "NOT_EXECUTED"
+      }
+    },
+    {
+      "step": "canonical-two",
+      "result": {
+        "status": "EFFECT_VERIFIED",
+        "operationKey": "canonical-two",
+        "capability": "canonical-write.v1",
+        "runId": "95e9213f12f356ec426110d60c3cec52920442d33c6a23cb4cafc02af1bf0bda",
+        "inputDigest": "715cf76fee1e15239fd82e86f306d0ee8aef8d866c81a3730b9f0213f597d79c",
+        "bundleDigest": "beb4accc1de225fd68cbd54f5d774bcf57510deeea2e31fa6daccbf85daeeb36",
+        "preManifestDigest": "03a3e84f8cbb41d5ec1c5323e312dc5a5de1fbbf5c85cecd8ada7fefec1d2913",
+        "postManifestDigest": "a144edea767dfdf2862d88c0a16d979675e606e38cf041ba235be77cdd9359a8",
+        "delta": [
+          "record.yaml"
+        ],
+        "postconditions": "VERIFIED",
+        "assurance": "TRUSTED_RUNTIME_EXCLUSIVE",
+        "execution": "EXECUTED"
+      }
+    },
+    {
+      "step": "next slice/release remains unexecuted",
+      "next": {
+        "status": "BLOCKED_BY_REQUIRED_CAPABILITY",
+        "reason": "authenticated integration, review and approved target execution are unavailable",
+        "certification": "NOT_EXECUTED",
+        "productionPass": false,
+        "execution": "NOT_EXECUTED",
+        "nextObligation": {
+          "kind": "verify-slice",
+          "sliceId": "canonical-local"
+        },
+        "unsatisfied": [
+          "verify-slice",
+          "integrate",
+          "revalidate-integrated-commit",
+          "independent-review",
+          "accept-artifact",
+          "deploy",
+          "smoke",
+          "observability"
+        ],
+        "historyLength": 0,
+        "journalAssurance": "LOCAL_UNWITNESSED",
+        "headDigest": "fe7cc1b45fbba447af1c11dd228daff2c62de4f4992b963660904b6bf1caaf44"
+      },
+      "certificate": {
+        "status": "BLOCKED_BY_REQUIRED_CAPABILITY",
+        "reason": "authenticated integration, review and approved target execution are unavailable",
+        "certification": "NOT_EXECUTED",
+        "productionPass": false,
+        "execution": "NOT_EXECUTED",
+        "nextObligation": {
+          "kind": "verify-slice",
+          "sliceId": "canonical-local"
+        },
+        "unsatisfied": [
+          "verify-slice",
+          "integrate",
+          "revalidate-integrated-commit",
+          "independent-review",
+          "accept-artifact",
+          "deploy",
+          "smoke",
+          "observability"
+        ],
+        "historyLength": 0,
+        "journalAssurance": "LOCAL_UNWITNESSED",
+        "headDigest": "fe7cc1b45fbba447af1c11dd228daff2c62de4f4992b963660904b6bf1caaf44"
+      }
+    }
+  ],
+  "rollback": {
+    "v1Sha256": "e2d22f506be8fed56bb95e1a91e46f4e68131f851873a690f4042f3a8d4e8faa",
+    "rootPackageSha256": "d12429068ac28f9eae2989d541dfbb2ecbd8709d7b57706245330b283dd00db6",
+    "journalSha256": "f4c4384d1cf893a22a5807ff6d1dea58026fc339b63d753b957eaea5623849c9",
+    "markerRemoved": true,
+    "evidenceRetained": true
+  }
+}

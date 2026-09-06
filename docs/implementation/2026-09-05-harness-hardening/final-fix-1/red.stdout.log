@@ -1,0 +1,112 @@
+TAP version 13
+# Subtest: prepared capability rejects a changed frozen file named frozen.txt before effects or spending
+ok 1 - prepared capability rejects a changed frozen file named frozen.txt before effects or spending
+  ---
+  duration_ms: 1042.181853
+  type: 'test'
+  ...
+# Subtest: prepared capability rejects a changed frozen file named __proto__ before effects or spending
+not ok 2 - prepared capability rejects a changed frozen file named __proto__ before effects or spending
+  ---
+  duration_ms: 1350.19447
+  type: 'test'
+  location: '/workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/literal-filename.test.mjs:10:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   effectRecords: [
+    +     'dcb576426a17b7df13907007cb02a1f1dfc12fc6c69f603717abca59d03b888e.intent',
+    +     'dcb576426a17b7df13907007cb02a1f1dfc12fc6c69f603717abca59d03b888e.receipt'
+    +   ],
+    -   effectRecords: [],
+        frozen: 'changed after preparation',
+    +   output: 'enabled: true\nstatus: "active"\nthreshold: 100\ntitle: "hello"\n',
+    -   output: 'title: hello\nstatus: active\nenabled: true\nthreshold: 100\n',
+        pending: [],
+        result: {
+    +     assurance: 'TRUSTED_RUNTIME_EXCLUSIVE',
+    +     bundleDigest: 'beb4accc1de225fd68cbd54f5d774bcf57510deeea2e31fa6daccbf85daeeb36',
+    +     capability: 'canonical-write.v1',
+    +     delta: [
+    +       'record.yaml'
+    +     ],
+    +     execution: 'EXECUTED',
+    +     inputDigest: 'c80c08cd33c059f0998b3c979b570c0f51ad4560ad790d61ff4567c3660384dc',
+    +     operationKey: 'effect',
+    +     postManifestDigest: 'a144edea767dfdf2862d88c0a16d979675e606e38cf041ba235be77cdd9359a8',
+    +     postconditions: 'VERIFIED',
+    +     preManifestDigest: '4df0253068958486c091992f9e37b335958af31578fef1bfefa19cf1587fa50e',
+    +     runId: '9968e94726a8cff0c310035e29bae0ae245788b3fa75e5e89156ef5bb5ab791d',
+    +     status: 'EFFECT_VERIFIED'
+    -     reason: 'prepared binding changed',
+    -     status: 'POLICY'
+        },
+    +   spent: 1
+    -   spent: 0
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    result:
+      status: 'POLICY'
+      reason: 'prepared binding changed'
+    spent: 0
+    pending:
+    output: |-
+      title: hello
+      status: active
+      enabled: true
+      threshold: 100
+      
+    frozen: 'changed after preparation'
+    effectRecords:
+  actual:
+    result:
+      status: 'EFFECT_VERIFIED'
+      operationKey: 'effect'
+      capability: 'canonical-write.v1'
+      runId: '9968e94726a8cff0c310035e29bae0ae245788b3fa75e5e89156ef5bb5ab791d'
+      inputDigest: 'c80c08cd33c059f0998b3c979b570c0f51ad4560ad790d61ff4567c3660384dc'
+      bundleDigest: 'beb4accc1de225fd68cbd54f5d774bcf57510deeea2e31fa6daccbf85daeeb36'
+      preManifestDigest: '4df0253068958486c091992f9e37b335958af31578fef1bfefa19cf1587fa50e'
+      postManifestDigest: 'a144edea767dfdf2862d88c0a16d979675e606e38cf041ba235be77cdd9359a8'
+      delta:
+        0: 'record.yaml'
+      postconditions: 'VERIFIED'
+      assurance: 'TRUSTED_RUNTIME_EXCLUSIVE'
+      execution: 'EXECUTED'
+    spent: 1
+    pending:
+    output: |-
+      enabled: true
+      status: "active"
+      threshold: 100
+      title: "hello"
+      
+    frozen: 'changed after preparation'
+    effectRecords:
+      0: 'dcb576426a17b7df13907007cb02a1f1dfc12fc6c69f603717abca59d03b888e.intent'
+      1: 'dcb576426a17b7df13907007cb02a1f1dfc12fc6c69f603717abca59d03b888e.receipt'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/literal-filename.test.mjs:50:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2712.901482

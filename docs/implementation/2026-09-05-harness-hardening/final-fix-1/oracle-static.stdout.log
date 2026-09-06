@@ -1,0 +1,22 @@
+  local RED receipt consistent: AC-FR01-literal-filename; a local receipt is not independent authority
+  local RED receipt consistent: AC-H01; a local receipt is not independent authority
+  local RED receipt consistent: AC-H02; a local receipt is not independent authority
+  local RED receipt consistent: AC-H03; a local receipt is not independent authority
+  local RED receipt consistent: AC-H04; a local receipt is not independent authority
+  local RED receipt consistent: AC-H05; a local receipt is not independent authority
+  local RED receipt consistent: AC-H06-authority; a local receipt is not independent authority
+  local RED receipt consistent: AC-H06; a local receipt is not independent authority
+  local RED receipt consistent: AC-H07; a local receipt is not independent authority
+  local RED receipt consistent: AC-H08; a local receipt is not independent authority
+  ok       TEST_READY         AC-FR01-literal-filename
+  ok       TEST_READY         AC-H01
+  ok       TEST_READY         AC-H02
+  ok       TEST_READY         AC-H03
+  ok       TEST_READY         AC-H04
+  ok       TEST_READY         AC-H05
+  ok       TEST_READY         AC-H06-authority
+  ok       TEST_READY         AC-H06
+  ok       TEST_READY         AC-H07
+  ok       TEST_READY         AC-H08
+
+oracles: 10 criteria, every critical one proved falsifiable

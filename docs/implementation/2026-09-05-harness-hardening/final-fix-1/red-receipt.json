@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/literal-filename.test.mjs"
+  ],
+  "exit_code": 1,
+  "tests": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/literal-filename.test.mjs": "1db50a3c4fd5af7d6a238ac12757af61e686fe04488756702b2191692dc0953d"
+  },
+  "source": {
+    "docs/implementation/2026-09-05-harness-hardening/final-fix-1/before/packs/autonomy/repo-template/scripts/quality-orchestrator/capabilities.mjs": "0084e0f78e233c7dbd4ff751afe07faf839f62f475831d46fb35908960d3c6a6"
+  },
+  "logs": {
+    "docs/implementation/2026-09-05-harness-hardening/final-fix-1/red.stdout.log": "fa70b3ab776f1f5fd35c0268add3c25d241553f501ad8570cc92bd25ef21cd16",
+    "docs/implementation/2026-09-05-harness-hardening/final-fix-1/red.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

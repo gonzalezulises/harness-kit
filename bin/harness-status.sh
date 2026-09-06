@@ -1,20 +1,44 @@
 #!/usr/bin/env bash
 # Report observed local verification and inspected remote rules; never infer readiness from filenames.
-# Usage: harness-status.sh [--target DIR] [DIR]
+# Usage: harness-status.sh [--target DIR] [DIR] [--autonomy (installation diagnostics only)]
 set -uo pipefail
 TARGET=.
+AUTONOMY_ONLY=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --target) [[ $# -ge 2 ]] || exit 64; TARGET="$2"; shift 2 ;;
+    --autonomy) AUTONOMY_ONLY=1; shift ;;
     -h|--help) sed -n '2,3p' "$0"; exit 0 ;;
     *) TARGET="$1"; shift ;;
   esac
 done
 KIT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-python3 -I - "$TARGET" "$KIT" <<'PY'
+python3 -I - "$TARGET" "$KIT" "$AUTONOMY_ONLY" <<'PY'
 import json, os, pathlib, shutil, signal, subprocess, sys
 root=pathlib.Path(sys.argv[1]).resolve(); kit=pathlib.Path(sys.argv[2])
 if not root.is_dir(): print('harness-status: no such directory',file=sys.stderr); sys.exit(64)
+runtime=root/'scripts/quality-orchestrator'
+if sys.argv[3]=='1' or runtime.exists():
+    print('Autonomy authority: NOT_VERIFIED — installation/marker presence is not authenticated adoption or baseline acceptance')
+    print('Autonomy marker: '+('PRESENT_UNVERIFIED' if (root/'.harness/autonomy-v2.json').exists() else 'ABSENT'))
+    print('Autonomy live review/containment/authenticated receipts: UNIMPLEMENTED; acceptance NOT_EXECUTED')
+    print('Autonomy positive production scheduler/target/receipts/rollback: UNIMPLEMENTED; acceptance NOT_EXECUTED')
+    available=False
+    if not runtime.is_dir(): print('Autonomy: NOT_INSTALLED')
+    else:
+        try:
+            probe=subprocess.run(['node','--input-type=module','-e',
+                "if(Number(process.versions.node.split('.')[0])<22)throw Error('Node >=22 required');"
+                "const m=await import('./index.mjs');console.log(m.installedBundleDigest());"],
+                cwd=runtime,capture_output=True,text=True,timeout=15)
+            if probe.returncode: raise ValueError('runtime/dependencies unavailable or invalid')
+            print('Autonomy: INSTALLED — runtime loaded; bundle '+probe.stdout.strip()); available=True
+        except (OSError,ValueError,subprocess.TimeoutExpired) as error:
+            print('Autonomy: TOOL_FAILURE — '+str(error))
+            print('Run npm ci --prefix scripts/quality-orchestrator --ignore-scripts --no-audit --no-fund')
+    if sys.argv[3]=='1':
+        print('Installation diagnostics only; no feature verification, readiness or authority certification.')
+        sys.exit(0 if available else 1)
 if not all((root/x).is_file() for x in ['AGENTS.md','feature_list.json']): print('NOT_ACTIVATED — no harness contract/state'); sys.exit(1)
 version=(kit/'VERSION').read_text().strip(); stamp=root/'.harness/kit-version'
 print('Kit: '+(stamp.read_text().strip() if stamp.is_file() else version+' (version not recorded)'))

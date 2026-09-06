@@ -1,0 +1,202 @@
+TAP version 13
+# Subtest: H04 maximum accepted key reconciles without widening candidate keys
+ok 1 - H04 maximum accepted key reconciles without widening candidate keys
+  ---
+  duration_ms: 685.005698
+  type: 'test'
+  ...
+# Subtest: H04 publication retains verified intermediate B before successor C
+ok 2 - H04 publication retains verified intermediate B before successor C
+  ---
+  duration_ms: 358.74722
+  type: 'test'
+  ...
+# Subtest: canonical write uses exact numeric lexemes and preserves accepted semantics
+ok 3 - canonical write uses exact numeric lexemes and preserves accepted semantics
+  ---
+  duration_ms: 1334.249562
+  type: 'test'
+  ...
+# Subtest: capability rejects traversal before mutation
+ok 4 - capability rejects traversal before mutation
+  ---
+  duration_ms: 419.527944
+  type: 'test'
+  ...
+# Subtest: capability rejects deny before mutation
+ok 5 - capability rejects deny before mutation
+  ---
+  duration_ms: 455.188417
+  type: 'test'
+  ...
+# Subtest: capability rejects symlink before mutation
+ok 6 - capability rejects symlink before mutation
+  ---
+  duration_ms: 438.310851
+  type: 'test'
+  ...
+# Subtest: capability rejects hardlink before mutation
+ok 7 - capability rejects hardlink before mutation
+  ---
+  duration_ms: 437.015777
+  type: 'test'
+  ...
+# Subtest: capability rejects extra before mutation
+ok 8 - capability rejects extra before mutation
+  ---
+  duration_ms: 291.11051
+  type: 'test'
+  ...
+# Subtest: capability rejects callback before mutation
+ok 9 - capability rejects callback before mutation
+  ---
+  duration_ms: 368.715644
+  type: 'test'
+  ...
+# Subtest: deny wins even when host allowlist overlaps
+ok 10 - deny wins even when host allowlist overlaps
+  ---
+  duration_ms: 455.105385
+  type: 'test'
+  ...
+# Subtest: forged context, grant, permit and lease never confer execution authority
+ok 11 - forged context, grant, permit and lease never confer execution authority
+  ---
+  duration_ms: 900.410114
+  type: 'test'
+  ...
+# Subtest: execute rechecks source after prepare
+ok 12 - execute rechecks source after prepare
+  ---
+  duration_ms: 1067.266426
+  type: 'test'
+  ...
+# Subtest: execute rechecks frozen after prepare
+ok 13 - execute rechecks frozen after prepare
+  ---
+  duration_ms: 1027.953037
+  type: 'test'
+  ...
+# Subtest: execute rechecks commit after prepare
+ok 14 - execute rechecks commit after prepare
+  ---
+  duration_ms: 1047.370754
+  type: 'test'
+  ...
+# Subtest: execute rechecks alias after prepare
+ok 15 - execute rechecks alias after prepare
+  ---
+  duration_ms: 1156.564081
+  type: 'test'
+  ...
+# Subtest: execute rechecks mode after prepare
+ok 16 - execute rechecks mode after prepare
+  ---
+  duration_ms: 1040.555687
+  type: 'test'
+  ...
+# Subtest: exclusive leases reject second owner and stale handles after release
+ok 17 - exclusive leases reject second owner and stale handles after release
+  ---
+  duration_ms: 2096.317408
+  type: 'test'
+  ...
+# Subtest: untrusted subprocess capability refuses missing real containment before spawn
+ok 18 - untrusted subprocess capability refuses missing real containment before spawn
+  ---
+  duration_ms: 367.105981
+  type: 'test'
+  ...
+# Subtest: canonical preparation validates dependent frozen documents before any effect
+ok 19 - canonical preparation validates dependent frozen documents before any effect
+  ---
+  duration_ms: 459.897859
+  type: 'test'
+  ...
+# Subtest: expired grant stops a previously prepared effect before spend
+ok 20 - expired grant stops a previously prepared effect before spend
+  ---
+  duration_ms: 768.946239
+  type: 'test'
+  ...
+# Subtest: runtime and transitive dependency bundle changes block prepared effects
+ok 21 - runtime and transitive dependency bundle changes block prepared effects
+  ---
+  duration_ms: 885.660997
+  type: 'test'
+  ...
+# Subtest: host must pin installed implementation and claim only supported local mode
+ok 22 - host must pin installed implementation and claim only supported local mode
+  ---
+  duration_ms: 301.249939
+  type: 'test'
+  ...
+# Subtest: oversized source and symlink ancestors are refused before write
+ok 23 - oversized source and symlink ancestors are refused before write
+  ---
+  duration_ms: 452.714247
+  type: 'test'
+  ...
+# Subtest: supervisor rejects unexpected frozen delta after last output publication
+ok 24 - supervisor rejects unexpected frozen delta after last output publication
+  ---
+  duration_ms: 1527.597949
+  type: 'test'
+  ...
+# Subtest: generic target reconciliation cannot substitute a supervised capability receipt (reopen=false)
+ok 25 - generic target reconciliation cannot substitute a supervised capability receipt (reopen=false)
+  ---
+  duration_ms: 1608.95117
+  type: 'test'
+  ...
+# Subtest: generic target reconciliation cannot substitute a supervised capability receipt (reopen=true)
+ok 26 - generic target reconciliation cannot substitute a supervised capability receipt (reopen=true)
+  ---
+  duration_ms: 1710.813241
+  type: 'test'
+  ...
+# Subtest: H05-R1 rejects canonical output missing accepted-before identity before permit, spend or effects
+ok 27 - H05-R1 rejects canonical output missing accepted-before identity before permit, spend or effects
+  ---
+  duration_ms: 593.801745
+  type: 'test'
+  ...
+# Subtest: H05-R1 rejects canonical output outside adopted scope before permit, spend or effects
+ok 28 - H05-R1 rejects canonical output outside adopted scope before permit, spend or effects
+  ---
+  duration_ms: 646.966105
+  type: 'test'
+  ...
+# Subtest: H05-R1 rejects derived target omitted from accepted context before permit, spend or effects
+ok 29 - H05-R1 rejects derived target omitted from accepted context before permit, spend or effects
+  ---
+  duration_ms: 595.220274
+  type: 'test'
+  ...
+# Subtest: H05-R1 rejects derived source and target outside adopted context before permit, spend or effects
+ok 30 - H05-R1 rejects derived source and target outside adopted context before permit, spend or effects
+  ---
+  duration_ms: 575.245727
+  type: 'test'
+  ...
+# Subtest: prepared capability rejects a changed frozen file named frozen.txt before effects or spending
+ok 31 - prepared capability rejects a changed frozen file named frozen.txt before effects or spending
+  ---
+  duration_ms: 1382.944143
+  type: 'test'
+  ...
+# Subtest: prepared capability rejects a changed frozen file named __proto__ before effects or spending
+ok 32 - prepared capability rejects a changed frozen file named __proto__ before effects or spending
+  ---
+  duration_ms: 1019.27578
+  type: 'test'
+  ...
+1..32
+# tests 32
+# suites 0
+# pass 32
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 24433.08237

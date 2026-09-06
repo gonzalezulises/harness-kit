@@ -1,0 +1,73 @@
+Verifying F23
+
+── Layer: static
+$ make lint && bash docs/implementation/2026-09-05-harness-hardening/final-fix-1/verify-static.sh
+make[1]: Entering directory '/workspace/scratch/adce1c53b293/harness-kit'
+shellcheck -S warning bin/*.sh scripts/*.sh tests/*.sh \
+  templates/full/scripts/*.sh packs/*/verify-pack.sh
+make[1]: Leaving directory '/workspace/scratch/adce1c53b293/harness-kit'
+PASS: H05 runtime, integration and focal test syntax
+PASS: current selected sources, causal RED receipt, unchanged workflow gates and unsigned candidate manifests
+Layer 'static' passed.
+
+── Layer: runtime
+$ node --test --test-reporter=tap packs/autonomy/tests/installation.test.mjs
+TAP version 13
+# Subtest: explicit autonomy installation preserves v1 and root package bytes; rerun never merges a runtime
+ok 1 - explicit autonomy installation preserves v1 and root package bytes; rerun never merges a runtime
+  ---
+  duration_ms: 572.799927
+  type: 'test'
+  ...
+# Subtest: default remains legacy; dry-run and activation option do not write
+ok 2 - default remains legacy; dry-run and activation option do not write
+  ---
+  duration_ms: 147.485148
+  type: 'test'
+  ...
+# Subtest: autonomy diagnostics name missing dependencies and unimplemented positive capabilities
+ok 3 - autonomy diagnostics name missing dependencies and unimplemented positive capabilities
+  ---
+  duration_ms: 226.713025
+  type: 'test'
+  ...
+# Subtest: autonomy install refuses a symlinked scripts parent before writing outside the consumer
+ok 4 - autonomy install refuses a symlinked scripts parent before writing outside the consumer
+  ---
+  duration_ms: 5.32779
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1024.163852
+Layer 'runtime' passed.
+
+── Layer: e2e
+$ node --test --test-reporter=tap packs/autonomy/tests/canary.test.mjs
+TAP version 13
+# H09_METRICS {"scope":"installed local fixture only; not real human time saved","actualHumanPrompts":0,"fixtureSignatures":5,"fixtureSignaturesByKind":{"policy-adoption":1,"baseline-acceptance":1,"bounded-grant":3},"humanGateReasonCodes":{"HUMAN_REQUIRED":1},"availabilityStops":{"BLOCKED_BY_REQUIRED_CAPABILITY":2},"staleStops":1,"reusedContinuationGrants":1,"effectRuns":2,"freshRuns":3,"recoveryElapsedMs":1498.910186,"budgetSpent":2,"authenticatedReviewReceipts":0,"productionCertifications":0}
+# Subtest: installed local canary: canonical RED, fresh commits, reused grant, human gate, unavailable release and lossless rollback
+ok 1 - installed local canary: canonical RED, fresh commits, reused grant, human gate, unavailable release and lossless rollback
+  ---
+  duration_ms: 6979.448422
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7062.232148
+Layer 'e2e' passed.
+
+F23 -> passing (evidence recorded in feature_list.json)
+Next: update PROGRESS.md and commit.

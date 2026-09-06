@@ -1,0 +1,8 @@
+{
+  "cwd": "/workspace/scratch/adce1c53b293/harness-kit",
+  "argv": [
+    "bash",
+    "-c",
+    "make lint && shellcheck -S warning docs/implementation/2026-09-05-harness-hardening/final-fix-1/verify-static.sh && bash docs/implementation/2026-09-05-harness-hardening/final-fix-1/verify-static.sh && git diff --check"
+  ]
+}

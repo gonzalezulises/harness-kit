@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "repositoryId": "H09-FIXTURE-ONLY",
+  "policyId": "conservative.v1",
+  "role": "normative",
+  "runtimeBinding": "00b3d0ee68db4ad753020f5f73caa3929ad67aff337e8a816f49ad8510e2bd5f",
+  "scope": {
+    "paths": [
+      "record.yaml"
+    ]
+  }
+}

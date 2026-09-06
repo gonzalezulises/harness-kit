@@ -1,0 +1,271 @@
+# Required quality — the verdict the agent cannot issue.
+#
+# Two properties are worth more than everything else here:
+#
+#  1. PROTECTED BASE. The claim checker is taken from the base branch, not from the
+#     pull request. A PR cannot weaken the script that judges it.
+#  2. SENTINEL. Success requires an observed zero exit, proven by a file written only
+#     after the command actually ran. A step that was skipped, cancelled, or never
+#     executed leaves no sentinel and therefore cannot be reported as success.
+#
+# Make this check required in branch protection, or it is only decoration.
+name: Required quality
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  merge_group:
+    types: [checks_requested]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: required-quality-${{ github.repository_id }}-${{ github.event_name }}-${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.event.merge_group.head_sha }}
+  cancel-in-progress: true
+
+jobs:
+  required-quality:
+    name: Required quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Resolve exact commit identities
+        id: identity
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          MG_HEAD_SHA: ${{ github.event.merge_group.head_sha }}
+          MG_BASE_SHA: ${{ github.event.merge_group.base_sha }}
+        run: |
+          set -euo pipefail
+          case "$EVENT_NAME" in
+            pull_request) head_sha=$PR_HEAD_SHA; base_sha=$PR_BASE_SHA ;;
+            merge_group)  head_sha=$MG_HEAD_SHA; base_sha=$MG_BASE_SHA ;;
+            *) printf 'UNKNOWN: unsupported event: %s\n' "$EVENT_NAME" >&2; exit 1 ;;
+          esac
+          if [[ ! "$head_sha" =~ ^[0-9a-f]{40}$ ]]; then
+            printf 'UNKNOWN: invalid head SHA: %s\n' "$head_sha" >&2; exit 1
+          fi
+          if [[ ! "$base_sha" =~ ^[0-9a-f]{40}$ ]]; then
+            printf 'UNKNOWN: invalid base SHA: %s\n' "$base_sha" >&2; exit 1
+          fi
+          {
+            printf 'head_sha=%s\n' "$head_sha"
+            printf 'base_sha=%s\n' "$base_sha"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Check out proposed head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ steps.identity.outputs.head_sha }}
+          path: head
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Check out protected base judge and policy
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ steps.identity.outputs.base_sha }}
+          path: base
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Lint every shell script
+        id: lint
+        shell: bash
+        working-directory: head
+        run: |
+          set -uo pipefail
+          # A project that is entirely shell without a shell linter is a project
+          # without a compiler. -S warning is the level the repo is clean at.
+          #
+          # The version is pinned because the runner's preinstalled shellcheck is
+          # older than the one developers have locally, and the two disagree: a
+          # lint that passes on your machine and fails in CI teaches people to
+          # stop reading lint output.
+          SC_VERSION=v0.11.0
+          curl -fsSL "https://github.com/koalaman/shellcheck/releases/download/${SC_VERSION}/shellcheck-${SC_VERSION}.linux.x86_64.tar.xz" \
+            | tar -xJf - -C "$RUNNER_TEMP"
+          SHELLCHECK="$RUNNER_TEMP/shellcheck-${SC_VERSION}/shellcheck"
+          "$SHELLCHECK" --version | grep version:
+          set +e
+          "$SHELLCHECK" -S warning bin/*.sh scripts/*.sh tests/*.sh \
+            templates/full/scripts/*.sh packs/*/verify-pack.sh
+          lint_exit=$?
+          set -e
+          printf 'lint_exit=%s\n' "$lint_exit" >> "$GITHUB_OUTPUT"
+          [ "$lint_exit" -eq 0 ] || exit "$lint_exit"
+          : > "$RUNNER_TEMP/lint-observed-zero"
+
+      - name: Verify the Gherkin pack still blocks every failure mode
+        id: gherkin
+        shell: bash
+        working-directory: head
+        run: |
+          set -uo pipefail
+          set +e
+          bash packs/gherkin/verify-pack.sh
+          gherkin_exit=$?
+          set -e
+          printf 'gherkin_exit=%s\n' "$gherkin_exit" >> "$GITHUB_OUTPUT"
+          [ "$gherkin_exit" -eq 0 ] || exit "$gherkin_exit"
+          : > "$RUNNER_TEMP/gherkin-observed-zero"
+
+      - name: Install k6 (three features declare it as their verification)
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Same version the pack's documented findings were measured against.
+          K6_VERSION=v2.1.0
+          curl -fsSL "https://github.com/grafana/k6/releases/download/${K6_VERSION}/k6-${K6_VERSION}-linux-amd64.tar.gz" \
+            | tar -xzf - -C "$RUNNER_TEMP"
+          sudo install "$RUNNER_TEMP/k6-${K6_VERSION}-linux-amd64/k6" /usr/local/bin/k6
+          k6 version
+
+      - name: Apply protected live policy to exact head
+        id: gates
+        shell: bash
+        env:
+          ROUTES_BASE: ${{ steps.identity.outputs.base_sha }}
+          DELIVERY_BASE: ${{ steps.identity.outputs.base_sha }}
+        run: |
+          set -euo pipefail
+          # An old protected judge cannot certify a new contract. Adoption is explicit.
+          python3 - "$GITHUB_WORKSPACE/base/.harness/judge-contract.json" <<'PYCONTRACT'
+          import json,sys
+          expected={"schema_version":1,"interfaces":["target-root-v1","installation-profile-v1","match-argv-v1"]}
+          try:
+              with open(sys.argv[1]) as stream: actual=json.load(stream)
+              assert actual == expected
+          except (OSError,ValueError,AssertionError):
+              sys.exit("ADOPTION_REQUIRED: protected base lacks the required judge contract; no head fallback")
+          PYCONTRACT
+          bash "$GITHUB_WORKSPACE/base/scripts/setup-oracles.sh"
+          echo "$GITHUB_WORKSPACE/base/.harness/tools/oracles-venv/bin" >> "$GITHUB_PATH"
+          export PATH="$GITHUB_WORKSPACE/base/.harness/tools/oracles-venv/bin:$PATH"
+          bash "$GITHUB_WORKSPACE/base/scripts/run-gates.sh" quick --target "$GITHUB_WORKSPACE/head"
+          : > "$RUNNER_TEMP/gates-observed-zero"
+
+      - name: Run the repository verification pipeline
+        id: check
+        env:
+          ROUTES_BASE: ${{ steps.identity.outputs.base_sha }}
+          DELIVERY_BASE: ${{ steps.identity.outputs.base_sha }}
+        shell: bash
+        working-directory: head
+        run: |
+          set -uo pipefail
+          set +e
+          make check
+          command_exit=$?
+          set -e
+          printf 'command_exit=%s\n' "$command_exit" >> "$GITHUB_OUTPUT"
+          [ "$command_exit" -eq 0 ] || exit "$command_exit"
+          : > "$RUNNER_TEMP/check-observed-zero"
+
+      - name: Re-verify every claimed passing state with the protected checker
+        id: claims
+        shell: bash
+        env:
+          CLAIMS_BASE_FILE: ${{ github.workspace }}/base/feature_list.json
+        run: |
+          set -uo pipefail
+          checker="$GITHUB_WORKSPACE/base/scripts/verify-claims.sh"
+          if [ ! -f "$checker" ]; then
+            printf '%s\n' 'NOT_EXECUTED: protected claim checker is missing from the base branch' >&2
+            printf 'claims_exit=126\n' >> "$GITHUB_OUTPUT"
+            exit 126
+          fi
+          cd "$GITHUB_WORKSPACE/head"
+          set +e
+          HARNESS_TARGET_ROOT="$GITHUB_WORKSPACE/head" bash "$checker"
+          claims_exit=$?
+          set -e
+          printf 'claims_exit=%s\n' "$claims_exit" >> "$GITHUB_OUTPUT"
+          [ "$claims_exit" -eq 0 ] || exit "$claims_exit"
+          : > "$RUNNER_TEMP/claims-observed-zero"
+
+      - name: Verify no earlier decision was rewritten
+        id: decisions
+        shell: bash
+        env:
+          DECISIONS_BASE_FILE: ${{ github.workspace }}/base/DECISIONS.md
+        run: |
+          set -uo pipefail
+          checker="$GITHUB_WORKSPACE/base/scripts/verify-decisions.sh"
+          if [ ! -f "$checker" ]; then
+            printf '%s\n' 'NOT_EXECUTED: protected decision checker is missing from the base branch' >&2
+            printf 'decisions_exit=126\n' >> "$GITHUB_OUTPUT"
+            exit 126
+          fi
+          cd "$GITHUB_WORKSPACE/head"
+          set +e
+          HARNESS_TARGET_ROOT="$GITHUB_WORKSPACE/head" bash "$checker"
+          decisions_exit=$?
+          set -e
+          printf 'decisions_exit=%s\n' "$decisions_exit" >> "$GITHUB_OUTPUT"
+          [ "$decisions_exit" -eq 0 ] || exit "$decisions_exit"
+          : > "$RUNNER_TEMP/decisions-observed-zero"
+
+      - name: Publish evidence and enforce the final conclusion
+        if: ${{ always() }}
+        shell: bash
+        env:
+          BASE_SHA: ${{ steps.identity.outputs.base_sha }}
+          HEAD_SHA: ${{ steps.identity.outputs.head_sha }}
+          GATES_OUTCOME: ${{ steps.gates.outcome }}
+          CHECK_OUTCOME: ${{ steps.check.outcome }}
+          CHECK_EXIT: ${{ steps.check.outputs.command_exit }}
+          LINT_OUTCOME: ${{ steps.lint.outcome }}
+          GHERKIN_OUTCOME: ${{ steps.gherkin.outcome }}
+          CLAIMS_OUTCOME: ${{ steps.claims.outcome }}
+          CLAIMS_EXIT: ${{ steps.claims.outputs.claims_exit }}
+          DECISIONS_OUTCOME: ${{ steps.decisions.outcome }}
+          DECISIONS_EXIT: ${{ steps.decisions.outputs.decisions_exit }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+          WORKFLOW_SHA: ${{ github.workflow_sha }}
+        run: |
+          set -eu
+
+          # Fail-closed: success needs both observed zeros AND both sentinels.
+          # Missing, skipped, cancelled and not-executed all land here as blocked.
+          conclusion=blocked
+          if [ "$GATES_OUTCOME" = success ] && [ -f "$RUNNER_TEMP/gates-observed-zero" ] &&
+             [ "$LINT_OUTCOME" = success ] && [ "$GHERKIN_OUTCOME" = success ] &&
+             [ -f "$RUNNER_TEMP/lint-observed-zero" ] &&
+             [ -f "$RUNNER_TEMP/gherkin-observed-zero" ] &&
+             [ "$CHECK_OUTCOME" = success ] && [ "${CHECK_EXIT:-}" = 0 ] &&
+             [ "$CLAIMS_OUTCOME" = success ] && [ "${CLAIMS_EXIT:-}" = 0 ] &&
+             [ "$DECISIONS_OUTCOME" = success ] && [ "${DECISIONS_EXIT:-}" = 0 ] &&
+             [ -f "$RUNNER_TEMP/check-observed-zero" ] &&
+             [ -f "$RUNNER_TEMP/claims-observed-zero" ] &&
+             [ -f "$RUNNER_TEMP/decisions-observed-zero" ]; then
+            conclusion=success
+          fi
+
+          {
+            printf '%s\n' '## Required quality'
+            printf '%s\n' '| field | value |'
+            printf '%s\n' '|---|---|'
+            printf '| head_sha | `%s` |\n' "$HEAD_SHA"
+            printf '| base_sha | `%s` |\n' "$BASE_SHA"
+            printf '| protected live gates | `%s` |\n' "$GATES_OUTCOME"
+            printf '| judge_sha | `%s` |\n' "$BASE_SHA"
+            printf '| workflow_sha | `%s` |\n' "$WORKFLOW_SHA"
+            printf '| run | `%s` (attempt %s) |\n' "$RUN_ID" "$RUN_ATTEMPT"
+            printf '| shellcheck | `%s` |\n' "$LINT_OUTCOME"
+            printf '| gherkin pack | `%s` |\n' "$GHERKIN_OUTCOME"
+            printf '| make check | `%s` (exit `%s`) |\n' "$CHECK_OUTCOME" "${CHECK_EXIT:-none}"
+            printf '| verify-claims | `%s` (exit `%s`) |\n' "$CLAIMS_OUTCOME" "${CLAIMS_EXIT:-none}"
+            printf '| verify-decisions | `%s` (exit `%s`) |\n' "$DECISIONS_OUTCOME" "${DECISIONS_EXIT:-none}"
+            printf '| conclusion | `%s` |\n' "$conclusion"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$conclusion" != success ]; then
+            printf 'Required quality conclusion is non-success: %s\n' "$conclusion" >&2
+            exit 1
+          fi

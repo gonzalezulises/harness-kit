@@ -1,0 +1,26 @@
+{
+  "ownerAcceptance": null,
+  "ownerSignature": null,
+  "signatureStatus": "UNSIGNED",
+  "subject": {
+    "domain": "harness.final-fix-1.delivery-candidate.v1",
+    "evidenceManifest": {
+      "path": "docs/implementation/2026-09-05-harness-hardening/final-fix-1/evidence-manifest.json",
+      "sha256": "7138970a0405bea2c780dd7bed6d2c529d8043f7470809c4e9bde6488a7a6a44"
+    },
+    "fixtureReceiptsAreOwnerAcceptance": false,
+    "positiveProductionBackend": "UNIMPLEMENTED",
+    "positiveReviewBackend": "UNIMPLEMENTED",
+    "publicationCommit": "SUPPLIED_SEPARATELY_BY_COORDINATOR",
+    "realProductionAcceptance": "NOT_EXECUTED",
+    "realReviewAcceptance": "NOT_EXECUTED",
+    "scope": "Exact selected current installer/status, optional runtime, contracts, tests, adoption documentation and prerequisite workflow only; not whole-repository authority, baseline acceptance or deployment authorization",
+    "sourceManifest": {
+      "path": "docs/implementation/2026-09-05-harness-hardening/final-fix-1/source-manifest.json",
+      "sha256": "939b55a47eaa66fef6368b09aa1f2b7d4943203207b2ebd4692dd3f1416dbe3a"
+    },
+    "status": "CANDIDATE_NOT_ACCEPTED",
+    "version": 1
+  },
+  "subjectSha256": "a499dcbdcb5fb194e7c203d008081ba72912fbcb2ff6ba77af529ec6dcabd151"
+}

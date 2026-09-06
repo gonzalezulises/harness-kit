@@ -1,0 +1,14 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "--test-skip-pattern=e2e:",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/literal-filename.test.mjs"
+  ],
+  "exit": 0,
+  "seconds": 24.496,
+  "stdoutSha256": "aa7e74cfc9cd1252fc18e2ad435ac8a516d310297a301a26e3eb0324be903a71",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

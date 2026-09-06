@@ -1,0 +1,15 @@
+{
+  "node": "v24.19.0",
+  "npm": "11.9.0",
+  "npmCache": "/root/.npm",
+  "toolPathPrefix": [
+    "/workspace/scratch/adce1c53b293/tooling/k6-v2.1.0-linux-amd64",
+    "/workspace/scratch/adce1c53b293/tooling/shellcheck/shellcheck-v0.11.0"
+  ],
+  "environment": {
+    "NO_COLOR": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "K6_NO_USAGE_REPORT": "true"
+  },
+  "remoteCI": "NOT_EXECUTED; protected-policy ADOPTION_REQUIRED remains unresolved"
+}

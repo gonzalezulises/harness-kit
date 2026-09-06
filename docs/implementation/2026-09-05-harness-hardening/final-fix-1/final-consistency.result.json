@@ -1,0 +1,11 @@
+{
+  "command": [
+    "bash",
+    "-c",
+    "make lint && shellcheck -S warning docs/implementation/2026-09-05-harness-hardening/final-fix-1/verify-static.sh && bash docs/implementation/2026-09-05-harness-hardening/final-fix-1/verify-static.sh && git diff --check"
+  ],
+  "exit": 0,
+  "seconds": 4.028,
+  "stdoutSha256": "35e7f2ae3e0e6a4efe6c164b001f26073798f25cbc80baf7ad6797f55b4f3b9a",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

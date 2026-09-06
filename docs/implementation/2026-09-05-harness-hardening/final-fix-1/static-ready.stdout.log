@@ -1,0 +1,4 @@
+shellcheck -S warning bin/*.sh scripts/*.sh tests/*.sh \
+  templates/full/scripts/*.sh packs/*/verify-pack.sh
+PASS: H05 runtime, integration and focal test syntax
+PASS: current selected sources, causal RED receipt, unchanged workflow gates and unsigned candidate manifests

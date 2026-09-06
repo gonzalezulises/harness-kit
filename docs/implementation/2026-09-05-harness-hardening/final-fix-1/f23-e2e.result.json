@@ -1,0 +1,12 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "packs/autonomy/tests/canary.test.mjs"
+  ],
+  "exit": 0,
+  "seconds": 7.333,
+  "stdoutSha256": "3373995fd1ce44b3e04c4cafb2ba144075782707f6ea2cd362ccffaab5a2d594",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

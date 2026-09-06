@@ -1,0 +1,7 @@
+{
+  "cwd": "/workspace/scratch/adce1c53b293/harness-kit",
+  "argv": [
+    "bash",
+    "scripts/verify-oracles.sh"
+  ]
+}

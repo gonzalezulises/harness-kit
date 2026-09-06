@@ -351,3 +351,23 @@ No fixture catalog, raw output, matching or signed raw receipt creates authentic
 **Decision.** Add one closed evaluator on the existing runtime. It binds objective, repository, integrated commit, artifact, target and environment; checks ordering/freshness and latest outcomes; retains uncertain intent and rollback invalidation. Runtime replay comes from the actual current journal and revalidates authority. Separate exact approvals describe deploy and rollback authority. Explicit simulations remain non-authoritative and cannot produce a production certificate.
 
 **Consequences.** This portable build consumes zero authenticated release receipts and refuses unavailable operations before spending. Positive production scheduling, target/readback, authenticated receipt issuance/import and live rollback remain unimplemented; actual production acceptance is NOT_EXECUTED. H07 diagnostic output supplies no independent-review approval. No additional backend, service or dependency is introduced. Local tests/review validate this bounded contract, not the original real production success criterion.
+
+---
+
+## 2026-09-06 — H09: installation is separate from authority adoption
+
+**Context.** The optional runtime needs a reproducible consumer path without replacing project metadata, silently accepting authority or treating a local canary as real release completion.
+
+**Decision.** Extend the existing init/activate/status CLI with explicit autonomy installation and bounded capability diagnostics. Preserve an existing runtime as a unit and the consumer root package; do not install owner keys or the v2 adoption marker. Use one actual installed-package canary with pinned offline npm ci, fixture-only adoption, scoped effects/fresh runs, semantic threshold refusal and evidence-preserving local rollback. Bind selected source and evidence in an unsigned delivery candidate, with exact publication commit supplied separately.
+
+**Consequences.** Installation, fixture adoption, owner acceptance and production readiness are distinct. Marker removal does not revoke grants; rollback requires stopped host use and preserved/reconciled state. Measured fixture signatures and elapsed time are not observed human time saved. The original real review/release flow remains unachieved because positive backends are unimplemented; local success never promotes those requirements. No additional runtime, dependency or speculative backend is introduced.
+
+---
+
+## 2026-09-06 — Final correction: inventory literal filenames and prepare locked CI dependencies
+
+**Context.** The final review reproduced a missed frozen-file change when a root filename was __proto__; a normal object accumulator omitted that entry from the full workspace digest. The required workflow also lacked installation of the newly optional package's locked dependencies.
+
+**Decision.** Use the existing null-prototype map pattern for that inventory and add one paired causal regression plus its oracle. Preserve all original evidence and publish a new unsigned selected-asset candidate. Add pinned Node setup and nested npm ci after the protected gate, preserving every existing gate, permission and sentinel. These are the only operative maintenance changes.
+
+**Consequences.** Literal filenames participate in preparation/postcondition bindings, and existing locked dependencies can be installed before the pipeline and offline canary. Local causal/static/runtime/e2e evidence and independent corrective review close FR-01; actual remote setup execution still awaits protected-policy adoption. The broad final review was interrupted by an automatic possible-cybersecurity-risk control and remains INCOMPLETE. It was not retried or replaced by this narrow approval. No baseline acceptance, branch-rule weakening or production authority follows.

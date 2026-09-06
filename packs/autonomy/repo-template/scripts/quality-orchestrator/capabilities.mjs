@@ -18,7 +18,7 @@ function syncDir(dir){const fd=fs.openSync(dir,'r');try{fs.fsyncSync(fd);}finall
 function durable(file,bytes){const fd=fs.openSync(file,'wx',0o600);try{fs.writeFileSync(fd,bytes);fs.fsyncSync(fd);}finally{fs.closeSync(fd);}syncDir(path.dirname(file));}
 function plainRoot(root){must(path.isAbsolute(root),'absolute host root required');let cursor=path.parse(root).root;for(const part of root.slice(cursor.length).split('/').filter(Boolean)){cursor=path.join(cursor,part);must(fs.lstatSync(cursor).isDirectory()&&!fs.lstatSync(cursor).isSymbolicLink(),'symlink or nondirectory ancestor');}return fs.realpathSync(root);}
 function manifest(root){
-  const result={};let total=0,count=0;
+  const result=Object.create(null);let total=0,count=0;
   function visit(dir,prefix=''){
     for(const name of fs.readdirSync(dir).sort()){
       const rel=prefix+name,full=path.join(dir,name),stat=fs.lstatSync(full);must(++count<=10000,'workspace entry bound exceeded');

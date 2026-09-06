@@ -1,0 +1,76 @@
+✖ explicit autonomy installation preserves v1 and root package bytes; rerun never merges a runtime (8.277185ms)
+✖ default remains legacy; dry-run and activation option do not write (5.045392ms)
+✖ autonomy diagnostics name missing dependencies and unimplemented positive capabilities (4.108178ms)
+✔ autonomy install refuses a symlinked scripts parent before writing outside the consumer (4.762585ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 1
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 106.481616
+
+✖ failing tests:
+
+test at packs/autonomy/tests/installation.test.mjs:15:1
+✖ explicit autonomy installation preserves v1 and root package bytes; rerun never merges a runtime (8.277185ms)
+  AssertionError [ERR_ASSERTION]: harness-init: not a directory: autonomy
+  
+  
+  66 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/tests/installation.test.mjs:18:53)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 66,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/tests/installation.test.mjs:29:1
+✖ default remains legacy; dry-run and activation option do not write (5.045392ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  66 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/tests/installation.test.mjs:30:32)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 66,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/tests/installation.test.mjs:34:1
+✖ autonomy diagnostics name missing dependencies and unimplemented positive capabilities (4.108178ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  66 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/tests/installation.test.mjs:35:32)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 66,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -2,7 +2,7 @@
 # harness-init.sh — scaffold an agent harness into a repository.
 #
 # Usage:
-#   harness-init.sh --target /path/to/repo [--level minimal|full] [--force] [--dry-run]
+#   harness-init.sh --target /path/to/repo [--level minimal|full] [--with autonomy] [--force] [--dry-run]
 #
 # Levels:
 #   minimal  AGENTS.md, CLAUDE.md pointer, init.sh, PROGRESS.md, feature_list.json,
@@ -22,12 +22,16 @@ LEVEL="minimal"
 FORCE=0
 DRYRUN=0
 PROJECT_PURPOSE=""
+WITH_AUTONOMY=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --target)  TARGET="${2:-}"; shift 2 ;;
     --level)   LEVEL="${2:-}"; shift 2 ;;
     --purpose) PROJECT_PURPOSE="${2:-}"; shift 2 ;;
+    --with)
+      [[ "${2:-}" == "autonomy" ]] || { echo "harness-init: --with supports autonomy only" >&2; exit 64; }
+      WITH_AUTONOMY=1; shift 2 ;;
     --force)   FORCE=1; shift ;;
     --dry-run) DRYRUN=1; shift ;;
     -h|--help) sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
@@ -41,6 +45,14 @@ done
   echo "harness-init: --level must be minimal or full" >&2; exit 64; }
 
 TARGET="$(cd "$TARGET" && pwd)"
+if [[ $WITH_AUTONOMY -eq 1 ]]; then
+  command -v python3 >/dev/null 2>&1 || { echo 'harness-init: autonomy installation requires python3' >&2; exit 69; }
+  for item in "$TARGET/scripts" "$TARGET/scripts/quality-orchestrator"; do
+    if [[ -L "$item" || ( -e "$item" && ! -d "$item" ) ]]; then
+      echo "harness-init: autonomy requires an ordinary directory: $item" >&2; exit 67
+    fi
+  done
+fi
 PROJECT_NAME="$(basename "$TARGET")"
 DATE="$(date -u +%Y-%m-%d)"
 
@@ -252,6 +264,25 @@ if [[ "$LEVEL" == "full" ]]; then
       echo "  write   .gitignore"
     fi
   fi
+fi
+
+# Installation is distinct from authority adoption. Never copy generated dependencies,
+# merge a runtime version, create an adoption marker, or overwrite the root manifest.
+if [[ $WITH_AUTONOMY -eq 1 ]]; then
+  AUTONOMY_DEST="$TARGET/scripts/quality-orchestrator"
+  if [[ -e "$AUTONOMY_DEST" ]]; then
+    echo '  skip    scripts/quality-orchestrator (exists; retained intact, including with --force)'
+  elif [[ $DRYRUN -eq 1 ]]; then
+    echo '  would write scripts/quality-orchestrator (autonomy; installation only)'
+  else
+    python3 -I - "$KIT_DIR/packs/autonomy/repo-template/scripts/quality-orchestrator" "$AUTONOMY_DEST" <<'PY'
+import shutil, sys
+shutil.copytree(sys.argv[1], sys.argv[2], ignore=shutil.ignore_patterns('node_modules'))
+PY
+    echo '  write   scripts/quality-orchestrator (autonomy; NOT_ADOPTED)'
+  fi
+  echo '  setup   npm ci --prefix scripts/quality-orchestrator --ignore-scripts --no-audit --no-fund'
+  echo '  Authority and baseline acceptance remain separate operator actions.'
 fi
 
 # ── Make scripts executable ──────────────────────────────────────────────────

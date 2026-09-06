@@ -1,0 +1,2 @@
+bash: line 1: shellcheck: command not found
+make: *** [Makefile:62: lint] Error 127
