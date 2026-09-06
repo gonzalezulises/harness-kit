@@ -1,0 +1,31 @@
+id: AC-H08
+requirement: Release completion requires current provenance-bound obligations rather than green intermediate work
+criticality: critical
+status: TEST_READY
+observable: A production objective retains integration, review, deployment and separate postdeploy obligations; unavailable execution cannot certify it
+oracle:
+  expected: One closed evaluator derives the next obligation; only exact current bindings count and all simulation results remain NOT_EXECUTED for production
+cases:
+  positive:
+  - Slice and merged PR continue to revalidation, deployment, functional smoke and observability in contract simulation
+  negative:
+  - Raw success JSON, foreign handles, another artifact approval and cross-deployment postdeploy evidence cannot certify release
+  boundary:
+  - Pending intent resumes by the same key without redeployment, stale evidence requires recertification, and rollback preserves history while invalidating the objective
+context: Existing accepted runtime context, signed objective, actual local journal and ephemeral test issuer; no authenticated reviewer or deployment backend exists
+side_effects:
+  must:
+  - Read current journal and authority before decisions; preserve existing grants and objective budgets
+  must_not:
+  - Spawn external operations, spend on known unavailable work, deserialize verified evidence, or certify production from simulation
+false_positive: A stale earlier deployment with a fresh smoke receipt for a different artifact must never discharge current deployment postconditions
+owner: harness-kit maintainers under AGENTS.md and DECISIONS.md MIGRATION-01
+evidence:
+  formats:
+  - Exact source and frozen test hashes with witnessed RED and focused static runtime and local e2e logs; real production acceptance NOT_EXECUTED
+tests:
+- packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs
+falsification:
+  defect: 'MUTATION_EXPERIMENT only: an isolated snapshot deliberately omits exact release receipt binding validation. Frozen current tests fail seven assertions on wrong artifacts, target, commit and preview. This is controlled test-strength falsification after initial implementation, not causal pre-fix RED or a discovered prior High/Critical defect.'
+  proved_sha: c8988acc87a18441e310e8f78e9015b3107d9341
+  receipt: docs/implementation/2026-09-05-harness-hardening/h08/mutation-receipt.json

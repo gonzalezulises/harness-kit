@@ -1,0 +1,33 @@
+{
+  "command": [
+    "make",
+    "verify-feature",
+    "F=F22"
+  ],
+  "cwd": "/workspace/scratch/adce1c53b293/harness-kit",
+  "started_at": "2026-09-06T03:28:51.306798+00:00",
+  "parent_commit": "c8988acc87a18441e310e8f78e9015b3107d9341",
+  "source_hashes": {
+    ".agents/notes/implemented/feature/2026-09-06-release-obligations-require-execution-provenance.md": "b68858aec54b7fcadf7747795dca4292d9702a15e628eafc8f608b56d8c591f6",
+    ".harness/oracles/AC-H08.yaml": "c98c8be95e4d819f626f459d2e05041f7566c2d952369f3c494e81e7a4a39a51",
+    "docs/implementation/2026-09-05-harness-hardening/h08/verify-static.sh": "68a96598c661eff68f5b3a607aedccad82313f87854f3eae7c3ad638c5848fe7",
+    "packs/autonomy/index.md": "9effaf8fe3c47ec6d151b4146e1998b918dd55cfc65575a6f7f801a0435f6a24",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/classify.mjs": "86e64dde393314232c5bac0304fd88003ba652d474d20b26f125938f896d18a8",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/contracts-release-v1.md": "187f8aa8bc5cc050bb27f77a120cf93cae0882fede9d8a57aa030f8ce4a04941",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/index.mjs": "69f5c687ca4cef260d360f9c12356af62360c99f9921ffc20248c82afd392d5a",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/package-lock.json": "19d4495481f1a940a52ab63684bc400b938cc7c6bc744be889fa453030ba622c",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/package.json": "6c8370fa233ab09d20b96330d90a9541d0b3f2c71aa19025988677b879262296",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/release.mjs": "70825c5ee7f951a0ab7f111255bf0f11680b402e4496fcdc3e08ffb05359c7e3",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/release.schema.mjs": "c6d15eca811695e31ac537cfb1bbe349bfd7e8878164a251330ad9f3234201af",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs": "a5bd6cc0b4a1c6987398365b9c95dd4fa58d9a4af6ab1b7b16c5ed942b29152a"
+  },
+  "environment": {
+    "NO_COLOR": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "K6_NO_USAGE_REPORT": "true",
+    "tooling": [
+      "k6 2.1.0",
+      "ShellCheck 0.11.0"
+    ]
+  }
+}

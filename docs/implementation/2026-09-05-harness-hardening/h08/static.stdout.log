@@ -1,0 +1,6 @@
+PASS syntax packs/autonomy/repo-template/scripts/quality-orchestrator/release.schema.mjs
+PASS syntax packs/autonomy/repo-template/scripts/quality-orchestrator/release.mjs
+PASS syntax packs/autonomy/repo-template/scripts/quality-orchestrator/classify.mjs
+PASS syntax packs/autonomy/repo-template/scripts/quality-orchestrator/index.mjs
+PASS syntax packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs
+PASS changed tracked source whitespace

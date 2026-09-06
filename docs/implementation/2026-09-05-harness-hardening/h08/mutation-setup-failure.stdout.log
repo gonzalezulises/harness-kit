@@ -1,0 +1,33 @@
+file:///workspace/scratch/adce1c53b293/harness-kit/docs/implementation/2026-09-05-harness-hardening/h08/mutation-source/capabilities.mjs:14
+const fail=(reason,status='POLICY')=>{throw Object.assign(Error(reason),{capabilityStatus:status});};
+                                                          ^
+
+Error: external dependency link
+    at fail (file:///workspace/scratch/adce1c53b293/harness-kit/docs/implementation/2026-09-05-harness-hardening/h08/mutation-source/capabilities.mjs:14:59)
+    at must (file:///workspace/scratch/adce1c53b293/harness-kit/docs/implementation/2026-09-05-harness-hardening/h08/mutation-source/capabilities.mjs:15:40)
+    at walk (file:///workspace/scratch/adce1c53b293/harness-kit/docs/implementation/2026-09-05-harness-hardening/h08/mutation-source/capabilities.mjs:35:168)
+    at walk (file:///workspace/scratch/adce1c53b293/harness-kit/docs/implementation/2026-09-05-harness-hardening/h08/mutation-source/capabilities.mjs:35:325)
+    at installedBundleDigest (file:///workspace/scratch/adce1c53b293/harness-kit/docs/implementation/2026-09-05-harness-hardening/h08/mutation-source/capabilities.mjs:37:3)
+    at file:///workspace/scratch/adce1c53b293/harness-kit/docs/implementation/2026-09-05-harness-hardening/h08/mutation-source/capabilities.mjs:39:20
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  capabilityStatus: 'POLICY'
+}
+
+Node.js v24.19.0
+✖ docs/implementation/2026-09-05-harness-hardening/h08/mutation-source/tests/release.test.mjs (279.41006ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 287.592581
+
+✖ failing tests:
+
+test at docs/implementation/2026-09-05-harness-hardening/h08/mutation-source/tests/release.test.mjs:1:1
+✖ docs/implementation/2026-09-05-harness-hardening/h08/mutation-source/tests/release.test.mjs (279.41006ms)
+  'test failed'

@@ -1,0 +1,34 @@
+✔ H08 missing release API is an observable unmet objective (44.779286ms)
+✔ HIST-11: green slice and merged PR continue through every obligation (7.924481ms)
+✔ production simulation never becomes production certification (0.639856ms)
+✔ wrong artifact binding cannot discharge integrated-verification (0.566647ms)
+✔ wrong artifact binding cannot discharge deployment (0.465738ms)
+✔ wrong artifact binding cannot discharge smoke (0.482202ms)
+✔ wrong artifact binding cannot discharge observability (0.463565ms)
+✔ deployment A cannot consume smoke B: deploymentId (0.720495ms)
+✔ deployment A cannot consume smoke B: target (0.600448ms)
+✔ deployment A cannot consume smoke B: commit (0.578045ms)
+✔ preview and successful model JSON cannot satisfy production receipts (1.216288ms)
+✔ functional smoke and observability require separate actual execution identities in the contract (0.511586ms)
+✔ freshness expiration future dates and later failure prevent reuse (1.003893ms)
+✔ merge requires revalidation after integration even on the same commit (0.549482ms)
+✔ crash resume retains exact pending deployment key and refuses duplicate uncertain intent (1.090491ms)
+✔ deployment must reconcile matching prior approval and operation key (0.743168ms)
+✔ rollback invalidates current objective without deleting deployment history (1.137481ms)
+✔ external gate is exact and independent from deployment permission (1.398898ms)
+✔ strict closed schemas reject unknown fields missing obligations and callbacks (1.02157ms)
+✔ e2e runtime: exact approved objective refuses production and preserves budget across reopen (48.850669ms)
+✔ wrong artifact approval, bounded grant and expired deployment approval do not authorize deployment (16.09184ms)
+✔ forged stale serialized and cross-runtime handles cannot certify (31.103896ms)
+✔ integrated commit change requires a newly scoped objective and revalidation (13.602993ms)
+✔ objective wire requires exact acceptance and scope binding (9.569723ms)
+✔ rollback permission is exact and cannot reuse deployment approval (16.692239ms)
+✔ e2e continuation budgets survive unavailable release work and scoped grants do not authorize deployment (44.254582ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 584.031312

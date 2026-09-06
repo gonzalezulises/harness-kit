@@ -1,0 +1,32 @@
+✔ H08 missing release API is an observable unmet objective (42.394727ms)
+✔ HIST-11: green slice and merged PR continue through every obligation (6.688272ms)
+✔ production simulation never becomes production certification (1.30619ms)
+✔ wrong artifact binding cannot discharge integrated-verification (0.563302ms)
+✔ wrong artifact binding cannot discharge deployment (0.454772ms)
+✔ wrong artifact binding cannot discharge smoke (0.404899ms)
+✔ wrong artifact binding cannot discharge observability (0.400612ms)
+✔ deployment A cannot consume smoke B: deploymentId (0.601949ms)
+✔ deployment A cannot consume smoke B: target (0.542772ms)
+✔ deployment A cannot consume smoke B: commit (0.45994ms)
+✔ preview and successful model JSON cannot satisfy production receipts (1.28558ms)
+✔ functional smoke and observability require separate actual execution identities in the contract (0.551895ms)
+✔ freshness expiration future dates and later failure prevent reuse (0.932508ms)
+✔ merge requires revalidation after integration even on the same commit (0.528691ms)
+✔ crash resume retains exact pending deployment key and refuses duplicate uncertain intent (1.093176ms)
+✔ deployment must reconcile matching prior approval and operation key (0.742918ms)
+✔ rollback invalidates current objective without deleting deployment history (1.086154ms)
+✔ external gate is exact and independent from deployment permission (1.290968ms)
+✔ strict closed schemas reject unknown fields missing obligations and callbacks (0.928682ms)
+✔ e2e runtime: exact approved objective refuses production and preserves budget across reopen (44.08133ms)
+✔ wrong artifact approval, bounded grant and expired deployment approval do not authorize deployment (15.658135ms)
+✔ forged stale serialized and cross-runtime handles cannot certify (30.210385ms)
+✔ integrated commit change requires a newly scoped objective and revalidation (13.916872ms)
+✔ objective wire requires exact acceptance and scope binding (7.919771ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 503.763083

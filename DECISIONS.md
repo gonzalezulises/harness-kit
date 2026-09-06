@@ -341,3 +341,13 @@ Three named review/remediation categories and the shared total derive from journ
 No fixture catalog, raw output, matching or signed raw receipt creates authenticated independent-review evidence. The current build prepares contracts and shadows, and refuses real execution before budget spending. A supported future launch must implement containment, actual authenticated discovery/session supervision, reservation before start, and receipt/counterexample provenance. H08 cannot consume these diagnostic outputs as review approval.
 
 **Consequences.** Portable preparation/refusal is locally verified; the original real-session acceptance criterion remains unachieved. No sandbox service or hypothetical launch backend is added to mask missing capability. Exact causal evidence closes the primary __proto__ manifest defect. Generated dependencies are reconstructed from pinned lockfiles, not vendored in proof snapshots. Baseline/deployment authority remains separate.
+
+---
+
+## 2026-09-06 — H08: release calculation requires real execution provenance
+
+**Context.** Completing a coding slice must not imply release completion or let raw agent summaries satisfy deployment, smoke or observability obligations.
+
+**Decision.** Add one closed evaluator on the existing runtime. It binds objective, repository, integrated commit, artifact, target and environment; checks ordering/freshness and latest outcomes; retains uncertain intent and rollback invalidation. Runtime replay comes from the actual current journal and revalidates authority. Separate exact approvals describe deploy and rollback authority. Explicit simulations remain non-authoritative and cannot produce a production certificate.
+
+**Consequences.** This portable build consumes zero authenticated release receipts and refuses unavailable operations before spending. Positive production scheduling, target/readback, authenticated receipt issuance/import and live rollback remain unimplemented; actual production acceptance is NOT_EXECUTED. H07 diagnostic output supplies no independent-review approval. No additional backend, service or dependency is introduced. Local tests/review validate this bounded contract, not the original real production success criterion.

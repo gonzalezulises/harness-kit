@@ -11,8 +11,11 @@ regressions, revocation and three objective budget categories plus a total cap.
 H07 adds exact local Git shadows, frozen diagnostic review bindings and strict
 output validation. It produces no authenticated review receipt: live launch and
 containment backends remain unavailable. See `contracts-review-v1.md` in the
-runtime directory. H08–H09 build on this boundary. Archived policy proposals
-remain inactive and unchanged.
+runtime directory. H08 adds signed release objectives, one closed obligation
+evaluator, exact deployment/rollback authorization checks and safe refusal.
+Synthetic traces are explicitly nonauthoritative; no production execution or
+authenticated receipt importer exists. See `contracts-release-v1.md`; H09 owns
+installer adoption. Archived policy proposals remain inactive and unchanged.
 
 The single installable package is `repo-template/scripts/quality-orchestrator/`.
 Copy that directory intact to the consumer's `scripts/quality-orchestrator/`

@@ -1,0 +1,68 @@
+Verifying F22
+
+── Layer: static
+$ make lint && bash docs/implementation/2026-09-05-harness-hardening/h08/verify-static.sh
+make[1]: Entering directory '/workspace/scratch/adce1c53b293/harness-kit'
+shellcheck -S warning bin/*.sh scripts/*.sh tests/*.sh \
+  templates/full/scripts/*.sh packs/*/verify-pack.sh
+make[1]: Leaving directory '/workspace/scratch/adce1c53b293/harness-kit'
+PASS syntax packs/autonomy/repo-template/scripts/quality-orchestrator/release.schema.mjs
+PASS syntax packs/autonomy/repo-template/scripts/quality-orchestrator/release.mjs
+PASS syntax packs/autonomy/repo-template/scripts/quality-orchestrator/classify.mjs
+PASS syntax packs/autonomy/repo-template/scripts/quality-orchestrator/index.mjs
+PASS syntax packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs
+PASS changed tracked source whitespace
+Layer 'static' passed.
+
+── Layer: runtime
+$ node --test --test-skip-pattern='^e2e' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs
+✔ H08 missing release API is an observable unmet objective (41.56372ms)
+✔ HIST-11: green slice and merged PR continue through every obligation (8.133411ms)
+✔ production simulation never becomes production certification (0.582561ms)
+✔ wrong artifact binding cannot discharge integrated-verification (0.535872ms)
+✔ wrong artifact binding cannot discharge deployment (0.439139ms)
+✔ wrong artifact binding cannot discharge smoke (0.417498ms)
+✔ wrong artifact binding cannot discharge observability (0.404217ms)
+✔ deployment A cannot consume smoke B: deploymentId (0.610483ms)
+✔ deployment A cannot consume smoke B: target (0.624503ms)
+✔ deployment A cannot consume smoke B: commit (0.504226ms)
+✔ preview and successful model JSON cannot satisfy production receipts (1.254695ms)
+✔ functional smoke and observability require separate actual execution identities in the contract (0.410967ms)
+✔ freshness expiration future dates and later failure prevent reuse (0.920681ms)
+✔ merge requires revalidation after integration even on the same commit (0.591815ms)
+✔ crash resume retains exact pending deployment key and refuses duplicate uncertain intent (1.067047ms)
+✔ deployment must reconcile matching prior approval and operation key (0.710491ms)
+✔ rollback invalidates current objective without deleting deployment history (1.111813ms)
+✔ external gate is exact and independent from deployment permission (1.287613ms)
+✔ strict closed schemas reject unknown fields missing obligations and callbacks (0.985527ms)
+✔ wrong artifact approval, bounded grant and expired deployment approval do not authorize deployment (21.26598ms)
+✔ forged stale serialized and cross-runtime handles cannot certify (34.017738ms)
+✔ integrated commit change requires a newly scoped objective and revalidation (15.10189ms)
+✔ objective wire requires exact acceptance and scope binding (8.336912ms)
+✔ rollback permission is exact and cannot reuse deployment approval (15.732973ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 472.325646
+Layer 'runtime' passed.
+
+── Layer: e2e
+$ node --test --test-name-pattern='^e2e' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs
+✔ e2e runtime: exact approved objective refuses production and preserves budget across reopen (106.697566ms)
+✔ e2e continuation budgets survive unavailable release work and scoped grants do not authorize deployment (47.187312ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 770.064266
+Layer 'e2e' passed.
+
+F22 -> passing (evidence recorded in feature_list.json)
+Next: update PROGRESS.md and commit.

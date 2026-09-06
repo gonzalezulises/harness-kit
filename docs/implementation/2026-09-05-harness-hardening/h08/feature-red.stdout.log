@@ -1,0 +1,392 @@
+✖ H08 missing release API is an observable unmet objective (28.821139ms)
+✖ HIST-11: green slice and merged PR continue through every obligation (0.418218ms)
+✖ production simulation never becomes production certification (0.240545ms)
+✖ wrong artifact binding cannot discharge integrated-verification (0.271602ms)
+✖ wrong artifact binding cannot discharge deployment (0.181308ms)
+✖ wrong artifact binding cannot discharge smoke (0.241297ms)
+✖ wrong artifact binding cannot discharge observability (0.255097ms)
+✖ deployment A cannot consume smoke B: deploymentId (0.351409ms)
+✖ deployment A cannot consume smoke B: target (0.265943ms)
+✖ deployment A cannot consume smoke B: commit (0.253184ms)
+✖ preview and successful model JSON cannot satisfy production receipts (0.226705ms)
+✖ functional smoke and observability require separate actual execution identities in the contract (0.183331ms)
+✖ freshness expiration future dates and later failure prevent reuse (0.211362ms)
+✖ merge requires revalidation after integration even on the same commit (0.167708ms)
+✖ crash resume retains exact pending deployment key and refuses duplicate uncertain intent (0.172215ms)
+✖ deployment must reconcile matching prior approval and operation key (0.192675ms)
+✖ rollback invalidates current objective without deleting deployment history (0.35173ms)
+✖ external gate is exact and independent from deployment permission (0.190882ms)
+✖ strict closed schemas reject unknown fields missing obligations and callbacks (0.12859ms)
+✖ e2e runtime: exact approved objective refuses production and preserves budget across reopen (8.906501ms)
+✖ wrong artifact approval, bounded grant and expired deployment approval do not authorize deployment (7.200991ms)
+✖ forged stale serialized and cross-runtime handles cannot certify (7.649153ms)
+✖ integrated commit change requires a newly scoped objective and revalidation (6.278538ms)
+✖ objective wire requires exact acceptance and scope binding (5.482131ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 0
+ℹ fail 24
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 405.580868
+
+✖ failing tests:
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:27:1
+✖ H08 missing release API is an observable unmet objective (28.821139ms)
+  AssertionError [ERR_ASSERTION]: runtime must implement release obligations
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at setup (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:20:10)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:27:77)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:28:1
+✖ HIST-11: green slice and merged PR continue through every obligation (0.418218ms)
+  TypeError: api.simulateRelease is not a function
+      at simulate (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:12:49)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:30:45)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:32:1
+✖ production simulation never becomes production certification (0.240545ms)
+  TypeError: api.simulateRelease is not a function
+      at simulate (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:12:49)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:32:96)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:33:84
+✖ wrong artifact binding cannot discharge integrated-verification (0.271602ms)
+  TypeError: api.simulateRelease is not a function
+      at simulate (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:12:49)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:33:261)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:33:84
+✖ wrong artifact binding cannot discharge deployment (0.181308ms)
+  TypeError: api.simulateRelease is not a function
+      at simulate (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:12:49)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:33:261)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:33:84
+✖ wrong artifact binding cannot discharge smoke (0.241297ms)
+  TypeError: api.simulateRelease is not a function
+      at simulate (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:12:49)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:33:261)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:33:84
+✖ wrong artifact binding cannot discharge observability (0.255097ms)
+  TypeError: api.simulateRelease is not a function
+      at simulate (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:12:49)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:33:261)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:34:55
+✖ deployment A cannot consume smoke B: deploymentId (0.351409ms)
+  TypeError: api.simulateRelease is not a function
+      at simulate (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:12:49)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:34:375)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:34:55
+✖ deployment A cannot consume smoke B: target (0.265943ms)
+  TypeError: api.simulateRelease is not a function
+      at simulate (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:12:49)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:34:375)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:34:55
+✖ deployment A cannot consume smoke B: commit (0.253184ms)
+  TypeError: api.simulateRelease is not a function
+      at simulate (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:12:49)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:34:375)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:35:1
+✖ preview and successful model JSON cannot satisfy production receipts (0.226705ms)
+  TypeError: api.simulateRelease is not a function
+      at simulate (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:12:49)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:35:190)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:36:1
+✖ functional smoke and observability require separate actual execution identities in the contract (0.183331ms)
+  TypeError: api.simulateRelease is not a function
+      at simulate (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:12:49)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:36:210)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:37:1
+✖ freshness expiration future dates and later failure prevent reuse (0.211362ms)
+  TypeError: api.simulateRelease is not a function
+      at simulate (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:12:49)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:38:52)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:42:1
+✖ merge requires revalidation after integration even on the same commit (0.167708ms)
+  TypeError: api.simulateRelease is not a function
+      at simulate (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:12:49)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:42:155)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:43:1
+✖ crash resume retains exact pending deployment key and refuses duplicate uncertain intent (0.172215ms)
+  TypeError: api.simulateRelease is not a function
+      at simulate (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:12:49)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:43:166)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:44:1
+✖ deployment must reconcile matching prior approval and operation key (0.192675ms)
+  TypeError: api.simulateRelease is not a function
+      at simulate (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:12:49)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:44:231)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:45:1
+✖ rollback invalidates current objective without deleting deployment history (0.35173ms)
+  TypeError: api.simulateRelease is not a function
+      at simulate (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:12:49)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:45:275)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:46:1
+✖ external gate is exact and independent from deployment permission (0.190882ms)
+  TypeError: api.simulateRelease is not a function
+      at simulate (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:12:49)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:46:161)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:47:1
+✖ strict closed schemas reject unknown fields missing obligations and callbacks (0.12859ms)
+  TypeError: api.simulateRelease is not a function
+      at simulate (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:12:49)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:47:241)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:48:1
+✖ e2e runtime: exact approved objective refuses production and preserves budget across reopen (8.906501ms)
+  AssertionError [ERR_ASSERTION]: runtime must implement release obligations
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at setup (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:20:10)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:49:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:55:1
+✖ wrong artifact approval, bounded grant and expired deployment approval do not authorize deployment (7.200991ms)
+  AssertionError [ERR_ASSERTION]: runtime must implement release obligations
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at setup (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:20:10)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:56:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:59:1
+✖ forged stale serialized and cross-runtime handles cannot certify (7.649153ms)
+  AssertionError [ERR_ASSERTION]: runtime must implement release obligations
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at setup (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:20:10)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:60:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:65:1
+✖ integrated commit change requires a newly scoped objective and revalidation (6.278538ms)
+  AssertionError [ERR_ASSERTION]: runtime must implement release obligations
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at setup (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:20:10)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:65:96)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:66:1
+✖ objective wire requires exact acceptance and scope binding (5.482131ms)
+  AssertionError [ERR_ASSERTION]: runtime must implement release obligations
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at setup (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:20:10)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs:66:79)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

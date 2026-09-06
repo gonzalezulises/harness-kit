@@ -1,0 +1,193 @@
+✔ H08 missing release API is an observable unmet objective (46.363914ms)
+✔ HIST-11: green slice and merged PR continue through every obligation (6.87513ms)
+✔ production simulation never becomes production certification (0.61628ms)
+✖ wrong artifact binding cannot discharge integrated-verification (2.644087ms)
+✖ wrong artifact binding cannot discharge deployment (0.569722ms)
+✖ wrong artifact binding cannot discharge smoke (0.54132ms)
+✖ wrong artifact binding cannot discharge observability (0.408674ms)
+✔ deployment A cannot consume smoke B: deploymentId (0.652575ms)
+✖ deployment A cannot consume smoke B: target (4.400192ms)
+✖ deployment A cannot consume smoke B: commit (0.909063ms)
+✖ preview and successful model JSON cannot satisfy production receipts (0.490845ms)
+✔ functional smoke and observability require separate actual execution identities in the contract (0.350478ms)
+✔ freshness expiration future dates and later failure prevent reuse (0.933359ms)
+✔ merge requires revalidation after integration even on the same commit (0.451808ms)
+✔ crash resume retains exact pending deployment key and refuses duplicate uncertain intent (0.919218ms)
+✔ deployment must reconcile matching prior approval and operation key (0.631233ms)
+✔ rollback invalidates current objective without deleting deployment history (1.239382ms)
+✔ external gate is exact and independent from deployment permission (1.153936ms)
+✔ strict closed schemas reject unknown fields missing obligations and callbacks (1.459387ms)
+✔ e2e runtime: exact approved objective refuses production and preserves budget across reopen (49.941251ms)
+✔ wrong artifact approval, bounded grant and expired deployment approval do not authorize deployment (16.217125ms)
+✔ forged stale serialized and cross-runtime handles cannot certify (33.062428ms)
+✔ integrated commit change requires a newly scoped objective and revalidation (17.988859ms)
+✔ objective wire requires exact acceptance and scope binding (8.747045ms)
+✔ rollback permission is exact and cannot reuse deployment approval (17.299144ms)
+✔ e2e continuation budgets survive unavailable release work and scoped grants do not authorize deployment (43.454374ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 19
+ℹ fail 7
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 610.859384
+
+✖ failing tests:
+
+test at docs/implementation/2026-09-05-harness-hardening/h08/mutation-source/tests/release.test.mjs:33:84
+✖ wrong artifact binding cannot discharge integrated-verification (2.644087ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'SIMULATION'
+  - 'POLICY'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/docs/implementation/2026-09-05-harness-hardening/h08/mutation-source/tests/release.test.mjs:33:255)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'SIMULATION',
+    expected: 'POLICY',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/implementation/2026-09-05-harness-hardening/h08/mutation-source/tests/release.test.mjs:33:84
+✖ wrong artifact binding cannot discharge deployment (0.569722ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'SIMULATION'
+  - 'POLICY'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/docs/implementation/2026-09-05-harness-hardening/h08/mutation-source/tests/release.test.mjs:33:255)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'SIMULATION',
+    expected: 'POLICY',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/implementation/2026-09-05-harness-hardening/h08/mutation-source/tests/release.test.mjs:33:84
+✖ wrong artifact binding cannot discharge smoke (0.54132ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'SIMULATION'
+  - 'POLICY'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/docs/implementation/2026-09-05-harness-hardening/h08/mutation-source/tests/release.test.mjs:33:255)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'SIMULATION',
+    expected: 'POLICY',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/implementation/2026-09-05-harness-hardening/h08/mutation-source/tests/release.test.mjs:33:84
+✖ wrong artifact binding cannot discharge observability (0.408674ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'SIMULATION'
+  - 'POLICY'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/docs/implementation/2026-09-05-harness-hardening/h08/mutation-source/tests/release.test.mjs:33:255)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'SIMULATION',
+    expected: 'POLICY',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/implementation/2026-09-05-harness-hardening/h08/mutation-source/tests/release.test.mjs:34:55
+✖ deployment A cannot consume smoke B: target (4.400192ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(r.status==='POLICY'||r.nextObligation.kind==='smoke')
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/docs/implementation/2026-09-05-harness-hardening/h08/mutation-source/tests/release.test.mjs:34:401)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at docs/implementation/2026-09-05-harness-hardening/h08/mutation-source/tests/release.test.mjs:34:55
+✖ deployment A cannot consume smoke B: commit (0.909063ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(r.status==='POLICY'||r.nextObligation.kind==='smoke')
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/docs/implementation/2026-09-05-harness-hardening/h08/mutation-source/tests/release.test.mjs:34:401)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at docs/implementation/2026-09-05-harness-hardening/h08/mutation-source/tests/release.test.mjs:35:1
+✖ preview and successful model JSON cannot satisfy production receipts (0.490845ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'SIMULATION'
+  - 'POLICY'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/docs/implementation/2026-09-05-harness-hardening/h08/mutation-source/tests/release.test.mjs:35:184)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'SIMULATION',
+    expected: 'POLICY',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
