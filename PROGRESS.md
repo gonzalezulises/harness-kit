@@ -3,7 +3,45 @@
 The durable memory of this repository. Every session reads this first and writes to it
 last. If it disagrees with your recollection, this file wins.
 
-## Current State — 2026-09-06 implementation
+## Current state — 2026-09-06 execution backend continuation
+
+F24 now connects the fixed GitHub execution transport, Codex stdio worker and
+H07/H08 evidence bridge. Independent backend review identified four concrete
+recovery/capability/UTF-8 defects; all four were corrected and independently
+closed. The protected-base CI path integration is separately approved with no
+open scoped findings. The [bounded plan](docs/implementation/2026-09-06-execution-backends/plan.md)
+and [reviews](docs/implementation/2026-09-06-execution-backends/review/scope.md)
+record the scope and decisions.
+
+The harness issued current passing receipts for F24 (24 runtime, one protected
+workflow regression and4 e2e), F19 (original32 runtime/3 e2e) and F23 (original
+installation4/canary1). F19/F23 static bindings now validate current source and
+retained evidence rather than requiring new code to equal the historical source
+snapshot. Their old tests and receipts remain exact. F23's first attempt failed
+because the npm cache lacked a locked tarball; the ordinary locked install
+repaired only the environment, then the original layers passed. Both outcomes
+are retained. No feature is active; F09 remains blocked as previously documented.
+
+Final `make check` passed669 assertions (286 core, one protected-workflow case,
+244 autonomy,15 Gherkin,55 load,68 Sentry), eight quick gates PASS, exit0.
+Two authenticated-gh load cases remain explicitly omitted. Current `./init.sh`
+passed286/0. Both runs verified the selected69-source manifest unchanged.
+The additive protected-judge proposal is prepared but not adopted. No remote
+execution, deployment, key enrollment or baseline acceptance occurred. The
+old unsigned candidate is historical; the new selected-asset candidate in
+`docs/implementation/2026-09-06-execution-backends/final/` remains unsigned and
+unaccepted. Neither candidate establishes owner authority.
+The automatically interrupted whole-branch review remains INCOMPLETE, and the
+scoped approvals do not resume or replace it.
+
+Publication remains pending: automatic review rejected the initial verbose
+payload, then rejected the compact68-file payload while describing the old160-
+file set. The compact evidence is197KB, source69 hashes are unchanged, static
+contracts and all12 oracles pass. No remote branch/ref was updated. The prepared
+continuation is preserved locally; further publication requires resolution of
+that automatic approval block. This does not authorize retry by another route.
+
+## Previous verified delivery — 2026-09-06 implementation
 
 Delivery is on draft PR #33 under the owner's **“Implementa todas las mejoras”** mandate and approved MIGRATION-01 transition. H01–H06 and the bounded portable H07–H09 scopes are implemented with independent task reviews. Final High FR-01 (literal __proto__ omitted from the workspace inventory) has a one-line correction, causal RED, GREEN and independent scoped approval. Final F19/F23 layers and full640/0 passed; startup passed286/0, with reviewed source unchanged. No feature is active; F09 remains intentionally blocked with its historical receipts preserved. This extends the existing runtime/CLI without a new service, backend framework or extra dependencies.
 

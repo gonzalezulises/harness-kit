@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "command": [
+    "python3",
+    "tests/h02-hardening-regressions.py",
+    "Regressions.test_protected_workflow_uses_relocated_base_bundle"
+  ],
+  "exit_code": 1,
+  "before_workflow": {
+    "path": "docs/implementation/2026-09-06-execution-backends/ci-integration/before-required-quality.yml",
+    "sha256": "4dfd746ae21a97b91cbf1c5d1315061e69cbcef921e9dbcb2cddebca5d548b18"
+  },
+  "test": {
+    "path": "tests/h02-hardening-regressions.py",
+    "sha256": "60f549091a6de2b0bd12a430ed472939ca31f4e96065d68d5fa4c11696254c6f"
+  },
+  "logs": {
+    "docs/implementation/2026-09-06-execution-backends/ci-integration/red.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/implementation/2026-09-06-execution-backends/ci-integration/red.stderr.log": "ee3ee25de37ceee26a768b12dfd819b2c054938cb507acefe4006e3cc92bd433",
+    "docs/implementation/2026-09-06-execution-backends/ci-integration/red.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+  }
+}

@@ -1,0 +1,193 @@
+{
+  "schema_version": 1,
+  "scope": "Observed controller verification and bounded fix evidence, not live acceptance",
+  "source_manifest_sha256": "0764f3179cca3bc75e9fd64c6e9f8ede9c7ec394cf9de6d8a79fba81ebff4b00",
+  "results": [
+    {
+      "command": [
+        "make",
+        "verify-feature",
+        "F=F24"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 91.90462725500402,
+      "source_unchanged": true,
+      "started_at": "2026-09-06T13:55:09.437907+00:00",
+      "finished_at": "2026-09-06T13:56:41.345789+00:00",
+      "stdout_sha256": "7aa31d13c37ee85a56a68f7685bcc5e1bf809f000b5c7cb711330ae52ba136b3",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "make",
+        "verify-feature",
+        "F=F19"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 45.64542042500398,
+      "source_unchanged": true,
+      "started_at": "2026-09-06T14:29:11.645510+00:00",
+      "finished_at": "2026-09-06T14:29:57.295035+00:00",
+      "stdout_sha256": "d7cc18d01483a3fb32b49a91a3b11eaa345a41c89d5eb117a763abb3ed1f7625",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "make",
+        "verify-feature",
+        "F=F23"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 16.43140490099904,
+      "source_unchanged": true,
+      "started_at": "2026-09-06T14:32:56.561369+00:00",
+      "finished_at": "2026-09-06T14:33:12.995317+00:00",
+      "stdout_sha256": "addc4007163572dfd76b8b8c2c0bf85a6f3da656747718292fb79a8f09ff4a04",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "make",
+        "verify-feature",
+        "F=F23"
+      ],
+      "exit_code": 2,
+      "elapsed_seconds": 9.347508612001548,
+      "source_unchanged": true,
+      "started_at": "2026-09-06T14:29:57.334049+00:00",
+      "finished_at": "2026-09-06T14:30:06.683878+00:00",
+      "stdout_sha256": "e608b463cc98b3beccba886305c1320ee95c4865f541d96eb12794e15c446a2e",
+      "stderr_sha256": "9a32501ecfa7ba8871e8f760b747d1790d4c19e7ae0103a46f2341ccaccc2c8e"
+    },
+    {
+      "command": [
+        "make",
+        "verify-feature",
+        "F=F24"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 194.1653200189976,
+      "source_unchanged": true,
+      "started_at": "2026-09-06T14:25:57.436428+00:00",
+      "finished_at": "2026-09-06T14:29:11.604088+00:00",
+      "stdout_sha256": "4e1f5e712a1602f57986321552ec16b90ced835bf4849277d662f1d544fd9fb2",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "python3",
+        "/workspace/scratch/adce1c53b293/warm_execution_npm_cache.py"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 12.399014715003432,
+      "source_unchanged": true,
+      "started_at": "2026-09-06T14:31:57.853579+00:00",
+      "finished_at": "2026-09-06T14:32:10.255195+00:00",
+      "stdout_sha256": "3c034caad4b9f152a7806f3cf6a1ae389a60c0939f32a45751cd3b1d0767b7ae",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "make",
+        "check"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 287.4278617129967,
+      "source_unchanged": true,
+      "started_at": "2026-09-06T14:34:41.744905+00:00",
+      "finished_at": "2026-09-06T14:39:29.175255+00:00",
+      "stdout_sha256": "e820e8d7bbec153c90e38e29cfb8890d3366f468f773a3c1ffa07f5459a40b90",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "./init.sh"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 71.35779795199778,
+      "source_unchanged": true,
+      "started_at": "2026-09-06T14:40:03.055674+00:00",
+      "finished_at": "2026-09-06T14:41:14.416129+00:00",
+      "stdout_sha256": "a7ed2b8b1414e00f41ea93de0cc490f9bc7d6a0301377f762393316211f85878",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "layer": "red",
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern=fix-1",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/execution-backend.test.mjs"
+      ],
+      "exit_code": 1,
+      "passed": 0,
+      "failed": 6,
+      "sha256": "c78309570cacea7673e078c00d2a153625e4d811d87620510da12b0d5d422149"
+    },
+    {
+      "layer": "static",
+      "command": [
+        "bash",
+        "docs/implementation/2026-09-06-execution-backends/verify-static.sh"
+      ],
+      "exit_code": 0,
+      "sha256": "3b3d80dc99158436f8af72758846bcc183e2f9edd39914d10b932c566be84f7e"
+    },
+    {
+      "layer": "findings-2-4",
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern=fix-1 (missing|dispatched|worker)",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/execution-backend.test.mjs"
+      ],
+      "exit_code": 0,
+      "passed": 4,
+      "failed": 0,
+      "sha256": "af368c28c550d1df46152df1e8b0e14a6a21aa891ad315810e277c172e505052"
+    },
+    {
+      "layer": "finding-1-e2e",
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern=e2e fix-1",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/execution-backend.test.mjs"
+      ],
+      "exit_code": 0,
+      "passed": 2,
+      "failed": 0,
+      "sha256": "676c69458c857951673136b7322c5f28279bad4cd0133a7855b7562dd5a6a847"
+    },
+    {
+      "layer": "compatibility",
+      "command": [
+        "node",
+        "--test",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs"
+      ],
+      "exit_code": 0,
+      "passed": 54,
+      "failed": 0,
+      "sha256": "8d828df8c73d8a0f00925996238459ec2de7b9650ea6ffe2cb51ffd85407a6dc"
+    }
+  ],
+  "full_check": {
+    "exit": 0,
+    "passing": 669,
+    "quick_gates": 8,
+    "authenticated_gh_omissions": 2
+  },
+  "startup": {
+    "exit": 0,
+    "passing": 286
+  },
+  "environment_failure": {
+    "code": "ENOTCACHED",
+    "package": "zod@4.5.4",
+    "resolution": "ordinary locked npm ci, followed by unchanged F23 layers"
+  },
+  "diagnostic_streams": "Not distributed; hashes above identify actual local streams. No stream is presented as a retained artifact.",
+  "retained_source_reason": "Six exact pre-fix modules and the CI prototype test are required by existing causal receipts/static contracts; redundant snapshots and verbose logs are excluded."
+}

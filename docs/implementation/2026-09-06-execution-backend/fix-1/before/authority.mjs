@@ -79,6 +79,5 @@ export function authorityBoundary(host) {
     const approval=inspectApproval(item.approval);if(approval.status!=='VERIFIED_APPROVAL')return approval;
     return freeze({status:'VERIFIED_AUTHORITY',authorityDigest,...item.value});
   }
-  const canVerifyExecution=()=>issuers.some(issuer=>issuer.role==='execution-supervisor'&&issuer.kinds.includes('execution-observation'));
-  return {repositoryId,authorityDigest,canVerifyExecution,freshness,verifyApproval,verifyRecordedApproval,inspectApproval,loadAuthority,inspectAuthority};
+  return {repositoryId,authorityDigest,freshness,verifyApproval,verifyRecordedApproval,inspectApproval,loadAuthority,inspectAuthority};
 }

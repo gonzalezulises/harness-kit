@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { canonical, digestData, freeze } from './identity.mjs';
 import { RUNTIME_BINDING, stop } from './authority.mjs';
 import { budgetKindSchema, checkBudget, emptyCounts, mechanicalBudget } from './budget.mjs';
+import {descriptorSchema,executionDomain} from './execution.schema.mjs';
 import { continuationWireSchema, grantExpectation } from './continuation.mjs';
 const hash=z.string().regex(/^[a-f0-9]{64}$/),id=z.string().min(1).max(200),integer=z.number().int().nonnegative().safe();
 const operationKey=id.refine(v=>!v.startsWith('reconcile:'));
@@ -51,6 +52,9 @@ export function journalBoundary(host,runtime,auth,contextPaths,internal={}) {
     try{fd=fs.openSync(file,'wx',0o600);}catch(error){if(error.code==='EEXIST'){must(fs.readFileSync(file).equals(Buffer.from(bytes)),'content object collision or altered bytes');return;}throw error;}
     try{fs.writeFileSync(fd,bytes);fs.fsyncSync(fd);}finally{fs.closeSync(fd);}syncDirectory(path.dirname(file));
   }
+  function putObject(value){const digest=digestData(value);writeExclusive(path.join(objects,digest+'.json'),canonical(value));return digest;}
+  function getObject(digest){hash.parse(digest);const bytes=fs.readFileSync(path.join(objects,digest+'.json'));const value=JSON.parse(bytes.toString('utf8'));must(canonical(value)===bytes.toString('utf8')&&digestData(value)===digest,'private object bytes changed');return value;}
+  function backendOwned(intent){try{return getObject(intent.inputDigest).domain===executionDomain;}catch(error){if(error.code==='ENOENT')return false;throw error;}}
   function writeIndex(file,value) {
     const tmp=file+'.tmp',bytes=canonical(value);let fd;
     try {fd=fs.openSync(tmp,'w',0o600);fs.writeFileSync(fd,bytes);fs.fsyncSync(fd);}finally{if(fd!==undefined)fs.closeSync(fd);}
@@ -135,10 +139,19 @@ export function journalBoundary(host,runtime,auth,contextPaths,internal={}) {
       must(!state.continuations.revoked.includes(digestData(g)),'continuation revoked','BLOCKED_BY_REVOKED_AUTHORITY');
     }
     if(op.kind==='continuation-revoke')must(state.continuations.grants[op.grantDigest],'unknown continuation','POLICY');
+    if(op.kind==='reserve'&&backendOwned(op)) {
+      const d=descriptorSchema.parse(getObject(op.inputDigest)),b=d.budget;
+      must(op.grantDigest===digestData(b)&&op.units===1&&op.budgetKind===b.scope.budgetKind&&op.operationKey===b.scope.operationKey&&d.operationKey===op.operationKey,'execution reservation scope mismatch','POLICY');
+      must(b.repositoryId===auth.repositoryId&&b.authorityDigest===auth.authorityDigest&&b.baselineDigest===state.baselineDigest&&b.scope.objectiveId===state.objectiveId&&b.scope.journalId===state.journalId&&b.scope.runId===op.runId&&b.requestDigest===digestData(d.request)&&b.profileDigest===digestData(d.profile),'execution budget binding mismatch','POLICY');
+      const approved=auth.verifyRecordedApproval(d.approval,{kind:'execution-budget',subjectDigest:digestData(b),scopeDigest:digestData(b.scope),authorityDigest:auth.authorityDigest},at);
+      must(approved.status==='VERIFIED_RECORDED_APPROVAL',approved.reason,approved.status);
+      must(b.limits.total===state.budget.limit&&(!state.budget.limits||canonical(b.limits)===canonical(state.budget.limits)),'signed objective budgets are immutable','POLICY');
+      must(Object.entries(state.budget.byKind).every(([k,v])=>b.limits[k]>=v),'prior attempts exceed category cap','BUDGET_EXHAUSTED');state.budget.limits=b.limits;
+    }
     if(op.kind==='reserve'||op.kind==='budget-spend') {
       must(!state.budget.limits||op.budgetKind,'signed budget category required','POLICY');
       const failure=checkBudget(state.budget,op.budgetKind||mechanicalBudget,op.units||1);if(failure)fail(failure.status,failure.reason);
-      if(op.grantDigest) {
+      if(op.grantDigest&&!(op.kind==='reserve'&&backendOwned(op))) {
         const wire=state.continuations.grants[op.grantDigest];must(wire&&!state.continuations.revoked.includes(op.grantDigest),'missing or revoked continuation','BLOCKED_BY_REVOKED_AUTHORITY');
         const checked=auth.verifyRecordedApproval(wire.approval,grantExpectation(wire.grant),at);must(checked.status==='VERIFIED_RECORDED_APPROVAL',checked.reason,checked.status);
       }
@@ -208,7 +221,10 @@ export function journalBoundary(host,runtime,auth,contextPaths,internal={}) {
     const subject={domain:'harness.journal-lock-recovery.v1',...common,headDigest:state.headDigest,lockDigest:rawHash(raw)};
     return {status:'RECOVERY_DESCRIBED',subjectDigest:digestData(subject),scopeDigest:digestData({action:'release-dead-local-owner',objectiveId:config.objectiveId,journalId:config.journalId}),pid:lock.pid,headDigest:state.headDigest,lockDigest:subject.lockDigest};
   }
-  Object.assign(internal,{read,append,finalBinding});
+  Object.assign(internal,{read,append,finalBinding,putObject,getObject,
+    retainAcknowledgement:(descriptorDigest,ack)=>{hash.parse(descriptorDigest);const digest=putObject(ack);writeExclusive(path.join(objects,'ack-'+descriptorDigest+'.json'),canonical({digest}));},
+    readAcknowledgement:descriptorDigest=>{hash.parse(descriptorDigest);const file=path.join(objects,'ack-'+descriptorDigest+'.json');return fs.existsSync(file)?getObject(JSON.parse(fs.readFileSync(file,'utf8')).digest):null;}
+  });
   return Object.freeze({
     replay,
     describeRecovery:ctx=>safe(()=>freeze(describeRecovery(ctx))),
@@ -248,6 +264,7 @@ export function journalBoundary(host,runtime,auth,contextPaths,internal={}) {
     appendEvent:(expectedHead,input,ctx)=>safe(()=>{const parsed=z.discriminatedUnion('kind',[reserve.omit({effectKind:true,budgetKind:true,grantDigest:true}),close]).safeParse(input);must(parsed.success,'unsupported or malformed candidate event','POLICY');return append(expectedHead,parsed.data,ctx);}),
     replaceStaleRun:(expectedHead,oldRunId,key,ctx)=>safe(()=>{context(ctx);const value=finalBinding(ctx);return append(expectedHead,{kind:'replace-run',operationKey:key,oldRunId,run:makeRun(oldRunId,value,key)},ctx);}),
     reconcile:(expectedHead,key,ctx)=>safe(()=>{const loaded=read(ctx),intent=loaded.intents.get(key);must(intent,'unknown intent key','POLICY');
+      must(!backendOwned(intent),'backend-owned intent requires exact Actions reconciliation','POLICY');
       must(!intent.effectKind,'local capability requires supervised postcondition reconciliation','POLICY');
       const existing=loaded.keys.get('reconcile:'+key);if(existing)return receipt(existing);
       let result;try{result=config.reconcileOperation?.(freeze({...common,...intent}));}catch{fail('INCOMPLETE','target reconciliation unavailable');}

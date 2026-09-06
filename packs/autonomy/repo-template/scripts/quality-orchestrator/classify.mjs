@@ -5,6 +5,7 @@ import { journalBoundary } from './journal.mjs';
 import { capabilityBoundary } from './capabilities.mjs';
 import { continuationBoundary } from './continuation.mjs';
 import { reviewBoundary } from './review.mjs';
+import {executionBoundary} from './execution.mjs';
 import { releaseBoundary } from './release.mjs';
 const bytes=z.custom(v=>Buffer.isBuffer(v)||v instanceof Uint8Array);
 const path=z.string().min(1).refine(v=>!v.startsWith('/')&&!v.includes('\\')&&!v.includes('\0')&&v.split('/').every(s=>s && s!=='.' && s!=='..'));
@@ -98,7 +99,9 @@ export function openRuntime(host) {
   }
   if(host.journal)Object.assign(runtime,continuationBoundary(runtime,auth,journalInternal,files,handle=>contexts.get(handle).baseline.records,continuationInternal));
   if(host.capabilities){try{if(!host.journal)throw Error('journal required for capabilities');Object.assign(runtime,capabilityBoundary(host,runtime,auth,journalInternal,files,continuationInternal));}catch(error){return stop(error.capabilityStatus||'BLOCKED_BY_MISSING_AUTHORITY_BINDING',error.message);}}
-  if(host.review){try{if(!host.journal)throw Error('journal required for review');Object.assign(runtime,reviewBoundary(host.review,runtime,auth));}catch(error){return stop(error.reviewStatus||'BLOCKED_BY_MISSING_AUTHORITY_BINDING',error.message);}}
-  if(host.journal)Object.assign(runtime,releaseBoundary(runtime,auth,journalInternal));
+  let execution;const reviewInternal={};
+  if(host.actions){try{if(!host.journal)throw Error('journal required for Actions');execution=executionBoundary(host.actions,auth,journalInternal);}catch(error){return stop('BLOCKED_BY_MISSING_AUTHORITY_BINDING',error.message);}}
+  if(host.review){try{if(!host.journal)throw Error('journal required for review');Object.assign(runtime,reviewBoundary(host.review,runtime,auth,execution,journalInternal,reviewInternal));}catch(error){return stop(error.reviewStatus||'BLOCKED_BY_MISSING_AUTHORITY_BINDING',error.message);}}
+  if(host.journal)Object.assign(runtime,releaseBoundary(runtime,auth,journalInternal,execution,reviewInternal));
   return Object.freeze(runtime);
 }

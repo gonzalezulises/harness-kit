@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "command": [
+    "python3",
+    "tests/protected-workflow-regression.py"
+  ],
+  "exit_code": 0,
+  "after_workflow": {
+    "path": ".github/workflows/required-quality.yml",
+    "sha256": "78edb63f69c734f362c6ffd28441a71f50ac7bc7251e04eeaf3e0147815af2b8"
+  },
+  "test": {
+    "path": "tests/protected-workflow-regression.py",
+    "sha256": "d520e1dadfaf948cffc21c0dcc7d566a9bd255bbf5638bc18419d32c26d7dcf0"
+  },
+  "logs": {
+    "docs/implementation/2026-09-06-execution-backends/ci-integration/final-green.stdout.log": "f3dfd9bfa57d893b0255d4a43b287375567cf6b432bb5f510f0cf3aacfbff423",
+    "docs/implementation/2026-09-06-execution-backends/ci-integration/final-green.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/implementation/2026-09-06-execution-backends/ci-integration/final-green.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+  }
+}

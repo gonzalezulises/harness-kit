@@ -1,0 +1,30 @@
+{
+  "ownerAcceptance": null,
+  "ownerSignature": null,
+  "signatureStatus": "UNSIGNED",
+  "subject": {
+    "domain": "harness.execution-backends.delivery-candidate.v1",
+    "evidenceManifest": {
+      "path": "docs/implementation/2026-09-06-execution-backends/final/evidence-manifest.json",
+      "sha256": "4652facb62845a3322f363a391aaaf4cb5bf7d267d1d99aad482dbb0d293b209"
+    },
+    "fixtureReceiptsAreOwnerAcceptance": false,
+    "nativeContainment": "OPERATOR_INTEGRATION_REQUIRED",
+    "positiveProductionBackend": "IMPLEMENTED_REQUIRES_OPERATOR_TARGET_ADAPTER",
+    "positiveReviewBackend": "IMPLEMENTED_REQUIRES_OPERATOR_CONFIGURATION",
+    "publicationCommit": "SUPPLIED_SEPARATELY_BY_COORDINATOR",
+    "realProductionAcceptance": "NOT_EXECUTED",
+    "realReviewAcceptance": "NOT_EXECUTED",
+    "scope": "Exact selected source and evidence; not whole-repository authority or deployment authorization",
+    "scopedF24Review": "APPROVED",
+    "sourceManifest": {
+      "path": "docs/implementation/2026-09-06-execution-backends/final/source-manifest.json",
+      "sha256": "0764f3179cca3bc75e9fd64c6e9f8ede9c7ec394cf9de6d8a79fba81ebff4b00"
+    },
+    "status": "CANDIDATE_NOT_ACCEPTED",
+    "version": 1,
+    "wholeBranchReview": "INCOMPLETE",
+    "evidenceDistribution": "Compact results and mandatory causal dependencies; diagnostic streams excluded"
+  },
+  "subjectSha256": "45e689dbe0870fe2d27a8985184600b001812ccaf6b8af45d8e012dd15ccb1a4"
+}

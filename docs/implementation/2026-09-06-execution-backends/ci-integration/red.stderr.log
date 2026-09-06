@@ -1,0 +1,15 @@
+test_protected_workflow_uses_relocated_base_bundle (__main__.Regressions.test_protected_workflow_uses_relocated_base_bundle) ... FAIL
+
+======================================================================
+FAIL: test_protected_workflow_uses_relocated_base_bundle (__main__.Regressions.test_protected_workflow_uses_relocated_base_bundle)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h02-hardening-regressions.py", line 189, in test_protected_workflow_uses_relocated_base_bundle
+    self.assertEqual(positive.returncode, 0, positive.stdout+positive.stderr)
+AssertionError: 1 != 0 : ADOPTION_REQUIRED: protected base lacks the required judge contract; no head fallback
+
+
+----------------------------------------------------------------------
+Ran 1 test in 1.430s
+
+FAILED (failures=1)

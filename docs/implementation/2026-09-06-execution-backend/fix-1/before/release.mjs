@@ -25,12 +25,7 @@ function obligations(o,{events,now,pending=[]}){
     }
     if(e.kind==='deployment'){
       must(intent&&e.intentKey===intent.operationKey&&e.approvalDigest===intent.approvalDigest,'deployment lacks exact intent and approval');
-      // A verified terminal result settles uncertainty even when it failed.
-      deployment={...e,index};intent=null;
-    }
-    if(e.kind==='deployment-readback'){
-      must(deployment&&e.originalOperationKey===deployment.intentKey&&e.deploymentId===deployment.deploymentId,'readback lacks the original known deployment identity');
-      deployment={...e,intentKey:e.originalOperationKey,index};
+      if(e.result==='PASS'){deployment={...e,index};intent=null;}
     }
     if(e.kind==='rollback'){
       must(deployment&&e.deploymentId===deployment.deploymentId&&e.previousDeploymentId!==e.deploymentId,'rollback lacks current deployment identity');
@@ -54,7 +49,7 @@ function obligations(o,{events,now,pending=[]}){
   if(!deployment)missing.push({kind:'deploy'});
   else {
     const deploymentCurrent=current(deployment)&&deployment.index>Math.max(index(merge),index(verification),index(review),index(acceptance),gate?index(gate):-1);
-    if(!deploymentCurrent)missing.push({kind:'revalidate-deployment',operationKey:deployment.intentKey});
+    if(!deploymentCurrent)missing.push({kind:'reconcile-deployment',operationKey:deployment.intentKey});
     const smoke=latest('smoke',e=>e.deploymentId===deployment.deploymentId),observation=latest('observability',e=>e.deploymentId===deployment.deploymentId);
     if(!current(smoke)||index(smoke)<=deployment.index)missing.push({kind:'smoke',deploymentId:deployment.deploymentId});
     if(!current(observation)||index(observation)<=deployment.index||observation.executionId===smoke?.executionId)missing.push({kind:'observability',deploymentId:deployment.deploymentId});
@@ -91,8 +86,8 @@ export function releaseBoundary(runtime,auth,journal,execution,review={}){
     const item=owned(handle),snapshot=replays.get(replay);must(snapshot&&snapshot.objective===handle,'foreign, serialized or forged release replay');
     must(snapshot.headDigest===item.state.headDigest&&snapshot.runId===item.state.runs.at(-1).runId,'release replay is stale','BLOCKED_BY_STALE_RUN');
     const now=auth.freshness();must(typeof now==='number',now.reason,now.status);
-    // Only observations reverified from backend-owned journal outcomes count.
-    // Diagnostic review output and bare reservations remain non-evidence.
+    // There is no authenticated release execution/receipt importer in this
+    // build. H07 diagnostics and H04 reservations are not execution evidence.
     const events=releaseEvents(item);
     const calculated=obligations(item.objective,{events,now,pending:item.state.pending});
     if(calculated.nextObligation.kind==='complete')return freeze({status:'PRODUCTION_PASS',certification:'VERIFIED',productionPass:true,execution:'COMPLETED',...calculated,journalAssurance:item.state.assurance,headDigest:item.state.headDigest});
@@ -100,26 +95,16 @@ export function releaseBoundary(runtime,auth,journal,execution,review={}){
   }
   const kinds={'verify-slice':'slice',integrate:'merge','revalidate-integrated-commit':'integrated-verification','independent-review':'independent-review','external-gate':'external-gate',deploy:'deployment',smoke:'smoke',observability:'observability'};
   function releaseBinding(o){return {repositoryId:o.repositoryId,objectiveId:o.scope.objectiveId,objectiveDigest:digestData(o),integratedCommit:o.scope.integratedCommit,artifactDigest:o.scope.artifactDigest,target:o.scope.target};}
-  function originalDeployment(item,key){
-    z.string().min(1).max(200).parse(key);
-    const record=execution?.records(item.ctx).find(r=>r.descriptor.operationKey===key&&r.descriptor.request.operation==='deployment'&&r.descriptor.request.action!=='readback'&&r.descriptor.request.binding?.objectiveDigest===digestData(item.objective));
-    must(record,'original deployment must have a verified terminal observation','INCOMPLETE');return record;
-  }
-  function actionExpectation(item,action,details){
+  function actionExpectation(item,action,rollback){
     if(action==='deploy')return expectedApproval(item.objective,'deployment-authorization','deploy');
-    if(action==='rollback')return {...expectedApproval(item.objective,'deployment-authorization','rollback'),subjectDigest:digestData({objectiveDigest:digestData(item.objective),action:'rollback',...details})};
-    if(action==='readback'){
-      const {operationKey}=z.strictObject({operationKey:z.string().min(1).max(200)}).parse(details),original=originalDeployment(item,operationKey);
-      return {kind:'deployment-authorization',subjectDigest:digestData({objectiveDigest:digestData(item.objective),action,operationKey,sourceEvidenceDigest:original.evidenceDigest,deploymentId:original.observation.output.deploymentId}),scopeDigest:digestData({...item.objective.scope,action,operationKey}),authorityDigest:auth.authorityDigest};
-    }
+    if(action==='rollback')return {...expectedApproval(item.objective,'deployment-authorization','rollback'),subjectDigest:digestData({objectiveDigest:digestData(item.objective),action:'rollback',...rollback})};
     must(action==='accept-artifact','unknown release approval action');
     const reviewed=releaseEvents(item).findLast(e=>e.kind==='independent-review');must(reviewed?.result==='PASS','verified review required before artifact acceptance','BLOCKED_BY_REQUIRED_CAPABILITY');
     return {kind:'artifact-acceptance',subjectDigest:digestData({objectiveDigest:digestData(item.objective),reviewEvidenceDigest:reviewed.evidenceDigest}),scopeDigest:digestData({...item.objective.scope,action}),authorityDigest:auth.authorityDigest};
   }
-  function checkAction(item,action,approval,details){
+  function checkAction(item,action,approval,rollback){
     must(approval,'separate scoped '+action+' approval required','BLOCKED_BY_MISSING_AUTHORITY_BINDING');
-    const checked=auth.verifyApproval(approval,actionExpectation(item,action,details));must(!checked.status,checked.reason,checked.status);
-    if(action==='readback')must(approval.issuedAt>=originalDeployment(item,details.operationKey).observation.issuedAt,'readback authorization predates the original result','BLOCKED_BY_STALE_AUTHORITY');
+    const checked=auth.verifyApproval(approval,actionExpectation(item,action,rollback));must(!checked.status,checked.reason,checked.status);
     if(action==='accept-artifact'){const latest=releaseEvents(item).findLast(e=>e.kind==='independent-review');must(approval.issuedAt>=latest.issuedAt,'artifact acceptance predates verified review','BLOCKED_BY_STALE_AUTHORITY');}
   }
   function releaseEvents(item){
@@ -147,17 +132,10 @@ export function releaseBoundary(runtime,auth,journal,execution,review={}){
         const expected={kind:'artifact-acceptance',subjectDigest:digestData({objectiveDigest:digestData(item.objective),reviewEvidenceDigest:prior.evidenceDigest}),scopeDigest:digestData({...item.objective.scope,action:'accept-artifact'}),authorityDigest:auth.authorityDigest};
         const approved=auth.verifyRecordedApproval(request.actionApproval,expected,o.issuedAt);must(approved.status==='VERIFIED_RECORDED_APPROVAL'&&approved.issuedAt>=prior.issuedAt,'artifact acceptance binding or freshness mismatch');
       }
-      if(request.operation==='deployment'&&request.action==='readback'){
-        const original=originalDeployment(item,request.originalOperationKey);
-        must(request.originalEvidenceDigest===original.evidenceDigest&&request.deploymentId===original.observation.output.deploymentId&&output.deploymentId===request.deploymentId,'readback changed original deployment binding');
-        const approved=auth.verifyRecordedApproval(request.actionApproval,actionExpectation(item,'readback',{operationKey:request.originalOperationKey}),o.issuedAt);
-        must(approved.status==='VERIFIED_RECORDED_APPROVAL'&&approved.issuedAt>=original.observation.issuedAt,'readback authorization binding or freshness mismatch');
-        events.push(releaseEvidenceSchema.parse({...common,kind:'deployment-readback',result:output.result,deploymentId:output.deploymentId,originalOperationKey:request.originalOperationKey,approvalDigest:digestData(request.actionApproval)}));continue;
-      }
       if(['deployment','rollback'].includes(request.operation)){
         const action=request.operation==='deployment'?'deploy':'rollback',approved=auth.verifyRecordedApproval(request.actionApproval,actionExpectation(item,action,{deploymentId:request.deploymentId,previousDeploymentId:request.previousDeploymentId}),o.issuedAt);must(approved.status==='VERIFIED_RECORDED_APPROVAL',approved.reason,approved.status);
         extra={approvalDigest:digestData(request.actionApproval),deploymentId:output.deploymentId};
-        if(action==='deploy'){extra.intentKey=r.descriptor.operationKey;events.push(releaseEvidenceSchema.parse({...common,kind:'deployment-intent',result:'PASS',approvalDigest:extra.approvalDigest}));common.operationKey='outcome:'+digestData(r.descriptor.operationKey);}
+        if(action==='deploy'){extra.intentKey='intent:'+digestData(r.descriptor.operationKey);events.push(releaseEvidenceSchema.parse({...common,operationKey:extra.intentKey,kind:'deployment-intent',result:'PASS',approvalDigest:extra.approvalDigest}));}
         else extra.previousDeploymentId=output.previousDeploymentId;
       }
       const event=releaseEvidenceSchema.parse({...common,kind:request.operation,result:output.result,...extra,...(request.sliceId?{sliceId:request.sliceId}:{}),...(request.gateId?{gateId:request.gateId}:{}),...(['smoke','observability'].includes(request.operation)?{deploymentId:output.deploymentId,executionId:output.executionId}:{})});events.push(event);
@@ -167,7 +145,7 @@ export function releaseBoundary(runtime,auth,journal,execution,review={}){
   function requestFor(item,options={}){
     must(execution,'Actions backend is not configured','BLOCKED_BY_REQUIRED_CAPABILITY');
     const now=auth.freshness(),events=releaseEvents(item),next=obligations(item.objective,{events,now,pending:item.state.pending}).nextObligation;
-    let operation=options.rollback?'rollback':next.kind==='accept-artifact'?'artifact-acceptance':next.kind==='revalidate-deployment'?'deployment':kinds[next.kind];must(operation,'next obligation requires separate approval or reconciliation','BLOCKED_BY_REQUIRED_CAPABILITY');
+    let operation=options.rollback?'rollback':next.kind==='accept-artifact'?'artifact-acceptance':kinds[next.kind];must(operation,'next obligation requires separate approval or reconciliation','BLOCKED_BY_REQUIRED_CAPABILITY');
     must(!item.state.pending.length,'original operation must reconcile before new work','INCOMPLETE');execution.capable(operation,item.objective.scope.target);
     const binding=releaseBinding(item.objective);
     if(operation==='independent-review'){
@@ -176,12 +154,7 @@ export function releaseBoundary(runtime,auth,journal,execution,review={}){
     }
     let extra={};
     if(operation==='artifact-acceptance'){checkAction(item,'accept-artifact',options.actionApproval);extra.actionApproval=options.actionApproval;}
-    if(operation==='deployment'){
-      if(next.kind==='revalidate-deployment'){
-        const original=originalDeployment(item,next.operationKey);checkAction(item,'readback',options.actionApproval,{operationKey:next.operationKey});
-        extra={action:'readback',originalOperationKey:next.operationKey,originalEvidenceDigest:original.evidenceDigest,deploymentId:original.observation.output.deploymentId,actionApproval:options.actionApproval};
-      }else{checkAction(item,'deploy',options.actionApproval);extra.actionApproval=options.actionApproval;}
-    }
+    if(operation==='deployment'){checkAction(item,'deploy',options.actionApproval);extra.actionApproval=options.actionApproval;}
     if(operation==='rollback'){
       const d=events.findLast(e=>e.kind==='deployment'&&e.result==='PASS');must(d&&options.rollback.deploymentId===d.deploymentId&&options.rollback.previousDeploymentId!==d.deploymentId,'rollback requires the current deployment and distinct previous identity');checkAction(item,'rollback',options.actionApproval,options.rollback);extra={...options.rollback,actionApproval:options.actionApproval};
     }
@@ -191,7 +164,7 @@ export function releaseBoundary(runtime,auth,journal,execution,review={}){
   const prepared=new Map();
   const replayRelease=handle=>safe(()=>{const item=owned(handle),replay=Object.freeze(Object.create(null));replays.set(replay,{objective:handle,headDigest:item.state.headDigest,runId:item.state.runs.at(-1).runId});return replay;});
   return {
-    describeReleaseApproval:(handle,action,details)=>safe(()=>{const item=owned(handle);return freeze({status:'RELEASE_APPROVAL_DESCRIBED',...actionExpectation(item,action,details)});}),
+    describeReleaseApproval:(handle,action,rollback)=>safe(()=>{const item=owned(handle);return freeze({status:'RELEASE_APPROVAL_DESCRIBED',...actionExpectation(item,action,rollback)});}),
     describeReleaseExecution:(handle,input)=>executionSafe(()=>{
       const item=owned(handle),clean=z.strictObject({operationKey:z.string().min(1).max(200),limits:budgetLimitsSchema,actionApproval:z.unknown().optional(),reviewBinding:z.any().optional(),reviewShadow:z.any().optional(),rollback:z.strictObject({deploymentId:z.string().min(1).max(200),previousDeploymentId:z.string().min(1).max(200)}).optional()}).parse(input),request=requestFor(item,clean);
       if(request.review)must(clean.operationKey===request.review.policy.operationKey,'review operation key must match signed review policy');

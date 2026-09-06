@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "command": [
+    "python3",
+    "tests/protected-workflow-regression.py"
+  ],
+  "exit_code": 1,
+  "tests": {
+    "tests/protected-workflow-regression.py": "d520e1dadfaf948cffc21c0dcc7d566a9bd255bbf5638bc18419d32c26d7dcf0"
+  },
+  "source": {
+    "docs/implementation/2026-09-06-execution-backends/ci-integration/before-required-quality.yml": "4dfd746ae21a97b91cbf1c5d1315061e69cbcef921e9dbcb2cddebca5d548b18"
+  },
+  "logs": {
+    "docs/implementation/2026-09-06-execution-backends/ci-integration/final-red.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/implementation/2026-09-06-execution-backends/ci-integration/final-red.stderr.log": "7f617edd5b9a48cb4ff0d708fe81612bad269666bad54ea525a2edd6534b014e",
+    "docs/implementation/2026-09-06-execution-backends/ci-integration/final-red.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+  }
+}

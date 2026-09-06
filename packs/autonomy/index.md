@@ -8,15 +8,17 @@ closed canonical/source-digest writes with scoped permits, exclusive leases and
 actual postcondition receipts. Subprocess effects remain blocked by unavailable
 required containment. H06 adds signed reusable continuation, durable closed identity
 regressions, revocation and three objective budget categories plus a total cap.
-H07 adds exact local Git shadows, frozen diagnostic review bindings and strict
-output validation. It produces no authenticated review receipt: live launch and
-containment backends remain unavailable. See `contracts-review-v1.md` in the
-runtime directory. H08 adds signed release objectives, one closed obligation
-evaluator, exact deployment/rollback authorization checks and safe refusal.
-Synthetic traces are explicitly nonauthoritative; no production execution or
-authenticated receipt importer exists. See `contracts-release-v1.md`. H09 adds
-explicit installation and a local consumer canary; actual review/production
-acceptance remains NOT_EXECUTED because the positive backends are UNIMPLEMENTED.
+H07 adds exact local Git shadows, frozen review bindings and strict local output
+validation. F24 implements a closed GitHub Actions dispatch/reconciliation
+backend, authenticated catalog and private verified-review provenance, plus a
+fixed Codex app-server stdio worker for operator-supplied tested containment.
+H08 consumes those journal records and executes one approved release obligation
+at a time, including exact target readback, separate smoke/observability,
+explicit artifact acceptance and deploy/rollback authorization. See
+`contracts-execution-v1.md` in the runtime directory for configuration, workflow
+contract, bounds and a controller example. No scheduler or target provider is
+invented. OS containment and actual consumer workflow/target code remain operator
+prerequisites. Live review/production acceptance remains NOT_EXECUTED.
 Archived policy proposals remain inactive and unchanged.
 
 The single installable package is `repo-template/scripts/quality-orchestrator/`.

@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/protected-workflow-regression.py", line 95, in <module>
+    assert positive.returncode == 0, positive.stdout+positive.stderr
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ADOPTION_REQUIRED: protected base lacks the required judge contract; no head fallback
+

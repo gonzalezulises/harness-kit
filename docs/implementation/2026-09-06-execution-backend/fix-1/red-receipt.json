@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=fix-1",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/execution-backend.test.mjs"
+  ],
+  "exit_code": 1,
+  "tests": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/execution-backend.test.mjs": "d45e809ba74e7dd6f0109ad702b97d3961c175ef917ef272abad80afcfcb505d"
+  },
+  "source": {
+    "docs/implementation/2026-09-06-execution-backend/fix-1/before/release.schema.mjs": "c6d15eca811695e31ac537cfb1bbe349bfd7e8878164a251330ad9f3234201af",
+    "docs/implementation/2026-09-06-execution-backend/fix-1/before/release.mjs": "0fad730f582b3ebe68d6e37c71885253ff5eba71692cc162aa7893b60ce76c46",
+    "docs/implementation/2026-09-06-execution-backend/fix-1/before/review.mjs": "0949c1a059a337f61effad8a5ad9553ce7e30e93064ab83ae68d03757acca729",
+    "docs/implementation/2026-09-06-execution-backend/fix-1/before/execution.mjs": "16d6dc92b8d84bc91bde34b218cdebd117109d79f64e9bb2d1e16974e01bc0fa",
+    "docs/implementation/2026-09-06-execution-backend/fix-1/before/authority.mjs": "347ffa2789a6f232f57de22f5e7c46924b2057faa5ed6ce44f2ade57e9575f1f",
+    "docs/implementation/2026-09-06-execution-backend/fix-1/before/codex-worker.mjs": "7374254be016ed5dbca6c0e95d375225d6c339be9fc4d2081d8ce3f719453ae9"
+  },
+  "logs": {
+    "docs/implementation/2026-09-06-execution-backend/fix-1/red.log": "c78309570cacea7673e078c00d2a153625e4d811d87620510da12b0d5d422149"
+  }
+}

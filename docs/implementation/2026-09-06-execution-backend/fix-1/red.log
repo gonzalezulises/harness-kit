@@ -1,0 +1,135 @@
+✖ fix-1 missing execution-supervisor enrollment stops before dispatch and spend (942.798861ms)
+✖ fix-1 dispatched review survives catalog expiry using its original frozen descriptor (7141.099055ms)
+✖ fix-1 worker preserves a multibyte UTF8 character split across actual stdout writes (73.466257ms)
+✖ fix-1 worker rejects an incomplete final UTF8 sequence (70.408016ms)
+✖ e2e fix-1 terminal FAIL deployment has bounded authorized readback using the original key (24686.386218ms)
+✖ e2e fix-1 expired deployment has bounded authorized readback using the original key (23422.897217ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 0
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 56819.03165
+
+✖ failing tests:
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/execution-backend.test.mjs:223:1
+✖ fix-1 missing execution-supervisor enrollment stops before dispatch and spend (942.798861ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'EXECUTION_DESCRIBED'
+  - 'BLOCKED_BY_REQUIRED_CAPABILITY'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/execution-backend.test.mjs:224:141)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'EXECUTION_DESCRIBED',
+    expected: 'BLOCKED_BY_REQUIRED_CAPABILITY',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/execution-backend.test.mjs:227:1
+✖ fix-1 dispatched review survives catalog expiry using its original frozen descriptor (7141.099055ms)
+  AssertionError [ERR_ASSERTION]: authenticated catalog expired
+  + actual - expected
+  
+  + 'BLOCKED_BY_REQUIRED_CAPABILITY'
+  - 'REVIEW_VERIFIED'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/execution-backend.test.mjs:230:122)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'BLOCKED_BY_REQUIRED_CAPABILITY',
+    expected: 'REVIEW_VERIFIED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/execution-backend.test.mjs:234:1
+✖ fix-1 worker preserves a multibyte UTF8 character split across actual stdout writes (73.466257ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'caf�� 🐈'
+  - 'café 🐈'
+        ^
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/execution-backend.test.mjs:235:171)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'caf�� 🐈',
+    expected: 'café 🐈',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/execution-backend.test.mjs:237:1
+✖ fix-1 worker rejects an incomplete final UTF8 sequence (70.408016ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to:
+  
+  'WORKER_OBSERVED'
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/execution-backend.test.mjs:238:116)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'WORKER_OBSERVED',
+    expected: 'WORKER_OBSERVED',
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/execution-backend.test.mjs:245:47
+✖ e2e fix-1 terminal FAIL deployment has bounded authorized readback using the original key (24686.386218ms)
+  AssertionError [ERR_ASSERTION]: recovery must expose the real immutable journal operation
+  + actual - expected
+  
+  + 'intent:8f7be1bd8989450f7a415a7c3e552133a60617d18a9dc6984e16cde4b5b6672c'
+  - 'deploy-op'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/execution-backend.test.mjs:251:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'intent:8f7be1bd8989450f7a415a7c3e552133a60617d18a9dc6984e16cde4b5b6672c',
+    expected: 'deploy-op',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/execution-backend.test.mjs:245:47
+✖ e2e fix-1 expired deployment has bounded authorized readback using the original key (23422.897217ms)
+  AssertionError [ERR_ASSERTION]: recovery must expose the real immutable journal operation
+  + actual - expected
+  
+  + 'intent:8f7be1bd8989450f7a415a7c3e552133a60617d18a9dc6984e16cde4b5b6672c'
+  - 'deploy-op'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/execution-backend.test.mjs:251:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'intent:8f7be1bd8989450f7a415a7c3e552133a60617d18a9dc6984e16cde4b5b6672c',
+    expected: 'deploy-op',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

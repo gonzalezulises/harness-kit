@@ -15,7 +15,6 @@ export const deploymentReceiptSchema=receipt('deployment',{deploymentId:id,inten
 export const releaseEvidenceSchema=z.discriminatedUnion('kind',[
   receipt('slice',{sliceId:id}),receipt('merge'),receipt('integrated-verification'),receipt('independent-review'),receipt('artifact-acceptance'),receipt('external-gate',{gateId:id}),
   receipt('deployment-intent',{approvalDigest:hash}),deploymentReceiptSchema,
-  receipt('deployment-readback',{deploymentId:id,originalOperationKey:id,approvalDigest:hash}),
   receipt('smoke',{deploymentId:id,executionId:id}),receipt('observability',{deploymentId:id,executionId:id}),
   receipt('rollback',{deploymentId:id,previousDeploymentId:id,approvalDigest:hash}),
 ]);

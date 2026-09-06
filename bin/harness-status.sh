@@ -21,8 +21,8 @@ runtime=root/'scripts/quality-orchestrator'
 if sys.argv[3]=='1' or runtime.exists():
     print('Autonomy authority: NOT_VERIFIED — installation/marker presence is not authenticated adoption or baseline acceptance')
     print('Autonomy marker: '+('PRESENT_UNVERIFIED' if (root/'.harness/autonomy-v2.json').exists() else 'ABSENT'))
-    print('Autonomy live review/containment/authenticated receipts: UNIMPLEMENTED; acceptance NOT_EXECUTED')
-    print('Autonomy positive production scheduler/target/receipts/rollback: UNIMPLEMENTED; acceptance NOT_EXECUTED')
+    print('Autonomy Actions transport, authenticated review/release and fixed Codex worker: IMPLEMENTED; host configuration NOT_VERIFIED; acceptance NOT_EXECUTED')
+    print('Autonomy built-in OS containment and consumer target adapters: UNIMPLEMENTED; operator integration required; acceptance NOT_EXECUTED')
     available=False
     if not runtime.is_dir(): print('Autonomy: NOT_INSTALLED')
     else:

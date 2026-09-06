@@ -1,0 +1,6 @@
+test_protected_workflow_uses_relocated_base_bundle (__main__.Regressions.test_protected_workflow_uses_relocated_base_bundle) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 2.679s
+
+OK

@@ -42,9 +42,9 @@ export function reviewBoundary(host,runtime,auth,execution,journal,internal={}){
     must(new Set(output.findings.map(f=>f.id)).size===output.findings.length,'duplicate finding id');must(output.verdict===(output.findings.length?'FAIL':'PASS'),'verdict contradicts findings');
     for(const finding of output.findings)must(Object.hasOwn(files,finding.path)&&finding.line<=files[finding.path].lines,'finding location does not resolve in exact shadow');return output;
   }
-  function reviewRequest(binding,shadow,releaseBinding,at=auth.freshness()){
+  function reviewRequest(binding,shadow,releaseBinding){
     const item=owned(binding),s=target(shadow,item);must(item.catalog,'authenticated catalog required','BLOCKED_BY_REQUIRED_CAPABILITY');
-    must(item.catalog.observation.issuedAt<=at&&item.catalog.observation.expiresAt>at,'authenticated catalog expired','BLOCKED_BY_REQUIRED_CAPABILITY');
+    must(item.catalog.observation.expiresAt>auth.freshness(),'authenticated catalog expired','BLOCKED_BY_REQUIRED_CAPABILITY');
     const files=Object.fromEntries(Object.keys(s.files).sort().map(name=>[name,{...s.files[name],bytesBase64:fs.readFileSync(path.join(s.directory,name)).toString('base64')}]));
     const expectedReceipt={repositoryId:auth.repositoryId,objectiveId:item.policy.objectiveId,operationKey:item.policy.operationKey,targetCommit:item.policy.targetCommit,targetManifestDigest:s.manifestDigest,promptDigest:sha256(item.policy.prompt),bindingDigest:item.digest,adapterDigest:loadedBundle,model:item.model,effort:item.effort,authMode:item.policy.authMode,schemaDigest:reviewSchemaDigest,primaryBeforeDigest:s.primaryDigest,primaryAfterDigest:s.primaryDigest,exitCode:0,termination:'COMPLETED',limits:item.policy.limits};
     if(releaseBinding)must(releaseBinding.integratedCommit===item.policy.targetCommit&&releaseBinding.objectiveId===item.policy.objectiveId,'review must bind exact integrated objective');
@@ -65,7 +65,7 @@ export function reviewBoundary(host,runtime,auth,execution,journal,internal={}){
     executeReviewCatalog:(wire,ctx)=>executionAsync(async()=>{fresh();must(canonical(wire?.request)===canonical(catalogRequest(wire?.request?.authMode)),'catalog request changed');return execution.execute(wire,ctx);}),
     resumeReviewCatalog:(key,ctx)=>executionAsync(async()=>{fresh();const result=await execution.resume(key,ctx),record=execution.records(ctx).find(r=>r.descriptor.operationKey===key);must(record?.descriptor.request.operation==='catalog','not a catalog operation');catalogOutput(record.observation.output);return result;}),
     describeReviewExecution:(binding,shadow,input)=>safe(()=>{const item=owned(binding),value=z.strictObject({limits:budgetLimitsSchema}).parse(input);return execution.describe(reviewRequest(binding,shadow),{...value,operationKey:item.policy.operationKey,budgetKind:item.policy.budgetKind},item.ctx);}),
-    resumeReview:(binding,shadow)=>executionAsync(async()=>{const item=owned(binding);target(shadow,item);await execution.resume(item.policy.operationKey,item.ctx);target(shadow,item);const record=execution.records(item.ctx).find(r=>r.descriptor.operationKey===item.policy.operationKey);must(record&&canonical(record.descriptor.request)===canonical(reviewRequest(binding,shadow,undefined,record.reservedAt)),'review request binding changed');must(record.observation.expiresAt>auth.freshness(),'review observation expired','BLOCKED_BY_STALE_AUTHORITY');return verifyRecord(record);}),
+    resumeReview:(binding,shadow)=>executionAsync(async()=>{const item=owned(binding);target(shadow,item);await execution.resume(item.policy.operationKey,item.ctx);target(shadow,item);const record=execution.records(item.ctx).find(r=>r.descriptor.operationKey===item.policy.operationKey);must(record&&canonical(record.descriptor.request)===canonical(reviewRequest(binding,shadow)),'review request binding changed');return verifyRecord(record);}),
     describeReviewPolicy:input=>safe(()=>describe(input)),
     preflightReview:(wire,ctx)=>safe(()=>{
       const clean=z.strictObject({policy:reviewPolicySchema,approval:z.any()}).parse(wire),policy=clean.policy;

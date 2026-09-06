@@ -134,7 +134,7 @@ jobs:
         run: |
           set -euo pipefail
           # An old protected judge cannot certify a new contract. Adoption is explicit.
-          python3 - "$GITHUB_WORKSPACE/base/.harness/protected-judge/v1/.harness/judge-contract.json" <<'PYCONTRACT'
+          python3 - "$GITHUB_WORKSPACE/base/.harness/judge-contract.json" <<'PYCONTRACT'
           import json,sys
           expected={"schema_version":1,"interfaces":["target-root-v1","installation-profile-v1","match-argv-v1"]}
           try:
@@ -143,10 +143,10 @@ jobs:
           except (OSError,ValueError,AssertionError):
               sys.exit("ADOPTION_REQUIRED: protected base lacks the required judge contract; no head fallback")
           PYCONTRACT
-          bash "$GITHUB_WORKSPACE/base/.harness/protected-judge/v1/scripts/setup-oracles.sh"
-          echo "$GITHUB_WORKSPACE/base/.harness/protected-judge/v1/.harness/tools/oracles-venv/bin" >> "$GITHUB_PATH"
-          export PATH="$GITHUB_WORKSPACE/base/.harness/protected-judge/v1/.harness/tools/oracles-venv/bin:$PATH"
-          bash "$GITHUB_WORKSPACE/base/.harness/protected-judge/v1/scripts/run-gates.sh" quick --target "$GITHUB_WORKSPACE/head"
+          bash "$GITHUB_WORKSPACE/base/scripts/setup-oracles.sh"
+          echo "$GITHUB_WORKSPACE/base/.harness/tools/oracles-venv/bin" >> "$GITHUB_PATH"
+          export PATH="$GITHUB_WORKSPACE/base/.harness/tools/oracles-venv/bin:$PATH"
+          bash "$GITHUB_WORKSPACE/base/scripts/run-gates.sh" quick --target "$GITHUB_WORKSPACE/head"
           : > "$RUNNER_TEMP/gates-observed-zero"
 
       - name: Set up Node for the optional autonomy pack
@@ -181,10 +181,10 @@ jobs:
         id: claims
         shell: bash
         env:
-          CLAIMS_BASE_FILE: ${{ github.workspace }}/base/.harness/protected-judge/v1/feature_list.json
+          CLAIMS_BASE_FILE: ${{ github.workspace }}/base/feature_list.json
         run: |
           set -uo pipefail
-          checker="$GITHUB_WORKSPACE/base/.harness/protected-judge/v1/scripts/verify-claims.sh"
+          checker="$GITHUB_WORKSPACE/base/scripts/verify-claims.sh"
           if [ ! -f "$checker" ]; then
             printf '%s\n' 'NOT_EXECUTED: protected claim checker is missing from the base branch' >&2
             printf 'claims_exit=126\n' >> "$GITHUB_OUTPUT"
@@ -203,10 +203,10 @@ jobs:
         id: decisions
         shell: bash
         env:
-          DECISIONS_BASE_FILE: ${{ github.workspace }}/base/.harness/protected-judge/v1/DECISIONS.md
+          DECISIONS_BASE_FILE: ${{ github.workspace }}/base/DECISIONS.md
         run: |
           set -uo pipefail
-          checker="$GITHUB_WORKSPACE/base/.harness/protected-judge/v1/scripts/verify-decisions.sh"
+          checker="$GITHUB_WORKSPACE/base/scripts/verify-decisions.sh"
           if [ ! -f "$checker" ]; then
             printf '%s\n' 'NOT_EXECUTED: protected decision checker is missing from the base branch' >&2
             printf 'decisions_exit=126\n' >> "$GITHUB_OUTPUT"
