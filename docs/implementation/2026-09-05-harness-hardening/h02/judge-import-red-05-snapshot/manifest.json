@@ -1,0 +1,31 @@
+{
+  "base_sha": "fff527b2c7a64fb6d70d60d633a0261e68315169",
+  "reconstruct": "Apply tracked.patch to a fresh base checkout, then copy new-files/ over it. No Git index operation is needed for source reconstruction.",
+  "new_files": [
+    ".harness/installation-profile.json",
+    ".harness/judge-contract.json",
+    "requirements-harness.txt",
+    "scripts/check-prerequisites.sh",
+    "scripts/setup-oracles.sh",
+    "templates/full/.harness/installation-profile.json",
+    "templates/full/.harness/judge-contract.json",
+    "templates/full/requirements-harness.txt",
+    "templates/full/scripts/setup-oracles.sh",
+    "templates/minimal/installation-profile.json",
+    "tests/h02-hardening-regressions.py"
+  ],
+  "sha256": {
+    "tracked.patch": "64aaf05e034dc5f9761ecc692a237c0a447739b06bfe72d0cda16cfc29b68f4b",
+    "new-files/requirements-harness.txt": "0969da99a0bc2a1b71ed50584560f4588a37567ac63af3ddbaf3c4617ca5621a",
+    "new-files/scripts/check-prerequisites.sh": "67fcff396a1a4c800c91707debd319e7d52b7f7185ce0a794e48c1824678ba4a",
+    "new-files/scripts/setup-oracles.sh": "19557f25a297f1720b20f5ae7be7d1f1656ecb0472429712e799b7479453341d",
+    "new-files/tests/h02-hardening-regressions.py": "76be75cdd1a4ebf2ab0f8e829540b29fe33714f12e546bdbc205805559a86135",
+    "new-files/.harness/installation-profile.json": "7e0725363d36238c115f3a019d26ddec2dd61c617d6609db800df18c45dc7b2a",
+    "new-files/.harness/judge-contract.json": "c370c0beee8d258b41e418b3bf6601b81d941b6d65a8e83d3f6055f8eeb4d175",
+    "new-files/templates/full/requirements-harness.txt": "0969da99a0bc2a1b71ed50584560f4588a37567ac63af3ddbaf3c4617ca5621a",
+    "new-files/templates/minimal/installation-profile.json": "1ce07131c17622506116afce58090a01f5eca53db2fda91f232536ff3c46ce0c",
+    "new-files/templates/full/scripts/setup-oracles.sh": "19557f25a297f1720b20f5ae7be7d1f1656ecb0472429712e799b7479453341d",
+    "new-files/templates/full/.harness/installation-profile.json": "088412b7836da1e9a9806ed361ec0a8accde2ea4c3a056d7fd35b324d94b4612",
+    "new-files/templates/full/.harness/judge-contract.json": "c370c0beee8d258b41e418b3bf6601b81d941b6d65a8e83d3f6055f8eeb4d175"
+  }
+}

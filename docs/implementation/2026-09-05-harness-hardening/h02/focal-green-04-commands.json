@@ -1,0 +1,2022 @@
+[
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_backup_is_exclusive",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_backup_is_exclusive",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_backup_is_exclusive",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_candidate_profile_cannot_downgrade_base",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_candidate_profile_cannot_downgrade_base",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_candidate_profile_cannot_downgrade_base",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_candidate_profile_cannot_downgrade_base",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/harness-kit/bin/harness-init.sh",
+      "--target",
+      "/tmp/h02-regression-nq0kmjby/test_candidate_profile_cannot_downgrade_base",
+      "--level",
+      "full"
+    ],
+    "exit": 0,
+    "stdout": "Harness init\n  target: /tmp/h02-regression-nq0kmjby/test_candidate_profile_cannot_downgrade_base\n  level:  full\n  verify: echo 'TODO: set the verification command'; false\n\n  write   AGENTS.md\n  write   CLAUDE.md\n  write   init.sh\n  write   PROGRESS.md\n  write   feature_list.json\n  write   clean-state-checklist.md\n  write   session-handoff.md\n  write   DECISIONS.md\n  write   docs/decisions/README.md\n  write   .harness/judge-contract.json\n  write   .harness/installation-profile.json\n  write   scripts/setup-oracles.sh\n  write   requirements-harness.txt\n  write   Makefile\n  write   scripts/verify-feature.sh\n  write   scripts/verify-claims.sh\n  write   scripts/verify-decisions.sh\n  write   .github/workflows/required-quality.yml\n  write   .github/rulesets/required-quality-check.json\n  write   .github/rulesets/required-quality-integrity.json\n  write   scripts/check-arch.sh\n  write   scripts/verify-makefile-gates.sh\n  write   scripts/run-gates.sh\n  write   scripts/verify-agent-notes.sh\n  write   scripts/verify-delivery-doc.sh\n  write   scripts/verify-context-routes.sh\n  write   scripts/verify-oracles.sh\n  write   .harness/oracles/README.md\n  write   .harness/oracles/AC-000.example.yaml.txt\n  write   .harness/context-routes.json\n  write   scripts/verify-impact.template.mjs\n  write   scripts/pre-commit-staged.sh\n  write   scripts/install-githooks.sh\n  write   .agents/notes/README.md\n  write   scripts/clean-state-check.sh\n  write   scripts/session-trace.sh\n  write   scripts/harness-audit.sh\n  write   .harness/arch-rules.json\n  write   templates/sprint-contract.md\n  write   templates/evaluator-rubric.md\n  write   docs/quality-document.md\n  write   .harness/traces/.gitkeep\n  write   .gitignore\n\nDone. Next steps:\n  1. Edit AGENTS.md \u2014 replace the purpose line with what this project actually does.\n  2. Replace the placeholder features in feature_list.json with the real backlog.\n  3. Confirm the verification command is right: echo 'TODO: set the verification command'; false\n  4. Score the result:  /workspace/scratch/adce1c53b293/harness-kit/bin/harness-audit.sh /tmp/h02-regression-nq0kmjby/test_candidate_profile_cannot_downgrade_base\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_candidate_profile_cannot_downgrade_base",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_candidate_profile_cannot_downgrade_base",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_candidate_profile_cannot_downgrade_base",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "80d15e81df792fe9272fee32395d2e8097450c90\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_candidate_profile_cannot_downgrade_base",
+    "argv": [
+      "bash",
+      "scripts/run-gates.sh",
+      "quick",
+      "--target",
+      "/tmp/h02-regression-nq0kmjby/test_candidate_profile_cannot_downgrade_base-head"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "NOT_CONFIGURED: profile cannot remove required gate decisions-append-only\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_formatter_nonzero_blocks",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_formatter_nonzero_blocks",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_formatter_nonzero_blocks",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_formatter_nonzero_blocks",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_formatter_nonzero_blocks",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_formatter_nonzero_blocks",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "21412287aafc65c171e8f746793120c062106689\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_formatter_nonzero_blocks",
+    "argv": [
+      "git",
+      "add",
+      "note.md"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_formatter_nonzero_blocks",
+    "argv": [
+      "bash",
+      "scripts/pre-commit-staged.sh"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "pre-commit: formatter failed (exit 9); run node_modules/.bin/prettier --write <selected files>, review git diff, stage only intended hunks, then retry git commit\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_full_aggregate_terminates_without_recursion",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_full_aggregate_terminates_without_recursion",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_full_aggregate_terminates_without_recursion",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_full_aggregate_terminates_without_recursion",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/harness-kit/bin/harness-init.sh",
+      "--target",
+      "/tmp/h02-regression-nq0kmjby/test_full_aggregate_terminates_without_recursion",
+      "--level",
+      "full"
+    ],
+    "exit": 0,
+    "stdout": "Harness init\n  target: /tmp/h02-regression-nq0kmjby/test_full_aggregate_terminates_without_recursion\n  level:  full\n  verify: echo 'TODO: set the verification command'; false\n\n  write   AGENTS.md\n  write   CLAUDE.md\n  write   init.sh\n  write   PROGRESS.md\n  write   feature_list.json\n  write   clean-state-checklist.md\n  write   session-handoff.md\n  write   DECISIONS.md\n  write   docs/decisions/README.md\n  write   .harness/judge-contract.json\n  write   .harness/installation-profile.json\n  write   scripts/setup-oracles.sh\n  write   requirements-harness.txt\n  write   Makefile\n  write   scripts/verify-feature.sh\n  write   scripts/verify-claims.sh\n  write   scripts/verify-decisions.sh\n  write   .github/workflows/required-quality.yml\n  write   .github/rulesets/required-quality-check.json\n  write   .github/rulesets/required-quality-integrity.json\n  write   scripts/check-arch.sh\n  write   scripts/verify-makefile-gates.sh\n  write   scripts/run-gates.sh\n  write   scripts/verify-agent-notes.sh\n  write   scripts/verify-delivery-doc.sh\n  write   scripts/verify-context-routes.sh\n  write   scripts/verify-oracles.sh\n  write   .harness/oracles/README.md\n  write   .harness/oracles/AC-000.example.yaml.txt\n  write   .harness/context-routes.json\n  write   scripts/verify-impact.template.mjs\n  write   scripts/pre-commit-staged.sh\n  write   scripts/install-githooks.sh\n  write   .agents/notes/README.md\n  write   scripts/clean-state-check.sh\n  write   scripts/session-trace.sh\n  write   scripts/harness-audit.sh\n  write   .harness/arch-rules.json\n  write   templates/sprint-contract.md\n  write   templates/evaluator-rubric.md\n  write   docs/quality-document.md\n  write   .harness/traces/.gitkeep\n  write   .gitignore\n\nDone. Next steps:\n  1. Edit AGENTS.md \u2014 replace the purpose line with what this project actually does.\n  2. Replace the placeholder features in feature_list.json with the real backlog.\n  3. Confirm the verification command is right: echo 'TODO: set the verification command'; false\n  4. Score the result:  /workspace/scratch/adce1c53b293/harness-kit/bin/harness-audit.sh /tmp/h02-regression-nq0kmjby/test_full_aggregate_terminates_without_recursion\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_full_aggregate_terminates_without_recursion",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_full_aggregate_terminates_without_recursion",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_full_aggregate_terminates_without_recursion",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "d463e244f9bcc5ced4bc8ded484bd46c0d8b6a20\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_full_aggregate_terminates_without_recursion",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_full_aggregate_terminates_without_recursion",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_full_aggregate_terminates_without_recursion",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "e1854f4dc0130bee5c3a02a81cdbaafb2d0c2a88\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_full_aggregate_terminates_without_recursion",
+    "argv": [
+      "bash",
+      "scripts/run-gates.sh",
+      "full"
+    ],
+    "exit": 0,
+    "stdout": "\u2500\u2500 gates \u00b7 aggregate full \u00b7 profile v1/full\n  decisions-append-only    PASS (0.0s, exit 0)\n  agent-notes-tree         PASS (0.0s, exit 0)\n  arch-boundaries          PASS (0.3s, exit 0)\n  makefile-gates           PASS (0.0s, exit 0)\n  version-sync             NOT_APPLICABLE (Kit release metadata only)\n  delivery-doc             PASS (0.0s, exit 0)\n  context-routes           PASS (0.1s, exit 0)\n  oracles-falsifiable      PASS (0.0s, exit 0)\n  claims-reverified        PASS (0.1s, exit 0)\n  make-check               PASS (0.0s, exit 0)\n\u2500\u2500 9 pass \u00b7 0 blocking \u00b7 1 not applicable\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_full_scaffold_live_quick",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_full_scaffold_live_quick",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_full_scaffold_live_quick",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_full_scaffold_live_quick",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/harness-kit/bin/harness-init.sh",
+      "--target",
+      "/tmp/h02-regression-nq0kmjby/test_full_scaffold_live_quick",
+      "--level",
+      "full"
+    ],
+    "exit": 0,
+    "stdout": "Harness init\n  target: /tmp/h02-regression-nq0kmjby/test_full_scaffold_live_quick\n  level:  full\n  verify: echo 'TODO: set the verification command'; false\n\n  write   AGENTS.md\n  write   CLAUDE.md\n  write   init.sh\n  write   PROGRESS.md\n  write   feature_list.json\n  write   clean-state-checklist.md\n  write   session-handoff.md\n  write   DECISIONS.md\n  write   docs/decisions/README.md\n  write   .harness/judge-contract.json\n  write   .harness/installation-profile.json\n  write   scripts/setup-oracles.sh\n  write   requirements-harness.txt\n  write   Makefile\n  write   scripts/verify-feature.sh\n  write   scripts/verify-claims.sh\n  write   scripts/verify-decisions.sh\n  write   .github/workflows/required-quality.yml\n  write   .github/rulesets/required-quality-check.json\n  write   .github/rulesets/required-quality-integrity.json\n  write   scripts/check-arch.sh\n  write   scripts/verify-makefile-gates.sh\n  write   scripts/run-gates.sh\n  write   scripts/verify-agent-notes.sh\n  write   scripts/verify-delivery-doc.sh\n  write   scripts/verify-context-routes.sh\n  write   scripts/verify-oracles.sh\n  write   .harness/oracles/README.md\n  write   .harness/oracles/AC-000.example.yaml.txt\n  write   .harness/context-routes.json\n  write   scripts/verify-impact.template.mjs\n  write   scripts/pre-commit-staged.sh\n  write   scripts/install-githooks.sh\n  write   .agents/notes/README.md\n  write   scripts/clean-state-check.sh\n  write   scripts/session-trace.sh\n  write   scripts/harness-audit.sh\n  write   .harness/arch-rules.json\n  write   templates/sprint-contract.md\n  write   templates/evaluator-rubric.md\n  write   docs/quality-document.md\n  write   .harness/traces/.gitkeep\n  write   .gitignore\n\nDone. Next steps:\n  1. Edit AGENTS.md \u2014 replace the purpose line with what this project actually does.\n  2. Replace the placeholder features in feature_list.json with the real backlog.\n  3. Confirm the verification command is right: echo 'TODO: set the verification command'; false\n  4. Score the result:  /workspace/scratch/adce1c53b293/harness-kit/bin/harness-audit.sh /tmp/h02-regression-nq0kmjby/test_full_scaffold_live_quick\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_full_scaffold_live_quick",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_full_scaffold_live_quick",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_full_scaffold_live_quick",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "e3968fb899272f9beb3c5f3f866d40a8f31b9051\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_full_scaffold_live_quick",
+    "argv": [
+      "bash",
+      "scripts/run-gates.sh",
+      "quick"
+    ],
+    "exit": 0,
+    "stdout": "\u2500\u2500 gates \u00b7 aggregate quick \u00b7 profile v1/full\n  decisions-append-only    PASS (0.0s, exit 0)\n  agent-notes-tree         PASS (0.0s, exit 0)\n  arch-boundaries          PASS (0.3s, exit 0)\n  makefile-gates           PASS (0.0s, exit 0)\n  version-sync             NOT_APPLICABLE (Kit release metadata only)\n  delivery-doc             PASS (0.0s, exit 0)\n  context-routes           PASS (0.0s, exit 0)\n  oracles-falsifiable      PASS (0.0s, exit 0)\n\u2500\u2500 7 pass \u00b7 0 blocking \u00b7 1 not applicable\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_integrated_check_declares_live_quick",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_integrated_check_declares_live_quick",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_integrated_check_declares_live_quick",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/workspace/scratch/adce1c53b293/harness-kit",
+    "argv": [
+      "make",
+      "-n",
+      "check"
+    ],
+    "exit": 0,
+    "stdout": "bash scripts/run-gates.sh quick\nmake check-core\nmake[1]: Entering directory '/workspace/scratch/adce1c53b293/harness-kit'\nbash scripts/check-prerequisites.sh full\nbash tests/run-tests.sh\nfor p in packs/*/verify-pack.sh; do \\\n  [ -f \"$p\" ] || continue; \\\n  echo \"\"; bash \"$p\" || exit 1; \\\ndone\nmake[1]: Leaving directory '/workspace/scratch/adce1c53b293/harness-kit'\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_integrated_gate_blocks_live_candidate",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_integrated_gate_blocks_live_candidate",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_integrated_gate_blocks_live_candidate",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_integrated_gate_blocks_live_candidate",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/harness-kit/bin/harness-init.sh",
+      "--target",
+      "/tmp/h02-regression-nq0kmjby/test_integrated_gate_blocks_live_candidate",
+      "--level",
+      "full"
+    ],
+    "exit": 0,
+    "stdout": "Harness init\n  target: /tmp/h02-regression-nq0kmjby/test_integrated_gate_blocks_live_candidate\n  level:  full\n  verify: echo 'TODO: set the verification command'; false\n\n  write   AGENTS.md\n  write   CLAUDE.md\n  write   init.sh\n  write   PROGRESS.md\n  write   feature_list.json\n  write   clean-state-checklist.md\n  write   session-handoff.md\n  write   DECISIONS.md\n  write   docs/decisions/README.md\n  write   .harness/judge-contract.json\n  write   .harness/installation-profile.json\n  write   scripts/setup-oracles.sh\n  write   requirements-harness.txt\n  write   Makefile\n  write   scripts/verify-feature.sh\n  write   scripts/verify-claims.sh\n  write   scripts/verify-decisions.sh\n  write   .github/workflows/required-quality.yml\n  write   .github/rulesets/required-quality-check.json\n  write   .github/rulesets/required-quality-integrity.json\n  write   scripts/check-arch.sh\n  write   scripts/verify-makefile-gates.sh\n  write   scripts/run-gates.sh\n  write   scripts/verify-agent-notes.sh\n  write   scripts/verify-delivery-doc.sh\n  write   scripts/verify-context-routes.sh\n  write   scripts/verify-oracles.sh\n  write   .harness/oracles/README.md\n  write   .harness/oracles/AC-000.example.yaml.txt\n  write   .harness/context-routes.json\n  write   scripts/verify-impact.template.mjs\n  write   scripts/pre-commit-staged.sh\n  write   scripts/install-githooks.sh\n  write   .agents/notes/README.md\n  write   scripts/clean-state-check.sh\n  write   scripts/session-trace.sh\n  write   scripts/harness-audit.sh\n  write   .harness/arch-rules.json\n  write   templates/sprint-contract.md\n  write   templates/evaluator-rubric.md\n  write   docs/quality-document.md\n  write   .harness/traces/.gitkeep\n  write   .gitignore\n\nDone. Next steps:\n  1. Edit AGENTS.md \u2014 replace the purpose line with what this project actually does.\n  2. Replace the placeholder features in feature_list.json with the real backlog.\n  3. Confirm the verification command is right: echo 'TODO: set the verification command'; false\n  4. Score the result:  /workspace/scratch/adce1c53b293/harness-kit/bin/harness-audit.sh /tmp/h02-regression-nq0kmjby/test_integrated_gate_blocks_live_candidate\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_integrated_gate_blocks_live_candidate",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_integrated_gate_blocks_live_candidate",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_integrated_gate_blocks_live_candidate",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "ff0e64177437faea0244cd7c5c0b7468485d5e01\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_integrated_gate_blocks_live_candidate",
+    "argv": [
+      "make",
+      "check"
+    ],
+    "exit": 2,
+    "stdout": "bash scripts/run-gates.sh quick\n\u2500\u2500 gates \u00b7 aggregate quick \u00b7 profile v1/full\n  decisions-append-only    PASS (0.0s, exit 0)\n  agent-notes-tree         PASS (0.0s, exit 0)\n  arch-boundaries          PASS (0.0s, exit 0)\n  makefile-gates           PASS (0.0s, exit 0)\n  version-sync             NOT_APPLICABLE (Kit release metadata only)\n  delivery-doc             PASS (0.0s, exit 0)\n  context-routes           FAIL (0.0s, exit 1)\nCITES NOTHING: .harness/arch-rules.json\n  governed by: AGENTS.md, DECISIONS.md\n  These installed paths define local and CI verification. Add domain routes only for documents that exist in your repository.\nCite a governing document in a branch commit message or current Agent Note.\n\n  oracles-falsifiable      PASS (0.0s, exit 0)\n\u2500\u2500 6 pass \u00b7 1 blocking \u00b7 1 not applicable\nOnly PASS satisfies a gate. A non-PASS state was not verified.\n",
+    "stderr": "make: *** [Makefile:2: check] Error 1\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_live_profile_cannot_be_absent",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_live_profile_cannot_be_absent",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_live_profile_cannot_be_absent",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_live_profile_cannot_be_absent",
+    "argv": [
+      "bash",
+      "scripts/run-gates.sh",
+      "quick"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "NOT_CONFIGURED: ADOPTION_REQUIRED: /tmp/h02-regression-nq0kmjby/test_live_profile_cannot_be_absent/.harness/installation-profile.json: [Errno 2] No such file or directory: '/tmp/h02-regression-nq0kmjby/test_live_profile_cannot_be_absent/.harness/installation-profile.json'\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_oracle_current_bytes_are_checked",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_oracle_current_bytes_are_checked",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_oracle_current_bytes_are_checked",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_oracle_current_bytes_are_checked",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_oracle_current_bytes_are_checked",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_oracle_current_bytes_are_checked",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "577ddf2f0d17a386100b3372270ac1aa29ad77fd\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_oracle_current_bytes_are_checked",
+    "argv": [
+      "bash",
+      "scripts/verify-oracles.sh"
+    ],
+    "exit": 1,
+    "stdout": "  FINDING  TEST_READY         AC\n",
+    "stderr": "\noracles: AC has history consistency only, no witnessed RED receipt\n    \u00b7 Record falsification.receipt with command, nonzero exit and hashed tests/source/logs; a SHA alone does not witness RED.\n\noracles: AC proof at 577ddf2f predates its own tests\n    \u00b7 changed since: test.py\n    \u00b7 The proof no longer covers the test that exists. Break it again and watch it fail.\n\nAn oracle records what would prove the code wrong. Weakening it to go green\nremoves the only thing standing between a plausible answer and a shipped one.\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_oracle_duplicate_keys_rejected",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_oracle_duplicate_keys_rejected",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_oracle_duplicate_keys_rejected",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_oracle_duplicate_keys_rejected",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_oracle_duplicate_keys_rejected",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_oracle_duplicate_keys_rejected",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "cabccfaeb161be0988c41e20c1a1a78b433d43cf\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_oracle_duplicate_keys_rejected",
+    "argv": [
+      "bash",
+      "scripts/verify-oracles.sh"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "oracles: .harness/oracles/AC-1.yaml unreadable: duplicate key: status\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_oracle_standard_multiline_and_alias_contract",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_oracle_standard_multiline_and_alias_contract",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_oracle_standard_multiline_and_alias_contract",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_oracle_standard_multiline_and_alias_contract",
+    "argv": [
+      "bash",
+      "scripts/verify-oracles.sh"
+    ],
+    "exit": 0,
+    "stdout": "  ok       RETIRED            AC\n\noracles: 1 criteria, every critical one proved falsifiable\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_oracle_standard_multiline_and_alias_contract",
+    "argv": [
+      "bash",
+      "scripts/verify-oracles.sh"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "oracles: .harness/oracles/AC.yaml unreadable: anchors are not supported\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_pack_ports_are_os_assigned",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_pack_ports_are_os_assigned",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_pack_ports_are_os_assigned",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_partial_index_handles_names_modes_and_formatter_failure",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_partial_index_handles_names_modes_and_formatter_failure",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_partial_index_handles_names_modes_and_formatter_failure",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_partial_index_handles_names_modes_and_formatter_failure",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_partial_index_handles_names_modes_and_formatter_failure",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_partial_index_handles_names_modes_and_formatter_failure",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "da5480d86bb8b16a0ce4fabd07b2b5bb570197f1\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_partial_index_handles_names_modes_and_formatter_failure",
+    "argv": [
+      "git",
+      "add",
+      "note.md"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_partial_index_handles_names_modes_and_formatter_failure",
+    "argv": [
+      "git",
+      "add",
+      "--",
+      "space and\nnewline.md"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_partial_index_handles_names_modes_and_formatter_failure",
+    "argv": [
+      "bash",
+      "scripts/pre-commit-staged.sh"
+    ],
+    "exit": 0,
+    "stdout": "pre-commit: staged snapshot verified; working-tree bytes preserved\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_partial_index_handles_names_modes_and_formatter_failure",
+    "argv": [
+      "git",
+      "show",
+      ":space and\nnewline.md"
+    ],
+    "exit": 0,
+    "stdout": "FORMATTED\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_partial_index_handles_names_modes_and_formatter_failure",
+    "argv": [
+      "git",
+      "ls-files",
+      "--stage",
+      "--",
+      "space and\nnewline.md"
+    ],
+    "exit": 0,
+    "stdout": "100755 e762840e75308ca059ed432d070194a9b0fbce1a 0\t\"space and\\nnewline.md\"\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_partial_index_handles_names_modes_and_formatter_failure",
+    "argv": [
+      "bash",
+      "scripts/pre-commit-staged.sh"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "pre-commit: formatter failed (exit 9); run node_modules/.bin/prettier --write <selected files>, review git diff, stage only intended hunks, then retry git commit\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "bf35f9b8b64c18914c4cae1f88c8223228253f64\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "add",
+      "note.md"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "bash",
+      "scripts/pre-commit-staged.sh"
+    ],
+    "exit": 0,
+    "stdout": "pre-commit: staged snapshot verified; working-tree bytes preserved\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "show",
+      ":note.md"
+    ],
+    "exit": 0,
+    "stdout": "FORMATTED\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_protected_judge_checks_target_and_preserves_source",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_protected_judge_checks_target_and_preserves_source",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_protected_judge_checks_target_and_preserves_source",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_protected_judge_checks_target_and_preserves_source",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/harness-kit/bin/harness-init.sh",
+      "--target",
+      "/tmp/h02-regression-nq0kmjby/test_protected_judge_checks_target_and_preserves_source",
+      "--level",
+      "full"
+    ],
+    "exit": 0,
+    "stdout": "Harness init\n  target: /tmp/h02-regression-nq0kmjby/test_protected_judge_checks_target_and_preserves_source\n  level:  full\n  verify: echo 'TODO: set the verification command'; false\n\n  write   AGENTS.md\n  write   CLAUDE.md\n  write   init.sh\n  write   PROGRESS.md\n  write   feature_list.json\n  write   clean-state-checklist.md\n  write   session-handoff.md\n  write   DECISIONS.md\n  write   docs/decisions/README.md\n  write   .harness/judge-contract.json\n  write   .harness/installation-profile.json\n  write   scripts/setup-oracles.sh\n  write   requirements-harness.txt\n  write   Makefile\n  write   scripts/verify-feature.sh\n  write   scripts/verify-claims.sh\n  write   scripts/verify-decisions.sh\n  write   .github/workflows/required-quality.yml\n  write   .github/rulesets/required-quality-check.json\n  write   .github/rulesets/required-quality-integrity.json\n  write   scripts/check-arch.sh\n  write   scripts/verify-makefile-gates.sh\n  write   scripts/run-gates.sh\n  write   scripts/verify-agent-notes.sh\n  write   scripts/verify-delivery-doc.sh\n  write   scripts/verify-context-routes.sh\n  write   scripts/verify-oracles.sh\n  write   .harness/oracles/README.md\n  write   .harness/oracles/AC-000.example.yaml.txt\n  write   .harness/context-routes.json\n  write   scripts/verify-impact.template.mjs\n  write   scripts/pre-commit-staged.sh\n  write   scripts/install-githooks.sh\n  write   .agents/notes/README.md\n  write   scripts/clean-state-check.sh\n  write   scripts/session-trace.sh\n  write   scripts/harness-audit.sh\n  write   .harness/arch-rules.json\n  write   templates/sprint-contract.md\n  write   templates/evaluator-rubric.md\n  write   docs/quality-document.md\n  write   .harness/traces/.gitkeep\n  write   .gitignore\n\nDone. Next steps:\n  1. Edit AGENTS.md \u2014 replace the purpose line with what this project actually does.\n  2. Replace the placeholder features in feature_list.json with the real backlog.\n  3. Confirm the verification command is right: echo 'TODO: set the verification command'; false\n  4. Score the result:  /workspace/scratch/adce1c53b293/harness-kit/bin/harness-audit.sh /tmp/h02-regression-nq0kmjby/test_protected_judge_checks_target_and_preserves_source\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_protected_judge_checks_target_and_preserves_source",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_protected_judge_checks_target_and_preserves_source",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_protected_judge_checks_target_and_preserves_source",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "07d3e955363c133d928b0ec3872d3d1d3c960c50\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_protected_judge_checks_target_and_preserves_source-head",
+    "argv": [
+      "git",
+      "add",
+      "src/code.js"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_protected_judge_checks_target_and_preserves_source",
+    "argv": [
+      "bash",
+      "scripts/run-gates.sh",
+      "quick",
+      "--target",
+      "/tmp/h02-regression-nq0kmjby/test_protected_judge_checks_target_and_preserves_source-head"
+    ],
+    "exit": 1,
+    "stdout": "\u2500\u2500 gates \u00b7 aggregate quick \u00b7 profile v1/full\njudge/base: 07d3e955363c133d928b0ec3872d3d1d3c960c50\ntarget/head: 07d3e955363c133d928b0ec3872d3d1d3c960c50\n  decisions-append-only    PASS (0.0s, exit 0)\n  agent-notes-tree         PASS (0.0s, exit 0)\n  arch-boundaries          FAIL (0.3s, exit 1)\nArchitecture Rules\n  [OK] no-secrets-committed\n  [OK] no-env-file-tracked\n\n  VIOLATION [no-debug-statements]\n  WHAT: A debugger or debug-print statement remains in source.\n  WHY:  Debug artifacts change runtime behaviour and are a reliable signal that a session ended without cleanup.\n  FIX:  Delete the statement. If the output is genuinely needed, route it through the project logger instead.\n  Offending:\n      src/code.js:1:debugger;\n      \n  [OK] no-merge-conflict-markers\n\n1 of 4 architecture rule(s) violated.\n\n  makefile-gates           PASS (0.0s, exit 0)\n  version-sync             NOT_APPLICABLE (Kit release metadata only)\n  delivery-doc             PASS (0.0s, exit 0)\n  context-routes           FAIL (0.0s, exit 1)\nCITES NOTHING: scripts/check-arch.sh\n  governed by: AGENTS.md, DECISIONS.md\n  These installed paths define local and CI verification. Add domain routes only for documents that exist in your repository.\nCite a governing document in a branch commit message or current Agent Note.\n\n  oracles-falsifiable      PASS (0.0s, exit 0)\n\u2500\u2500 5 pass \u00b7 2 blocking \u00b7 1 not applicable\nOnly PASS satisfies a gate. A non-PASS state was not verified.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_protected_workflow_keeps_candidate_source",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_protected_workflow_keeps_candidate_source",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_protected_workflow_keeps_candidate_source",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_receipt_binds_current_bytes_and_rejects_tampering",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_receipt_binds_current_bytes_and_rejects_tampering",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_receipt_binds_current_bytes_and_rejects_tampering",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_receipt_binds_current_bytes_and_rejects_tampering",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_receipt_binds_current_bytes_and_rejects_tampering",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_receipt_binds_current_bytes_and_rejects_tampering",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "090b4c0237f904025cdecbc242386ae9678eaa4d\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_receipt_binds_current_bytes_and_rejects_tampering",
+    "argv": [
+      "python3",
+      "test.py"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"/tmp/h02-regression-nq0kmjby/test_receipt_binds_current_bytes_and_rejects_tampering/test.py\", line 1, in <module>\n    assert False, \"deliberate defect\"\n           ^^^^^\nAssertionError: deliberate defect\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_receipt_binds_current_bytes_and_rejects_tampering",
+    "argv": [
+      "bash",
+      "scripts/verify-oracles.sh"
+    ],
+    "exit": 0,
+    "stdout": "  local RED receipt consistent: AC; a local receipt is not independent authority\n  ok       TEST_READY         AC\n\noracles: 1 criteria, every critical one proved falsifiable\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_receipt_binds_current_bytes_and_rejects_tampering",
+    "argv": [
+      "git",
+      "add",
+      "test.py"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_receipt_binds_current_bytes_and_rejects_tampering",
+    "argv": [
+      "bash",
+      "scripts/verify-oracles.sh"
+    ],
+    "exit": 1,
+    "stdout": "  FINDING  TEST_READY         AC\n",
+    "stderr": "\noracles: AC invalid or stale RED receipt\n    \u00b7 receipt predates its own tests or changed bytes: test.py\n\nAn oracle records what would prove the code wrong. Weakening it to go green\nremoves the only thing standing between a plausible answer and a shipped one.\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_receipt_binds_current_bytes_and_rejects_tampering",
+    "argv": [
+      "bash",
+      "scripts/verify-oracles.sh"
+    ],
+    "exit": 1,
+    "stdout": "  FINDING  TEST_READY         AC\n",
+    "stderr": "\noracles: AC invalid or stale RED receipt\n    \u00b7 receipt predates its own tests or changed bytes: red.log\n\nAn oracle records what would prove the code wrong. Weakening it to go green\nremoves the only thing standing between a plausible answer and a shipped one.\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_repair_prose_is_not_command_identity",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_repair_prose_is_not_command_identity",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_repair_prose_is_not_command_identity",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_repair_prose_is_not_command_identity",
+    "argv": [
+      "bash",
+      "scripts/verify-claims.sh"
+    ],
+    "exit": 0,
+    "stdout": "Re-verifying claimed features\n\n\u2500\u2500 C1\n  ok   static\n\n1 claimed feature(s) re-verified. Every passing state is backed by a run.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_staged_symlink_cannot_escape_formatter_snapshot",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_staged_symlink_cannot_escape_formatter_snapshot",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_staged_symlink_cannot_escape_formatter_snapshot",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_staged_symlink_cannot_escape_formatter_snapshot",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_staged_symlink_cannot_escape_formatter_snapshot",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_staged_symlink_cannot_escape_formatter_snapshot",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "68b404f385f73b62e19da9cea3defd5381064c64\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_staged_symlink_cannot_escape_formatter_snapshot",
+    "argv": [
+      "git",
+      "add",
+      "note.md"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_staged_symlink_cannot_escape_formatter_snapshot",
+    "argv": [
+      "git",
+      "add",
+      "linked.md"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_staged_symlink_cannot_escape_formatter_snapshot",
+    "argv": [
+      "bash",
+      "scripts/pre-commit-staged.sh"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "pre-commit: staged snapshot contains symlink linked.md; format and stage manually\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_status_api_failure_is_indeterminate",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_status_api_failure_is_indeterminate",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_status_api_failure_is_indeterminate",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_status_api_failure_is_indeterminate",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/harness-kit/packs/load-testing/repo-template/bin/perf-resolve-target",
+      "abc123",
+      "fixture/repo",
+      "1",
+      "0"
+    ],
+    "exit": 3,
+    "stdout": "",
+    "stderr": "perf-resolve-target: consulta de statuses fall\u00f3: estado indeterminado (despliegue 42)\nperf-resolve-target: no se pudo determinar si el commit tiene despliegue; consulta incompleta\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_status_distinguishes_remote_api_failure",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_status_distinguishes_remote_api_failure",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_status_distinguishes_remote_api_failure",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_status_distinguishes_remote_api_failure",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/harness-kit/bin/harness-init.sh",
+      "--target",
+      "/tmp/h02-regression-nq0kmjby/test_status_distinguishes_remote_api_failure",
+      "--level",
+      "full"
+    ],
+    "exit": 0,
+    "stdout": "Harness init\n  target: /tmp/h02-regression-nq0kmjby/test_status_distinguishes_remote_api_failure\n  level:  full\n  verify: echo 'TODO: set the verification command'; false\n\n  write   AGENTS.md\n  write   CLAUDE.md\n  write   init.sh\n  write   PROGRESS.md\n  write   feature_list.json\n  write   clean-state-checklist.md\n  write   session-handoff.md\n  write   DECISIONS.md\n  write   docs/decisions/README.md\n  write   .harness/judge-contract.json\n  write   .harness/installation-profile.json\n  write   scripts/setup-oracles.sh\n  write   requirements-harness.txt\n  write   Makefile\n  write   scripts/verify-feature.sh\n  write   scripts/verify-claims.sh\n  write   scripts/verify-decisions.sh\n  write   .github/workflows/required-quality.yml\n  write   .github/rulesets/required-quality-check.json\n  write   .github/rulesets/required-quality-integrity.json\n  write   scripts/check-arch.sh\n  write   scripts/verify-makefile-gates.sh\n  write   scripts/run-gates.sh\n  write   scripts/verify-agent-notes.sh\n  write   scripts/verify-delivery-doc.sh\n  write   scripts/verify-context-routes.sh\n  write   scripts/verify-oracles.sh\n  write   .harness/oracles/README.md\n  write   .harness/oracles/AC-000.example.yaml.txt\n  write   .harness/context-routes.json\n  write   scripts/verify-impact.template.mjs\n  write   scripts/pre-commit-staged.sh\n  write   scripts/install-githooks.sh\n  write   .agents/notes/README.md\n  write   scripts/clean-state-check.sh\n  write   scripts/session-trace.sh\n  write   scripts/harness-audit.sh\n  write   .harness/arch-rules.json\n  write   templates/sprint-contract.md\n  write   templates/evaluator-rubric.md\n  write   docs/quality-document.md\n  write   .harness/traces/.gitkeep\n  write   .gitignore\n\nDone. Next steps:\n  1. Edit AGENTS.md \u2014 replace the purpose line with what this project actually does.\n  2. Replace the placeholder features in feature_list.json with the real backlog.\n  3. Confirm the verification command is right: echo 'TODO: set the verification command'; false\n  4. Score the result:  /workspace/scratch/adce1c53b293/harness-kit/bin/harness-audit.sh /tmp/h02-regression-nq0kmjby/test_status_distinguishes_remote_api_failure\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_status_distinguishes_remote_api_failure",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_status_distinguishes_remote_api_failure",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_status_distinguishes_remote_api_failure",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "d0af2a570079e90804b11440ae585d96682cae5c\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_status_distinguishes_remote_api_failure",
+    "argv": [
+      "git",
+      "remote",
+      "add",
+      "origin",
+      "https://github.com/example/repo.git"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_status_distinguishes_remote_api_failure",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/harness-kit/bin/harness-status.sh",
+      "--target",
+      "/tmp/h02-regression-nq0kmjby/test_status_distinguishes_remote_api_failure"
+    ],
+    "exit": 1,
+    "stdout": "Kit: 2.2.5\nLocal: observed make check exit 0\nINDETERMINATE_REMOTE \u2014 local check passed, protection query incomplete: API query failed: repos/example/repo/rulesets?includes_parents=true\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_status_requires_observed_local_check",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_status_requires_observed_local_check",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_status_requires_observed_local_check",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_status_requires_observed_local_check",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/harness-kit/bin/harness-status.sh",
+      "--target",
+      "/tmp/h02-regression-nq0kmjby/test_status_requires_observed_local_check"
+    ],
+    "exit": 1,
+    "stdout": "Kit: 2.2.5 (version not recorded)\nBLOCKED_TOOL \u2014 local verification indeterminate: [Errno 2] No such file or directory: '/tmp/h02-regression-nq0kmjby/test_status_requires_observed_local_check/.harness/installation-profile.json'\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_strict_command_and_environment_identity_still_blocks",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_strict_command_and_environment_identity_still_blocks",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_strict_command_and_environment_identity_still_blocks",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_strict_command_and_environment_identity_still_blocks",
+    "argv": [
+      "bash",
+      "scripts/verify-claims.sh"
+    ],
+    "exit": 5,
+    "stdout": "",
+    "stderr": "WEAKENED_VERIFICATION\n  C1 is still marked passing, but its verification changed.\n    was: printf first\n    now: printf second\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_strict_command_and_environment_identity_still_blocks",
+    "argv": [
+      "bash",
+      "scripts/verify-claims.sh"
+    ],
+    "exit": 5,
+    "stdout": "",
+    "stderr": "WEAKENED_VERIFICATION\n  C1 is still marked passing, but its verification changed.\n    was: printf first\n    now: printf first\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_strict_command_and_environment_identity_still_blocks",
+    "argv": [
+      "bash",
+      "scripts/verify-claims.sh"
+    ],
+    "exit": 5,
+    "stdout": "",
+    "stderr": "WEAKENED_VERIFICATION\n  C1 is still marked passing, but its verification changed.\n    was: printf first\n    now: printf first\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_system_temp_alias_is_resolved_before_snapshot_checks",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_system_temp_alias_is_resolved_before_snapshot_checks",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_system_temp_alias_is_resolved_before_snapshot_checks",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_system_temp_alias_is_resolved_before_snapshot_checks",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_system_temp_alias_is_resolved_before_snapshot_checks",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_system_temp_alias_is_resolved_before_snapshot_checks",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "69a03d8547033755693cb4e5d3a02267e5e1c718\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_system_temp_alias_is_resolved_before_snapshot_checks",
+    "argv": [
+      "git",
+      "add",
+      "note.md"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_system_temp_alias_is_resolved_before_snapshot_checks",
+    "argv": [
+      "bash",
+      "scripts/pre-commit-staged.sh"
+    ],
+    "exit": 0,
+    "stdout": "pre-commit: staged snapshot verified; working-tree bytes preserved\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_system_temp_alias_is_resolved_before_snapshot_checks",
+    "argv": [
+      "git",
+      "show",
+      ":note.md"
+    ],
+    "exit": 0,
+    "stdout": "FORMATTED\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_workspace_context_route",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_workspace_context_route",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_workspace_context_route",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_workspace_context_route",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_workspace_context_route",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_workspace_context_route",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "554247da5d5374bffaea6be75ab459cf7e2a2c3a\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-nq0kmjby/test_workspace_context_route",
+    "argv": [
+      "bash",
+      "scripts/verify-context-routes.sh"
+    ],
+    "exit": 1,
+    "stdout": "CITES NOTHING: src/rule.py\n  governed by: AGENTS.md\n  fixture\n",
+    "stderr": "Cite a governing document in a branch commit message or current Agent Note.\n"
+  }
+]

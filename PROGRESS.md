@@ -5,7 +5,7 @@ last. If it disagrees with your recollection, this file wins.
 
 ## Current State — 2026-09-06 implementation
 
-The owner instructed **“Implementa todas las mejoras”** after the audit and MIGRATION-01 proposal. The architecture decision is approved; the previous implementation block is resolved. H01–H09 execute sequentially on PR #33. F15/H01 is complete after independent review and actual three-layer verification; H02 is next. Remaining milestones are not started.
+The owner instructed **“Implementa todas las mejoras”** after the audit and MIGRATION-01 proposal. The architecture decision is approved; the previous implementation block is resolved. H01–H09 execute sequentially on PR #33. H01/F15 and H02/F16 are complete after independent review and actual three-layer verification. H03/F17 is next; H03–H09 are not started.
 
 Startup verification: `./init.sh` exit 0, 273 core assertions. The [implementation ledger](docs/implementation/2026-09-05-harness-hardening/ledger.md) records current tests, reviews, rulings and next action. No baseline accepted and no consumer deployment authorized.
 
@@ -61,11 +61,13 @@ unchanged. New green tests do not recertify superseded behavior.
 
 ## In Progress
 
-H01/F15 has passed static, focal runtime and shipped-CLI/scaffold e2e verification.
-The full check passed 421 assertions, with two authenticated-gh cases explicitly
-omitted. Independent review approved specification and quality with no open
-High/Critical findings. H02/F16 is next. Legacy contracts and receipts remain
-preserved; F09 stays blocked under the approved recovery boundary.
+H01/F15 is published at fff527b with full check421/0 and independent approval.
+H02/F16 passed actual static, focal30/30 and shipped-CLI/scaffold286/0 layers.
+Independent specification and quality reviews are approved after one fix round;
+no finding remains open. Full H02 check passed424 assertions and8 quick gates with zero failures; two
+authenticated-gh load cases were explicitly omitted. H03/F17 is next.
+Legacy contracts and receipts remain preserved; F09 stays blocked under the
+approved recovery boundary.
 Current implementation evidence and independent reviews are recorded in the
 implementation ledger linked above.
 

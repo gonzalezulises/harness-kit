@@ -1,0 +1,60 @@
+[
+  {
+    "argv": [
+      "bash",
+      "-n",
+      "scripts/setup-oracles.sh"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "bash",
+      "-n",
+      "templates/full/scripts/setup-oracles.sh"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "bash",
+      "-n",
+      "bin/harness-status.sh"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "bash",
+      "-n",
+      "scripts/verify-delivery-doc.sh"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "bash",
+      "-n",
+      "templates/full/scripts/verify-delivery-doc.sh"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "mirror": "setup-oracles.sh",
+    "equal": true
+  },
+  {
+    "mirror": "verify-delivery-doc.sh",
+    "equal": true
+  }
+]

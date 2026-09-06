@@ -1,0 +1,15 @@
+test_system_temp_alias_is_resolved_before_snapshot_checks (__main__.Regressions.test_system_temp_alias_is_resolved_before_snapshot_checks) ... FAIL
+
+======================================================================
+FAIL: test_system_temp_alias_is_resolved_before_snapshot_checks (__main__.Regressions.test_system_temp_alias_is_resolved_before_snapshot_checks)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h02-hardening-regressions.py", line 219, in test_system_temp_alias_is_resolved_before_snapshot_checks
+    self.assertEqual(p.returncode,0,p.stdout+p.stderr)
+AssertionError: 1 != 0 : pre-commit: formatter returned unsupported link or file
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.096s
+
+FAILED (failures=1)

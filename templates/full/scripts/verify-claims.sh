@@ -6,6 +6,8 @@
 set -uo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT_DIR="${HARNESS_TARGET_ROOT:-$ROOT_DIR}"
+unset HARNESS_TARGET_ROOT
 cd "$ROOT_DIR" || { echo "cannot cd to $ROOT_DIR" >&2; exit 66; }
 FL="feature_list.json"
 [[ -f "$FL" ]] || { echo "verify-claims: $FL not found in $ROOT_DIR" >&2; exit 66; }
@@ -27,7 +29,7 @@ WORK_CLAIMS="$(mktemp -d)"
 trap 'rm -rf "$WORK_CLAIMS"' EXIT
 
 # Parse and validate the whole head before emitting any executable record.
-"$PY" - "$FL" "$WORK_CLAIMS/head" <<'PYEOF'
+"$PY" -I - "$FL" "$WORK_CLAIMS/head" <<'PYEOF'
 import json, sys
 from pathlib import Path
 
@@ -167,7 +169,7 @@ else
 fi
 
 if [[ -n "$BASE_FL" ]]; then
-  "$PY" - "$BASE_FL" "$FL" <<'PYEOF'
+  "$PY" -I - "$BASE_FL" "$FL" <<'PYEOF'
 import json, sys
 
 def strict_object(pairs):
@@ -250,8 +252,12 @@ base, head = load(sys.argv[1], "base"), load(sys.argv[2], "head")
 base_passing = {f["id"]: f.get("layers", []) for f in base["features"] if f["state"] == "passing"}
 head_passing = {f["id"]: f.get("layers", []) for f in head["features"] if f["state"] == "passing"}
 changed = []
+def identity(layers):
+    # Repair is human guidance; every other contract field remains exact.
+    return [{key: value for key, value in layer.items() if key != "repair"} for layer in layers]
+
 for fid, layers in base_passing.items():
-    if fid in head_passing and layers != head_passing[fid]:
+    if fid in head_passing and identity(layers) != identity(head_passing[fid]):
         changed.append((fid, layers, head_passing[fid]))
 if changed:
     print("WEAKENED_VERIFICATION", file=sys.stderr)

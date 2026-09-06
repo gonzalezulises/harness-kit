@@ -1,0 +1,82 @@
+test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import (__main__.Regressions.test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import) ... 
+  test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import (__main__.Regressions.test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import) (channel='cwd', phase='pip') ... FAIL
+  test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import (__main__.Regressions.test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import) (channel='cwd', phase='yaml') ... FAIL
+  test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import (__main__.Regressions.test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import) (channel='PYTHONPATH', phase='pip') ... FAIL
+  test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import (__main__.Regressions.test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import) (channel='PYTHONPATH', phase='yaml') ... FAIL
+test_status_timeout_terminates_owned_descendants_only (__main__.Regressions.test_status_timeout_terminates_owned_descendants_only) ... 
+  test_status_timeout_terminates_owned_descendants_only (__main__.Regressions.test_status_timeout_terminates_owned_descendants_only) (ignore_term=False) ... FAIL
+  test_status_timeout_terminates_owned_descendants_only (__main__.Regressions.test_status_timeout_terminates_owned_descendants_only) (ignore_term=True) ... FAIL
+test_explicit_missing_delivery_source_blocks_with_default_absence_allowed (__main__.Regressions.test_explicit_missing_delivery_source_blocks_with_default_absence_allowed) ... 
+  test_explicit_missing_delivery_source_blocks_with_default_absence_allowed (__main__.Regressions.test_explicit_missing_delivery_source_blocks_with_default_absence_allowed) (source='custom-release-guide.md') ... FAIL
+  test_explicit_missing_delivery_source_blocks_with_default_absence_allowed (__main__.Regressions.test_explicit_missing_delivery_source_blocks_with_default_absence_allowed) (source='unreadable-directory') ... FAIL
+
+======================================================================
+FAIL: test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import (__main__.Regressions.test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import) (channel='cwd', phase='pip')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h02-hardening-regressions.py", line 318, in test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import
+    self.assertFalse(marker.exists(),'setup executed a project-supplied '+phase+' module via '+channel)
+AssertionError: True is not false : setup executed a project-supplied pip module via cwd
+
+======================================================================
+FAIL: test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import (__main__.Regressions.test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import) (channel='cwd', phase='yaml')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h02-hardening-regressions.py", line 318, in test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import
+    self.assertFalse(marker.exists(),'setup executed a project-supplied '+phase+' module via '+channel)
+AssertionError: True is not false : setup executed a project-supplied yaml module via cwd
+
+======================================================================
+FAIL: test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import (__main__.Regressions.test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import) (channel='PYTHONPATH', phase='pip')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h02-hardening-regressions.py", line 318, in test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import
+    self.assertFalse(marker.exists(),'setup executed a project-supplied '+phase+' module via '+channel)
+AssertionError: True is not false : setup executed a project-supplied pip module via PYTHONPATH
+
+======================================================================
+FAIL: test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import (__main__.Regressions.test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import) (channel='PYTHONPATH', phase='yaml')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h02-hardening-regressions.py", line 318, in test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import
+    self.assertFalse(marker.exists(),'setup executed a project-supplied '+phase+' module via '+channel)
+AssertionError: True is not false : setup executed a project-supplied yaml module via PYTHONPATH
+
+======================================================================
+FAIL: test_status_timeout_terminates_owned_descendants_only (__main__.Regressions.test_status_timeout_terminates_owned_descendants_only) (ignore_term=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h02-hardening-regressions.py", line 344, in test_status_timeout_terminates_owned_descendants_only
+    self.assertFalse((self.root/late).exists(),'owned child continued mutating after timeout')
+AssertionError: True is not false : owned child continued mutating after timeout
+
+======================================================================
+FAIL: test_status_timeout_terminates_owned_descendants_only (__main__.Regressions.test_status_timeout_terminates_owned_descendants_only) (ignore_term=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h02-hardening-regressions.py", line 344, in test_status_timeout_terminates_owned_descendants_only
+    self.assertFalse((self.root/late).exists(),'owned child continued mutating after timeout')
+AssertionError: True is not false : owned child continued mutating after timeout
+
+======================================================================
+FAIL: test_explicit_missing_delivery_source_blocks_with_default_absence_allowed (__main__.Regressions.test_explicit_missing_delivery_source_blocks_with_default_absence_allowed) (source='custom-release-guide.md')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h02-hardening-regressions.py", line 356, in test_explicit_missing_delivery_source_blocks_with_default_absence_allowed
+    self.assertNotEqual(result.returncode,0,result.stdout+result.stderr)
+AssertionError: 0 == 0 : verify-delivery-doc: no declared runbook at custom-release-guide.md
+
+
+======================================================================
+FAIL: test_explicit_missing_delivery_source_blocks_with_default_absence_allowed (__main__.Regressions.test_explicit_missing_delivery_source_blocks_with_default_absence_allowed) (source='unreadable-directory')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h02-hardening-regressions.py", line 356, in test_explicit_missing_delivery_source_blocks_with_default_absence_allowed
+    self.assertNotEqual(result.returncode,0,result.stdout+result.stderr)
+AssertionError: 0 == 0 : verify-delivery-doc: no declared runbook at unreadable-directory
+
+
+----------------------------------------------------------------------
+Ran 3 tests in 10.165s
+
+FAILED (failures=8)

@@ -1,0 +1,10 @@
+{
+  "status": "DONE_WITH_CONCERNS",
+  "frozen": true,
+  "baseline_sha": "fff527b2c7a64fb6d70d60d633a0261e68315169",
+  "report": ".superpowers/sdd/migration-plan/task-2-report.md",
+  "report_sha256": "74379b7f4c1d9d09e4339e5fc72a0fcb9fc81d0da80a16c41e9d5b112f54da3b",
+  "source_manifest_sha256": "ca075fd908404fa097405cd9c5a8f2597a71202b985ef2017892fb3f5eaa4621",
+  "evidence_manifest_sha256": "eaca7d33767627789db169139d6b5c664f68895ba7e57926619860419b91ed9a",
+  "tests_sha256": "c3e558b5131dfcdc48b07e2f2dd4c32d97bdbf87000082dc513ce7f926527c89"
+}

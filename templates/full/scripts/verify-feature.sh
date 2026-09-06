@@ -10,9 +10,9 @@ FL="feature_list.json"
 [[ -f "$FL" ]] || { echo "verify-feature: $FL not found in $ROOT_DIR" >&2; exit 66; }
 
 if [[ ! -t 1 ]] || [[ -n "${NO_COLOR:-}" ]]; then
-  RED=""; GREEN=""; YELLOW=""; BOLD=""; RESET=""
+  RED=""; GREEN=""; BOLD=""; RESET=""
 else
-  RED=$'\033[0;31m'; GREEN=$'\033[0;32m'; YELLOW=$'\033[1;33m'
+  RED=$'\033[0;31m'; GREEN=$'\033[0;32m'
   BOLD=$'\033[1m'; RESET=$'\033[0m'
 fi
 
@@ -35,7 +35,7 @@ trap 'rm -rf "$WORK"' EXIT
 # executable command channel. Layer fields are written to separate files so an
 # empty or multiline field cannot shift into another field.
 set +e
-"$PY" - "$FL" "$FEATURE_ID" "$MODE" "$WORK" <<'PYEOF'
+"$PY" -I - "$FL" "$FEATURE_ID" "$MODE" "$WORK" <<'PYEOF'
 import json, os, sys, tempfile
 from pathlib import Path
 
@@ -250,7 +250,7 @@ for ((i=0; i<LAYER_COUNT; i++)); do
   echo "${BOLD}How to fix:${RESET} ${FAILED_REPAIR}"
 
   if [[ "$BUDGET_ENABLED" == "1" ]]; then
-    VERDICT="$($PY - "$FL" "$TARGET_INDEX" "$FEATURE_ID" "$FAILED_LAYER" <<'PYEOF'
+    VERDICT="$($PY -I - "$FL" "$TARGET_INDEX" "$FEATURE_ID" "$FAILED_LAYER" <<'PYEOF'
 import json, os, sys, tempfile
 path, raw_index, fid, layer = sys.argv[1:5]
 index = int(raw_index)
@@ -326,7 +326,7 @@ done
 
 COMMIT="$(git rev-parse --short HEAD 2>/dev/null || echo "no-git")"
 STAMP="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-"$PY" - "$FL" "$TARGET_INDEX" "$FEATURE_ID" "$COMMIT" "$STAMP" <<'PYEOF'
+"$PY" -I - "$FL" "$TARGET_INDEX" "$FEATURE_ID" "$COMMIT" "$STAMP" <<'PYEOF'
 import json, os, sys, tempfile
 path, raw_index, fid, commit, stamp = sys.argv[1:6]
 index = int(raw_index)

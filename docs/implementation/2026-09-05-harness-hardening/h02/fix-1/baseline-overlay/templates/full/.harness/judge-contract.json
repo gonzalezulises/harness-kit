@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "interfaces": [
+    "target-root-v1",
+    "installation-profile-v1",
+    "match-argv-v1"
+  ]
+}

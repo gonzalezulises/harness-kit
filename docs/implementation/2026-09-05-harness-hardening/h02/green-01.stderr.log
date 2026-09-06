@@ -1,0 +1,19 @@
+test_backup_is_exclusive (__main__.Regressions.test_backup_is_exclusive) ... ok
+test_formatter_nonzero_blocks (__main__.Regressions.test_formatter_nonzero_blocks) ... ok
+test_full_scaffold_live_quick (__main__.Regressions.test_full_scaffold_live_quick) ... ok
+test_integrated_check_declares_live_quick (__main__.Regressions.test_integrated_check_declares_live_quick) ... ok
+test_live_profile_cannot_be_absent (__main__.Regressions.test_live_profile_cannot_be_absent) ... ok
+test_oracle_current_bytes_are_checked (__main__.Regressions.test_oracle_current_bytes_are_checked) ... ok
+test_oracle_duplicate_keys_rejected (__main__.Regressions.test_oracle_duplicate_keys_rejected) ... ok
+test_pack_ports_are_os_assigned (__main__.Regressions.test_pack_ports_are_os_assigned) ... ok
+test_partial_index_preserves_unstaged_bytes (__main__.Regressions.test_partial_index_preserves_unstaged_bytes) ... ok
+test_protected_workflow_keeps_candidate_source (__main__.Regressions.test_protected_workflow_keeps_candidate_source) ... ok
+test_repair_prose_is_not_command_identity (__main__.Regressions.test_repair_prose_is_not_command_identity) ... ok
+test_status_api_failure_is_indeterminate (__main__.Regressions.test_status_api_failure_is_indeterminate) ... ok
+test_status_requires_observed_local_check (__main__.Regressions.test_status_requires_observed_local_check) ... ok
+test_workspace_context_route (__main__.Regressions.test_workspace_context_route) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 1.543s
+
+OK

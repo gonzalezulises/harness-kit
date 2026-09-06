@@ -1,0 +1,890 @@
+[
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_backup_is_exclusive",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_backup_is_exclusive",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_backup_is_exclusive",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_formatter_nonzero_blocks",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_formatter_nonzero_blocks",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_formatter_nonzero_blocks",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_formatter_nonzero_blocks",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_formatter_nonzero_blocks",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_formatter_nonzero_blocks",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "400aca1d3c92451aa1903eca86ec34b8c7fa63e2\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_formatter_nonzero_blocks",
+    "argv": [
+      "git",
+      "add",
+      "note.md"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_formatter_nonzero_blocks",
+    "argv": [
+      "bash",
+      "scripts/pre-commit-staged.sh"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_full_scaffold_live_quick",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_full_scaffold_live_quick",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_full_scaffold_live_quick",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_full_scaffold_live_quick",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/harness-kit/bin/harness-init.sh",
+      "--target",
+      "/tmp/h02-regression-hs24gt69/test_full_scaffold_live_quick",
+      "--level",
+      "full"
+    ],
+    "exit": 0,
+    "stdout": "Harness init\n  target: /tmp/h02-regression-hs24gt69/test_full_scaffold_live_quick\n  level:  full\n  verify: echo 'TODO: set the verification command'; false\n\n  write   AGENTS.md\n  write   CLAUDE.md\n  write   init.sh\n  write   PROGRESS.md\n  write   feature_list.json\n  write   clean-state-checklist.md\n  write   session-handoff.md\n  write   DECISIONS.md\n  write   docs/decisions/README.md\n  write   Makefile\n  write   scripts/verify-feature.sh\n  write   scripts/verify-claims.sh\n  write   scripts/verify-decisions.sh\n  write   .github/workflows/required-quality.yml\n  write   .github/rulesets/required-quality-check.json\n  write   .github/rulesets/required-quality-integrity.json\n  write   scripts/check-arch.sh\n  write   scripts/verify-makefile-gates.sh\n  write   scripts/run-gates.sh\n  write   scripts/verify-agent-notes.sh\n  write   scripts/verify-delivery-doc.sh\n  write   scripts/verify-context-routes.sh\n  write   scripts/verify-oracles.sh\n  write   .harness/oracles/README.md\n  write   .harness/oracles/AC-000.example.yaml.txt\n  write   .harness/context-routes.json\n  write   scripts/verify-impact.template.mjs\n  write   scripts/pre-commit-staged.sh\n  write   scripts/install-githooks.sh\n  write   .agents/notes/README.md\n  write   scripts/clean-state-check.sh\n  write   scripts/session-trace.sh\n  write   scripts/harness-audit.sh\n  write   .harness/arch-rules.json\n  write   templates/sprint-contract.md\n  write   templates/evaluator-rubric.md\n  write   docs/quality-document.md\n  write   .harness/traces/.gitkeep\n  write   .gitignore\n\nDone. Next steps:\n  1. Edit AGENTS.md \u2014 replace the purpose line with what this project actually does.\n  2. Replace the placeholder features in feature_list.json with the real backlog.\n  3. Confirm the verification command is right: echo 'TODO: set the verification command'; false\n  4. Score the result:  /workspace/scratch/adce1c53b293/harness-kit/bin/harness-audit.sh /tmp/h02-regression-hs24gt69/test_full_scaffold_live_quick\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_full_scaffold_live_quick",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_full_scaffold_live_quick",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_full_scaffold_live_quick",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "61cd36732159d5998760c9b42bf0047070c4d628\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_full_scaffold_live_quick",
+    "argv": [
+      "bash",
+      "scripts/run-gates.sh",
+      "quick"
+    ],
+    "exit": 1,
+    "stdout": "\u2500\u2500 gates \u00b7 aggregate quick\n\n  decisions-append-only    PASS (0s)\n  agent-notes-tree         PASS (0s)\n  arch-boundaries          PASS (0s)\n  makefile-gates           PASS (0s)\n  version-sync             NOT_EXECUTED  (missing scripts/verify-version-sync.sh)\n      a required gate is missing from this repo \u2014 install it or declare it optional\n  delivery-doc             PASS (0s)\n  context-routes           PASS (0s)\n  oracles-falsifiable      PASS (0s)\n\n\u2500\u2500 7 pass \u00b7 1 blocking \u00b7 0 optional not installed\n\nBlocking:\n  \u00b7 version-sync NOT_EXECUTED\n\nOnly PASS satisfies a gate. A state that is not PASS was not verified,\nand an unverified gate is not a passing one.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_integrated_check_declares_live_quick",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_integrated_check_declares_live_quick",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_integrated_check_declares_live_quick",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/workspace/scratch/adce1c53b293/harness-kit",
+    "argv": [
+      "make",
+      "-n",
+      "check"
+    ],
+    "exit": 0,
+    "stdout": "bash tests/run-tests.sh\nfor p in packs/*/verify-pack.sh; do \\\n  [ -f \"$p\" ] || continue; \\\n  echo \"\"; bash \"$p\" || exit 1; \\\ndone\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_live_profile_cannot_be_absent",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_live_profile_cannot_be_absent",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_live_profile_cannot_be_absent",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_live_profile_cannot_be_absent",
+    "argv": [
+      "bash",
+      "scripts/run-gates.sh",
+      "quick"
+    ],
+    "exit": 0,
+    "stdout": "\u2500\u2500 gates \u00b7 aggregate quick\n\n  decisions-append-only    PASS (0s)\n  agent-notes-tree         PASS (0s)\n  arch-boundaries          PASS (0s)\n  makefile-gates           PASS (0s)\n  version-sync             PASS (0s)\n  delivery-doc             PASS (0s)\n  context-routes           PASS (0s)\n  oracles-falsifiable      PASS (0s)\n\n\u2500\u2500 8 pass \u00b7 0 blocking \u00b7 0 optional not installed\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_oracle_current_bytes_are_checked",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_oracle_current_bytes_are_checked",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_oracle_current_bytes_are_checked",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_oracle_current_bytes_are_checked",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_oracle_current_bytes_are_checked",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_oracle_current_bytes_are_checked",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "cb955d37e0be9419c953f74ba169dc8496fe4b41\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_oracle_current_bytes_are_checked",
+    "argv": [
+      "bash",
+      "scripts/verify-oracles.sh"
+    ],
+    "exit": 0,
+    "stdout": "  ok       TEST_READY         AC\n\noracles: 1 criteria, every critical one proved falsifiable\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_oracle_duplicate_keys_rejected",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_oracle_duplicate_keys_rejected",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_oracle_duplicate_keys_rejected",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_oracle_duplicate_keys_rejected",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_oracle_duplicate_keys_rejected",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_oracle_duplicate_keys_rejected",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "78d10511a298410c1b8f5472e298c026afadd75a\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_oracle_duplicate_keys_rejected",
+    "argv": [
+      "bash",
+      "scripts/verify-oracles.sh"
+    ],
+    "exit": 0,
+    "stdout": "  ok       RETIRED            AC-1\n\noracles: 1 criteria, every critical one proved falsifiable\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_pack_ports_are_os_assigned",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_pack_ports_are_os_assigned",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_pack_ports_are_os_assigned",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "47083e791c71b88d49529c23d3680b9e051404aa\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "add",
+      "note.md"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "bash",
+      "scripts/pre-commit-staged.sh"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "show",
+      ":note.md"
+    ],
+    "exit": 0,
+    "stdout": "FORMATTED\nUNRELATED\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_protected_workflow_keeps_candidate_source",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_protected_workflow_keeps_candidate_source",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_protected_workflow_keeps_candidate_source",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_repair_prose_is_not_command_identity",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_repair_prose_is_not_command_identity",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_repair_prose_is_not_command_identity",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_repair_prose_is_not_command_identity",
+    "argv": [
+      "bash",
+      "scripts/verify-claims.sh"
+    ],
+    "exit": 5,
+    "stdout": "",
+    "stderr": "WEAKENED_VERIFICATION\n  C1 is still marked passing, but its verification changed.\n    was: printf ran > witnessed\n    now: printf ran > witnessed\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_status_api_failure_is_indeterminate",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_status_api_failure_is_indeterminate",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_status_api_failure_is_indeterminate",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_status_api_failure_is_indeterminate",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/harness-kit/packs/load-testing/repo-template/bin/perf-resolve-target",
+      "abc123",
+      "fixture/repo",
+      "1",
+      "0"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": "perf-resolve-target: el commit abc123 no tiene despliegue de vista previa; no hay nada que medir\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_status_requires_observed_local_check",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_status_requires_observed_local_check",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_status_requires_observed_local_check",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_status_requires_observed_local_check",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/harness-kit/bin/harness-status.sh",
+      "--target",
+      "/tmp/h02-regression-hs24gt69/test_status_requires_observed_local_check"
+    ],
+    "exit": 0,
+    "stdout": "READY_LOCAL \u2014 todav\u00eda nada en GitHub bloquea una fusi\u00f3n.\n\nKit: 2.2.5  (este repo no registra su versi\u00f3n: se activ\u00f3 con un kit anterior)\n\nLocal\n  ok   contrato, estado y presupuestos\n  --   sin re-verificador: un 'passing' escrito a mano nunca se recomprueba\n  --   sin verificaci\u00f3n del ledger de decisiones\n\nGitHub\n  --   sin remoto \u2014 el veredicto queda por completo en confianza\n\nSiguiente: s\u00fabelo a GitHub y corre bin/harness-protect.sh para hacer vinculante la compuerta.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_workspace_context_route",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_workspace_context_route",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_workspace_context_route",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_workspace_context_route",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_workspace_context_route",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_workspace_context_route",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "da134e7b9f620861aa149db70a9f258d47889c24\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-hs24gt69/test_workspace_context_route",
+    "argv": [
+      "bash",
+      "scripts/verify-context-routes.sh"
+    ],
+    "exit": 0,
+    "stdout": "context-routes: no changes against HEAD \u2014 nothing to govern\n",
+    "stderr": ""
+  }
+]

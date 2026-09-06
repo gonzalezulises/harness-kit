@@ -7,7 +7,7 @@ set -uo pipefail
 REPO="${1:-.}"
 REPO="${REPO%/}"
 cd "$REPO" || { echo "check-arch: cannot cd to $REPO" >&2; exit 66; }
-RULES=".harness/arch-rules.json"
+RULES="${ARCH_RULES_FILE:-.harness/arch-rules.json}"
 [[ -f "$RULES" ]] || { echo "check-arch: $RULES not found"; exit 0; }
 
 if [[ ! -t 1 ]] || [[ -n "${NO_COLOR:-}" ]]; then
@@ -25,7 +25,7 @@ trap 'rm -rf "$WORK"' EXIT
 # Parse every rule before any check can execute. Typed match_argv checks state
 # their legitimate match/no-match exit codes explicitly; legacy shell checks
 # remain supported, but every non-zero status is treated as a check failure.
-"$PY" - "$RULES" "$WORK" <<'PYEOF'
+"$PY" -I - "$RULES" "$WORK" <<'PYEOF'
 import json, re, sys
 from pathlib import Path
 
@@ -122,7 +122,7 @@ for ((i=0; i<RULE_COUNT; i++)); do
 
   output_file="$WORK/output-$i"
   rc_file="$WORK/rc-$i"
-  KIND="$($PY - "$record/check.json" <<'PYEOF'
+  KIND="$($PY -I - "$record/check.json" <<'PYEOF'
 import json, sys
 print(json.load(open(sys.argv[1], encoding="utf-8"))["type"])
 PYEOF
@@ -132,7 +132,7 @@ PYEOF
     ( eval "$command" ) >"$output_file" 2>&1
     printf '%s' "$?" > "$rc_file"
   else
-    "$PY" - "$record/check.json" "$output_file" "$rc_file" <<'PYEOF'
+    "$PY" -I - "$record/check.json" "$output_file" "$rc_file" <<'PYEOF'
 import json, re, subprocess, sys
 from pathlib import Path
 
@@ -169,7 +169,7 @@ PYEOF
   FIRED=0
   TOOL_ERROR=0
   if [[ "$KIND" == "match_argv" ]]; then
-    EXPECTED="$($PY - "$record/check.json" <<'PYEOF'
+    EXPECTED="$($PY -I - "$record/check.json" <<'PYEOF'
 import json, sys
 v=json.load(open(sys.argv[1], encoding="utf-8")); print(f'{v["match_exit"]} {v["no_match_exit"]}')
 PYEOF

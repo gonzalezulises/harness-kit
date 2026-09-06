@@ -1,0 +1,10 @@
+{
+  "risk": "explicit missing runbook silently accepted",
+  "env": {
+    "DELIVERY_DOC": "custom-release-guide.md",
+    "DELIVERY_DOC_REQUIRED": "unset"
+  },
+  "exit": 0,
+  "stdout": "verify-delivery-doc: no declared runbook at custom-release-guide.md\n",
+  "stderr": ""
+}

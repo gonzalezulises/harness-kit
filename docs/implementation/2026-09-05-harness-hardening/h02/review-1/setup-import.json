@@ -1,0 +1,15 @@
+{
+  "risk": "setup helper module shadowing",
+  "argv": [
+    "bash",
+    "/workspace/scratch/adce1c53b293/h02-review-probes/setup-judge/scripts/setup-oracles.sh"
+  ],
+  "cwd": "/workspace/scratch/adce1c53b293/h02-review-probes/setup-candidate",
+  "exit": 0,
+  "stdout": "",
+  "stderr": "",
+  "pip_marker": true,
+  "yaml_marker": true,
+  "isolated_actual_yaml_exit": 1,
+  "isolated_actual_yaml_stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\nModuleNotFoundError: No module named 'yaml'\n"
+}

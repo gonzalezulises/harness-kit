@@ -1,0 +1,2849 @@
+diff --git a/.harness/context-routes.json b/.harness/context-routes.json
+index 4e3cf54..79fc27e 100644
+--- a/.harness/context-routes.json
++++ b/.harness/context-routes.json
+@@ -1,34 +1,31 @@
+ {
+-  "$comment": [
+-    "Which documents govern which paths. Read by scripts/verify-context-routes.sh:",
+-    "a change under `paths` must cite one of its `read` documents, in a commit",
+-    "message on the branch or in the Agent Note it carries.",
+-    "",
+-    "This is the mechanical half of rules/fuentes.md. The prose states the",
+-    "precedence; this file makes forgetting to look a failing gate.",
+-    "",
+-    "Adapt to your repo. A route with paths that never match is dead weight, and",
+-    "a route that fires on every change trains people to paste the citation",
+-    "without reading — keep them narrow and few, and add one only when you can",
+-    "name the mistake it prevents.",
+-    "",
+-    "Patterns: exact paths, fnmatch globs, or `dir/**` for a whole subtree."
+-  ],
+   "routes": [
+     {
+-      "paths": ["lib/rules/**", "lib/**/rules/**"],
+-      "read": ["docs/DECISIONS.md", "docs/adr", "docs/architecture"],
+-      "why": "Business rules decide verdicts, and their trade-offs are already recorded. An external report describes a symptom; it does not repeal a decision."
++      "paths": [
++        "bin/**",
++        "templates/**",
++        "scripts/**",
++        ".harness/**",
++        ".github/**",
++        "Makefile"
++      ],
++      "read": [
++        "AGENTS.md",
++        "DECISIONS.md",
++        "bin/ARCHITECTURE.md"
++      ],
++      "why": "These paths change installation, authority or executable gates."
+     },
+     {
+-      "paths": ["supabase/migrations/**", "migrations/**", "db/migrate/**"],
+-      "read": ["docs/DECISIONS.md", "docs/adr"],
+-      "why": "A migration changes what the data means for everyone downstream, and it cannot be taken back by editing a file."
+-    },
+-    {
+-      "paths": [".github/workflows/**", "scripts/run-gates.sh", "scripts/verify-*.sh"],
+-      "read": ["AGENTS.md", "DECISIONS.md"],
+-      "why": "Changing a gate changes what the harness is willing to let through. Weakening one is the change that hides every other."
++      "paths": [
++        "tests/**",
++        "packs/**"
++      ],
++      "read": [
++        "AGENTS.md",
++        "docs/quality-document.md"
++      ],
++      "why": "Test fixtures and packs define the evidence and its limits."
+     }
+   ]
+ }
+diff --git a/Makefile b/Makefile
+index 123ddda..3c827c7 100644
+--- a/Makefile
++++ b/Makefile
+@@ -8,18 +8,26 @@ SHELL := /usr/bin/env bash
+ 
+ .PHONY: setup
+ setup: ## Install all dependencies from a clean checkout
+-	@echo "Nothing to install: the kit is bash and python3 only. Try: make check"
++	@bash scripts/setup-oracles.sh
++	@echo "Full verification also requires Node, k6 and curl. See README.md."
+ 
+ .PHONY: dev
+ dev: ## Start the local dev server
+ 	@echo "This is a library, not a service. Try: make check"
+ 
+ .PHONY: test
+-test: ## Run the test suite
++test: ## Run the core fixture suite
++	bash scripts/check-prerequisites.sh core
+ 	bash tests/run-tests.sh
+ 
+ .PHONY: check
+ check: ## Full verification pipeline — must exit 0 before every commit
++	bash scripts/run-gates.sh quick
++	$(MAKE) check-core
++
++.PHONY: check-core
++check-core: ## Fixture suites and packs (quick gates run separately)
++	bash scripts/check-prerequisites.sh full
+ 	bash tests/run-tests.sh
+ # The packs ship their own failure matrices. Linting them was never the same as
+ # running them: a pack could regress with the repo's gate still green, which is
+diff --git a/bin/ARCHITECTURE.md b/bin/ARCHITECTURE.md
+index 2fa3634..ce4aa6f 100644
+--- a/bin/ARCHITECTURE.md
++++ b/bin/ARCHITECTURE.md
+@@ -1,6 +1,6 @@
+ # bin/ — architecture
+ 
+-Two executables, no shared library. They are deliberately independent: the auditor must
++Five executables with separate responsibilities. The auditor remains independent: the auditor must
+ run standalone over `curl | bash` in a repository that has never seen this kit, so it
+ cannot source anything.
+ 
+@@ -39,3 +39,15 @@ ignore it.
+ **The full level composes AGENTS.md** from `templates/minimal/AGENTS.md` plus
+ `templates/full/AGENTS-appendix.md`. why: one source of truth for the base contract. Do not
+ fork a second full copy — they will drift.
++
++## harness-activate.sh
++
++Coordinates scaffold installation and optional authorized protection setup; a successful install is separate from observed readiness. It preserves files unless explicit force is requested.
++
++## harness-protect.sh
++
++Writes GitHub rulesets for the resolved repository when authorized and reports platform/account limits. Local configuration files alone do not activate remote enforcement.
++
++## harness-status.sh
++
++Runs `make check` within a bounded timeout, then queries actual ruleset details. Filenames or ruleset names do not establish readiness. Remote API errors are indeterminate; observed protection remains configuration evidence rather than an adversarial merge proof. See `docs/harness-capabilities.md` for profiles, prerequisites and the protected-policy bootstrap boundary.
+diff --git a/bin/harness-init.sh b/bin/harness-init.sh
+index cc5ef7e..25c6224 100755
+--- a/bin/harness-init.sh
++++ b/bin/harness-init.sh
+@@ -186,7 +186,14 @@ render "$M/DECISIONS.md"               "$TARGET/DECISIONS.md"
+ render "$M/docs-decisions-README.md"   "$TARGET/docs/decisions/README.md"
+ 
+ # ── Full layer ───────────────────────────────────────────────────────────────
++if [[ "$LEVEL" == "minimal" ]]; then
++  render "$M/installation-profile.json" "$TARGET/.harness/installation-profile.json"
++fi
+ if [[ "$LEVEL" == "full" ]]; then
++  render "$F/.harness/judge-contract.json" "$TARGET/.harness/judge-contract.json"
++  render "$F/.harness/installation-profile.json" "$TARGET/.harness/installation-profile.json"
++  render "$F/scripts/setup-oracles.sh" "$TARGET/scripts/setup-oracles.sh"
++  render "$F/requirements-harness.txt" "$TARGET/requirements-harness.txt"
+   render "$F/Makefile"                        "$TARGET/Makefile"
+   render "$F/scripts/verify-feature.sh"       "$TARGET/scripts/verify-feature.sh"
+   render "$F/scripts/verify-claims.sh"        "$TARGET/scripts/verify-claims.sh"
+@@ -216,6 +223,10 @@ if [[ "$LEVEL" == "full" ]]; then
+   render "$KIT_DIR/bin/harness-audit.sh"      "$TARGET/scripts/harness-audit.sh"
+   render "$F/.harness/arch-rules.json"        "$TARGET/.harness/arch-rules.json"
+ 
++  if [[ "$DRYRUN" -eq 0 && -f "$TARGET/.gitignore" ]] && ! grep -qxF '.harness/tools/' "$TARGET/.gitignore"; then
++    printf '\n.harness/tools/\n' >> "$TARGET/.gitignore"
++  fi
++
+   # Stamp which kit built this. Without it there is no way to answer "which of my
+   # repositories still lack the fix?" across a fleet.
+   if [[ $DRYRUN -eq 0 ]]; then
+@@ -233,11 +244,11 @@ if [[ "$LEVEL" == "full" ]]; then
+     echo "  write   .harness/traces/.gitkeep"
+     if [[ -f "$TARGET/.gitignore" ]]; then
+       grep -q '.harness/traces/traces.jsonl' "$TARGET/.gitignore" 2>/dev/null || {
+-        printf '\n# harness runtime artifacts\n.harness/traces/traces.jsonl\n' >> "$TARGET/.gitignore"
++        printf '\n# harness runtime artifacts\n.harness/traces/traces.jsonl\n.harness/tools/\n' >> "$TARGET/.gitignore"
+         echo "  append  .gitignore (traces.jsonl)"
+       }
+     else
+-      printf '# harness runtime artifacts\n.harness/traces/traces.jsonl\n' > "$TARGET/.gitignore"
++      printf '# harness runtime artifacts\n.harness/traces/traces.jsonl\n.harness/tools/\n' > "$TARGET/.gitignore"
+       echo "  write   .gitignore"
+     fi
+   fi
+diff --git a/bin/harness-status.sh b/bin/harness-status.sh
+index 52253a1..52dec26 100755
+--- a/bin/harness-status.sh
++++ b/bin/harness-status.sh
+@@ -1,149 +1,68 @@
+ #!/usr/bin/env bash
+-# harness-status.sh — what is actually enforced here, right now.
+-#
+-# Usage:
+-#   bin/harness-status.sh [--target DIR]
+-#
+-# The audit score answers "how complete is the harness?". This answers the
+-# question you actually have before trusting it: does anything stop a bad change
+-# from merging, or is it all on the honour system?
+-#
+-# States:
+-#   READY_DUAL     local gate + required check + the workflow itself protected
+-#   READY_PARTIAL  local gate + required check, but the workflow can be edited
+-#   READY_LOCAL    the harness runs locally; nothing on GitHub blocks a merge
+-#   BLOCKED_TOOL   something required to verify is missing or broken
+-#   NOT_ACTIVATED  no harness here yet
+-#
+-# Exit codes: 0 when activated (any READY_*), 1 otherwise. So CI or a hook can
+-# branch on it without parsing text.
+-
++# Report observed local verification and inspected remote rules; never infer readiness from filenames.
++# Usage: harness-status.sh [--target DIR] [DIR]
+ set -uo pipefail
+-
+-TARGET="."
++TARGET=.
+ while [[ $# -gt 0 ]]; do
+   case "$1" in
+-    --target) TARGET="$2"; shift 2 ;;
+-    -h|--help) sed -n '2,20p' "$0"; exit 0 ;;
++    --target) [[ $# -ge 2 ]] || exit 64; TARGET="$2"; shift 2 ;;
++    -h|--help) sed -n '2,3p' "$0"; exit 0 ;;
+     *) TARGET="$1"; shift ;;
+   esac
+ done
+-TARGET="$(cd "$TARGET" 2>/dev/null && pwd)" || { echo "harness-status: no such directory" >&2; exit 64; }
+-
+-if [[ ! -t 1 ]] || [[ -n "${NO_COLOR:-}" ]]; then
+-  GREEN=""; YELLOW=""; BOLD=""; RESET=""
+-else
+-  GREEN=$'\033[0;32m'; YELLOW=$'\033[1;33m'
+-  BOLD=$'\033[1m'; RESET=$'\033[0m'
+-fi
+-
+-say()  { printf '%s\n' "$1"; }
+-line() { printf '  %-4s %s\n' "$1" "$2"; }
+-
+-# ── Local layer ──────────────────────────────────────────────────────────────
+-if [[ ! -f "$TARGET/AGENTS.md" ]] || [[ ! -f "$TARGET/feature_list.json" ]]; then
+-  say "${BOLD}NOT_ACTIVATED${RESET} — no hay harness en $(basename "$TARGET")."
+-  say ""
+-  say "Actívalo con:  bin/harness-activate.sh --target $TARGET"
+-  exit 1
+-fi
+-
+-HAS_CLAIMS=0;   [[ -f "$TARGET/scripts/verify-claims.sh" ]]    && HAS_CLAIMS=1
+-HAS_DEC=0;      [[ -f "$TARGET/scripts/verify-decisions.sh" ]] && HAS_DEC=1
+-HAS_WF=0;       [[ -f "$TARGET/.github/workflows/required-quality.yml" ]] && HAS_WF=1
+-
+-# ── Remote ───────────────────────────────────────────────────────────────────
+-SLUG=""
+-if git -C "$TARGET" rev-parse --git-dir >/dev/null 2>&1; then
+-  URL="$(git -C "$TARGET" remote get-url origin 2>/dev/null || true)"
+-  if [[ -n "$URL" ]]; then
+-    SLUG="$(printf '%s' "$URL" \
+-      | sed -e 's#^git@[^:]*:##' -e 's#^https\{0,1\}://[^/]*/##' -e 's#\.git$##')"
+-  fi
+-fi
+-
+-# ── Hosted layer: ask GitHub rather than assume ──────────────────────────────
+-CHECK_RULE=""; INTEGRITY_RULE=""
+-GH_OK=0
+-if [[ -n "$SLUG" ]] && command -v gh >/dev/null 2>&1; then
+-  if RULESETS="$(gh api "repos/$SLUG/rulesets" --jq '.[] | "\(.name)|\(.enforcement)"' 2>/dev/null)"; then
+-    GH_OK=1
+-    CHECK_RULE="$(printf '%s\n' "$RULESETS" | grep '^required-quality-check|active' || true)"
+-    INTEGRITY_RULE="$(printf '%s\n' "$RULESETS" | grep '^required-quality-workflow-integrity|active' || true)"
+-  fi
+-fi
+-
+-# ── Verdict ──────────────────────────────────────────────────────────────────
+-if [[ -n "$CHECK_RULE" && -n "$INTEGRITY_RULE" ]]; then
+-  STATE="READY_DUAL"
+-elif [[ -n "$CHECK_RULE" ]]; then
+-  STATE="READY_PARTIAL"
+-else
+-  STATE="READY_LOCAL"
+-fi
+-
+-case "$STATE" in
+-  READY_DUAL)    say "${GREEN}${BOLD}READY_DUAL${RESET} — un cambio malo no puede fusionarse." ;;
+-  READY_PARTIAL) say "${YELLOW}${BOLD}READY_PARTIAL${RESET} — la compuerta bloquea, pero no se protege a sí misma." ;;
+-  READY_LOCAL)   say "${YELLOW}${BOLD}READY_LOCAL${RESET} — todavía nada en GitHub bloquea una fusión." ;;
+-esac
+-
+-say ""
+-# ── Kit version: the question this answers is "which of my repositories still
+-# lack the fix?", and it is unanswerable without a stamp in each one.
+-KIT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+-KIT_VER="$(tr -d '[:space:]' < "$KIT_ROOT/VERSION" 2>/dev/null || echo "unknown")"
+-REPO_VER=""
+-[[ -f "$TARGET/.harness/kit-version" ]] && \
+-  REPO_VER="$(tr -d '[:space:]' < "$TARGET/.harness/kit-version")"
+-
+-if [[ -z "$REPO_VER" ]]; then
+-  say "Kit: $KIT_VER  ${YELLOW}(este repo no registra su versión: se activó con un kit anterior)${RESET}"
+-elif [[ "$REPO_VER" != "$KIT_VER" ]]; then
+-  say "Kit: $REPO_VER  ${YELLOW}desactualizado — hay $KIT_VER${RESET}"
+-  say "  Revisa el CHANGELOG y actualiza con: harness-init.sh --target $TARGET --level full --force"
+-  say "  (--force sobrescribe: revisa el diff antes de commitear)"
+-else
+-  say "Kit: $KIT_VER"
+-fi
+-
+-say ""
+-say "${BOLD}Local${RESET}"
+-line "ok" "contrato, estado y presupuestos"
+-[[ $HAS_CLAIMS -eq 1 ]] && line "ok" "re-verificador de afirmaciones (verify-claims.sh)" \
+-                        || line "--" "sin re-verificador: un 'passing' escrito a mano nunca se recomprueba"
+-[[ $HAS_DEC -eq 1 ]]    && line "ok" "ledger de decisiones (solo se agrega)" \
+-                        || line "--" "sin verificación del ledger de decisiones"
+-
+-say ""
+-say "${BOLD}GitHub${RESET}"
+-if [[ -z "$SLUG" ]]; then
+-  line "--" "sin remoto — el veredicto queda por completo en confianza"
+-elif [[ $GH_OK -eq 0 ]]; then
+-  line "?" "$SLUG — no se pudieron leer los rulesets (gh sin auth, o sin acceso)"
+-else
+-  [[ $HAS_WF -eq 1 ]] && line "ok" "workflow presente" || line "--" "sin workflow de calidad requerida"
+-  [[ -n "$CHECK_RULE" ]] && line "ok" "compuerta requerida activa en $SLUG" \
+-                         || line "--" "sin ruleset de compuerta: CI reporta pero nada bloquea"
+-  [[ -n "$INTEGRITY_RULE" ]] && line "ok" "workflow protegido contra ediciones" \
+-                             || line "--" "workflow SIN proteger — un 'if: false' en el job se fusiona en verde"
+-fi
+-
+-say ""
+-case "$STATE" in
+-  READY_DUAL)
+-    say "Siguiente: nada. Abre un PR que rompa un test si quieres verlo negarse." ;;
+-  READY_PARTIAL)
+-    say "${BOLD}Qué significa:${RESET} los tests rotos y los estados 'passing' escritos a mano"
+-    say "quedan bloqueados. Editar el workflow no: GitHub sólo permite push rules en"
+-    say "repositorios de organización. Revisa a mano cualquier PR que toque"
+-    say ".github/workflows/, o mueve el repo a una organización para cerrarlo." ;;
+-  READY_LOCAL)
+-    if [[ -z "$SLUG" ]]; then
+-      say "Siguiente: súbelo a GitHub y corre bin/harness-protect.sh para hacer vinculante la compuerta."
+-    else
+-      say "Siguiente: bin/harness-protect.sh $SLUG"
+-    fi ;;
+-esac
+-
+-exit 0
++KIT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
++python3 - "$TARGET" "$KIT" <<'PY'
++import json, os, pathlib, shutil, subprocess, sys
++root=pathlib.Path(sys.argv[1]).resolve(); kit=pathlib.Path(sys.argv[2])
++if not root.is_dir(): print('harness-status: no such directory',file=sys.stderr); sys.exit(64)
++if not all((root/x).is_file() for x in ['AGENTS.md','feature_list.json']): print('NOT_ACTIVATED — no harness contract/state'); sys.exit(1)
++version=(kit/'VERSION').read_text().strip(); stamp=root/'.harness/kit-version'
++print('Kit: '+(stamp.read_text().strip() if stamp.is_file() else version+' (version not recorded)'))
++if stamp.is_file() and stamp.read_text().strip()!=version: print('desactualizado — hay '+version)
++try:
++    profile=json.loads((root/'.harness/installation-profile.json').read_text())
++    if profile.get('installation')=='minimal': print('NOT_VERIFIED — minimal contract scaffold; full mechanical gates are not installed'); sys.exit(1)
++    timeout=float(os.environ.get('HARNESS_STATUS_TIMEOUT','120'))
++    if not 0 < timeout <= 1800: raise ValueError('timeout must be >0 and <=1800 seconds')
++    result=subprocess.run(['make','check'],cwd=root,capture_output=True,text=True,timeout=timeout)
++except (OSError,ValueError,subprocess.TimeoutExpired) as e:
++    print('BLOCKED_TOOL — local verification indeterminate: '+str(e)); sys.exit(1)
++if result.returncode:
++    print('BLOCKED_LOCAL — make check exit '+str(result.returncode)); print(result.stdout+result.stderr); sys.exit(1)
++print('Local: observed make check exit 0')
++r=subprocess.run(['git','remote','get-url','origin'],cwd=root,capture_output=True,text=True)
++if r.returncode or not r.stdout.strip(): print('READY_LOCAL — local check passed; no remote protection was inspected'); sys.exit(0)
++url=r.stdout.strip()
++if url.startswith('git@github.com:'): slug=url[len('git@github.com:'):]
++elif url.startswith('https://github.com/'): slug=url[len('https://github.com/'):]
++else: print('INDETERMINATE_REMOTE — unsupported remote'); sys.exit(1)
++slug=slug.removesuffix('.git')
++def api(path):
++    r=subprocess.run(['gh','api',path],capture_output=True,text=True,timeout=30)
++    if r.returncode: raise ValueError('API query failed: '+path)
++    return json.loads(r.stdout)
++try:
++    rules=api('repos/'+slug+'/rulesets?includes_parents=true')
++    if not isinstance(rules,list): raise ValueError('invalid ruleset list')
++    details=[api('repos/'+slug+'/rulesets/'+str(r['id'])) for r in rules]
++    protected=False; integrity=False
++    for d in details:
++        if not isinstance(d,dict) or not isinstance(d.get('rules'),list): raise ValueError('invalid ruleset detail')
++        if d.get('enforcement')!='active' or d.get('bypass_actors'): continue
++        rr=d['rules']; types={r.get('type') for r in rr}
++        cond=d.get('conditions',{}).get('ref_name',{})
++        applies=cond.get('include')==['~DEFAULT_BRANCH'] and cond.get('exclude')==[]
++        if d.get('target')=='branch' and applies and {'pull_request','non_fast_forward'}<=types:
++            for rule in rr:
++                p=rule.get('parameters',{})
++                if rule.get('type')=='required_status_checks' and p.get('strict_required_status_checks_policy') is True and any(x.get('context')=='Required quality' for x in p.get('required_status_checks',[])): protected=True
++        if d.get('target')=='push':
++            for rule in rr:
++                if rule.get('type')=='file_path_restriction' and '.github/workflows/required-quality.yml' in rule.get('parameters',{}).get('restricted_file_paths',[]): integrity=True
++    if protected and not (root/'.github/workflows/required-quality.yml').is_file(): raise ValueError('required workflow missing locally')
++except (OSError,ValueError,KeyError,TypeError,subprocess.TimeoutExpired) as e:
++    print('INDETERMINATE_REMOTE — local check passed, protection query incomplete: '+str(e)); sys.exit(1)
++state='READY_DUAL' if protected and integrity else 'READY_PARTIAL' if protected else 'READY_LOCAL'
++print(state+' — local check passed; inspected default-branch required check='+str(protected)+', workflow path protection='+str(integrity))
++print('These observations are not an adversarial merge canary or production acceptance.')
++PY
+diff --git a/scripts/check-arch.sh b/scripts/check-arch.sh
+index 4aa11ba..702a9f2 100755
+--- a/scripts/check-arch.sh
++++ b/scripts/check-arch.sh
+@@ -7,7 +7,7 @@ set -uo pipefail
+ REPO="${1:-.}"
+ REPO="${REPO%/}"
+ cd "$REPO" || { echo "check-arch: cannot cd to $REPO" >&2; exit 66; }
+-RULES=".harness/arch-rules.json"
++RULES="${ARCH_RULES_FILE:-.harness/arch-rules.json}"
+ [[ -f "$RULES" ]] || { echo "check-arch: $RULES not found"; exit 0; }
+ 
+ if [[ ! -t 1 ]] || [[ -n "${NO_COLOR:-}" ]]; then
+diff --git a/scripts/pre-commit-staged.sh b/scripts/pre-commit-staged.sh
+index 1b7cb10..09e8758 100644
+--- a/scripts/pre-commit-staged.sh
++++ b/scripts/pre-commit-staged.sh
+@@ -1,56 +1,63 @@
+ #!/usr/bin/env bash
+-# pre-commit-staged.sh — fast, staged-only local checkpoint.
+-#
+-# Design rules (in order of importance):
+-#   1. STAGED FILES ONLY. CI owns the exhaustive matrix; this must stay fast.
+-#   2. REGENERATE RATHER THAN REJECT. When a formatter is available it fixes
+-#      the staged files and re-stages them instead of failing the commit.
+-#   3. FAIL LOUD WITH THE FIX. Missing tooling names the exact command to run;
+-#      it never half-runs and never fails with a bare ENOENT.
+-#
+-# Installed as a git hook by `make hooks-install` (opt-in — it refuses to fight
+-# an existing hook manager such as husky).
++# Format an isolated index snapshot; never stage unrelated working-tree changes.
+ set -uo pipefail
+-
+-ROOT_DIR="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+-cd "$ROOT_DIR" || exit 0
+-
+-# Portable read (macOS ships bash 3.2: no mapfile).
+-STAGED=()
+-while IFS= read -r line; do STAGED+=("$line"); done < <(git diff --cached --name-only --diff-filter=ACM)
+-[[ ${#STAGED[@]} -eq 0 ]] && exit 0
+-
+-fail=0
+-
+-# 1. Whitespace errors in what is about to be committed.
+-if ! git diff --cached --check; then
+-  echo "pre-commit: fix the whitespace errors above (git diff --cached --check)." >&2
+-  fail=1
+-fi
+-
+-# 2. Formatting — autofix and re-stage, never just complain.
+-if [[ -f .prettierrc || -f .prettierrc.json || -f prettier.config.js || -f .prettierrc.js ]]; then
+-  FMT=()
+-  for f in "${STAGED[@]}"; do
+-    case "$f" in *.json|*.md|*.css|*.yml|*.yaml) [[ -f "$f" ]] && FMT+=("$f") ;; esac
+-  done
+-  if [[ ${#FMT[@]} -gt 0 ]]; then
+-    if [[ -x node_modules/.bin/prettier ]]; then
+-      node_modules/.bin/prettier --write "${FMT[@]}" >/dev/null 2>&1 && git add "${FMT[@]}"
+-    else
+-      echo "pre-commit: this repo formats with prettier but node_modules is missing." >&2
+-      echo "            Run 'make setup' first — the hook will not half-run." >&2
+-      fail=1
+-    fi
+-  fi
+-fi
+-
+-# 3. Agent Notes staged? Verify the tree before it lands.
+-for f in "${STAGED[@]}"; do
+-  case "$f" in .agents/notes/*)
+-    bash scripts/verify-agent-notes.sh || fail=1
+-    break ;;
+-  esac
+-done
+-
+-exit "$fail"
++ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
++cd "$ROOT" || exit 3
++python3 - <<'PY'
++import hashlib, os, pathlib, shutil, subprocess, sys, tempfile
++root=pathlib.Path.cwd()
++def git(*args, **kw): return subprocess.run(['git',*args],check=True,capture_output=True,**kw)
++try:
++    index=pathlib.Path(os.fsdecode(git('rev-parse','--git-path','index').stdout).strip()).resolve()
++    original=index.read_bytes()
++    staged=[os.fsdecode(p) for p in git('diff','--cached','--name-only','--diff-filter=ACM','-z').stdout.split(b'\0') if p]
++    if not staged: sys.exit(0)
++    with tempfile.TemporaryDirectory(prefix='harness-index-') as directory:
++        work=pathlib.Path(directory).resolve(); snapshot=work/'tree'; snapshot.mkdir()
++        records={}
++        # Materialize regular index blobs ourselves: checkout-index may follow links.
++        for record in git('ls-files','--stage','-z').stdout.split(b'\0'):
++            if not record: continue
++            meta,path=record.split(b'\t',1); mode,oid,stage=meta.decode().split(); name=os.fsdecode(path)
++            if stage!='0': raise ValueError('unmerged index; resolve conflicts first')
++            parts=pathlib.PurePosixPath(name).parts
++            if pathlib.PurePosixPath(name).is_absolute() or '..' in parts: raise ValueError('unsafe index path')
++            if mode=='120000': raise ValueError('staged snapshot contains symlink '+name+'; format and stage manually')
++            if mode=='160000': continue
++            if mode not in {'100644','100755'}: raise ValueError('unsupported index mode '+mode)
++            dest=snapshot/name; dest.parent.mkdir(parents=True,exist_ok=True)
++            dest.write_bytes(git('cat-file','blob',oid).stdout); dest.chmod(int(mode[-3:],8))
++            records[name]=(mode,oid)
++        configs=['.prettierrc','.prettierrc.json','prettier.config.js','.prettierrc.js']
++        fmt=[p for p in staged if pathlib.Path(p).suffix in {'.json','.md','.css','.yml','.yaml'} and p in records]
++        if any((snapshot/c).is_file() for c in configs) and fmt:
++            formatter=root/'node_modules/.bin/prettier'
++            if not formatter.is_file(): raise ValueError("prettier missing; run make setup, then retry git commit")
++            r=subprocess.run([str(formatter),'--write',*fmt],cwd=snapshot)
++            if r.returncode: raise ValueError(f'formatter failed (exit {r.returncode}); run node_modules/.bin/prettier --write <selected files>, review git diff, stage only intended hunks, then retry git commit')
++        # Validate the staged Agent Note tree, never unrelated unstaged notes.
++        if any(p.startswith('.agents/notes/') for p in staged):
++            checker=snapshot/'scripts/verify-agent-notes.sh'
++            if not checker.is_file(): raise ValueError('missing staged Agent Notes checker')
++            if subprocess.run(['bash',str(checker)],cwd=snapshot).returncode: raise ValueError('staged Agent Notes gate failed')
++        temporary_index=work/'index'; temporary_index.write_bytes(original)
++        env=os.environ.copy(); env['GIT_INDEX_FILE']=str(temporary_index)
++        for name in fmt:
++            mode,oid=records[name]; dest=snapshot/name
++            if dest.is_symlink() or not dest.is_file() or any(p.is_symlink() for p in dest.parents if p!=snapshot.parent): raise ValueError('formatter returned unsupported link or file')
++            new_oid=git('hash-object','-w','--stdin',input=dest.read_bytes()).stdout.strip().decode()
++            git('update-index','--add','--cacheinfo',mode,new_oid,name,env=env)
++        checked=subprocess.run(['git','diff','--cached','--check'],env=env)
++        if checked.returncode: raise ValueError('staged whitespace errors; repair selected hunks and retry')
++        lock=pathlib.Path(str(index)+'.lock')
++        fd=os.open(lock,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
++        try:
++            if index.read_bytes()!=original: raise ValueError('index changed during hook; retry commit')
++            with os.fdopen(fd,'wb') as out: out.write(temporary_index.read_bytes())
++            os.replace(lock,index)
++        finally:
++            if lock.exists(): lock.unlink()
++except (OSError,ValueError,subprocess.CalledProcessError) as e:
++    print('pre-commit: '+str(e),file=sys.stderr); sys.exit(1)
++print('pre-commit: staged snapshot verified; working-tree bytes preserved')
++PY
+diff --git a/scripts/run-gates.sh b/scripts/run-gates.sh
+index 4080750..97beb53 100644
+--- a/scripts/run-gates.sh
++++ b/scripts/run-gates.sh
+@@ -1,59 +1,15 @@
+ #!/usr/bin/env bash
+-# run-gates.sh — the registry of this repo's quality gates.
+-#
+-# Usage:
+-#   scripts/run-gates.sh [quick|full]     # default: quick
+-#
+-# One rule governs the registry: a convention without a gate is a suggestion.
+-# Every mechanically checkable rule in AGENTS.md gets a row here, and a new
+-# gate is proven by making it REJECT an invalid case before it ships.
+-#
+-# Aggregates:
+-#   quick  static gates only — no dependency install, safe mid-work, < seconds
+-#   full   quick + re-verification of claims + the complete `make check`
+-#
+-# ── Only PASS satisfies a gate ───────────────────────────────────────────────
+-# This runner used to know two answers: it ran and exited zero, or it did not.
+-# Everything else became FAIL, and a gate whose script was missing became SKIP,
+-# which never failed the run. Both collapses hide the state that matters most:
+-# the gate that never actually checked anything.
+-#
+-# That is not hypothetical here. verify-delivery-doc.sh shipped with a branch
+-# that, handed a ref it could not resolve, printed "no new migrations" for a
+-# release that shipped one — a green line for work never done. The script was
+-# repaired, but a runner that cannot tell "checked and clean" from "could not
+-# check" will keep converting silence into confidence.
+-#
+-# So a gate now reports one of these, and only PASS lets the run go green:
+-#
+-#   PASS            exit 0 — it ran, it checked, it is clean
+-#   FAIL            exit 1 — it ran and found a real problem. Fix the code
+-#   NOT_CONFIGURED  exit 2 — its config or contract is invalid. Fix the config
+-#   TOOL_FAILURE    exit 3 — the tool or environment broke. Fix the environment
+-#   INCOMPLETE      exit 4 — it could not finish; the result is unknown or stale
+-#   POLICY          exit 5 — an integrity or policy violation
+-#   UNKNOWN         any other exit code — treated as blocking, never as pass
+-#   NOT_EXECUTED    its script is absent
+-#
+-# FAIL and TOOL_FAILURE both block, and the distinction is not cosmetic: one
+-# says fix your code, the other says fix your machine. Reporting them as one
+-# thing sends people to the wrong place.
+-#
+-# NOT_EXECUTED blocks for a gate declared `required` and stands down for one
+-# declared `optional` — the harness may legitimately be half-installed, but a
+-# required gate must not go missing quietly.
++# Versioned live gate registry. Only PASS satisfies an applicable gate.
++# Base judge usage: bash /trusted/base/scripts/run-gates.sh quick --target /head
+ set -uo pipefail
+-
+-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+-cd "$ROOT_DIR" || exit 66
+-AGGREGATE="${1:-quick}"
+-case "$AGGREGATE" in quick|full) ;; *) echo "usage: run-gates.sh [quick|full]" >&2; exit 64 ;; esac
+-
+-# Registry: name | aggregates | required|optional | command
+-#
+-# `required` means: if this gate's script is not here, that is a finding. Mark a
+-# gate optional only when its absence is a real, expected configuration — never
+-# to quiet a gate that keeps failing.
++JUDGE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
++AGGREGATE="${1:-quick}"; [[ $# -eq 0 ]] || shift
++TARGET="$JUDGE"
++if [[ $# -gt 0 ]]; then
++  [[ $# -eq 2 && "$1" == --target ]] || { echo 'usage: run-gates.sh [quick|full] [--target DIR]' >&2; exit 64; }
++  TARGET="$(cd "$2" && pwd)" || exit 3
++fi
++case "$AGGREGATE" in quick|full) ;; *) exit 64 ;; esac
+ GATES=(
+   "decisions-append-only|quick full|required|bash scripts/verify-decisions.sh"
+   "agent-notes-tree|quick full|required|bash scripts/verify-agent-notes.sh"
+@@ -64,81 +20,75 @@ GATES=(
+   "context-routes|quick full|required|bash scripts/verify-context-routes.sh"
+   "oracles-falsifiable|quick full|required|bash scripts/verify-oracles.sh"
+   "claims-reverified|full|required|bash scripts/verify-claims.sh"
+-  "make-check|full|required|make check"
++  "make-check|full|required|make check-core"
+ )
+-
+-# What each exit code means, and whether it lets the run stay green.
+-state_for_exit() {
+-  case "$1" in
+-    0) printf 'PASS' ;;
+-    1) printf 'FAIL' ;;
+-    2) printf 'NOT_CONFIGURED' ;;
+-    3) printf 'TOOL_FAILURE' ;;
+-    4) printf 'INCOMPLETE' ;;
+-    5) printf 'POLICY' ;;
+-    *) printf 'UNKNOWN' ;;
+-  esac
+-}
+-
+-# What to do about each state, in the words of whoever has to fix it.
+-repair_hint() {
+-  case "$1" in
+-    FAIL)           printf 'the gate ran and found a real problem — fix the code' ;;
+-    NOT_CONFIGURED) printf 'its configuration or contract is invalid — fix the config, not the gate' ;;
+-    TOOL_FAILURE)   printf 'the tool or environment broke — this is not a code defect' ;;
+-    INCOMPLETE)     printf 'it could not finish, so nothing was verified — do not read this as clean' ;;
+-    POLICY)         printf 'an integrity or policy violation — needs a human decision' ;;
+-    UNKNOWN)        printf 'it exited with a code this runner does not know — treat as unverified' ;;
+-    NOT_EXECUTED)   printf 'a required gate is missing from this repo — install it or declare it optional' ;;
+-    *)              printf '' ;;
+-  esac
+-}
+-
+-pass=0; blocked=0; stood_down=0
+-declare -a BLOCKING_SUMMARY=()
+-printf '── gates · aggregate %s\n\n' "$AGGREGATE"
+-
+-for row in "${GATES[@]}"; do
+-  IFS='|' read -r name aggs requirement cmd <<<"$row"
+-  case " $aggs " in *" $AGGREGATE "*) ;; *) continue ;; esac
+-
+-  script_path="$(printf '%s' "$cmd" | awk '$1=="bash"{print $2}')"
+-  if [[ -n "$script_path" && ! -f "$script_path" ]]; then
+-    if [[ "$requirement" == "required" ]]; then
+-      printf '  %-24s NOT_EXECUTED  (missing %s)\n' "$name" "$script_path"
+-      printf '      %s\n' "$(repair_hint NOT_EXECUTED)"
+-      blocked=$((blocked+1)); BLOCKING_SUMMARY+=("$name NOT_EXECUTED")
+-    else
+-      printf '  %-24s not installed (optional)\n' "$name"
+-      stood_down=$((stood_down+1))
+-    fi
+-    continue
+-  fi
+-
+-  start=$SECONDS
+-  out="$(eval "$cmd" 2>&1)"; rc=$?
+-  state="$(state_for_exit "$rc")"
+-  elapsed="$((SECONDS-start))"
+-
+-  if [[ "$state" == "PASS" ]]; then
+-    printf '  %-24s PASS (%ss)\n' "$name" "$elapsed"
+-    pass=$((pass+1))
+-    continue
+-  fi
+-
+-  printf '  %-24s %s (%ss, exit %s)\n' "$name" "$state" "$elapsed" "$rc"
+-  printf '      %s\n' "$(repair_hint "$state")"
+-  printf '%s\n' "$out" | sed 's/^/      /' | tail -15
+-  blocked=$((blocked+1)); BLOCKING_SUMMARY+=("$name $state")
+-done
+-
+-printf '\n── %d pass · %d blocking · %d optional not installed\n' "$pass" "$blocked" "$stood_down"
+-
+-if [[ "$blocked" -gt 0 ]]; then
+-  printf '\nBlocking:\n'
+-  for b in "${BLOCKING_SUMMARY[@]}"; do printf '  · %s\n' "$b"; done
+-  printf '\nOnly PASS satisfies a gate. A state that is not PASS was not verified,\n'
+-  printf 'and an unverified gate is not a passing one.\n'
+-  exit 1
+-fi
+-exit 0
++python3 - "$JUDGE" "$TARGET" "$AGGREGATE" "${GATES[@]}" <<'PY'
++import json, os, pathlib, shlex, subprocess, sys, time
++judge, target = map(pathlib.Path, sys.argv[1:3]); aggregate=sys.argv[3]
++rows=[row.split('|') for row in sys.argv[4:]]
++def strict(pairs):
++    d={}
++    for k,v in pairs:
++        if k in d: raise ValueError('duplicate key: '+k)
++        d[k]=v
++    return d
++def profile(root):
++    p=root/'.harness/installation-profile.json'
++    try: d=json.loads(p.read_text(), object_pairs_hook=strict)
++    except (OSError,ValueError) as e: raise ValueError(f'ADOPTION_REQUIRED: {p}: {e}')
++    if not isinstance(d,dict) or set(d)!={'schema_version','installation','gates'} or type(d['schema_version']) is not int or d['schema_version']!=1 or d['installation'] not in {'kit','full','minimal'}: raise ValueError('invalid installation profile v1')
++    gates=d['gates']
++    if not isinstance(gates,dict) or set(gates)!={r[0] for r in rows}: raise ValueError('profile must declare every registry gate exactly once')
++    for name,v in gates.items():
++        if not isinstance(v,dict) or set(v)!={'applicable','reason'} or type(v['applicable']) is not bool or not isinstance(v['reason'],str) or not v['reason'].strip(): raise ValueError('invalid applicability for '+name)
++        expected=d['installation']!='minimal' and (name!='version-sync' or d['installation']=='kit')
++        if v['applicable']!=expected: raise ValueError('profile cannot remove required gate '+name)
++    return d
++try:
++    policy=profile(judge)
++    if target!=judge:
++        expected={'schema_version':1,'interfaces':['target-root-v1','installation-profile-v1','match-argv-v1']}
++        try: contract=json.loads((judge/'.harness/judge-contract.json').read_text(),object_pairs_hook=strict)
++        except (OSError,ValueError): raise ValueError('ADOPTION_REQUIRED: protected judge contract missing or invalid')
++        if contract!=expected: raise ValueError('ADOPTION_REQUIRED: unsupported protected judge contract')
++        if profile(target)!=policy: raise ValueError('ADOPTION_REQUIRED: head profile differs from protected base')
++    if policy['installation']=='minimal': raise ValueError('minimal installation has no full gate capability')
++except ValueError as e:
++    print('NOT_CONFIGURED: '+str(e), file=sys.stderr); sys.exit(2)
++print(f'── gates · aggregate {aggregate} · profile v1/{policy["installation"]}', flush=True)
++if target!=judge:
++    for label,path in [('judge/base',judge),('target/head',target)]:
++        r=subprocess.run(['git','rev-parse','HEAD'],cwd=path,capture_output=True,text=True)
++        if r.returncode: print('INCOMPLETE: cannot identify '+label); sys.exit(4)
++        print(label+': '+r.stdout.strip())
++states={0:'PASS',1:'FAIL',2:'NOT_CONFIGURED',3:'TOOL_FAILURE',4:'INCOMPLETE',5:'POLICY'}
++passed=blocked=na=0
++for name,aggs,requirement,cmd in rows:
++    if aggregate not in aggs.split(): continue
++    applicability=policy['gates'][name]
++    if not applicability['applicable']:
++        print(f'  {name:24s} NOT_APPLICABLE ({applicability["reason"]})'); na+=1; continue
++    argv=shlex.split(cmd); env=os.environ.copy()
++    env['HARNESS_TARGET_ROOT']=str(target)
++    if target!=judge:
++        env.update(ARCH_RULES_FILE=str(judge/'.harness/arch-rules.json'), CONTEXT_ROUTES=str(judge/'.harness/context-routes.json'), ORACLES_DIR=str(judge/'.harness/oracles'), CLAIMS_BASE_FILE=str(judge/'feature_list.json'), DECISIONS_BASE_FILE=str(judge/'DECISIONS.md'))
++    if argv[0]=='bash':
++        script=judge/argv[1]
++        if not script.is_file():
++            print(f'  {name:24s} NOT_EXECUTED (missing {script})'); blocked+=1; continue
++        argv[1]=str(script)
++        if name=='arch-boundaries': argv.append(str(target))
++        # A missing architecture policy is an installation failure, not zero rules.
++        if name=='arch-boundaries' and not pathlib.Path(env.get('ARCH_RULES_FILE',target/'.harness/arch-rules.json')).is_file():
++            print('  arch-boundaries NOT_CONFIGURED (missing policy)'); blocked+=1; continue
++    else: env.pop('HARNESS_TARGET_ROOT',None)
++    start=time.monotonic()
++    try: result=subprocess.run(argv,cwd=target,env=env,capture_output=True,text=True); state=states.get(result.returncode,'UNKNOWN')
++    except OSError as e: print('TOOL_FAILURE: '+str(e)); blocked+=1; continue
++    print(f'  {name:24s} {state} ({time.monotonic()-start:.1f}s, exit {result.returncode})',flush=True)
++    if result.returncode: print(result.stdout+result.stderr); blocked+=1
++    else: passed+=1
++print(f'── {passed} pass · {blocked} blocking · {na} not applicable')
++if blocked: print('Only PASS satisfies a gate. A non-PASS state was not verified.')
++sys.exit(1 if blocked else 0)
++PY
+diff --git a/scripts/verify-agent-notes.sh b/scripts/verify-agent-notes.sh
+index d3e33f8..2ea5168 100644
+--- a/scripts/verify-agent-notes.sh
++++ b/scripts/verify-agent-notes.sh
+@@ -19,6 +19,8 @@
+ set -uo pipefail
+ 
+ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
++ROOT_DIR="${HARNESS_TARGET_ROOT:-$ROOT_DIR}"
++unset HARNESS_TARGET_ROOT
+ NOTES="$ROOT_DIR/.agents/notes"
+ 
+ if [[ ! -d "$NOTES" ]]; then
+diff --git a/scripts/verify-claims.sh b/scripts/verify-claims.sh
+index 3061295..e3b2d93 100755
+--- a/scripts/verify-claims.sh
++++ b/scripts/verify-claims.sh
+@@ -6,6 +6,8 @@
+ set -uo pipefail
+ 
+ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
++ROOT_DIR="${HARNESS_TARGET_ROOT:-$ROOT_DIR}"
++unset HARNESS_TARGET_ROOT
+ cd "$ROOT_DIR" || { echo "cannot cd to $ROOT_DIR" >&2; exit 66; }
+ FL="feature_list.json"
+ [[ -f "$FL" ]] || { echo "verify-claims: $FL not found in $ROOT_DIR" >&2; exit 66; }
+@@ -250,8 +252,12 @@ base, head = load(sys.argv[1], "base"), load(sys.argv[2], "head")
+ base_passing = {f["id"]: f.get("layers", []) for f in base["features"] if f["state"] == "passing"}
+ head_passing = {f["id"]: f.get("layers", []) for f in head["features"] if f["state"] == "passing"}
+ changed = []
++def identity(layers):
++    # Repair is human guidance; every other contract field remains exact.
++    return [{key: value for key, value in layer.items() if key != "repair"} for layer in layers]
++
+ for fid, layers in base_passing.items():
+-    if fid in head_passing and layers != head_passing[fid]:
++    if fid in head_passing and identity(layers) != identity(head_passing[fid]):
+         changed.append((fid, layers, head_passing[fid]))
+ if changed:
+     print("WEAKENED_VERIFICATION", file=sys.stderr)
+diff --git a/scripts/verify-context-routes.sh b/scripts/verify-context-routes.sh
+index f5289b2..c8c9aaa 100755
+--- a/scripts/verify-context-routes.sh
++++ b/scripts/verify-context-routes.sh
+@@ -1,221 +1,63 @@
+ #!/usr/bin/env bash
+-# verify-context-routes.sh — a change under governed paths must cite what governs it.
+-#
+-# ── The failure this exists to stop ──────────────────────────────────────────
+-# An external audit reported that a product fiche declared an impossible width.
+-# The finding was real. The fix implemented for it invented engineering
+-# tolerances — and `docs/DECISIONS.md` §D2 said, in as many words, that the
+-# comparator does not invent tolerances. The decision had been taken, written
+-# down, and was one grep away. It was never opened.
+-#
+-# Three more failures in that same session had the same shape: the right answer
+-# was already written in a file nobody read. `rules/fuentes.md` states the
+-# precedence in prose. Prose depends on the reader remembering to look, which is
+-# precisely what failed.
+-#
+-# So the map becomes mechanical. `.harness/context-routes.json` says: a change
+-# under THESE paths is governed by THOSE documents. Touch the paths, cite the
+-# documents — in a commit message on the branch, or in an Agent Note the change
+-# carries.
+-#
+-# Citing is weak proof of reading, and that is fine: the point is not the string.
+-# To write «DECISIONS.md §D2» you have to go find §D2, and going to find it is
+-# the whole intervention. Anyone determined to fake it can, and a harness that
+-# assumed otherwise would be lying about what it enforces.
+-#
+-# Usage:
+-#   bash scripts/verify-context-routes.sh          # gate: governed changes cite their sources
+-#   bash scripts/verify-context-routes.sh --list   # advisory: print the reading list, exit 0
+-#
+-# Config:
+-#   CONTEXT_ROUTES  route map          (default: .harness/context-routes.json)
+-#   ROUTES_BASE     ref to diff from   (default: merge-base with the default branch)
+-#
+-# Exit codes follow the runner's contract:
+-#   0  PASS            every governed change cites a governing document
+-#   1  FAIL            a governed change cites none
+-#   2  NOT_CONFIGURED  the route map is missing or malformed
+-#   3  TOOL_FAILURE    python3 unavailable
+-#   4  INCOMPLETE      the diff could not be determined — nothing was verified
+-
++# Govern committed, staged, unstaged and untracked paths using current citations.
+ set -uo pipefail
+-
+-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+-cd "$ROOT_DIR" || exit 3
+-
+-MAP="${CONTEXT_ROUTES:-.harness/context-routes.json}"
+-MODE="${1:-gate}"
+-
+-if [[ ! -t 1 ]] || [[ -n "${NO_COLOR:-}" ]]; then
+-  RED=""; GREEN=""; YELLOW=""; RESET=""
+-else
+-  RED=$'\033[0;31m'; GREEN=$'\033[0;32m'; YELLOW=$'\033[1;33m'
+-  RESET=$'\033[0m'
+-fi
+-
+-command -v python3 >/dev/null 2>&1 || { echo "${RED}context-routes: needs python3${RESET}" >&2; exit 3; }
+-
+-if [[ ! -f "$MAP" ]]; then
+-  echo "${RED}context-routes: $MAP not found${RESET}" >&2
+-  echo "  Without a route map this gate cannot know what governs what." >&2
+-  exit 2
+-fi
+-
+-# ── The map is validated before anything else ───────────────────────────────
+-# It used to be parsed only once a diff existed, so on a commit with nothing
+-# governed a corrupt map reported PASS. A broken configuration would then sit
+-# unnoticed until the first governed change — the moment it is needed most.
+-# Config validation runs always (V2 §12.5).
+-if ! MAP="$MAP" python3 - <<'VALIDATE'
+-import json, os, sys
++ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
++cd "${HARNESS_TARGET_ROOT:-$ROOT}" || exit 3
++unset HARNESS_TARGET_ROOT
++python3 - "${1:-gate}" <<'PY'
++import fnmatch,json,os,pathlib,subprocess,sys
++mode=sys.argv[1]
++def git(*args):
++    r=subprocess.run(['git',*args],capture_output=True)
++    if r.returncode: raise RuntimeError(r.stderr.decode(errors='replace'))
++    return r.stdout
++def strict(pairs):
++    d={}
++    for k,v in pairs:
++        if k in d: raise ValueError('duplicate key '+k)
++        d[k]=v
++    return d
+ try:
+-    with open(os.environ["MAP"], encoding="utf-8") as fh:
+-        cfg = json.load(fh)
+-except (json.JSONDecodeError, OSError) as exc:
+-    print(f"context-routes: {os.environ['MAP']} is not readable JSON: {exc}", file=sys.stderr)
+-    sys.exit(2)
+-routes = cfg.get("routes")
+-if not isinstance(routes, list) or not routes:
+-    print(f"context-routes: {os.environ['MAP']} declares no routes", file=sys.stderr)
+-    sys.exit(2)
+-for idx, route in enumerate(routes):
+-    if not (route.get("paths") and route.get("read")):
+-        print(f"context-routes: route #{idx} needs both «paths» and «read»", file=sys.stderr)
+-        sys.exit(2)
+-VALIDATE
+-then
+-  exit 2
+-fi
+-
+-# ── Which ref to compare against ────────────────────────────────────────────
+-# A base that cannot be resolved must stop the run, never report a clean diff:
+-# "no governed changes" and "could not see the changes" are different answers,
+-# and only one of them is good news.
+-BASE="${ROUTES_BASE:-}"
+-if [[ -z "$BASE" ]]; then
+-  for candidate in origin/main origin/master main master; do
+-    if git rev-parse --verify --quiet "$candidate" >/dev/null 2>&1; then
+-      BASE="$(git merge-base HEAD "$candidate" 2>/dev/null || true)"
+-      [[ -n "$BASE" ]] && break
+-    fi
+-  done
+-fi
+-if [[ -z "$BASE" ]]; then
+-  echo "${YELLOW}context-routes: no base ref to diff against${RESET}" >&2
+-  echo "  Set ROUTES_BASE. Nothing was verified — this is not a pass." >&2
+-  exit 4
+-fi
+-if ! git rev-parse --verify --quiet "$BASE" >/dev/null 2>&1; then
+-  echo "${RED}context-routes: ROUTES_BASE «${BASE}» is not a ref here${RESET}" >&2
+-  exit 2
+-fi
+-
+-CHANGED="$(git diff --name-only "$BASE"..HEAD 2>/dev/null)"
+-# On the base commit itself there is no branch work in flight. That is a real
+-# clean answer, not a missing one.
+-if [[ -z "$CHANGED" ]]; then
+-  echo "${GREEN}context-routes: no changes against ${BASE:0:8} — nothing to govern${RESET}"
+-  exit 0
+-fi
+-
+-# What the change says about itself: commit subjects and bodies on the branch,
+-# plus the full text of any Agent Note it touches.
+-EVIDENCE="$(git log --format='%B' "$BASE"..HEAD 2>/dev/null)"
+-while IFS= read -r f; do
+-  [[ -n "$f" && -f "$f" ]] || continue
+-  case "$f" in
+-    *.agents/notes/*|*AGENT-NOTE*|*agent-note*) EVIDENCE="$EVIDENCE
+-$(cat "$f")" ;;
+-  esac
+-done <<<"$CHANGED"
+-
+-export MAP MODE CHANGED EVIDENCE
+-python3 - <<'PY'
+-import fnmatch, json, os, sys
+-
+-map_path = os.environ["MAP"]
+-mode = os.environ["MODE"]
+-changed = [p for p in os.environ["CHANGED"].splitlines() if p.strip()]
+-evidence = os.environ["EVIDENCE"]
+-
++    cfg=json.loads(pathlib.Path(os.environ.get('CONTEXT_ROUTES','.harness/context-routes.json')).read_text(),object_pairs_hook=strict)
++    if not isinstance(cfg,dict) or not isinstance(cfg.get('routes'),list) or not cfg['routes']: raise ValueError('route map declares no routes')
++    routes=cfg['routes']
++    for r in routes:
++        if not isinstance(r,dict): raise ValueError('route must be an object')
++        for key in ['paths','read']:
++            if not isinstance(r.get(key),list) or not r[key] or any(not isinstance(x,str) or not x.strip() or '\0' in x for x in r[key]): raise ValueError('route needs nonempty paths and read arrays')
++        if 'why' in r and not isinstance(r['why'],str): raise ValueError('why must be a string')
++except (ValueError,OSError) as e: print('context-routes: NOT_CONFIGURED '+str(e),file=sys.stderr); sys.exit(2)
+ try:
+-    with open(map_path, encoding="utf-8") as fh:
+-        cfg = json.load(fh)
+-except (json.JSONDecodeError, OSError) as exc:
+-    print(f"context-routes: {map_path} is not readable JSON: {exc}", file=sys.stderr)
+-    sys.exit(2)
+-
+-routes = cfg.get("routes")
+-if not isinstance(routes, list) or not routes:
+-    print(f"context-routes: {map_path} declares no routes", file=sys.stderr)
+-    sys.exit(2)
+-
+-def matches(path, pattern):
+-    # «lib/rules/**» must cover lib/rules/a.ts and lib/rules/deep/b.ts alike;
+-    # fnmatch alone treats * as crossing separators, so normalise the intent.
+-    if pattern.endswith("/**"):
+-        return path == pattern[:-3] or path.startswith(pattern[:-2])
+-    return fnmatch.fnmatch(path, pattern)
+-
+-triggered = []
+-for idx, route in enumerate(routes):
+-    paths = route.get("paths") or []
+-    read = route.get("read") or []
+-    if not paths or not read:
+-        print(f"context-routes: route #{idx} needs both «paths» and «read»", file=sys.stderr)
+-        sys.exit(2)
+-    hits = [p for p in changed for pat in paths if matches(p, pat)]
+-    if hits:
+-        triggered.append((route, sorted(set(hits))))
+-
+-if not triggered:
+-    print("context-routes: this change touches no governed path")
+-    sys.exit(0)
+-
+-if mode == "--list":
+-    print("Read these before changing what this diff changes:\n")
+-    for route, hits in triggered:
+-        why = route.get("why", "")
+-        print(f"  because it touches: {', '.join(hits[:4])}{' …' if len(hits) > 4 else ''}")
+-        if why:
+-            print(f"  {why}")
+-        for doc in route["read"]:
+-            print(f"    · {doc}")
+-        print()
+-    sys.exit(0)
+-
+-# A citation is the document's own name appearing in what the change says about
+-# itself. Basename too: «RULES_ENGINE.md §1» is how a person cites it.
+-def cited(doc):
+-    return doc in evidence or os.path.basename(doc) in evidence
+-
+-uncited = []
+-for route, hits in triggered:
+-    if not any(cited(d) for d in route["read"]):
+-        uncited.append((route, hits))
+-
+-for route, hits in triggered:
+-    shown = ", ".join(hits[:3]) + (" …" if len(hits) > 3 else "")
+-    state = "cites" if not any(r is route for r, _ in uncited) else "CITES NOTHING"
+-    print(f"  {state:14s} {shown}")
+-
+-if not uncited:
+-    print("\ncontext-routes: every governed change cites a governing document")
+-    sys.exit(0)
+-
+-sys.stdout.flush()  # or the report lands after the diagnosis it explains
+-print("", file=sys.stderr)
+-for route, hits in uncited:
+-    print("context-routes: this change is governed by documents it never mentions.", file=sys.stderr)
+-    print(f"  changed: {', '.join(hits[:6])}", file=sys.stderr)
+-    if route.get("why"):
+-        print(f"  {route['why']}", file=sys.stderr)
+-    print("  read, then cite whichever one settles it:", file=sys.stderr)
+-    for doc in route["read"]:
+-        print(f"    · {doc}", file=sys.stderr)
+-    print("", file=sys.stderr)
+-print("Cite it in a commit message on this branch or in the Agent Note the change carries.", file=sys.stderr)
+-print("If a document forbids what you are doing, it does not stop being in force because", file=sys.stderr)
+-print("the change looks obviously right — amend it, with an owner and a date, or comply.", file=sys.stderr)
+-sys.exit(1)
++    base=os.environ.get('ROUTES_BASE')
++    if base:
++        try: git('rev-parse','--verify',base+'^{commit}')
++        except RuntimeError: print('context-routes: invalid ROUTES_BASE',file=sys.stderr); sys.exit(2)
++    else:
++        for ref in ['origin/main','origin/master','main','master']:
++            try: base=git('merge-base','HEAD',ref).decode().strip(); break
++            except RuntimeError: continue
++        if not base: raise RuntimeError('no base ref; set ROUTES_BASE')
++    changed=set()
++    for args in [('diff','--name-only','-z',base,'HEAD'),('diff','--cached','--name-only','-z'),('diff','--name-only','-z'),('ls-files','--others','--exclude-standard','-z')]:
++        changed.update(os.fsdecode(p) for p in git(*args).split(b'\0') if p)
++    evidence=git('log','--format=%B',base+'..HEAD').decode(errors='replace')
++    for name in sorted(changed):
++        if name.startswith('.agents/notes/') or 'AGENT-NOTE' in name or 'agent-note' in name:
++            p=pathlib.Path(name)
++            if p.is_file(): evidence+='\n'+p.read_text()
++except (RuntimeError,OSError,UnicodeError) as e: print('context-routes: INCOMPLETE '+str(e),file=sys.stderr); sys.exit(4)
++hits=[(r,sorted(p for p in changed if any(fnmatch.fnmatchcase(p,pat) for pat in r['paths']))) for r in routes]
++hits=[(r,paths) for r,paths in hits if paths]
++if not hits: print('context-routes: no governed changes in branch/index/workspace'); sys.exit(0)
++missing=0
++for r,paths in hits:
++    cited=any(d in evidence or pathlib.Path(d).name in evidence for d in r['read'])
++    print(('read' if mode=='--list' else 'cites' if cited else 'CITES NOTHING')+': '+', '.join(paths))
++    print('  governed by: '+', '.join(r['read']))
++    if r.get('why'): print('  '+r['why'])
++    if not cited: missing+=1
++if mode=='--list': sys.exit(0)
++if missing: print('Cite a governing document in a branch commit message or current Agent Note.',file=sys.stderr)
++else: print('context-routes: every governed change cites a governing document')
++sys.exit(1 if missing else 0)
+ PY
+diff --git a/scripts/verify-decisions.sh b/scripts/verify-decisions.sh
+index 42f5c8b..a70dfd7 100755
+--- a/scripts/verify-decisions.sh
++++ b/scripts/verify-decisions.sh
+@@ -6,15 +6,17 @@
+ set -uo pipefail
+ 
+ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
++ROOT_DIR="${HARNESS_TARGET_ROOT:-$ROOT_DIR}"
++unset HARNESS_TARGET_ROOT
+ cd "$ROOT_DIR" || { echo "cannot cd to $ROOT_DIR" >&2; exit 66; }
+ git rev-parse --git-dir >/dev/null 2>&1 || {
+   echo "verify-decisions: not a git repository" >&2; exit 66; }
+ 
+ if [[ ! -t 1 ]] || [[ -n "${NO_COLOR:-}" ]]; then
+-  RED=""; GREEN=""; YELLOW=""; BOLD=""; RESET=""
++  YELLOW=""; RESET=""
+ else
+-  RED=$'\033[0;31m'; GREEN=$'\033[0;32m'; YELLOW=$'\033[1;33m'
+-  BOLD=$'\033[1m'; RESET=$'\033[0m'
++  YELLOW=$'\033[1;33m'
++  RESET=$'\033[0m'
+ fi
+ 
+ PY=""
+diff --git a/scripts/verify-delivery-doc.sh b/scripts/verify-delivery-doc.sh
+index 50c5108..4ad08f2 100755
+--- a/scripts/verify-delivery-doc.sh
++++ b/scripts/verify-delivery-doc.sh
+@@ -38,6 +38,8 @@
+ set -uo pipefail
+ 
+ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
++ROOT_DIR="${HARNESS_TARGET_ROOT:-$ROOT_DIR}"
++unset HARNESS_TARGET_ROOT
+ cd "$ROOT_DIR" || { echo "verify-delivery-doc: cannot cd to $ROOT_DIR" >&2; exit 3; }
+ 
+ DOC="${DELIVERY_DOC:-README.md}"
+@@ -58,7 +60,12 @@ fail() { echo "  ${RED}MISMATCH${RESET} $1"; FAILURES=$((FAILURES+1)); }
+ ok()   { echo "  ${GREEN}ok${RESET}       $1"; }
+ skip() { echo "  ${YELLOW}skip${RESET}     $1"; }
+ 
+-[[ -f "$DOC" ]] || { echo "${RED}verify-delivery-doc: $DOC not found${RESET}" >&2; exit 3; }
++if [[ ! -f "$DOC" ]]; then
++  if [[ "${DELIVERY_DOC_REQUIRED:-0}" == 1 ]]; then
++    echo "verify-delivery-doc: required runbook $DOC missing" >&2; exit 2
++  fi
++  echo "verify-delivery-doc: no declared runbook at $DOC"; exit 0
++fi
+ 
+ # ── Does this repository publish a runbook at all? ──────────────────────────
+ # Not every repo hands a deploy document to someone else, and a gate that fails
+@@ -82,7 +89,14 @@ fi
+ VERSION=""
+ if [[ -f "$VERSION_SOURCE" ]]; then
+   case "$VERSION_SOURCE" in
+-    *.json) VERSION="$(sed -n 's/^[[:space:]]*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$VERSION_SOURCE" | head -1)" ;;
++    *.json) VERSION="$(python3 - "$VERSION_SOURCE" <<'VERSIONPY'
++import json,sys
++with open(sys.argv[1]) as f: d=json.load(f)
++v=d.get('version')
++if not isinstance(v,str) or not v.strip(): sys.exit(2)
++print(v)
++VERSIONPY
++)" || exit 2 ;;
+     *)      VERSION="$(tr -d '[:space:]' < "$VERSION_SOURCE")" ;;
+   esac
+ fi
+@@ -162,11 +176,17 @@ if [[ -n "$BASE" ]] && ! git rev-parse --verify --quiet "$BASE" >/dev/null 2>&1;
+   exit 3
+ fi
+ if [[ -z "$BASE" ]]; then
+-  skip "no DELIVERY_BASE and no tag — cannot tell which migrations are new"
++  if [[ -d "$MIGRATIONS_DIR" ]]; then
++    echo "INCOMPLETE: set DELIVERY_BASE to identify release migrations" >&2; exit 4
++  fi
++  ok "no migration directory configured for cross-check"
+ elif [[ ! -d "$MIGRATIONS_DIR" ]]; then
+   skip "no $MIGRATIONS_DIR — nothing to cross-check"
+ else
+-  NEW_MIGRATIONS="$(git diff --name-only --diff-filter=A "$BASE"..HEAD -- "$MIGRATIONS_DIR" 2>/dev/null || true)"
++  NEW_MIGRATIONS="$(git diff --name-only --diff-filter=A "$BASE" -- "$MIGRATIONS_DIR")" || exit 4
++  UNTRACKED_MIGRATIONS="$(git ls-files --others --exclude-standard -- "$MIGRATIONS_DIR")" || exit 4
++  NEW_MIGRATIONS="$NEW_MIGRATIONS
++$UNTRACKED_MIGRATIONS"
+   if [[ -z "$NEW_MIGRATIONS" ]]; then
+     ok "no new migrations since $BASE"
+   else
+diff --git a/scripts/verify-feature.sh b/scripts/verify-feature.sh
+index eafb96a..41d44c1 100755
+--- a/scripts/verify-feature.sh
++++ b/scripts/verify-feature.sh
+@@ -10,9 +10,9 @@ FL="feature_list.json"
+ [[ -f "$FL" ]] || { echo "verify-feature: $FL not found in $ROOT_DIR" >&2; exit 66; }
+ 
+ if [[ ! -t 1 ]] || [[ -n "${NO_COLOR:-}" ]]; then
+-  RED=""; GREEN=""; YELLOW=""; BOLD=""; RESET=""
++  RED=""; GREEN=""; BOLD=""; RESET=""
+ else
+-  RED=$'\033[0;31m'; GREEN=$'\033[0;32m'; YELLOW=$'\033[1;33m'
++  RED=$'\033[0;31m'; GREEN=$'\033[0;32m'
+   BOLD=$'\033[1m'; RESET=$'\033[0m'
+ fi
+ 
+diff --git a/scripts/verify-makefile-gates.sh b/scripts/verify-makefile-gates.sh
+index 8c6da8e..b2a6b9e 100755
+--- a/scripts/verify-makefile-gates.sh
++++ b/scripts/verify-makefile-gates.sh
+@@ -24,6 +24,8 @@
+ set -uo pipefail
+ 
+ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
++ROOT_DIR="${HARNESS_TARGET_ROOT:-$ROOT_DIR}"
++unset HARNESS_TARGET_ROOT
+ cd "$ROOT_DIR" || { echo "cannot cd to $ROOT_DIR" >&2; exit 66; }
+ 
+ MAKEFILE="${MAKEFILE_UNDER_TEST:-Makefile}"
+diff --git a/scripts/verify-oracles.sh b/scripts/verify-oracles.sh
+index 518b39f..b1d30c3 100755
+--- a/scripts/verify-oracles.sh
++++ b/scripts/verify-oracles.sh
+@@ -47,6 +47,8 @@
+ set -uo pipefail
+ 
+ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
++ROOT_DIR="${HARNESS_TARGET_ROOT:-$ROOT_DIR}"
++unset HARNESS_TARGET_ROOT
+ cd "$ROOT_DIR" || exit 3
+ 
+ DIR="${ORACLES_DIR:-.harness/oracles}"
+@@ -60,6 +62,14 @@ fi
+ 
+ command -v python3 >/dev/null 2>&1 || { echo "${RED}oracles: needs python3${RESET}" >&2; exit 3; }
+ 
++ORACLE_PY="python3"
++if [[ -x "$ROOT_DIR/.harness/tools/oracles-venv/bin/python3" ]]; then
++  ORACLE_PY="$ROOT_DIR/.harness/tools/oracles-venv/bin/python3"
++fi
++"$ORACLE_PY" -c 'import yaml; assert yaml.__version__ == "6.0.3"' >/dev/null 2>&1 || {
++  echo "oracles: TOOL_FAILURE: requires PyYAML==6.0.3; run bash scripts/setup-oracles.sh" >&2; exit 3;
++}
++
+ # No oracles yet is a real, honest answer: this gate arrives before the criteria
+ # do, and a repo that has written none has nothing to be stale about.
+ if [[ ! -d "$DIR" ]] || ! find "$DIR" -name '*.yaml' -o -name '*.yml' 2>/dev/null | grep -q .; then
+@@ -70,8 +80,18 @@ fi
+ 
+ # The eight questions of V2 §9.3, as the fields that answer them.
+ export DIR MODE
+-python3 - <<'PY'
+-import os, re, subprocess, sys, traceback
++ORACLE_PY="python3"
++if [[ -x "$ROOT_DIR/.harness/tools/oracles-venv/bin/python3" ]]; then
++  ORACLE_PY="$ROOT_DIR/.harness/tools/oracles-venv/bin/python3"
++fi
++"$ORACLE_PY" - <<'PY'
++import os, re, subprocess, sys, traceback, json, hashlib
++try:
++    import yaml
++    if yaml.__version__ != "6.0.3": raise ImportError("requires PyYAML==6.0.3")
++except ImportError as exc:
++    print("oracles: TOOL_FAILURE: " + str(exc) + "; run bash scripts/setup-oracles.sh", file=sys.stderr)
++    sys.exit(3)
+ from pathlib import Path
+ 
+ def _crash(exc_type, exc, tb):
+@@ -102,40 +122,48 @@ QUESTIONS = [
+ ]
+ PLACEHOLDERS = re.compile(r"^\s*(tbd|todo|t\.b\.d\.|xxx|\?+|pending|por definir|-{1,3})\s*$", re.I)
+ 
++class StrictLoader(yaml.SafeLoader):
++    def compose_node(self, parent, index):
++        if self.check_event(yaml.AliasEvent):
++            raise ValueError("aliases are not supported in oracle contracts")
++        event = self.peek_event()
++        if getattr(event, "anchor", None): raise ValueError("anchors are not supported")
++        return super().compose_node(parent, index)
++
++def mapping(loader, node, deep=False):
++    result = {}
++    for key_node, value_node in node.value:
++        key = loader.construct_object(key_node, deep=deep)
++        if not isinstance(key, str): raise ValueError("mapping keys must be strings")
++        if key in result: raise ValueError("duplicate key: " + key)
++        result[key] = loader.construct_object(value_node, deep=deep)
++    return result
++StrictLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, mapping)
++
+ def load_yaml(path):
+-    """Minimal reader for the flat-ish shape these files use.
+-
+-    A YAML dependency would be one more thing to install before a gate can run,
+-    and a gate nobody can run is not a gate. The accepted shape is documented in
+-    the schema: scalars, lists of scalars, and one level of nesting.
+-    """
+-    data = {}
+-    stack = [(0, data)]
+-    for raw in path.read_text(encoding="utf-8").splitlines():
+-        if not raw.strip() or raw.lstrip().startswith("#"):
+-            continue
+-        indent = len(raw) - len(raw.lstrip())
+-        line = raw.strip()
+-        while len(stack) > 1 and indent <= stack[-1][0]:
+-            stack.pop()
+-        node = stack[-1][1]
+-        if line.startswith("- "):
+-            node.setdefault("__list__", []).append(line[2:].strip().strip("\"'"))
+-            continue
+-        if ":" not in line:
+-            continue
+-        key, _, val = line.partition(":")
+-        key, val = key.strip(), val.strip().strip("\"'")
+-        if val:
+-            node[key] = val
+-        else:
+-            child = {}
+-            node[key] = child
+-            stack.append((indent, child))
++    data = yaml.load(path.read_text(encoding="utf-8"), Loader=StrictLoader)
++    allowed = {"id", "requirement", "criticality", "status", "tests", "falsification"} | {k for k, q in QUESTIONS}
++    if not isinstance(data, dict) or set(data) - allowed: raise ValueError("unknown fields or non-object oracle")
++    for key in ("id", "requirement", "criticality", "status"):
++        if not isinstance(data.get(key), str) or not data[key].strip(): raise ValueError(key + " must be a nonempty string")
++    if data['criticality'] not in {'critical','high','medium','low'}: raise ValueError("invalid criticality")
++    if 'tests' in data and (not isinstance(data['tests'],list) or any(not isinstance(t,str) or not t.strip() for t in data['tests'])): raise ValueError("tests must be a list of paths")
++    if 'falsification' in data and not isinstance(data['falsification'],dict): raise ValueError("falsification must be an object")
++    def value(v):
++        if isinstance(v,str): return
++        if isinstance(v,list):
++            for item in v: value(item)
++        elif isinstance(v,dict):
++            for item in v.values(): value(item)
++        else: raise ValueError("answers must contain strings, mappings or lists of strings")
++    for key, question in QUESTIONS:
++        if key in data: value(data[key])
+     return data
+ 
+ def flatten(v):
+     """A field answers its question if it holds anything real, at any depth."""
++    if isinstance(v, list):
++        return [s for item in v for s in flatten(item)]
+     if isinstance(v, dict):
+         out = []
+         for k, sub in v.items():
+@@ -162,14 +190,20 @@ def is_ancestor(a, b):
+ files = sorted(list(DIR.glob("*.yaml")) + list(DIR.glob("*.yml")))
+ problems, listing = [], []
+ 
++parsed = []
+ for f in files:
+     try:
+         o = load_yaml(f)
+-    except OSError as exc:
++    except (OSError, UnicodeError, ValueError, yaml.YAMLError) as exc:
+         print(f"oracles: {f} unreadable: {exc}", file=sys.stderr)
+         sys.exit(2)
+ 
+-    oid = o.get("id") or f.stem
++    parsed.append((f,o))
++if len({o["id"] for f,o in parsed}) != len(parsed):
++    print("oracles: duplicate oracle id",file=sys.stderr); sys.exit(2)
++
++for f, o in parsed:
++    oid = o["id"]
+     status = str(o.get("status", "")).strip()
+     crit = str(o.get("criticality", "")).strip().lower()
+     if status not in {"DRAFT", "DECISION_REQUIRED", "TEST_READY", "DEFERRED", "RETIRED"}:
+@@ -218,12 +252,45 @@ for f in files:
+             "A test only ever seen passing has not been shown to test anything.",
+         ]))
+         continue
++    if not re.fullmatch('[0-9a-f]{40}', proved) or not is_ancestor(proved, "HEAD"):
++        problems.append((oid, f"records a proof at {proved[:8]}, which is not in this history", ["Fetch the required history or record the actual witnessed base."]))
++        continue
++    receipt_path = fal.get("receipt")
++    if receipt_path:
++        try:
++            def strict_json(pairs):
++                d = {}
++                for k,v in pairs:
++                    if k in d: raise ValueError("duplicate receipt key")
++                    d[k] = v
++                return d
++            receipt = json.loads(Path(receipt_path).read_text(), object_pairs_hook=strict_json)
++            if not isinstance(receipt,dict) or set(receipt) != {"schema_version","command","exit_code","tests","source","logs"}: raise ValueError("invalid receipt fields")
++            if receipt['schema_version'] != 1 or type(receipt['exit_code']) is not int or receipt['exit_code'] <= 0: raise ValueError("receipt must record observed nonzero RED")
++            if not isinstance(receipt['command'],list) or not receipt['command'] or any(not isinstance(x,str) or not x for x in receipt['command']): raise ValueError("receipt needs exact argv")
++            if not isinstance(receipt['tests'],dict) or set(receipt['tests']) != set(tests): raise ValueError("receipt tests differ from oracle")
++            for group in ['tests','source','logs']:
++                bindings=receipt[group]
++                if not isinstance(bindings,dict) or not bindings: raise ValueError("empty receipt " + group)
++                for path,digest in bindings.items():
++                    if not isinstance(path,str) or Path(path).is_absolute() or '..' in Path(path).parts: raise ValueError("receipt paths must be repository relative")
++                    if not isinstance(digest,str) or not re.fullmatch('[0-9a-f]{64}',digest): raise ValueError("invalid digest")
++                    if hashlib.sha256(Path(path).read_bytes()).hexdigest() != digest: raise ValueError("receipt predates its own tests or changed bytes: " + path)
++            print(f"  local RED receipt consistent: {oid}; a local receipt is not independent authority")
++        except (OSError, ValueError, TypeError, KeyError) as exc:
++            problems.append((oid,"invalid or stale RED receipt",[str(exc)]))
++        continue
+     if not is_ancestor(proved, "HEAD"):
+         problems.append((oid, f"records a proof at {proved[:8]}, which is not in this history", [
+             "Re-run the falsification here and record the commit."]))
+         continue
++    problems.append((oid, "has history consistency only, no witnessed RED receipt", ["Record falsification.receipt with command, nonzero exit and hashed tests/source/logs; a SHA alone does not witness RED."]))
+     stale = [t for t in tests
+              if (c := last_commit_touching(t)) and not is_ancestor(c, proved)]
++    for t in tests:
++        r = subprocess.run(["git", "show", proved + ":" + t], capture_output=True)
++        if r.returncode or r.stdout != Path(t).read_bytes():
++            if t not in stale: stale.append(t)
+     if stale:
+         problems.append((oid, f"proof at {proved[:8]} predates its own tests", [
+             *[f"changed since: {t}" for t in stale],
+diff --git a/scripts/verify-version-sync.sh b/scripts/verify-version-sync.sh
+index e55fb24..93f2fb7 100755
+--- a/scripts/verify-version-sync.sh
++++ b/scripts/verify-version-sync.sh
+@@ -18,6 +18,8 @@
+ set -uo pipefail
+ 
+ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
++ROOT_DIR="${HARNESS_TARGET_ROOT:-$ROOT_DIR}"
++unset HARNESS_TARGET_ROOT
+ cd "$ROOT_DIR" || exit 3
+ 
+ if [[ ! -t 1 ]] || [[ -n "${NO_COLOR:-}" ]]; then
+@@ -31,16 +33,27 @@ read_or_die() {
+   tr -d '[:space:]' < "$1"
+ }
+ 
+-VERSION_FILE="$(read_or_die VERSION)"
+-KIT_VERSION="$(read_or_die .harness/kit-version)"
++VERSION_FILE="$(read_or_die VERSION)" || exit 3
++KIT_VERSION="$(read_or_die .harness/kit-version)" || exit 3
+ 
+ # The manifest is release-please's own record. Read the "." key without adding a
+ # JSON dependency: the file is machine-written and single-keyed.
+-MANIFEST=""
+-if [[ -f .release-please-manifest.json ]]; then
+-  MANIFEST="$(sed -n 's/.*"\."[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' \
+-    .release-please-manifest.json | head -1)"
+-fi
++MANIFEST="$(python3 - <<'MANIFESTPY'
++import json,sys
++try:
++    def strict(pairs):
++        d={}
++        for k,v in pairs:
++            if k in d: raise ValueError('duplicate key')
++            d[k]=v
++        return d
++    with open('.release-please-manifest.json') as f: d=json.load(f,object_pairs_hook=strict)
++    if not isinstance(d,dict) or not isinstance(d.get('.'),str) or not d['.']: raise ValueError('missing version')
++    print(d['.'])
++except (OSError,ValueError) as e: print('version-sync: '+str(e),file=sys.stderr); sys.exit(3)
++MANIFESTPY
++)" || exit 3
++[[ -f CHANGELOG.md ]] || { echo 'version-sync: missing CHANGELOG.md' >&2; exit 3; }
+ 
+ # The newest released heading in the changelog, in either the Keep a Changelog
+ # form written by hand or the plain form release-please emits.
+@@ -63,8 +76,8 @@ case "$VERSION_FILE" in
+   *) echo "  ${RED}FAIL${RESET} VERSION is not semver: '$VERSION_FILE'"; FAILED=1 ;;
+ esac
+ report ".harness/kit-version" "$KIT_VERSION"
+-[[ -n "$MANIFEST" ]] && report ".release-please-manifest.json" "$MANIFEST"
+-[[ -n "$CHANGELOG" ]] && report "CHANGELOG.md (newest entry)" "$CHANGELOG"
++report ".release-please-manifest.json" "$MANIFEST"
++report "CHANGELOG.md (newest entry)" "$CHANGELOG"
+ 
+ echo ""
+ if [[ $FAILED -ne 0 ]]; then
+diff --git a/templates/full/.github/workflows/required-quality.yml b/templates/full/.github/workflows/required-quality.yml
+index 16c6b0d..267fa34 100644
+--- a/templates/full/.github/workflows/required-quality.yml
++++ b/templates/full/.github/workflows/required-quality.yml
+@@ -62,25 +62,46 @@ jobs:
+         with:
+           ref: ${{ steps.identity.outputs.head_sha }}
+           path: head
+-          fetch-depth: 1
++          fetch-depth: 0
+           persist-credentials: false
+ 
+-      - name: Check out protected base claim checker
++      - name: Check out protected base judge and policy
+         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+         with:
+           ref: ${{ steps.identity.outputs.base_sha }}
+           path: base
+-          fetch-depth: 1
++          fetch-depth: 0
+           persist-credentials: false
+-          sparse-checkout: |
+-            scripts/verify-claims.sh
+-            scripts/verify-decisions.sh
+-            DECISIONS.md
+-            feature_list.json
+-          sparse-checkout-cone-mode: false
++
++      - name: Apply protected live policy to exact head
++        id: gates
++        shell: bash
++        env:
++          ROUTES_BASE: ${{ steps.identity.outputs.base_sha }}
++          DELIVERY_BASE: ${{ steps.identity.outputs.base_sha }}
++        run: |
++          set -euo pipefail
++          # An old protected judge cannot certify a new contract. Adoption is explicit.
++          python3 - "$GITHUB_WORKSPACE/base/.harness/judge-contract.json" <<'PYCONTRACT'
++          import json,sys
++          expected={"schema_version":1,"interfaces":["target-root-v1","installation-profile-v1","match-argv-v1"]}
++          try:
++              with open(sys.argv[1]) as stream: actual=json.load(stream)
++              assert actual == expected
++          except (OSError,ValueError,AssertionError):
++              sys.exit("ADOPTION_REQUIRED: protected base lacks the required judge contract; no head fallback")
++          PYCONTRACT
++          bash "$GITHUB_WORKSPACE/base/scripts/setup-oracles.sh"
++          echo "$GITHUB_WORKSPACE/base/.harness/tools/oracles-venv/bin" >> "$GITHUB_PATH"
++          export PATH="$GITHUB_WORKSPACE/base/.harness/tools/oracles-venv/bin:$PATH"
++          bash "$GITHUB_WORKSPACE/base/scripts/run-gates.sh" quick --target "$GITHUB_WORKSPACE/head"
++          : > "$RUNNER_TEMP/gates-observed-zero"
+ 
+       - name: Run the repository verification pipeline
+         id: check
++        env:
++          ROUTES_BASE: ${{ steps.identity.outputs.base_sha }}
++          DELIVERY_BASE: ${{ steps.identity.outputs.base_sha }}
+         shell: bash
+         working-directory: head
+         run: |
+@@ -106,11 +127,9 @@ jobs:
+             printf 'claims_exit=126\n' >> "$GITHUB_OUTPUT"
+             exit 126
+           fi
+-          cp "$checker" "$GITHUB_WORKSPACE/head/scripts/verify-claims.sh"
+-          chmod +x "$GITHUB_WORKSPACE/head/scripts/verify-claims.sh"
+           cd "$GITHUB_WORKSPACE/head"
+           set +e
+-          bash scripts/verify-claims.sh
++          HARNESS_TARGET_ROOT="$GITHUB_WORKSPACE/head" bash "$checker"
+           claims_exit=$?
+           set -e
+           printf 'claims_exit=%s\n' "$claims_exit" >> "$GITHUB_OUTPUT"
+@@ -130,10 +149,9 @@ jobs:
+             printf 'decisions_exit=126\n' >> "$GITHUB_OUTPUT"
+             exit 126
+           fi
+-          cp "$checker" "$GITHUB_WORKSPACE/head/scripts/verify-decisions.sh"
+           cd "$GITHUB_WORKSPACE/head"
+           set +e
+-          bash scripts/verify-decisions.sh
++          HARNESS_TARGET_ROOT="$GITHUB_WORKSPACE/head" bash "$checker"
+           decisions_exit=$?
+           set -e
+           printf 'decisions_exit=%s\n' "$decisions_exit" >> "$GITHUB_OUTPUT"
+@@ -146,6 +164,7 @@ jobs:
+         env:
+           BASE_SHA: ${{ steps.identity.outputs.base_sha }}
+           HEAD_SHA: ${{ steps.identity.outputs.head_sha }}
++          GATES_OUTCOME: ${{ steps.gates.outcome }}
+           CHECK_OUTCOME: ${{ steps.check.outcome }}
+           CHECK_EXIT: ${{ steps.check.outputs.command_exit }}
+           CLAIMS_OUTCOME: ${{ steps.claims.outcome }}
+@@ -161,7 +180,8 @@ jobs:
+           # Fail-closed: success needs both observed zeros AND both sentinels.
+           # Missing, skipped, cancelled and not-executed all land here as blocked.
+           conclusion=blocked
+-          if [ "$CHECK_OUTCOME" = success ] && [ "${CHECK_EXIT:-}" = 0 ] &&
++          if [ "$GATES_OUTCOME" = success ] && [ -f "$RUNNER_TEMP/gates-observed-zero" ] &&
++             [ "$CHECK_OUTCOME" = success ] && [ "${CHECK_EXIT:-}" = 0 ] &&
+              [ "$CLAIMS_OUTCOME" = success ] && [ "${CLAIMS_EXIT:-}" = 0 ] &&
+              [ "$DECISIONS_OUTCOME" = success ] && [ "${DECISIONS_EXIT:-}" = 0 ] &&
+              [ -f "$RUNNER_TEMP/check-observed-zero" ] &&
+@@ -176,6 +196,8 @@ jobs:
+             printf '%s\n' '|---|---|'
+             printf '| head_sha | `%s` |\n' "$HEAD_SHA"
+             printf '| base_sha | `%s` |\n' "$BASE_SHA"
++            printf '| protected live gates | `%s` |\n' "$GATES_OUTCOME"
++            printf '| judge_sha | `%s` |\n' "$BASE_SHA"
+             printf '| workflow_sha | `%s` |\n' "$WORKFLOW_SHA"
+             printf '| run | `%s` (attempt %s) |\n' "$RUN_ID" "$RUN_ATTEMPT"
+             printf '| make check | `%s` (exit `%s`) |\n' "$CHECK_OUTCOME" "${CHECK_EXIT:-none}"
+diff --git a/templates/full/.harness/context-routes.json b/templates/full/.harness/context-routes.json
+index 4e3cf54..cc773bc 100644
+--- a/templates/full/.harness/context-routes.json
++++ b/templates/full/.harness/context-routes.json
+@@ -1,34 +1,17 @@
+ {
+-  "$comment": [
+-    "Which documents govern which paths. Read by scripts/verify-context-routes.sh:",
+-    "a change under `paths` must cite one of its `read` documents, in a commit",
+-    "message on the branch or in the Agent Note it carries.",
+-    "",
+-    "This is the mechanical half of rules/fuentes.md. The prose states the",
+-    "precedence; this file makes forgetting to look a failing gate.",
+-    "",
+-    "Adapt to your repo. A route with paths that never match is dead weight, and",
+-    "a route that fires on every change trains people to paste the citation",
+-    "without reading — keep them narrow and few, and add one only when you can",
+-    "name the mistake it prevents.",
+-    "",
+-    "Patterns: exact paths, fnmatch globs, or `dir/**` for a whole subtree."
+-  ],
+   "routes": [
+     {
+-      "paths": ["lib/rules/**", "lib/**/rules/**"],
+-      "read": ["docs/DECISIONS.md", "docs/adr", "docs/architecture"],
+-      "why": "Business rules decide verdicts, and their trade-offs are already recorded. An external report describes a symptom; it does not repeal a decision."
+-    },
+-    {
+-      "paths": ["supabase/migrations/**", "migrations/**", "db/migrate/**"],
+-      "read": ["docs/DECISIONS.md", "docs/adr"],
+-      "why": "A migration changes what the data means for everyone downstream, and it cannot be taken back by editing a file."
+-    },
+-    {
+-      "paths": [".github/workflows/**", "scripts/run-gates.sh", "scripts/verify-*.sh"],
+-      "read": ["AGENTS.md", "DECISIONS.md"],
+-      "why": "Changing a gate changes what the harness is willing to let through. Weakening one is the change that hides every other."
++      "paths": [
++        "scripts/**",
++        ".harness/**",
++        ".github/workflows/**",
++        "Makefile"
++      ],
++      "read": [
++        "AGENTS.md",
++        "DECISIONS.md"
++      ],
++      "why": "These installed paths define local and CI verification. Add domain routes only for documents that exist in your repository."
+     }
+   ]
+ }
+diff --git a/templates/full/.harness/oracles/README.md b/templates/full/.harness/oracles/README.md
+index 2da402d..6fe4c34 100644
+--- a/templates/full/.harness/oracles/README.md
++++ b/templates/full/.harness/oracles/README.md
+@@ -69,3 +69,11 @@ otherwise would be the first thing lying to you.
+ 
+ What it does buy: the day someone edits a test to make a failure go away, the
+ proof goes stale and says so.
++
++## Strict format and current-byte receipts (profile v1)
++
++Full oracle parsing requires PyYAML==6.0.3. Install it with `bash scripts/setup-oracles.sh`; missing/wrong tooling blocks. Standard scalar/list/mapping and multiline YAML are supported. Duplicate keys, unknown fields/tags, non-string answers, anchors and aliases are rejected before a verdict.
++
++Critical/high TEST_READY criteria need `falsification.proved_sha` and `falsification.receipt`. A SHA alone is history consistency, not witnessed RED. The JSON receipt contains exactly `schema_version: 1`, `command` (argv array), `exit_code` (observed positive nonzero), `tests`, `source` and `logs` (nonempty repository-relative path→SHA256 objects). Tests must exactly match the oracle's named tests and actual current workspace bytes. Source entries point to preserved defective snapshots; logs contain the witnessed failure output. Git history must contain the proved SHA. Keep these records before changing implementation; update only with new witnessed evidence when tests change.
++
++A local receipt is checked for content consistency, not authenticated against a malicious author. It is not a substitute for independent review or a future verified authority protocol.
+diff --git a/templates/full/AGENTS-appendix.md b/templates/full/AGENTS-appendix.md
+index e8adc8c..a52e16a 100644
+--- a/templates/full/AGENTS-appendix.md
++++ b/templates/full/AGENTS-appendix.md
+@@ -113,3 +113,11 @@ cheap path.
+ - `docs/decisions/` — architectural decisions and their rationale
+ - `templates/sprint-contract.md` — pre-feature scope negotiation
+ - `templates/evaluator-rubric.md` — post-session scoring
++
++## Live verification profile and parser
++
++The v1 `.harness/installation-profile.json` declares which gates apply to this full installation. Every universal gate is installed and required; kit release version synchronization is explicitly inapplicable. `make check` runs quick gates against current configuration before project verification; `make gates A=full` avoids recursion through `make check-core`.
++
++Oracle parsing requires PyYAML==6.0.3. Install it with `bash scripts/setup-oracles.sh` into `.harness/tools/oracles-venv`. Missing/wrong tooling blocks. Critical/high oracles need a witnessed, content-bound RED receipt; current staged/uncommitted test bytes are checked. Local receipts do not authenticate an independent witness.
++
++The protected workflow judges exact head from a separate base checkout. A base missing the new profile/judge interface stops with ADOPTION_REQUIRED; an owner must explicitly adopt reviewed protected policy through an authorized maintenance path. Never use candidate judges as fallback or merge a failing required check as bootstrap.
+diff --git a/templates/full/Makefile b/templates/full/Makefile
+index d3274ba..1710841 100644
+--- a/templates/full/Makefile
++++ b/templates/full/Makefile
+@@ -7,7 +7,8 @@ SHELL := /usr/bin/env bash
+ # ── Core ─────────────────────────────────────────────────────────────────────
+ 
+ .PHONY: setup
+-setup: ## Install all dependencies from a clean checkout
++setup: ## Install project dependencies and isolated oracle parser
++	bash scripts/setup-oracles.sh
+ 	{{INSTALL_CMD}}
+ 
+ .PHONY: dev
+@@ -20,6 +21,11 @@ test: ## Run the test suite
+ 
+ .PHONY: check
+ check: ## Full verification pipeline — must exit 0 before every commit
++	bash scripts/run-gates.sh quick
++	$(MAKE) check-core
++
++.PHONY: check-core
++check-core: ## Project verification without recursive gate invocation
+ 	{{VERIFY_CMD}}
+ 
+ .PHONY: verify-claims
+diff --git a/templates/full/docs/quality-document.md b/templates/full/docs/quality-document.md
+index 1173570..04dfc3f 100644
+--- a/templates/full/docs/quality-document.md
++++ b/templates/full/docs/quality-document.md
+@@ -1,49 +1,5 @@
+-# Quality Document — {{PROJECT_NAME}}
++# Module quality
+ 
+-Health of the **codebase**, not of any one session. Read it before starting work to see
+-where the project is weakest; update it after any session that changed a module
+-materially.
++Populate this document from actual repository modules and executed evidence. Do not import the kit's module names or invented business paths. Grade A–D with a verified behavior and a concrete remaining gap for each module. A structural audit, local test result, remote configuration observation and production acceptance are different evidence levels.
+ 
+-The evaluator rubric answers "did the agent do a good job this session?"
+-This document answers "is the project getting stronger or weaker over time?"
+-
+-Last updated: {{DATE}}
+-
+-## Product domains
+-
+-| Domain | Verification | Agent-readability | Test stability | Key gap |
+-|---|---|---|---|---|
+-| _(e.g. auth)_ | C | B | C | no e2e coverage |
+-| | | | | |
+-
+-## Architectural layers
+-
+-| Layer | Boundary enforcement | Agent-readability | Notes |
+-|---|---|---|---|
+-| _(e.g. services)_ | C | B | boundaries documented but not machine-checked |
+-| | | | |
+-
+-Grades: **A** solid · **B** adequate · **C** needs work · **D** actively harmful
+-
+-## Update triggers
+-
+-- After any session that materially changed a module
+-- Before a benchmark comparison
+-- After a cleanup or simplification pass
+-- When onboarding a new agent or model to the project
+-
+-## Using this to simplify the harness
+-
+-Every harness component encodes an assumption about what the model cannot do on its own.
+-Models improve; some of those assumptions expire. To test whether a component still earns
+-its place:
+-
+-1. Snapshot this document.
+-2. Remove one harness component.
+-3. Run the benchmark task set.
+-4. Snapshot again.
+-5. Compare. If grades held, the component was overhead — leave it out. If they dropped,
+-   restore it.
+-
+-A harness that only ever grows becomes the thing agents skim past. Removing a component
+-that has stopped paying rent is maintenance, not regression.
++The full profile requires live gates and pinned PyYAML6.0.3. Record project-specific runtime prerequisites and current coverage omissions here. Update the date and relevant rows when implementation changes.
+diff --git a/templates/full/scripts/check-arch.sh b/templates/full/scripts/check-arch.sh
+index 4aa11ba..702a9f2 100755
+--- a/templates/full/scripts/check-arch.sh
++++ b/templates/full/scripts/check-arch.sh
+@@ -7,7 +7,7 @@ set -uo pipefail
+ REPO="${1:-.}"
+ REPO="${REPO%/}"
+ cd "$REPO" || { echo "check-arch: cannot cd to $REPO" >&2; exit 66; }
+-RULES=".harness/arch-rules.json"
++RULES="${ARCH_RULES_FILE:-.harness/arch-rules.json}"
+ [[ -f "$RULES" ]] || { echo "check-arch: $RULES not found"; exit 0; }
+ 
+ if [[ ! -t 1 ]] || [[ -n "${NO_COLOR:-}" ]]; then
+diff --git a/templates/full/scripts/pre-commit-staged.sh b/templates/full/scripts/pre-commit-staged.sh
+index 1b7cb10..09e8758 100644
+--- a/templates/full/scripts/pre-commit-staged.sh
++++ b/templates/full/scripts/pre-commit-staged.sh
+@@ -1,56 +1,63 @@
+ #!/usr/bin/env bash
+-# pre-commit-staged.sh — fast, staged-only local checkpoint.
+-#
+-# Design rules (in order of importance):
+-#   1. STAGED FILES ONLY. CI owns the exhaustive matrix; this must stay fast.
+-#   2. REGENERATE RATHER THAN REJECT. When a formatter is available it fixes
+-#      the staged files and re-stages them instead of failing the commit.
+-#   3. FAIL LOUD WITH THE FIX. Missing tooling names the exact command to run;
+-#      it never half-runs and never fails with a bare ENOENT.
+-#
+-# Installed as a git hook by `make hooks-install` (opt-in — it refuses to fight
+-# an existing hook manager such as husky).
++# Format an isolated index snapshot; never stage unrelated working-tree changes.
+ set -uo pipefail
+-
+-ROOT_DIR="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+-cd "$ROOT_DIR" || exit 0
+-
+-# Portable read (macOS ships bash 3.2: no mapfile).
+-STAGED=()
+-while IFS= read -r line; do STAGED+=("$line"); done < <(git diff --cached --name-only --diff-filter=ACM)
+-[[ ${#STAGED[@]} -eq 0 ]] && exit 0
+-
+-fail=0
+-
+-# 1. Whitespace errors in what is about to be committed.
+-if ! git diff --cached --check; then
+-  echo "pre-commit: fix the whitespace errors above (git diff --cached --check)." >&2
+-  fail=1
+-fi
+-
+-# 2. Formatting — autofix and re-stage, never just complain.
+-if [[ -f .prettierrc || -f .prettierrc.json || -f prettier.config.js || -f .prettierrc.js ]]; then
+-  FMT=()
+-  for f in "${STAGED[@]}"; do
+-    case "$f" in *.json|*.md|*.css|*.yml|*.yaml) [[ -f "$f" ]] && FMT+=("$f") ;; esac
+-  done
+-  if [[ ${#FMT[@]} -gt 0 ]]; then
+-    if [[ -x node_modules/.bin/prettier ]]; then
+-      node_modules/.bin/prettier --write "${FMT[@]}" >/dev/null 2>&1 && git add "${FMT[@]}"
+-    else
+-      echo "pre-commit: this repo formats with prettier but node_modules is missing." >&2
+-      echo "            Run 'make setup' first — the hook will not half-run." >&2
+-      fail=1
+-    fi
+-  fi
+-fi
+-
+-# 3. Agent Notes staged? Verify the tree before it lands.
+-for f in "${STAGED[@]}"; do
+-  case "$f" in .agents/notes/*)
+-    bash scripts/verify-agent-notes.sh || fail=1
+-    break ;;
+-  esac
+-done
+-
+-exit "$fail"
++ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
++cd "$ROOT" || exit 3
++python3 - <<'PY'
++import hashlib, os, pathlib, shutil, subprocess, sys, tempfile
++root=pathlib.Path.cwd()
++def git(*args, **kw): return subprocess.run(['git',*args],check=True,capture_output=True,**kw)
++try:
++    index=pathlib.Path(os.fsdecode(git('rev-parse','--git-path','index').stdout).strip()).resolve()
++    original=index.read_bytes()
++    staged=[os.fsdecode(p) for p in git('diff','--cached','--name-only','--diff-filter=ACM','-z').stdout.split(b'\0') if p]
++    if not staged: sys.exit(0)
++    with tempfile.TemporaryDirectory(prefix='harness-index-') as directory:
++        work=pathlib.Path(directory).resolve(); snapshot=work/'tree'; snapshot.mkdir()
++        records={}
++        # Materialize regular index blobs ourselves: checkout-index may follow links.
++        for record in git('ls-files','--stage','-z').stdout.split(b'\0'):
++            if not record: continue
++            meta,path=record.split(b'\t',1); mode,oid,stage=meta.decode().split(); name=os.fsdecode(path)
++            if stage!='0': raise ValueError('unmerged index; resolve conflicts first')
++            parts=pathlib.PurePosixPath(name).parts
++            if pathlib.PurePosixPath(name).is_absolute() or '..' in parts: raise ValueError('unsafe index path')
++            if mode=='120000': raise ValueError('staged snapshot contains symlink '+name+'; format and stage manually')
++            if mode=='160000': continue
++            if mode not in {'100644','100755'}: raise ValueError('unsupported index mode '+mode)
++            dest=snapshot/name; dest.parent.mkdir(parents=True,exist_ok=True)
++            dest.write_bytes(git('cat-file','blob',oid).stdout); dest.chmod(int(mode[-3:],8))
++            records[name]=(mode,oid)
++        configs=['.prettierrc','.prettierrc.json','prettier.config.js','.prettierrc.js']
++        fmt=[p for p in staged if pathlib.Path(p).suffix in {'.json','.md','.css','.yml','.yaml'} and p in records]
++        if any((snapshot/c).is_file() for c in configs) and fmt:
++            formatter=root/'node_modules/.bin/prettier'
++            if not formatter.is_file(): raise ValueError("prettier missing; run make setup, then retry git commit")
++            r=subprocess.run([str(formatter),'--write',*fmt],cwd=snapshot)
++            if r.returncode: raise ValueError(f'formatter failed (exit {r.returncode}); run node_modules/.bin/prettier --write <selected files>, review git diff, stage only intended hunks, then retry git commit')
++        # Validate the staged Agent Note tree, never unrelated unstaged notes.
++        if any(p.startswith('.agents/notes/') for p in staged):
++            checker=snapshot/'scripts/verify-agent-notes.sh'
++            if not checker.is_file(): raise ValueError('missing staged Agent Notes checker')
++            if subprocess.run(['bash',str(checker)],cwd=snapshot).returncode: raise ValueError('staged Agent Notes gate failed')
++        temporary_index=work/'index'; temporary_index.write_bytes(original)
++        env=os.environ.copy(); env['GIT_INDEX_FILE']=str(temporary_index)
++        for name in fmt:
++            mode,oid=records[name]; dest=snapshot/name
++            if dest.is_symlink() or not dest.is_file() or any(p.is_symlink() for p in dest.parents if p!=snapshot.parent): raise ValueError('formatter returned unsupported link or file')
++            new_oid=git('hash-object','-w','--stdin',input=dest.read_bytes()).stdout.strip().decode()
++            git('update-index','--add','--cacheinfo',mode,new_oid,name,env=env)
++        checked=subprocess.run(['git','diff','--cached','--check'],env=env)
++        if checked.returncode: raise ValueError('staged whitespace errors; repair selected hunks and retry')
++        lock=pathlib.Path(str(index)+'.lock')
++        fd=os.open(lock,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
++        try:
++            if index.read_bytes()!=original: raise ValueError('index changed during hook; retry commit')
++            with os.fdopen(fd,'wb') as out: out.write(temporary_index.read_bytes())
++            os.replace(lock,index)
++        finally:
++            if lock.exists(): lock.unlink()
++except (OSError,ValueError,subprocess.CalledProcessError) as e:
++    print('pre-commit: '+str(e),file=sys.stderr); sys.exit(1)
++print('pre-commit: staged snapshot verified; working-tree bytes preserved')
++PY
+diff --git a/templates/full/scripts/run-gates.sh b/templates/full/scripts/run-gates.sh
+index 4080750..97beb53 100644
+--- a/templates/full/scripts/run-gates.sh
++++ b/templates/full/scripts/run-gates.sh
+@@ -1,59 +1,15 @@
+ #!/usr/bin/env bash
+-# run-gates.sh — the registry of this repo's quality gates.
+-#
+-# Usage:
+-#   scripts/run-gates.sh [quick|full]     # default: quick
+-#
+-# One rule governs the registry: a convention without a gate is a suggestion.
+-# Every mechanically checkable rule in AGENTS.md gets a row here, and a new
+-# gate is proven by making it REJECT an invalid case before it ships.
+-#
+-# Aggregates:
+-#   quick  static gates only — no dependency install, safe mid-work, < seconds
+-#   full   quick + re-verification of claims + the complete `make check`
+-#
+-# ── Only PASS satisfies a gate ───────────────────────────────────────────────
+-# This runner used to know two answers: it ran and exited zero, or it did not.
+-# Everything else became FAIL, and a gate whose script was missing became SKIP,
+-# which never failed the run. Both collapses hide the state that matters most:
+-# the gate that never actually checked anything.
+-#
+-# That is not hypothetical here. verify-delivery-doc.sh shipped with a branch
+-# that, handed a ref it could not resolve, printed "no new migrations" for a
+-# release that shipped one — a green line for work never done. The script was
+-# repaired, but a runner that cannot tell "checked and clean" from "could not
+-# check" will keep converting silence into confidence.
+-#
+-# So a gate now reports one of these, and only PASS lets the run go green:
+-#
+-#   PASS            exit 0 — it ran, it checked, it is clean
+-#   FAIL            exit 1 — it ran and found a real problem. Fix the code
+-#   NOT_CONFIGURED  exit 2 — its config or contract is invalid. Fix the config
+-#   TOOL_FAILURE    exit 3 — the tool or environment broke. Fix the environment
+-#   INCOMPLETE      exit 4 — it could not finish; the result is unknown or stale
+-#   POLICY          exit 5 — an integrity or policy violation
+-#   UNKNOWN         any other exit code — treated as blocking, never as pass
+-#   NOT_EXECUTED    its script is absent
+-#
+-# FAIL and TOOL_FAILURE both block, and the distinction is not cosmetic: one
+-# says fix your code, the other says fix your machine. Reporting them as one
+-# thing sends people to the wrong place.
+-#
+-# NOT_EXECUTED blocks for a gate declared `required` and stands down for one
+-# declared `optional` — the harness may legitimately be half-installed, but a
+-# required gate must not go missing quietly.
++# Versioned live gate registry. Only PASS satisfies an applicable gate.
++# Base judge usage: bash /trusted/base/scripts/run-gates.sh quick --target /head
+ set -uo pipefail
+-
+-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+-cd "$ROOT_DIR" || exit 66
+-AGGREGATE="${1:-quick}"
+-case "$AGGREGATE" in quick|full) ;; *) echo "usage: run-gates.sh [quick|full]" >&2; exit 64 ;; esac
+-
+-# Registry: name | aggregates | required|optional | command
+-#
+-# `required` means: if this gate's script is not here, that is a finding. Mark a
+-# gate optional only when its absence is a real, expected configuration — never
+-# to quiet a gate that keeps failing.
++JUDGE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
++AGGREGATE="${1:-quick}"; [[ $# -eq 0 ]] || shift
++TARGET="$JUDGE"
++if [[ $# -gt 0 ]]; then
++  [[ $# -eq 2 && "$1" == --target ]] || { echo 'usage: run-gates.sh [quick|full] [--target DIR]' >&2; exit 64; }
++  TARGET="$(cd "$2" && pwd)" || exit 3
++fi
++case "$AGGREGATE" in quick|full) ;; *) exit 64 ;; esac
+ GATES=(
+   "decisions-append-only|quick full|required|bash scripts/verify-decisions.sh"
+   "agent-notes-tree|quick full|required|bash scripts/verify-agent-notes.sh"
+@@ -64,81 +20,75 @@ GATES=(
+   "context-routes|quick full|required|bash scripts/verify-context-routes.sh"
+   "oracles-falsifiable|quick full|required|bash scripts/verify-oracles.sh"
+   "claims-reverified|full|required|bash scripts/verify-claims.sh"
+-  "make-check|full|required|make check"
++  "make-check|full|required|make check-core"
+ )
+-
+-# What each exit code means, and whether it lets the run stay green.
+-state_for_exit() {
+-  case "$1" in
+-    0) printf 'PASS' ;;
+-    1) printf 'FAIL' ;;
+-    2) printf 'NOT_CONFIGURED' ;;
+-    3) printf 'TOOL_FAILURE' ;;
+-    4) printf 'INCOMPLETE' ;;
+-    5) printf 'POLICY' ;;
+-    *) printf 'UNKNOWN' ;;
+-  esac
+-}
+-
+-# What to do about each state, in the words of whoever has to fix it.
+-repair_hint() {
+-  case "$1" in
+-    FAIL)           printf 'the gate ran and found a real problem — fix the code' ;;
+-    NOT_CONFIGURED) printf 'its configuration or contract is invalid — fix the config, not the gate' ;;
+-    TOOL_FAILURE)   printf 'the tool or environment broke — this is not a code defect' ;;
+-    INCOMPLETE)     printf 'it could not finish, so nothing was verified — do not read this as clean' ;;
+-    POLICY)         printf 'an integrity or policy violation — needs a human decision' ;;
+-    UNKNOWN)        printf 'it exited with a code this runner does not know — treat as unverified' ;;
+-    NOT_EXECUTED)   printf 'a required gate is missing from this repo — install it or declare it optional' ;;
+-    *)              printf '' ;;
+-  esac
+-}
+-
+-pass=0; blocked=0; stood_down=0
+-declare -a BLOCKING_SUMMARY=()
+-printf '── gates · aggregate %s\n\n' "$AGGREGATE"
+-
+-for row in "${GATES[@]}"; do
+-  IFS='|' read -r name aggs requirement cmd <<<"$row"
+-  case " $aggs " in *" $AGGREGATE "*) ;; *) continue ;; esac
+-
+-  script_path="$(printf '%s' "$cmd" | awk '$1=="bash"{print $2}')"
+-  if [[ -n "$script_path" && ! -f "$script_path" ]]; then
+-    if [[ "$requirement" == "required" ]]; then
+-      printf '  %-24s NOT_EXECUTED  (missing %s)\n' "$name" "$script_path"
+-      printf '      %s\n' "$(repair_hint NOT_EXECUTED)"
+-      blocked=$((blocked+1)); BLOCKING_SUMMARY+=("$name NOT_EXECUTED")
+-    else
+-      printf '  %-24s not installed (optional)\n' "$name"
+-      stood_down=$((stood_down+1))
+-    fi
+-    continue
+-  fi
+-
+-  start=$SECONDS
+-  out="$(eval "$cmd" 2>&1)"; rc=$?
+-  state="$(state_for_exit "$rc")"
+-  elapsed="$((SECONDS-start))"
+-
+-  if [[ "$state" == "PASS" ]]; then
+-    printf '  %-24s PASS (%ss)\n' "$name" "$elapsed"
+-    pass=$((pass+1))
+-    continue
+-  fi
+-
+-  printf '  %-24s %s (%ss, exit %s)\n' "$name" "$state" "$elapsed" "$rc"
+-  printf '      %s\n' "$(repair_hint "$state")"
+-  printf '%s\n' "$out" | sed 's/^/      /' | tail -15
+-  blocked=$((blocked+1)); BLOCKING_SUMMARY+=("$name $state")
+-done
+-
+-printf '\n── %d pass · %d blocking · %d optional not installed\n' "$pass" "$blocked" "$stood_down"
+-
+-if [[ "$blocked" -gt 0 ]]; then
+-  printf '\nBlocking:\n'
+-  for b in "${BLOCKING_SUMMARY[@]}"; do printf '  · %s\n' "$b"; done
+-  printf '\nOnly PASS satisfies a gate. A state that is not PASS was not verified,\n'
+-  printf 'and an unverified gate is not a passing one.\n'
+-  exit 1
+-fi
+-exit 0
++python3 - "$JUDGE" "$TARGET" "$AGGREGATE" "${GATES[@]}" <<'PY'
++import json, os, pathlib, shlex, subprocess, sys, time
++judge, target = map(pathlib.Path, sys.argv[1:3]); aggregate=sys.argv[3]
++rows=[row.split('|') for row in sys.argv[4:]]
++def strict(pairs):
++    d={}
++    for k,v in pairs:
++        if k in d: raise ValueError('duplicate key: '+k)
++        d[k]=v
++    return d
++def profile(root):
++    p=root/'.harness/installation-profile.json'
++    try: d=json.loads(p.read_text(), object_pairs_hook=strict)
++    except (OSError,ValueError) as e: raise ValueError(f'ADOPTION_REQUIRED: {p}: {e}')
++    if not isinstance(d,dict) or set(d)!={'schema_version','installation','gates'} or type(d['schema_version']) is not int or d['schema_version']!=1 or d['installation'] not in {'kit','full','minimal'}: raise ValueError('invalid installation profile v1')
++    gates=d['gates']
++    if not isinstance(gates,dict) or set(gates)!={r[0] for r in rows}: raise ValueError('profile must declare every registry gate exactly once')
++    for name,v in gates.items():
++        if not isinstance(v,dict) or set(v)!={'applicable','reason'} or type(v['applicable']) is not bool or not isinstance(v['reason'],str) or not v['reason'].strip(): raise ValueError('invalid applicability for '+name)
++        expected=d['installation']!='minimal' and (name!='version-sync' or d['installation']=='kit')
++        if v['applicable']!=expected: raise ValueError('profile cannot remove required gate '+name)
++    return d
++try:
++    policy=profile(judge)
++    if target!=judge:
++        expected={'schema_version':1,'interfaces':['target-root-v1','installation-profile-v1','match-argv-v1']}
++        try: contract=json.loads((judge/'.harness/judge-contract.json').read_text(),object_pairs_hook=strict)
++        except (OSError,ValueError): raise ValueError('ADOPTION_REQUIRED: protected judge contract missing or invalid')
++        if contract!=expected: raise ValueError('ADOPTION_REQUIRED: unsupported protected judge contract')
++        if profile(target)!=policy: raise ValueError('ADOPTION_REQUIRED: head profile differs from protected base')
++    if policy['installation']=='minimal': raise ValueError('minimal installation has no full gate capability')
++except ValueError as e:
++    print('NOT_CONFIGURED: '+str(e), file=sys.stderr); sys.exit(2)
++print(f'── gates · aggregate {aggregate} · profile v1/{policy["installation"]}', flush=True)
++if target!=judge:
++    for label,path in [('judge/base',judge),('target/head',target)]:
++        r=subprocess.run(['git','rev-parse','HEAD'],cwd=path,capture_output=True,text=True)
++        if r.returncode: print('INCOMPLETE: cannot identify '+label); sys.exit(4)
++        print(label+': '+r.stdout.strip())
++states={0:'PASS',1:'FAIL',2:'NOT_CONFIGURED',3:'TOOL_FAILURE',4:'INCOMPLETE',5:'POLICY'}
++passed=blocked=na=0
++for name,aggs,requirement,cmd in rows:
++    if aggregate not in aggs.split(): continue
++    applicability=policy['gates'][name]
++    if not applicability['applicable']:
++        print(f'  {name:24s} NOT_APPLICABLE ({applicability["reason"]})'); na+=1; continue
++    argv=shlex.split(cmd); env=os.environ.copy()
++    env['HARNESS_TARGET_ROOT']=str(target)
++    if target!=judge:
++        env.update(ARCH_RULES_FILE=str(judge/'.harness/arch-rules.json'), CONTEXT_ROUTES=str(judge/'.harness/context-routes.json'), ORACLES_DIR=str(judge/'.harness/oracles'), CLAIMS_BASE_FILE=str(judge/'feature_list.json'), DECISIONS_BASE_FILE=str(judge/'DECISIONS.md'))
++    if argv[0]=='bash':
++        script=judge/argv[1]
++        if not script.is_file():
++            print(f'  {name:24s} NOT_EXECUTED (missing {script})'); blocked+=1; continue
++        argv[1]=str(script)
++        if name=='arch-boundaries': argv.append(str(target))
++        # A missing architecture policy is an installation failure, not zero rules.
++        if name=='arch-boundaries' and not pathlib.Path(env.get('ARCH_RULES_FILE',target/'.harness/arch-rules.json')).is_file():
++            print('  arch-boundaries NOT_CONFIGURED (missing policy)'); blocked+=1; continue
++    else: env.pop('HARNESS_TARGET_ROOT',None)
++    start=time.monotonic()
++    try: result=subprocess.run(argv,cwd=target,env=env,capture_output=True,text=True); state=states.get(result.returncode,'UNKNOWN')
++    except OSError as e: print('TOOL_FAILURE: '+str(e)); blocked+=1; continue
++    print(f'  {name:24s} {state} ({time.monotonic()-start:.1f}s, exit {result.returncode})',flush=True)
++    if result.returncode: print(result.stdout+result.stderr); blocked+=1
++    else: passed+=1
++print(f'── {passed} pass · {blocked} blocking · {na} not applicable')
++if blocked: print('Only PASS satisfies a gate. A non-PASS state was not verified.')
++sys.exit(1 if blocked else 0)
++PY
+diff --git a/templates/full/scripts/verify-agent-notes.sh b/templates/full/scripts/verify-agent-notes.sh
+index d3e33f8..2ea5168 100644
+--- a/templates/full/scripts/verify-agent-notes.sh
++++ b/templates/full/scripts/verify-agent-notes.sh
+@@ -19,6 +19,8 @@
+ set -uo pipefail
+ 
+ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
++ROOT_DIR="${HARNESS_TARGET_ROOT:-$ROOT_DIR}"
++unset HARNESS_TARGET_ROOT
+ NOTES="$ROOT_DIR/.agents/notes"
+ 
+ if [[ ! -d "$NOTES" ]]; then
+diff --git a/templates/full/scripts/verify-claims.sh b/templates/full/scripts/verify-claims.sh
+index 3061295..e3b2d93 100755
+--- a/templates/full/scripts/verify-claims.sh
++++ b/templates/full/scripts/verify-claims.sh
+@@ -6,6 +6,8 @@
+ set -uo pipefail
+ 
+ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
++ROOT_DIR="${HARNESS_TARGET_ROOT:-$ROOT_DIR}"
++unset HARNESS_TARGET_ROOT
+ cd "$ROOT_DIR" || { echo "cannot cd to $ROOT_DIR" >&2; exit 66; }
+ FL="feature_list.json"
+ [[ -f "$FL" ]] || { echo "verify-claims: $FL not found in $ROOT_DIR" >&2; exit 66; }
+@@ -250,8 +252,12 @@ base, head = load(sys.argv[1], "base"), load(sys.argv[2], "head")
+ base_passing = {f["id"]: f.get("layers", []) for f in base["features"] if f["state"] == "passing"}
+ head_passing = {f["id"]: f.get("layers", []) for f in head["features"] if f["state"] == "passing"}
+ changed = []
++def identity(layers):
++    # Repair is human guidance; every other contract field remains exact.
++    return [{key: value for key, value in layer.items() if key != "repair"} for layer in layers]
++
+ for fid, layers in base_passing.items():
+-    if fid in head_passing and layers != head_passing[fid]:
++    if fid in head_passing and identity(layers) != identity(head_passing[fid]):
+         changed.append((fid, layers, head_passing[fid]))
+ if changed:
+     print("WEAKENED_VERIFICATION", file=sys.stderr)
+diff --git a/templates/full/scripts/verify-context-routes.sh b/templates/full/scripts/verify-context-routes.sh
+index f5289b2..c8c9aaa 100755
+--- a/templates/full/scripts/verify-context-routes.sh
++++ b/templates/full/scripts/verify-context-routes.sh
+@@ -1,221 +1,63 @@
+ #!/usr/bin/env bash
+-# verify-context-routes.sh — a change under governed paths must cite what governs it.
+-#
+-# ── The failure this exists to stop ──────────────────────────────────────────
+-# An external audit reported that a product fiche declared an impossible width.
+-# The finding was real. The fix implemented for it invented engineering
+-# tolerances — and `docs/DECISIONS.md` §D2 said, in as many words, that the
+-# comparator does not invent tolerances. The decision had been taken, written
+-# down, and was one grep away. It was never opened.
+-#
+-# Three more failures in that same session had the same shape: the right answer
+-# was already written in a file nobody read. `rules/fuentes.md` states the
+-# precedence in prose. Prose depends on the reader remembering to look, which is
+-# precisely what failed.
+-#
+-# So the map becomes mechanical. `.harness/context-routes.json` says: a change
+-# under THESE paths is governed by THOSE documents. Touch the paths, cite the
+-# documents — in a commit message on the branch, or in an Agent Note the change
+-# carries.
+-#
+-# Citing is weak proof of reading, and that is fine: the point is not the string.
+-# To write «DECISIONS.md §D2» you have to go find §D2, and going to find it is
+-# the whole intervention. Anyone determined to fake it can, and a harness that
+-# assumed otherwise would be lying about what it enforces.
+-#
+-# Usage:
+-#   bash scripts/verify-context-routes.sh          # gate: governed changes cite their sources
+-#   bash scripts/verify-context-routes.sh --list   # advisory: print the reading list, exit 0
+-#
+-# Config:
+-#   CONTEXT_ROUTES  route map          (default: .harness/context-routes.json)
+-#   ROUTES_BASE     ref to diff from   (default: merge-base with the default branch)
+-#
+-# Exit codes follow the runner's contract:
+-#   0  PASS            every governed change cites a governing document
+-#   1  FAIL            a governed change cites none
+-#   2  NOT_CONFIGURED  the route map is missing or malformed
+-#   3  TOOL_FAILURE    python3 unavailable
+-#   4  INCOMPLETE      the diff could not be determined — nothing was verified
+-
++# Govern committed, staged, unstaged and untracked paths using current citations.
+ set -uo pipefail
+-
+-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+-cd "$ROOT_DIR" || exit 3
+-
+-MAP="${CONTEXT_ROUTES:-.harness/context-routes.json}"
+-MODE="${1:-gate}"
+-
+-if [[ ! -t 1 ]] || [[ -n "${NO_COLOR:-}" ]]; then
+-  RED=""; GREEN=""; YELLOW=""; RESET=""
+-else
+-  RED=$'\033[0;31m'; GREEN=$'\033[0;32m'; YELLOW=$'\033[1;33m'
+-  RESET=$'\033[0m'
+-fi
+-
+-command -v python3 >/dev/null 2>&1 || { echo "${RED}context-routes: needs python3${RESET}" >&2; exit 3; }
+-
+-if [[ ! -f "$MAP" ]]; then
+-  echo "${RED}context-routes: $MAP not found${RESET}" >&2
+-  echo "  Without a route map this gate cannot know what governs what." >&2
+-  exit 2
+-fi
+-
+-# ── The map is validated before anything else ───────────────────────────────
+-# It used to be parsed only once a diff existed, so on a commit with nothing
+-# governed a corrupt map reported PASS. A broken configuration would then sit
+-# unnoticed until the first governed change — the moment it is needed most.
+-# Config validation runs always (V2 §12.5).
+-if ! MAP="$MAP" python3 - <<'VALIDATE'
+-import json, os, sys
++ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
++cd "${HARNESS_TARGET_ROOT:-$ROOT}" || exit 3
++unset HARNESS_TARGET_ROOT
++python3 - "${1:-gate}" <<'PY'
++import fnmatch,json,os,pathlib,subprocess,sys
++mode=sys.argv[1]
++def git(*args):
++    r=subprocess.run(['git',*args],capture_output=True)
++    if r.returncode: raise RuntimeError(r.stderr.decode(errors='replace'))
++    return r.stdout
++def strict(pairs):
++    d={}
++    for k,v in pairs:
++        if k in d: raise ValueError('duplicate key '+k)
++        d[k]=v
++    return d
+ try:
+-    with open(os.environ["MAP"], encoding="utf-8") as fh:
+-        cfg = json.load(fh)
+-except (json.JSONDecodeError, OSError) as exc:
+-    print(f"context-routes: {os.environ['MAP']} is not readable JSON: {exc}", file=sys.stderr)
+-    sys.exit(2)
+-routes = cfg.get("routes")
+-if not isinstance(routes, list) or not routes:
+-    print(f"context-routes: {os.environ['MAP']} declares no routes", file=sys.stderr)
+-    sys.exit(2)
+-for idx, route in enumerate(routes):
+-    if not (route.get("paths") and route.get("read")):
+-        print(f"context-routes: route #{idx} needs both «paths» and «read»", file=sys.stderr)
+-        sys.exit(2)
+-VALIDATE
+-then
+-  exit 2
+-fi
+-
+-# ── Which ref to compare against ────────────────────────────────────────────
+-# A base that cannot be resolved must stop the run, never report a clean diff:
+-# "no governed changes" and "could not see the changes" are different answers,
+-# and only one of them is good news.
+-BASE="${ROUTES_BASE:-}"
+-if [[ -z "$BASE" ]]; then
+-  for candidate in origin/main origin/master main master; do
+-    if git rev-parse --verify --quiet "$candidate" >/dev/null 2>&1; then
+-      BASE="$(git merge-base HEAD "$candidate" 2>/dev/null || true)"
+-      [[ -n "$BASE" ]] && break
+-    fi
+-  done
+-fi
+-if [[ -z "$BASE" ]]; then
+-  echo "${YELLOW}context-routes: no base ref to diff against${RESET}" >&2
+-  echo "  Set ROUTES_BASE. Nothing was verified — this is not a pass." >&2
+-  exit 4
+-fi
+-if ! git rev-parse --verify --quiet "$BASE" >/dev/null 2>&1; then
+-  echo "${RED}context-routes: ROUTES_BASE «${BASE}» is not a ref here${RESET}" >&2
+-  exit 2
+-fi
+-
+-CHANGED="$(git diff --name-only "$BASE"..HEAD 2>/dev/null)"
+-# On the base commit itself there is no branch work in flight. That is a real
+-# clean answer, not a missing one.
+-if [[ -z "$CHANGED" ]]; then
+-  echo "${GREEN}context-routes: no changes against ${BASE:0:8} — nothing to govern${RESET}"
+-  exit 0
+-fi
+-
+-# What the change says about itself: commit subjects and bodies on the branch,
+-# plus the full text of any Agent Note it touches.
+-EVIDENCE="$(git log --format='%B' "$BASE"..HEAD 2>/dev/null)"
+-while IFS= read -r f; do
+-  [[ -n "$f" && -f "$f" ]] || continue
+-  case "$f" in
+-    *.agents/notes/*|*AGENT-NOTE*|*agent-note*) EVIDENCE="$EVIDENCE
+-$(cat "$f")" ;;
+-  esac
+-done <<<"$CHANGED"
+-
+-export MAP MODE CHANGED EVIDENCE
+-python3 - <<'PY'
+-import fnmatch, json, os, sys
+-
+-map_path = os.environ["MAP"]
+-mode = os.environ["MODE"]
+-changed = [p for p in os.environ["CHANGED"].splitlines() if p.strip()]
+-evidence = os.environ["EVIDENCE"]
+-
++    cfg=json.loads(pathlib.Path(os.environ.get('CONTEXT_ROUTES','.harness/context-routes.json')).read_text(),object_pairs_hook=strict)
++    if not isinstance(cfg,dict) or not isinstance(cfg.get('routes'),list) or not cfg['routes']: raise ValueError('route map declares no routes')
++    routes=cfg['routes']
++    for r in routes:
++        if not isinstance(r,dict): raise ValueError('route must be an object')
++        for key in ['paths','read']:
++            if not isinstance(r.get(key),list) or not r[key] or any(not isinstance(x,str) or not x.strip() or '\0' in x for x in r[key]): raise ValueError('route needs nonempty paths and read arrays')
++        if 'why' in r and not isinstance(r['why'],str): raise ValueError('why must be a string')
++except (ValueError,OSError) as e: print('context-routes: NOT_CONFIGURED '+str(e),file=sys.stderr); sys.exit(2)
+ try:
+-    with open(map_path, encoding="utf-8") as fh:
+-        cfg = json.load(fh)
+-except (json.JSONDecodeError, OSError) as exc:
+-    print(f"context-routes: {map_path} is not readable JSON: {exc}", file=sys.stderr)
+-    sys.exit(2)
+-
+-routes = cfg.get("routes")
+-if not isinstance(routes, list) or not routes:
+-    print(f"context-routes: {map_path} declares no routes", file=sys.stderr)
+-    sys.exit(2)
+-
+-def matches(path, pattern):
+-    # «lib/rules/**» must cover lib/rules/a.ts and lib/rules/deep/b.ts alike;
+-    # fnmatch alone treats * as crossing separators, so normalise the intent.
+-    if pattern.endswith("/**"):
+-        return path == pattern[:-3] or path.startswith(pattern[:-2])
+-    return fnmatch.fnmatch(path, pattern)
+-
+-triggered = []
+-for idx, route in enumerate(routes):
+-    paths = route.get("paths") or []
+-    read = route.get("read") or []
+-    if not paths or not read:
+-        print(f"context-routes: route #{idx} needs both «paths» and «read»", file=sys.stderr)
+-        sys.exit(2)
+-    hits = [p for p in changed for pat in paths if matches(p, pat)]
+-    if hits:
+-        triggered.append((route, sorted(set(hits))))
+-
+-if not triggered:
+-    print("context-routes: this change touches no governed path")
+-    sys.exit(0)
+-
+-if mode == "--list":
+-    print("Read these before changing what this diff changes:\n")
+-    for route, hits in triggered:
+-        why = route.get("why", "")
+-        print(f"  because it touches: {', '.join(hits[:4])}{' …' if len(hits) > 4 else ''}")
+-        if why:
+-            print(f"  {why}")
+-        for doc in route["read"]:
+-            print(f"    · {doc}")
+-        print()
+-    sys.exit(0)
+-
+-# A citation is the document's own name appearing in what the change says about
+-# itself. Basename too: «RULES_ENGINE.md §1» is how a person cites it.
+-def cited(doc):
+-    return doc in evidence or os.path.basename(doc) in evidence
+-
+-uncited = []
+-for route, hits in triggered:
+-    if not any(cited(d) for d in route["read"]):
+-        uncited.append((route, hits))
+-
+-for route, hits in triggered:
+-    shown = ", ".join(hits[:3]) + (" …" if len(hits) > 3 else "")
+-    state = "cites" if not any(r is route for r, _ in uncited) else "CITES NOTHING"
+-    print(f"  {state:14s} {shown}")
+-
+-if not uncited:
+-    print("\ncontext-routes: every governed change cites a governing document")
+-    sys.exit(0)
+-
+-sys.stdout.flush()  # or the report lands after the diagnosis it explains
+-print("", file=sys.stderr)
+-for route, hits in uncited:
+-    print("context-routes: this change is governed by documents it never mentions.", file=sys.stderr)
+-    print(f"  changed: {', '.join(hits[:6])}", file=sys.stderr)
+-    if route.get("why"):
+-        print(f"  {route['why']}", file=sys.stderr)
+-    print("  read, then cite whichever one settles it:", file=sys.stderr)
+-    for doc in route["read"]:
+-        print(f"    · {doc}", file=sys.stderr)
+-    print("", file=sys.stderr)
+-print("Cite it in a commit message on this branch or in the Agent Note the change carries.", file=sys.stderr)
+-print("If a document forbids what you are doing, it does not stop being in force because", file=sys.stderr)
+-print("the change looks obviously right — amend it, with an owner and a date, or comply.", file=sys.stderr)
+-sys.exit(1)
++    base=os.environ.get('ROUTES_BASE')
++    if base:
++        try: git('rev-parse','--verify',base+'^{commit}')
++        except RuntimeError: print('context-routes: invalid ROUTES_BASE',file=sys.stderr); sys.exit(2)
++    else:
++        for ref in ['origin/main','origin/master','main','master']:
++            try: base=git('merge-base','HEAD',ref).decode().strip(); break
++            except RuntimeError: continue
++        if not base: raise RuntimeError('no base ref; set ROUTES_BASE')
++    changed=set()
++    for args in [('diff','--name-only','-z',base,'HEAD'),('diff','--cached','--name-only','-z'),('diff','--name-only','-z'),('ls-files','--others','--exclude-standard','-z')]:
++        changed.update(os.fsdecode(p) for p in git(*args).split(b'\0') if p)
++    evidence=git('log','--format=%B',base+'..HEAD').decode(errors='replace')
++    for name in sorted(changed):
++        if name.startswith('.agents/notes/') or 'AGENT-NOTE' in name or 'agent-note' in name:
++            p=pathlib.Path(name)
++            if p.is_file(): evidence+='\n'+p.read_text()
++except (RuntimeError,OSError,UnicodeError) as e: print('context-routes: INCOMPLETE '+str(e),file=sys.stderr); sys.exit(4)
++hits=[(r,sorted(p for p in changed if any(fnmatch.fnmatchcase(p,pat) for pat in r['paths']))) for r in routes]
++hits=[(r,paths) for r,paths in hits if paths]
++if not hits: print('context-routes: no governed changes in branch/index/workspace'); sys.exit(0)
++missing=0
++for r,paths in hits:
++    cited=any(d in evidence or pathlib.Path(d).name in evidence for d in r['read'])
++    print(('read' if mode=='--list' else 'cites' if cited else 'CITES NOTHING')+': '+', '.join(paths))
++    print('  governed by: '+', '.join(r['read']))
++    if r.get('why'): print('  '+r['why'])
++    if not cited: missing+=1
++if mode=='--list': sys.exit(0)
++if missing: print('Cite a governing document in a branch commit message or current Agent Note.',file=sys.stderr)
++else: print('context-routes: every governed change cites a governing document')
++sys.exit(1 if missing else 0)
+ PY
+diff --git a/templates/full/scripts/verify-decisions.sh b/templates/full/scripts/verify-decisions.sh
+index 42f5c8b..a70dfd7 100755
+--- a/templates/full/scripts/verify-decisions.sh
++++ b/templates/full/scripts/verify-decisions.sh
+@@ -6,15 +6,17 @@
+ set -uo pipefail
+ 
+ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
++ROOT_DIR="${HARNESS_TARGET_ROOT:-$ROOT_DIR}"
++unset HARNESS_TARGET_ROOT
+ cd "$ROOT_DIR" || { echo "cannot cd to $ROOT_DIR" >&2; exit 66; }
+ git rev-parse --git-dir >/dev/null 2>&1 || {
+   echo "verify-decisions: not a git repository" >&2; exit 66; }
+ 
+ if [[ ! -t 1 ]] || [[ -n "${NO_COLOR:-}" ]]; then
+-  RED=""; GREEN=""; YELLOW=""; BOLD=""; RESET=""
++  YELLOW=""; RESET=""
+ else
+-  RED=$'\033[0;31m'; GREEN=$'\033[0;32m'; YELLOW=$'\033[1;33m'
+-  BOLD=$'\033[1m'; RESET=$'\033[0m'
++  YELLOW=$'\033[1;33m'
++  RESET=$'\033[0m'
+ fi
+ 
+ PY=""
+diff --git a/templates/full/scripts/verify-delivery-doc.sh b/templates/full/scripts/verify-delivery-doc.sh
+index 50c5108..4ad08f2 100755
+--- a/templates/full/scripts/verify-delivery-doc.sh
++++ b/templates/full/scripts/verify-delivery-doc.sh
+@@ -38,6 +38,8 @@
+ set -uo pipefail
+ 
+ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
++ROOT_DIR="${HARNESS_TARGET_ROOT:-$ROOT_DIR}"
++unset HARNESS_TARGET_ROOT
+ cd "$ROOT_DIR" || { echo "verify-delivery-doc: cannot cd to $ROOT_DIR" >&2; exit 3; }
+ 
+ DOC="${DELIVERY_DOC:-README.md}"
+@@ -58,7 +60,12 @@ fail() { echo "  ${RED}MISMATCH${RESET} $1"; FAILURES=$((FAILURES+1)); }
+ ok()   { echo "  ${GREEN}ok${RESET}       $1"; }
+ skip() { echo "  ${YELLOW}skip${RESET}     $1"; }
+ 
+-[[ -f "$DOC" ]] || { echo "${RED}verify-delivery-doc: $DOC not found${RESET}" >&2; exit 3; }
++if [[ ! -f "$DOC" ]]; then
++  if [[ "${DELIVERY_DOC_REQUIRED:-0}" == 1 ]]; then
++    echo "verify-delivery-doc: required runbook $DOC missing" >&2; exit 2
++  fi
++  echo "verify-delivery-doc: no declared runbook at $DOC"; exit 0
++fi
+ 
+ # ── Does this repository publish a runbook at all? ──────────────────────────
+ # Not every repo hands a deploy document to someone else, and a gate that fails
+@@ -82,7 +89,14 @@ fi
+ VERSION=""
+ if [[ -f "$VERSION_SOURCE" ]]; then
+   case "$VERSION_SOURCE" in
+-    *.json) VERSION="$(sed -n 's/^[[:space:]]*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$VERSION_SOURCE" | head -1)" ;;
++    *.json) VERSION="$(python3 - "$VERSION_SOURCE" <<'VERSIONPY'
++import json,sys
++with open(sys.argv[1]) as f: d=json.load(f)
++v=d.get('version')
++if not isinstance(v,str) or not v.strip(): sys.exit(2)
++print(v)
++VERSIONPY
++)" || exit 2 ;;
+     *)      VERSION="$(tr -d '[:space:]' < "$VERSION_SOURCE")" ;;
+   esac
+ fi
+@@ -162,11 +176,17 @@ if [[ -n "$BASE" ]] && ! git rev-parse --verify --quiet "$BASE" >/dev/null 2>&1;
+   exit 3
+ fi
+ if [[ -z "$BASE" ]]; then
+-  skip "no DELIVERY_BASE and no tag — cannot tell which migrations are new"
++  if [[ -d "$MIGRATIONS_DIR" ]]; then
++    echo "INCOMPLETE: set DELIVERY_BASE to identify release migrations" >&2; exit 4
++  fi
++  ok "no migration directory configured for cross-check"
+ elif [[ ! -d "$MIGRATIONS_DIR" ]]; then
+   skip "no $MIGRATIONS_DIR — nothing to cross-check"
+ else
+-  NEW_MIGRATIONS="$(git diff --name-only --diff-filter=A "$BASE"..HEAD -- "$MIGRATIONS_DIR" 2>/dev/null || true)"
++  NEW_MIGRATIONS="$(git diff --name-only --diff-filter=A "$BASE" -- "$MIGRATIONS_DIR")" || exit 4
++  UNTRACKED_MIGRATIONS="$(git ls-files --others --exclude-standard -- "$MIGRATIONS_DIR")" || exit 4
++  NEW_MIGRATIONS="$NEW_MIGRATIONS
++$UNTRACKED_MIGRATIONS"
+   if [[ -z "$NEW_MIGRATIONS" ]]; then
+     ok "no new migrations since $BASE"
+   else
+diff --git a/templates/full/scripts/verify-feature.sh b/templates/full/scripts/verify-feature.sh
+index eafb96a..41d44c1 100755
+--- a/templates/full/scripts/verify-feature.sh
++++ b/templates/full/scripts/verify-feature.sh
+@@ -10,9 +10,9 @@ FL="feature_list.json"
+ [[ -f "$FL" ]] || { echo "verify-feature: $FL not found in $ROOT_DIR" >&2; exit 66; }
+ 
+ if [[ ! -t 1 ]] || [[ -n "${NO_COLOR:-}" ]]; then
+-  RED=""; GREEN=""; YELLOW=""; BOLD=""; RESET=""
++  RED=""; GREEN=""; BOLD=""; RESET=""
+ else
+-  RED=$'\033[0;31m'; GREEN=$'\033[0;32m'; YELLOW=$'\033[1;33m'
++  RED=$'\033[0;31m'; GREEN=$'\033[0;32m'
+   BOLD=$'\033[1m'; RESET=$'\033[0m'
+ fi
+ 
+diff --git a/templates/full/scripts/verify-makefile-gates.sh b/templates/full/scripts/verify-makefile-gates.sh
+index 8c6da8e..b2a6b9e 100755
+--- a/templates/full/scripts/verify-makefile-gates.sh
++++ b/templates/full/scripts/verify-makefile-gates.sh
+@@ -24,6 +24,8 @@
+ set -uo pipefail
+ 
+ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
++ROOT_DIR="${HARNESS_TARGET_ROOT:-$ROOT_DIR}"
++unset HARNESS_TARGET_ROOT
+ cd "$ROOT_DIR" || { echo "cannot cd to $ROOT_DIR" >&2; exit 66; }
+ 
+ MAKEFILE="${MAKEFILE_UNDER_TEST:-Makefile}"
+diff --git a/templates/full/scripts/verify-oracles.sh b/templates/full/scripts/verify-oracles.sh
+index 518b39f..b1d30c3 100755
+--- a/templates/full/scripts/verify-oracles.sh
++++ b/templates/full/scripts/verify-oracles.sh
+@@ -47,6 +47,8 @@
+ set -uo pipefail
+ 
+ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
++ROOT_DIR="${HARNESS_TARGET_ROOT:-$ROOT_DIR}"
++unset HARNESS_TARGET_ROOT
+ cd "$ROOT_DIR" || exit 3
+ 
+ DIR="${ORACLES_DIR:-.harness/oracles}"
+@@ -60,6 +62,14 @@ fi
+ 
+ command -v python3 >/dev/null 2>&1 || { echo "${RED}oracles: needs python3${RESET}" >&2; exit 3; }
+ 
++ORACLE_PY="python3"
++if [[ -x "$ROOT_DIR/.harness/tools/oracles-venv/bin/python3" ]]; then
++  ORACLE_PY="$ROOT_DIR/.harness/tools/oracles-venv/bin/python3"
++fi
++"$ORACLE_PY" -c 'import yaml; assert yaml.__version__ == "6.0.3"' >/dev/null 2>&1 || {
++  echo "oracles: TOOL_FAILURE: requires PyYAML==6.0.3; run bash scripts/setup-oracles.sh" >&2; exit 3;
++}
++
+ # No oracles yet is a real, honest answer: this gate arrives before the criteria
+ # do, and a repo that has written none has nothing to be stale about.
+ if [[ ! -d "$DIR" ]] || ! find "$DIR" -name '*.yaml' -o -name '*.yml' 2>/dev/null | grep -q .; then
+@@ -70,8 +80,18 @@ fi
+ 
+ # The eight questions of V2 §9.3, as the fields that answer them.
+ export DIR MODE
+-python3 - <<'PY'
+-import os, re, subprocess, sys, traceback
++ORACLE_PY="python3"
++if [[ -x "$ROOT_DIR/.harness/tools/oracles-venv/bin/python3" ]]; then
++  ORACLE_PY="$ROOT_DIR/.harness/tools/oracles-venv/bin/python3"
++fi
++"$ORACLE_PY" - <<'PY'
++import os, re, subprocess, sys, traceback, json, hashlib
++try:
++    import yaml
++    if yaml.__version__ != "6.0.3": raise ImportError("requires PyYAML==6.0.3")
++except ImportError as exc:
++    print("oracles: TOOL_FAILURE: " + str(exc) + "; run bash scripts/setup-oracles.sh", file=sys.stderr)
++    sys.exit(3)
+ from pathlib import Path
+ 
+ def _crash(exc_type, exc, tb):
+@@ -102,40 +122,48 @@ QUESTIONS = [
+ ]
+ PLACEHOLDERS = re.compile(r"^\s*(tbd|todo|t\.b\.d\.|xxx|\?+|pending|por definir|-{1,3})\s*$", re.I)
+ 
++class StrictLoader(yaml.SafeLoader):
++    def compose_node(self, parent, index):
++        if self.check_event(yaml.AliasEvent):
++            raise ValueError("aliases are not supported in oracle contracts")
++        event = self.peek_event()
++        if getattr(event, "anchor", None): raise ValueError("anchors are not supported")
++        return super().compose_node(parent, index)
++
++def mapping(loader, node, deep=False):
++    result = {}
++    for key_node, value_node in node.value:
++        key = loader.construct_object(key_node, deep=deep)
++        if not isinstance(key, str): raise ValueError("mapping keys must be strings")
++        if key in result: raise ValueError("duplicate key: " + key)
++        result[key] = loader.construct_object(value_node, deep=deep)
++    return result
++StrictLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, mapping)
++
+ def load_yaml(path):
+-    """Minimal reader for the flat-ish shape these files use.
+-
+-    A YAML dependency would be one more thing to install before a gate can run,
+-    and a gate nobody can run is not a gate. The accepted shape is documented in
+-    the schema: scalars, lists of scalars, and one level of nesting.
+-    """
+-    data = {}
+-    stack = [(0, data)]
+-    for raw in path.read_text(encoding="utf-8").splitlines():
+-        if not raw.strip() or raw.lstrip().startswith("#"):
+-            continue
+-        indent = len(raw) - len(raw.lstrip())
+-        line = raw.strip()
+-        while len(stack) > 1 and indent <= stack[-1][0]:
+-            stack.pop()
+-        node = stack[-1][1]
+-        if line.startswith("- "):
+-            node.setdefault("__list__", []).append(line[2:].strip().strip("\"'"))
+-            continue
+-        if ":" not in line:
+-            continue
+-        key, _, val = line.partition(":")
+-        key, val = key.strip(), val.strip().strip("\"'")
+-        if val:
+-            node[key] = val
+-        else:
+-            child = {}
+-            node[key] = child
+-            stack.append((indent, child))
++    data = yaml.load(path.read_text(encoding="utf-8"), Loader=StrictLoader)
++    allowed = {"id", "requirement", "criticality", "status", "tests", "falsification"} | {k for k, q in QUESTIONS}
++    if not isinstance(data, dict) or set(data) - allowed: raise ValueError("unknown fields or non-object oracle")
++    for key in ("id", "requirement", "criticality", "status"):
++        if not isinstance(data.get(key), str) or not data[key].strip(): raise ValueError(key + " must be a nonempty string")
++    if data['criticality'] not in {'critical','high','medium','low'}: raise ValueError("invalid criticality")
++    if 'tests' in data and (not isinstance(data['tests'],list) or any(not isinstance(t,str) or not t.strip() for t in data['tests'])): raise ValueError("tests must be a list of paths")
++    if 'falsification' in data and not isinstance(data['falsification'],dict): raise ValueError("falsification must be an object")
++    def value(v):
++        if isinstance(v,str): return
++        if isinstance(v,list):
++            for item in v: value(item)
++        elif isinstance(v,dict):
++            for item in v.values(): value(item)
++        else: raise ValueError("answers must contain strings, mappings or lists of strings")
++    for key, question in QUESTIONS:
++        if key in data: value(data[key])
+     return data
+ 
+ def flatten(v):
+     """A field answers its question if it holds anything real, at any depth."""
++    if isinstance(v, list):
++        return [s for item in v for s in flatten(item)]
+     if isinstance(v, dict):
+         out = []
+         for k, sub in v.items():
+@@ -162,14 +190,20 @@ def is_ancestor(a, b):
+ files = sorted(list(DIR.glob("*.yaml")) + list(DIR.glob("*.yml")))
+ problems, listing = [], []
+ 
++parsed = []
+ for f in files:
+     try:
+         o = load_yaml(f)
+-    except OSError as exc:
++    except (OSError, UnicodeError, ValueError, yaml.YAMLError) as exc:
+         print(f"oracles: {f} unreadable: {exc}", file=sys.stderr)
+         sys.exit(2)
+ 
+-    oid = o.get("id") or f.stem
++    parsed.append((f,o))
++if len({o["id"] for f,o in parsed}) != len(parsed):
++    print("oracles: duplicate oracle id",file=sys.stderr); sys.exit(2)
++
++for f, o in parsed:
++    oid = o["id"]
+     status = str(o.get("status", "")).strip()
+     crit = str(o.get("criticality", "")).strip().lower()
+     if status not in {"DRAFT", "DECISION_REQUIRED", "TEST_READY", "DEFERRED", "RETIRED"}:
+@@ -218,12 +252,45 @@ for f in files:
+             "A test only ever seen passing has not been shown to test anything.",
+         ]))
+         continue
++    if not re.fullmatch('[0-9a-f]{40}', proved) or not is_ancestor(proved, "HEAD"):
++        problems.append((oid, f"records a proof at {proved[:8]}, which is not in this history", ["Fetch the required history or record the actual witnessed base."]))
++        continue
++    receipt_path = fal.get("receipt")
++    if receipt_path:
++        try:
++            def strict_json(pairs):
++                d = {}
++                for k,v in pairs:
++                    if k in d: raise ValueError("duplicate receipt key")
++                    d[k] = v
++                return d
++            receipt = json.loads(Path(receipt_path).read_text(), object_pairs_hook=strict_json)
++            if not isinstance(receipt,dict) or set(receipt) != {"schema_version","command","exit_code","tests","source","logs"}: raise ValueError("invalid receipt fields")
++            if receipt['schema_version'] != 1 or type(receipt['exit_code']) is not int or receipt['exit_code'] <= 0: raise ValueError("receipt must record observed nonzero RED")
++            if not isinstance(receipt['command'],list) or not receipt['command'] or any(not isinstance(x,str) or not x for x in receipt['command']): raise ValueError("receipt needs exact argv")
++            if not isinstance(receipt['tests'],dict) or set(receipt['tests']) != set(tests): raise ValueError("receipt tests differ from oracle")
++            for group in ['tests','source','logs']:
++                bindings=receipt[group]
++                if not isinstance(bindings,dict) or not bindings: raise ValueError("empty receipt " + group)
++                for path,digest in bindings.items():
++                    if not isinstance(path,str) or Path(path).is_absolute() or '..' in Path(path).parts: raise ValueError("receipt paths must be repository relative")
++                    if not isinstance(digest,str) or not re.fullmatch('[0-9a-f]{64}',digest): raise ValueError("invalid digest")
++                    if hashlib.sha256(Path(path).read_bytes()).hexdigest() != digest: raise ValueError("receipt predates its own tests or changed bytes: " + path)
++            print(f"  local RED receipt consistent: {oid}; a local receipt is not independent authority")
++        except (OSError, ValueError, TypeError, KeyError) as exc:
++            problems.append((oid,"invalid or stale RED receipt",[str(exc)]))
++        continue
+     if not is_ancestor(proved, "HEAD"):
+         problems.append((oid, f"records a proof at {proved[:8]}, which is not in this history", [
+             "Re-run the falsification here and record the commit."]))
+         continue
++    problems.append((oid, "has history consistency only, no witnessed RED receipt", ["Record falsification.receipt with command, nonzero exit and hashed tests/source/logs; a SHA alone does not witness RED."]))
+     stale = [t for t in tests
+              if (c := last_commit_touching(t)) and not is_ancestor(c, proved)]
++    for t in tests:
++        r = subprocess.run(["git", "show", proved + ":" + t], capture_output=True)
++        if r.returncode or r.stdout != Path(t).read_bytes():
++            if t not in stale: stale.append(t)
+     if stale:
+         problems.append((oid, f"proof at {proved[:8]} predates its own tests", [
+             *[f"changed since: {t}" for t in stale],
+diff --git a/tests/run-tests.sh b/tests/run-tests.sh
+index 2f3b22d..cf32233 100755
+--- a/tests/run-tests.sh
++++ b/tests/run-tests.sh
+@@ -74,17 +74,8 @@ done
+ # The kit dogfoods its own scripts: scripts/X and templates/full/scripts/X are the
+ # same file in two places. The suite runs the template copy, so editing only the
+ # root one produces failures with no visible cause. Catch the drift instead.
+-# required-quality.yml copia scripts/verify-claims.sh desde la base protegida encima del
+-# del head durante su paso de claims — así una PR no puede debilitar al juez que la evalúa.
+-# Pero la suite corre DENTRO de ese paso, así que ahí el archivo en disco no es el de este
+-# commit y la comparación de drift daba un falso positivo (run 33421061860). CLAIMS_BASE_FILE
+-# la exporta exactamente ese paso, así que marca el único contexto donde hay que leer de git.
+-root_content() {
+-  if [[ -n "${CLAIMS_BASE_FILE:-}" ]] && git -C "$KIT_DIR" show "HEAD:scripts/$1" 2>/dev/null; then
+-    return 0
+-  fi
+-  cat "$KIT_DIR/scripts/$1"
+-}
++# The protected judge runs separately; compare the actual shipped workspace bytes.
++root_content() { cat "$KIT_DIR/scripts/$1"; }
+ 
+ for f in "$KIT_DIR"/templates/full/scripts/*.sh; do
+   base="$(basename "$f")"
+@@ -289,7 +280,7 @@ assert_contains ".DS_Store is reported as a note" "$OUT_NOISE" "OS noise present
+ rm -f .DS_Store
+ 
+ # Regression: a verify command that cd's must not move the cwd for later checks
+-cp scripts/clean-state-check.sh /tmp/csc-backup.sh
++cp scripts/clean-state-check.sh $WORK/csc-backup.sh
+ mkdir -p sub && echo '{}' > sub/marker.json
+ sed -i.bak 's|^VERIFY_CMD=.*|VERIFY_CMD="cd sub \&\& true"|' scripts/clean-state-check.sh
+ rm -f scripts/clean-state-check.sh.bak
+@@ -298,8 +289,8 @@ case "$OUT_CD" in
+   *"PROGRESS.md missing"*) bad "cd in verify command breaks later checks (cwd leaked)" ;;
+   *) ok "verify command that cd's does not leak the working directory" ;;
+ esac
+-cp /tmp/csc-backup.sh scripts/clean-state-check.sh
+-rm -rf sub /tmp/csc-backup.sh
++cp $WORK/csc-backup.sh scripts/clean-state-check.sh
++rm -rf sub $WORK/csc-backup.sh
+ 
+ # a feature marked passing with no evidence must fail the honesty check
+ python3 - <<'PYEOF'
+@@ -499,7 +490,7 @@ for f in d["features"]:
+         f["layers"] = [{"label": "static", "cmd": "printf ran > reopened-executed", "repair": "n/a"}]
+ json.dump(d, open("feature_list.json", "w"), indent=2)
+ PYEOF
+-OUT_REOPEN="$(bash scripts/verify-feature.sh FB1 2>&1)"; RC_REOPEN=$?
++bash scripts/verify-feature.sh FB1 >/dev/null 2>&1; RC_REOPEN=$?
+ assert_eq "state edit and raised maximum do not grant recovery" "5" "$RC_REOPEN"
+ [[ ! -e reopened-executed ]] && ok "ungranted recovery rejects before layer effects" \
+                               || bad "failed feature executed after local policy edits"
+@@ -1229,6 +1220,11 @@ p = pathlib.Path("scripts/run-gates.sh"); t = p.read_text()
+ rows = "\n".join(f'  "{r}"' for r in sys.argv[1:])
+ t = re.sub(r"GATES=\(\n.*?\n\)", f"GATES=(\n{rows}\n)", t, count=1, flags=re.S)
+ p.write_text(t)
++import json
++pathlib.Path('.harness').mkdir(exist_ok=True)
++rows=[r.split('|') for r in sys.argv[1:]]
++kind='full' if any(r[2]=='optional' for r in rows) else 'kit'
++pathlib.Path('.harness/installation-profile.json').write_text(json.dumps({'schema_version':1,'installation':kind,'gates':{r[0]:{'applicable':r[2]!='optional','reason':'Kit release metadata only' if r[2]=='optional' else 'required fixture gate'} for r in rows}}))
+ PYX
+ }
+ 
+@@ -1268,10 +1264,10 @@ assert_eq "a missing REQUIRED gate blocks" "1" "$RC16B"
+ assert_contains "and is named NOT_EXECUTED" "$O16B" "NOT_EXECUTED"
+ 
+ # Optional is the only way to stand a gate down, and it has to be declared.
+-reg "ghost|quick|optional|bash scripts/does-not-exist.sh"
++reg "version-sync|quick|optional|bash scripts/does-not-exist.sh"
+ O16C="$(bash scripts/run-gates.sh quick 2>&1)"
+-assert_eq "a missing OPTIONAL gate does not block" "0" "$?"
+-assert_contains "and says it is not installed" "$O16C" "not installed"
++assert_eq "a declared inapplicable kit-only gate does not block" "0" "$?"
++assert_contains "and states explicit applicability" "$O16C" "NOT_APPLICABLE"
+ 
+ # Mixed run: one clean gate cannot carry a broken one.
+ reg "ok|quick|required|bash scripts/g-pass.sh" "broken|quick|required|bash scripts/g-tool.sh"
+@@ -1290,7 +1286,10 @@ CR="$WORK/routes"; mkdir -p "$CR/scripts" "$CR/.harness" "$CR/lib/rules" "$CR/do
+ cd "$CR" || exit 1
+ git init -q . && git config user.email t@t && git config user.name t
+ cp "$KIT_DIR/templates/full/scripts/verify-context-routes.sh" scripts/
+-cp "$KIT_DIR/templates/full/.harness/context-routes.json" .harness/
++# Domain routes belong to this fixture, never to the generic consumer template.
++cat > .harness/context-routes.json <<'ROUTES'
++{"routes":[{"paths":["lib/rules/**"],"read":["docs/DECISIONS.md"],"why":"An external report does not repeal a decision"}]}
++ROUTES
+ printf '# D2\nEl comparador no inventa tolerancias.\n' > docs/DECISIONS.md
+ printf 'export const x = 1;\n' > lib/rules/base.ts
+ git add -A >/dev/null && git commit -qm base && git branch -M main
+@@ -1357,7 +1356,7 @@ OR="$WORK/oracles"; mkdir -p "$OR/scripts" "$OR/.harness/oracles" "$OR/test"
+ cd "$OR" || exit 1
+ git init -q . && git config user.email t@t && git config user.name t
+ cp "$KIT_DIR/templates/full/scripts/verify-oracles.sh" scripts/
+-printf 'it("works", () => {});\n' > test/rule.test.ts
++printf 'assert False, "fixture defect"\n' > test/rule.test.ts
+ git add -A >/dev/null && git commit -qm base
+ 
+ # An empty folder is an honest answer, not a silence: the gate arrives before
+@@ -1433,8 +1432,16 @@ add_falsification() {
+ falsification:
+   defect: "Compare with string equality again"
+   proved_sha: "$1"
+-  output: "1 failed"
++  receipt: "red-receipt.json"
+ YML
++  python3 test/rule.test.ts > red.log 2>&1
++  local red_exit=$?
++  python3 - "$red_exit" <<'RECEIPT'
++import hashlib,json,sys
++from pathlib import Path
++h=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest()
++Path('red-receipt.json').write_text(json.dumps({'schema_version':1,'command':['python3','test/rule.test.ts'],'exit_code':int(sys.argv[1]),'tests':{'test/rule.test.ts':h('test/rule.test.ts')},'source':{'test/rule.test.ts':h('test/rule.test.ts')},'logs':{'red.log':h('red.log')}}))
++RECEIPT
+ }
+ 
+ git add -A >/dev/null && git commit -qm "oracle"
+@@ -1489,6 +1496,14 @@ assert_contains "and shows the status" "$O18F" "RETIRED"
+ 
+ cd "$KIT_DIR" || exit 1
+ 
++H02_FOCAL_LOG="$WORK/h02-focal.log"
++if python3 "$KIT_DIR/tests/h02-hardening-regressions.py" >"$H02_FOCAL_LOG" 2>&1; then
++  ok "H02 live gates, profile, hook, oracle and status regression matrix"
++else
++  cat "$H02_FOCAL_LOG"
++  bad "H02 hardening regressions"
++fi
++
+ # ═════════════════════════════════════════════════════════════════════════════
+ echo ""
+ echo "${BOLD}────────────────────────────────────────${RESET}"

@@ -1,0 +1,303 @@
+[
+  {
+    "cwd": "/tmp/h02-regression-d8nhwvad/test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-d8nhwvad/test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-d8nhwvad/test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-d8nhwvad/test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import/cwd-pip/caller",
+    "argv": [
+      "bash",
+      "/tmp/h02-regression-d8nhwvad/test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import/cwd-pip/kit/scripts/setup-oracles.sh"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-d8nhwvad/test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import/cwd-pip/caller",
+    "argv": [
+      "/tmp/h02-regression-d8nhwvad/test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import/cwd-pip/kit/.harness/tools/oracles-venv/bin/python3",
+      "-I",
+      "-c",
+      "import yaml"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\nModuleNotFoundError: No module named 'yaml'\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-d8nhwvad/test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import/cwd-yaml/caller",
+    "argv": [
+      "bash",
+      "/tmp/h02-regression-d8nhwvad/test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import/cwd-yaml/kit/scripts/setup-oracles.sh"
+    ],
+    "exit": 0,
+    "stdout": "Looking in links: /tmp/h02-regression-d8nhwvad/test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import/cwd-yaml/empty-wheels\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-d8nhwvad/test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import/cwd-yaml/caller",
+    "argv": [
+      "/tmp/h02-regression-d8nhwvad/test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import/cwd-yaml/kit/.harness/tools/oracles-venv/bin/python3",
+      "-I",
+      "-c",
+      "import yaml"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\nModuleNotFoundError: No module named 'yaml'\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-d8nhwvad/test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import/PYTHONPATH-pip/caller",
+    "argv": [
+      "bash",
+      "/tmp/h02-regression-d8nhwvad/test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import/PYTHONPATH-pip/kit/scripts/setup-oracles.sh"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-d8nhwvad/test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import/PYTHONPATH-pip/caller",
+    "argv": [
+      "/tmp/h02-regression-d8nhwvad/test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import/PYTHONPATH-pip/kit/.harness/tools/oracles-venv/bin/python3",
+      "-I",
+      "-c",
+      "import yaml"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\nModuleNotFoundError: No module named 'yaml'\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-d8nhwvad/test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import/PYTHONPATH-yaml/caller",
+    "argv": [
+      "bash",
+      "/tmp/h02-regression-d8nhwvad/test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import/PYTHONPATH-yaml/kit/scripts/setup-oracles.sh"
+    ],
+    "exit": 0,
+    "stdout": "Looking in links: /tmp/h02-regression-d8nhwvad/test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import/PYTHONPATH-yaml/empty-wheels\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-d8nhwvad/test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import/PYTHONPATH-yaml/caller",
+    "argv": [
+      "/tmp/h02-regression-d8nhwvad/test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import/PYTHONPATH-yaml/kit/.harness/tools/oracles-venv/bin/python3",
+      "-I",
+      "-c",
+      "import yaml"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\nModuleNotFoundError: No module named 'yaml'\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-d8nhwvad/test_status_timeout_terminates_owned_descendants_only",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-d8nhwvad/test_status_timeout_terminates_owned_descendants_only",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-d8nhwvad/test_status_timeout_terminates_owned_descendants_only",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-d8nhwvad/test_status_timeout_terminates_owned_descendants_only",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/harness-kit/bin/harness-init.sh",
+      "--target",
+      "/tmp/h02-regression-d8nhwvad/test_status_timeout_terminates_owned_descendants_only",
+      "--level",
+      "full"
+    ],
+    "exit": 0,
+    "stdout": "Harness init\n  target: /tmp/h02-regression-d8nhwvad/test_status_timeout_terminates_owned_descendants_only\n  level:  full\n  verify: echo 'TODO: set the verification command'; false\n\n  write   AGENTS.md\n  write   CLAUDE.md\n  write   init.sh\n  write   PROGRESS.md\n  write   feature_list.json\n  write   clean-state-checklist.md\n  write   session-handoff.md\n  write   DECISIONS.md\n  write   docs/decisions/README.md\n  write   .harness/judge-contract.json\n  write   .harness/installation-profile.json\n  write   scripts/setup-oracles.sh\n  write   requirements-harness.txt\n  write   Makefile\n  write   scripts/verify-feature.sh\n  write   scripts/verify-claims.sh\n  write   scripts/verify-decisions.sh\n  write   .github/workflows/required-quality.yml\n  write   .github/rulesets/required-quality-check.json\n  write   .github/rulesets/required-quality-integrity.json\n  write   scripts/check-arch.sh\n  write   scripts/verify-makefile-gates.sh\n  write   scripts/run-gates.sh\n  write   scripts/verify-agent-notes.sh\n  write   scripts/verify-delivery-doc.sh\n  write   scripts/verify-context-routes.sh\n  write   scripts/verify-oracles.sh\n  write   .harness/oracles/README.md\n  write   .harness/oracles/AC-000.example.yaml.txt\n  write   .harness/context-routes.json\n  write   scripts/verify-impact.template.mjs\n  write   scripts/pre-commit-staged.sh\n  write   scripts/install-githooks.sh\n  write   .agents/notes/README.md\n  write   scripts/clean-state-check.sh\n  write   scripts/session-trace.sh\n  write   scripts/harness-audit.sh\n  write   .harness/arch-rules.json\n  write   templates/sprint-contract.md\n  write   templates/evaluator-rubric.md\n  write   docs/quality-document.md\n  write   .harness/traces/.gitkeep\n  write   .gitignore\n\nDone. Next steps:\n  1. Edit AGENTS.md \u2014 replace the purpose line with what this project actually does.\n  2. Replace the placeholder features in feature_list.json with the real backlog.\n  3. Confirm the verification command is right: echo 'TODO: set the verification command'; false\n  4. Score the result:  /workspace/scratch/adce1c53b293/harness-kit/bin/harness-audit.sh /tmp/h02-regression-d8nhwvad/test_status_timeout_terminates_owned_descendants_only\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-d8nhwvad/test_status_timeout_terminates_owned_descendants_only",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-d8nhwvad/test_status_timeout_terminates_owned_descendants_only",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-d8nhwvad/test_status_timeout_terminates_owned_descendants_only",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "077ba6404bafb28052ea8c35d90e0581f52395fa\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-d8nhwvad/test_status_timeout_terminates_owned_descendants_only",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/harness-kit/bin/harness-status.sh",
+      "--target",
+      "/tmp/h02-regression-d8nhwvad/test_status_timeout_terminates_owned_descendants_only"
+    ],
+    "exit": 1,
+    "stdout": "Kit: 2.2.5\nBLOCKED_TOOL \u2014 local verification indeterminate: Command '['make', 'check']' timed out after 0.2 seconds\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-d8nhwvad/test_status_timeout_terminates_owned_descendants_only",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/harness-kit/bin/harness-status.sh",
+      "--target",
+      "/tmp/h02-regression-d8nhwvad/test_status_timeout_terminates_owned_descendants_only"
+    ],
+    "exit": 1,
+    "stdout": "Kit: 2.2.5\nBLOCKED_TOOL \u2014 local verification indeterminate: Command '['make', 'check']' timed out after 0.2 seconds\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-d8nhwvad/test_explicit_missing_delivery_source_blocks_with_default_absence_allowed",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-d8nhwvad/test_explicit_missing_delivery_source_blocks_with_default_absence_allowed",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-d8nhwvad/test_explicit_missing_delivery_source_blocks_with_default_absence_allowed",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-d8nhwvad/test_explicit_missing_delivery_source_blocks_with_default_absence_allowed",
+    "argv": [
+      "bash",
+      "scripts/verify-delivery-doc.sh"
+    ],
+    "exit": 0,
+    "stdout": "verify-delivery-doc: no declared runbook at README.md\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-d8nhwvad/test_explicit_missing_delivery_source_blocks_with_default_absence_allowed",
+    "argv": [
+      "bash",
+      "scripts/verify-delivery-doc.sh"
+    ],
+    "exit": 0,
+    "stdout": "verify-delivery-doc: no declared runbook at custom-release-guide.md\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-d8nhwvad/test_explicit_missing_delivery_source_blocks_with_default_absence_allowed",
+    "argv": [
+      "bash",
+      "scripts/verify-delivery-doc.sh"
+    ],
+    "exit": 0,
+    "stdout": "verify-delivery-doc: no declared runbook at unreadable-directory\n",
+    "stderr": ""
+  }
+]

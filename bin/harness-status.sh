@@ -1,149 +1,92 @@
 #!/usr/bin/env bash
-# harness-status.sh — what is actually enforced here, right now.
-#
-# Usage:
-#   bin/harness-status.sh [--target DIR]
-#
-# The audit score answers "how complete is the harness?". This answers the
-# question you actually have before trusting it: does anything stop a bad change
-# from merging, or is it all on the honour system?
-#
-# States:
-#   READY_DUAL     local gate + required check + the workflow itself protected
-#   READY_PARTIAL  local gate + required check, but the workflow can be edited
-#   READY_LOCAL    the harness runs locally; nothing on GitHub blocks a merge
-#   BLOCKED_TOOL   something required to verify is missing or broken
-#   NOT_ACTIVATED  no harness here yet
-#
-# Exit codes: 0 when activated (any READY_*), 1 otherwise. So CI or a hook can
-# branch on it without parsing text.
-
+# Report observed local verification and inspected remote rules; never infer readiness from filenames.
+# Usage: harness-status.sh [--target DIR] [DIR]
 set -uo pipefail
-
-TARGET="."
+TARGET=.
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --target) TARGET="$2"; shift 2 ;;
-    -h|--help) sed -n '2,20p' "$0"; exit 0 ;;
+    --target) [[ $# -ge 2 ]] || exit 64; TARGET="$2"; shift 2 ;;
+    -h|--help) sed -n '2,3p' "$0"; exit 0 ;;
     *) TARGET="$1"; shift ;;
   esac
 done
-TARGET="$(cd "$TARGET" 2>/dev/null && pwd)" || { echo "harness-status: no such directory" >&2; exit 64; }
-
-if [[ ! -t 1 ]] || [[ -n "${NO_COLOR:-}" ]]; then
-  GREEN=""; YELLOW=""; BOLD=""; RESET=""
-else
-  GREEN=$'\033[0;32m'; YELLOW=$'\033[1;33m'
-  BOLD=$'\033[1m'; RESET=$'\033[0m'
-fi
-
-say()  { printf '%s\n' "$1"; }
-line() { printf '  %-4s %s\n' "$1" "$2"; }
-
-# ── Local layer ──────────────────────────────────────────────────────────────
-if [[ ! -f "$TARGET/AGENTS.md" ]] || [[ ! -f "$TARGET/feature_list.json" ]]; then
-  say "${BOLD}NOT_ACTIVATED${RESET} — no hay harness en $(basename "$TARGET")."
-  say ""
-  say "Actívalo con:  bin/harness-activate.sh --target $TARGET"
-  exit 1
-fi
-
-HAS_CLAIMS=0;   [[ -f "$TARGET/scripts/verify-claims.sh" ]]    && HAS_CLAIMS=1
-HAS_DEC=0;      [[ -f "$TARGET/scripts/verify-decisions.sh" ]] && HAS_DEC=1
-HAS_WF=0;       [[ -f "$TARGET/.github/workflows/required-quality.yml" ]] && HAS_WF=1
-
-# ── Remote ───────────────────────────────────────────────────────────────────
-SLUG=""
-if git -C "$TARGET" rev-parse --git-dir >/dev/null 2>&1; then
-  URL="$(git -C "$TARGET" remote get-url origin 2>/dev/null || true)"
-  if [[ -n "$URL" ]]; then
-    SLUG="$(printf '%s' "$URL" \
-      | sed -e 's#^git@[^:]*:##' -e 's#^https\{0,1\}://[^/]*/##' -e 's#\.git$##')"
-  fi
-fi
-
-# ── Hosted layer: ask GitHub rather than assume ──────────────────────────────
-CHECK_RULE=""; INTEGRITY_RULE=""
-GH_OK=0
-if [[ -n "$SLUG" ]] && command -v gh >/dev/null 2>&1; then
-  if RULESETS="$(gh api "repos/$SLUG/rulesets" --jq '.[] | "\(.name)|\(.enforcement)"' 2>/dev/null)"; then
-    GH_OK=1
-    CHECK_RULE="$(printf '%s\n' "$RULESETS" | grep '^required-quality-check|active' || true)"
-    INTEGRITY_RULE="$(printf '%s\n' "$RULESETS" | grep '^required-quality-workflow-integrity|active' || true)"
-  fi
-fi
-
-# ── Verdict ──────────────────────────────────────────────────────────────────
-if [[ -n "$CHECK_RULE" && -n "$INTEGRITY_RULE" ]]; then
-  STATE="READY_DUAL"
-elif [[ -n "$CHECK_RULE" ]]; then
-  STATE="READY_PARTIAL"
-else
-  STATE="READY_LOCAL"
-fi
-
-case "$STATE" in
-  READY_DUAL)    say "${GREEN}${BOLD}READY_DUAL${RESET} — un cambio malo no puede fusionarse." ;;
-  READY_PARTIAL) say "${YELLOW}${BOLD}READY_PARTIAL${RESET} — la compuerta bloquea, pero no se protege a sí misma." ;;
-  READY_LOCAL)   say "${YELLOW}${BOLD}READY_LOCAL${RESET} — todavía nada en GitHub bloquea una fusión." ;;
-esac
-
-say ""
-# ── Kit version: the question this answers is "which of my repositories still
-# lack the fix?", and it is unanswerable without a stamp in each one.
-KIT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-KIT_VER="$(tr -d '[:space:]' < "$KIT_ROOT/VERSION" 2>/dev/null || echo "unknown")"
-REPO_VER=""
-[[ -f "$TARGET/.harness/kit-version" ]] && \
-  REPO_VER="$(tr -d '[:space:]' < "$TARGET/.harness/kit-version")"
-
-if [[ -z "$REPO_VER" ]]; then
-  say "Kit: $KIT_VER  ${YELLOW}(este repo no registra su versión: se activó con un kit anterior)${RESET}"
-elif [[ "$REPO_VER" != "$KIT_VER" ]]; then
-  say "Kit: $REPO_VER  ${YELLOW}desactualizado — hay $KIT_VER${RESET}"
-  say "  Revisa el CHANGELOG y actualiza con: harness-init.sh --target $TARGET --level full --force"
-  say "  (--force sobrescribe: revisa el diff antes de commitear)"
-else
-  say "Kit: $KIT_VER"
-fi
-
-say ""
-say "${BOLD}Local${RESET}"
-line "ok" "contrato, estado y presupuestos"
-[[ $HAS_CLAIMS -eq 1 ]] && line "ok" "re-verificador de afirmaciones (verify-claims.sh)" \
-                        || line "--" "sin re-verificador: un 'passing' escrito a mano nunca se recomprueba"
-[[ $HAS_DEC -eq 1 ]]    && line "ok" "ledger de decisiones (solo se agrega)" \
-                        || line "--" "sin verificación del ledger de decisiones"
-
-say ""
-say "${BOLD}GitHub${RESET}"
-if [[ -z "$SLUG" ]]; then
-  line "--" "sin remoto — el veredicto queda por completo en confianza"
-elif [[ $GH_OK -eq 0 ]]; then
-  line "?" "$SLUG — no se pudieron leer los rulesets (gh sin auth, o sin acceso)"
-else
-  [[ $HAS_WF -eq 1 ]] && line "ok" "workflow presente" || line "--" "sin workflow de calidad requerida"
-  [[ -n "$CHECK_RULE" ]] && line "ok" "compuerta requerida activa en $SLUG" \
-                         || line "--" "sin ruleset de compuerta: CI reporta pero nada bloquea"
-  [[ -n "$INTEGRITY_RULE" ]] && line "ok" "workflow protegido contra ediciones" \
-                             || line "--" "workflow SIN proteger — un 'if: false' en el job se fusiona en verde"
-fi
-
-say ""
-case "$STATE" in
-  READY_DUAL)
-    say "Siguiente: nada. Abre un PR que rompa un test si quieres verlo negarse." ;;
-  READY_PARTIAL)
-    say "${BOLD}Qué significa:${RESET} los tests rotos y los estados 'passing' escritos a mano"
-    say "quedan bloqueados. Editar el workflow no: GitHub sólo permite push rules en"
-    say "repositorios de organización. Revisa a mano cualquier PR que toque"
-    say ".github/workflows/, o mueve el repo a una organización para cerrarlo." ;;
-  READY_LOCAL)
-    if [[ -z "$SLUG" ]]; then
-      say "Siguiente: súbelo a GitHub y corre bin/harness-protect.sh para hacer vinculante la compuerta."
-    else
-      say "Siguiente: bin/harness-protect.sh $SLUG"
-    fi ;;
-esac
-
-exit 0
+KIT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+python3 -I - "$TARGET" "$KIT" <<'PY'
+import json, os, pathlib, shutil, signal, subprocess, sys
+root=pathlib.Path(sys.argv[1]).resolve(); kit=pathlib.Path(sys.argv[2])
+if not root.is_dir(): print('harness-status: no such directory',file=sys.stderr); sys.exit(64)
+if not all((root/x).is_file() for x in ['AGENTS.md','feature_list.json']): print('NOT_ACTIVATED — no harness contract/state'); sys.exit(1)
+version=(kit/'VERSION').read_text().strip(); stamp=root/'.harness/kit-version'
+print('Kit: '+(stamp.read_text().strip() if stamp.is_file() else version+' (version not recorded)'))
+if stamp.is_file() and stamp.read_text().strip()!=version: print('desactualizado — hay '+version)
+try:
+    profile=json.loads((root/'.harness/installation-profile.json').read_text())
+    if profile.get('installation')=='minimal': print('NOT_VERIFIED — minimal contract scaffold; full mechanical gates are not installed'); sys.exit(1)
+    timeout=float(os.environ.get('HARNESS_STATUS_TIMEOUT','120'))
+    if not 0 < timeout <= 1800: raise ValueError('timeout must be >0 and <=1800 seconds')
+    # Own the ordinary verification descendants, not just the make parent.
+    process=subprocess.Popen(['make','check'],cwd=root,stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE,text=True,start_new_session=True)
+    try:
+        stdout,stderr=process.communicate(timeout=timeout)
+    except subprocess.TimeoutExpired:
+        try: os.killpg(process.pid,signal.SIGTERM)
+        except ProcessLookupError: pass
+        try:
+            process.communicate(timeout=0.2)
+        except subprocess.TimeoutExpired:
+            pass
+        # A descendant can ignore TERM or close its inherited pipes. Always
+        # finish the owned group even when the direct make parent already exited.
+        try: os.killpg(process.pid,signal.SIGKILL)
+        except ProcessLookupError: pass
+        try:
+            process.communicate(timeout=0.2)
+        except subprocess.TimeoutExpired:
+            # Escaped process groups are outside this local cleanup contract;
+            # their inherited pipes cannot make the status command wait forever.
+            process.stdout.close(); process.stderr.close()
+            process.wait(timeout=0.2)
+        raise
+    result=subprocess.CompletedProcess(['make','check'],process.returncode,stdout,stderr)
+except (OSError,ValueError,subprocess.TimeoutExpired) as e:
+    print('BLOCKED_TOOL — local verification indeterminate: '+str(e)); sys.exit(1)
+if result.returncode:
+    print('BLOCKED_LOCAL — make check exit '+str(result.returncode)); print(result.stdout+result.stderr); sys.exit(1)
+print('Local: observed make check exit 0')
+r=subprocess.run(['git','remote','get-url','origin'],cwd=root,capture_output=True,text=True)
+if r.returncode or not r.stdout.strip(): print('READY_LOCAL — local check passed; no remote protection was inspected'); sys.exit(0)
+url=r.stdout.strip()
+if url.startswith('git@github.com:'): slug=url[len('git@github.com:'):]
+elif url.startswith('https://github.com/'): slug=url[len('https://github.com/'):]
+else: print('INDETERMINATE_REMOTE — unsupported remote'); sys.exit(1)
+slug=slug[:-4] if slug.endswith('.git') else slug
+def api(path):
+    r=subprocess.run(['gh','api',path],capture_output=True,text=True,timeout=30)
+    if r.returncode: raise ValueError('API query failed: '+path)
+    return json.loads(r.stdout)
+try:
+    rules=api('repos/'+slug+'/rulesets?includes_parents=true')
+    if not isinstance(rules,list): raise ValueError('invalid ruleset list')
+    details=[api('repos/'+slug+'/rulesets/'+str(r['id'])) for r in rules]
+    protected=False; integrity=False
+    for d in details:
+        if not isinstance(d,dict) or not isinstance(d.get('rules'),list) or not isinstance(d.get('bypass_actors'),list) or d.get('target') not in {'branch','tag','push'} or d.get('enforcement') not in {'active','disabled','evaluate'}: raise ValueError('invalid or incomplete ruleset detail')
+        if d.get('enforcement')!='active' or d.get('bypass_actors'): continue
+        rr=d['rules']; types={r.get('type') for r in rr}
+        cond=d.get('conditions',{}).get('ref_name',{})
+        applies=cond.get('include')==['~DEFAULT_BRANCH'] and cond.get('exclude')==[]
+        if d.get('target')=='branch' and applies and {'pull_request','non_fast_forward'}<=types:
+            for rule in rr:
+                p=rule.get('parameters',{})
+                if rule.get('type')=='required_status_checks' and p.get('strict_required_status_checks_policy') is True and any(x.get('context')=='Required quality' for x in p.get('required_status_checks',[])): protected=True
+        if d.get('target')=='push':
+            for rule in rr:
+                if rule.get('type')=='file_path_restriction' and '.github/workflows/required-quality.yml' in rule.get('parameters',{}).get('restricted_file_paths',[]): integrity=True
+    if protected and not (root/'.github/workflows/required-quality.yml').is_file(): raise ValueError('required workflow missing locally')
+except (OSError,ValueError,KeyError,TypeError,subprocess.TimeoutExpired) as e:
+    print('INDETERMINATE_REMOTE — local check passed, protection query incomplete: '+str(e)); sys.exit(1)
+state='READY_DUAL' if protected and integrity else 'READY_PARTIAL' if protected else 'READY_LOCAL'
+print(state+' — local check passed; inspected default-branch required check='+str(protected)+', workflow path protection='+str(integrity))
+print('These observations are not an adversarial merge canary or production acceptance.')
+PY

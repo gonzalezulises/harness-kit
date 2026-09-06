@@ -6,15 +6,17 @@
 set -uo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT_DIR="${HARNESS_TARGET_ROOT:-$ROOT_DIR}"
+unset HARNESS_TARGET_ROOT
 cd "$ROOT_DIR" || { echo "cannot cd to $ROOT_DIR" >&2; exit 66; }
 git rev-parse --git-dir >/dev/null 2>&1 || {
   echo "verify-decisions: not a git repository" >&2; exit 66; }
 
 if [[ ! -t 1 ]] || [[ -n "${NO_COLOR:-}" ]]; then
-  RED=""; GREEN=""; YELLOW=""; BOLD=""; RESET=""
+  YELLOW=""; RESET=""
 else
-  RED=$'\033[0;31m'; GREEN=$'\033[0;32m'; YELLOW=$'\033[1;33m'
-  BOLD=$'\033[1m'; RESET=$'\033[0m'
+  YELLOW=$'\033[1;33m'
+  RESET=$'\033[0m'
 fi
 
 PY=""
@@ -70,7 +72,7 @@ fi
 # Protect the authority ledger as an exact byte prefix. This avoids Markdown
 # parsing aliases and newline normalization: every authority byte is normative,
 # while a syntactically separate level-two decision may be appended.
-"$PY" - "$WORK/base.md" "$LEDGER" "$BASE_LABEL" <<'PYEOF'
+"$PY" -I - "$WORK/base.md" "$LEDGER" "$BASE_LABEL" <<'PYEOF'
 import re, sys
 from pathlib import Path
 

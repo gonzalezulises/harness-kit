@@ -1,0 +1,15 @@
+{
+  "frozen_review_tree": "45d528d6cdc0bb15032982909cc5b2f19f595c04",
+  "files": {
+    "scripts/setup-oracles.sh": "5603a52bd11b3c43f51ef4cbe4a6e581b060162d7c1052f79c1c058a280b4288",
+    "templates/full/scripts/setup-oracles.sh": "5603a52bd11b3c43f51ef4cbe4a6e581b060162d7c1052f79c1c058a280b4288",
+    "bin/harness-status.sh": "5dbf7a8aee03b305722f3d6b0343a05c79d23c8d08f0fd022f72a450d092eb53",
+    "scripts/verify-delivery-doc.sh": "51d5fc9219670f824507534674f2d60c8014143bea49fa492bb681e117c2eb8d",
+    "templates/full/scripts/verify-delivery-doc.sh": "51d5fc9219670f824507534674f2d60c8014143bea49fa492bb681e117c2eb8d",
+    "tests/h02-hardening-regressions.py": "c3e558b5131dfcdc48b07e2f2dd4c32d97bdbf87000082dc513ce7f926527c89",
+    ".harness/oracles/AC-H02.yaml": "0c070391d1714466424b41fdf5872ad722ddbfd84366fde89a425bad377964cc",
+    ".agents/notes/implemented/process/2026-09-06-live-gates-and-isolated-evidence.md": "93e757805a439e1917995e543ba8a8de61f044d4337cd87e7960e225bd6a1870",
+    "docs/harness-capabilities.md": "77a71a0c83fd669a6b1bc7178514870496382943c9b09c070264b86233a4e594",
+    ".superpowers/sdd/migration-plan/task-2-report.md": "74379b7f4c1d9d09e4339e5fc72a0fcb9fc81d0da80a16c41e9d5b112f54da3b"
+  }
+}

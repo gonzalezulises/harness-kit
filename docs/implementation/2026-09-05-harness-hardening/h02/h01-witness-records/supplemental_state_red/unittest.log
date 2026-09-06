@@ -1,0 +1,32 @@
+test_01_not_started_cannot_skip_activation (__main__.StateRegressionTests.test_01_not_started_cannot_skip_activation) ... FAIL
+test_02_wip_violation_blocks_before_execution (__main__.StateRegressionTests.test_02_wip_violation_blocks_before_execution) ... FAIL
+test_03_duplicate_ids_cannot_promote_unexecuted_feature (__main__.StateRegressionTests.test_03_duplicate_ids_cannot_promote_unexecuted_feature) ... FAIL
+
+======================================================================
+FAIL: test_01_not_started_cannot_skip_activation (__main__.StateRegressionTests.test_01_not_started_cannot_skip_activation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/supplemental_state_red.py", line 90, in test_01_not_started_cannot_skip_activation
+    self.assertTrue(all(observations.values()),
+AssertionError: False is not true : not_started must not execute or become passing without activation: {'rejected': False, 'no_layer_execution': False, 'state_and_evidence_unchanged': False}
+
+======================================================================
+FAIL: test_02_wip_violation_blocks_before_execution (__main__.StateRegressionTests.test_02_wip_violation_blocks_before_execution)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/supplemental_state_red.py", line 101, in test_02_wip_violation_blocks_before_execution
+    self.assertTrue(all(observations.values()),
+AssertionError: False is not true : Two active features must block before the chosen feature executes: {'rejected': False, 'no_layer_execution': False, 'state_and_evidence_unchanged': False}
+
+======================================================================
+FAIL: test_03_duplicate_ids_cannot_promote_unexecuted_feature (__main__.StateRegressionTests.test_03_duplicate_ids_cannot_promote_unexecuted_feature)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/supplemental_state_red.py", line 116, in test_03_duplicate_ids_cannot_promote_unexecuted_feature
+    self.assertTrue(observations['rejected'] and observations['no_layer_execution']
+AssertionError: False is not true : IDs must be unique before execution; an unexecuted false layer cannot acquire a receipt: {'rejected': False, 'no_layer_execution': False, 'state_and_evidence_unchanged': False, 'second_layer_executed': False, 'passing_records': 2}
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.273s
+
+FAILED (failures=3)

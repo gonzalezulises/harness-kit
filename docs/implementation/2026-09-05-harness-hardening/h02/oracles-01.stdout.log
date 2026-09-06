@@ -1,0 +1,6 @@
+  local RED receipt consistent: AC-H01; a local receipt is not independent authority
+  local RED receipt consistent: AC-H02; a local receipt is not independent authority
+  ok       TEST_READY         AC-H01
+  ok       TEST_READY         AC-H02
+
+oracles: 2 criteria, every critical one proved falsifiable

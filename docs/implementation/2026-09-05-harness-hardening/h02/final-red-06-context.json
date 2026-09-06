@@ -1,0 +1,15 @@
+{
+  "baseline_sha": "fff527b2c7a64fb6d70d60d633a0261e68315169",
+  "environment": {
+    "H02_KIT": "/workspace/scratch/adce1c53b293/h02-frozen-baseline",
+    "H02_COMMAND_LOG": "docs/implementation/2026-09-05-harness-hardening/h02/final-red-06-commands.json"
+  },
+  "tests": 27,
+  "failures": 23,
+  "errors": 0,
+  "intermediate_false_success_reproductions": [
+    "temp-alias-red-04",
+    "judge-import-red-05",
+    "status-detail-red-06"
+  ]
+}

@@ -38,6 +38,8 @@
 set -uo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT_DIR="${HARNESS_TARGET_ROOT:-$ROOT_DIR}"
+unset HARNESS_TARGET_ROOT
 cd "$ROOT_DIR" || { echo "verify-delivery-doc: cannot cd to $ROOT_DIR" >&2; exit 3; }
 
 DOC="${DELIVERY_DOC:-README.md}"
@@ -58,7 +60,12 @@ fail() { echo "  ${RED}MISMATCH${RESET} $1"; FAILURES=$((FAILURES+1)); }
 ok()   { echo "  ${GREEN}ok${RESET}       $1"; }
 skip() { echo "  ${YELLOW}skip${RESET}     $1"; }
 
-[[ -f "$DOC" ]] || { echo "${RED}verify-delivery-doc: $DOC not found${RESET}" >&2; exit 3; }
+if [[ ! -f "$DOC" || ! -r "$DOC" ]]; then
+  if [[ -n "${DELIVERY_DOC:-}" || "${DELIVERY_DOC_REQUIRED:-0}" == 1 ]]; then
+    echo "verify-delivery-doc: configured runbook $DOC is missing or unreadable" >&2; exit 2
+  fi
+  echo "verify-delivery-doc: no declared runbook at $DOC"; exit 0
+fi
 
 # ── Does this repository publish a runbook at all? ──────────────────────────
 # Not every repo hands a deploy document to someone else, and a gate that fails
@@ -82,7 +89,14 @@ fi
 VERSION=""
 if [[ -f "$VERSION_SOURCE" ]]; then
   case "$VERSION_SOURCE" in
-    *.json) VERSION="$(sed -n 's/^[[:space:]]*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$VERSION_SOURCE" | head -1)" ;;
+    *.json) VERSION="$(python3 -I - "$VERSION_SOURCE" <<'VERSIONPY'
+import json,sys
+with open(sys.argv[1]) as f: d=json.load(f)
+v=d.get('version')
+if not isinstance(v,str) or not v.strip(): sys.exit(2)
+print(v)
+VERSIONPY
+)" || exit 2 ;;
     *)      VERSION="$(tr -d '[:space:]' < "$VERSION_SOURCE")" ;;
   esac
 fi
@@ -162,11 +176,17 @@ if [[ -n "$BASE" ]] && ! git rev-parse --verify --quiet "$BASE" >/dev/null 2>&1;
   exit 3
 fi
 if [[ -z "$BASE" ]]; then
-  skip "no DELIVERY_BASE and no tag — cannot tell which migrations are new"
+  if [[ -d "$MIGRATIONS_DIR" ]]; then
+    echo "INCOMPLETE: set DELIVERY_BASE to identify release migrations" >&2; exit 4
+  fi
+  ok "no migration directory configured for cross-check"
 elif [[ ! -d "$MIGRATIONS_DIR" ]]; then
   skip "no $MIGRATIONS_DIR — nothing to cross-check"
 else
-  NEW_MIGRATIONS="$(git diff --name-only --diff-filter=A "$BASE"..HEAD -- "$MIGRATIONS_DIR" 2>/dev/null || true)"
+  NEW_MIGRATIONS="$(git diff --name-only --diff-filter=A "$BASE" -- "$MIGRATIONS_DIR")" || exit 4
+  UNTRACKED_MIGRATIONS="$(git ls-files --others --exclude-standard -- "$MIGRATIONS_DIR")" || exit 4
+  NEW_MIGRATIONS="$NEW_MIGRATIONS
+$UNTRACKED_MIGRATIONS"
   if [[ -z "$NEW_MIGRATIONS" ]]; then
     ok "no new migrations since $BASE"
   else

@@ -104,3 +104,63 @@ The code/document diff whitespace check excludes only captured `.log` artifacts;
 their exact bytes remain covered by SHA-256 manifests. No runtime gate, test or
 proof expectation is relaxed. The reviewer probe exports inputs and results,
 not its disposable fixture Git database.
+
+Task 2: active on top of the immutable reviewed H01 index tree b0ee52e.
+H01 publication reads index blobs only; H02 edits the working tree only until
+that checkpoint is imported. No overlapping implementers or index mutations.
+- Ruling: start H02 after H01 local verification and clean independent review
+while its exact reviewed index is being uploaded — index isolation preserves the
+H01 publication bytes and avoids waiting for mechanical upload — cost if wrong:
+publication must stop if the index differs; no H02 bytes may enter H01's commit.
+- Ruling: use a pinned standard safe YAML parser for full-harness oracle parsing,
+with an explicit prerequisite and an isolated installation path; minimal remains
+Bash/Python-only and does not claim full mechanical readiness — strict parsing
+is necessary to close R16 — cost if wrong: full consumers need the declared
+parser setup; missing dependency blocks instead of silently weakening validation.
+
+Task 1: published (9ee4eaa..fff527b), exact remote/local tree b0ee52e;
+review clean, full check421/0. H02 working changes remained outside the index
+and were preserved when the exact API-created commit was imported.
+
+H01 remote CI observation: run34002096392/job101402668518 at exact fff527b
+stopped at ShellCheck0.11.0 SC2034 unused variables. Remaining tests were skipped
+by the workflow, not passed. H02 owns the bounded unused-assignment cleanup in
+its touched script/test files and mirrors; no lint suppression or threshold
+reduction. Source of evidence: GitHub Actions job logs saved in scratch.
+
+Task 2: frozen initial implementation at review tree45d528d. Independent
+specification and quality review started with read-only review_h02. Controller
+validated207 source/evidence hashes and the report seal. Implementer reports
+focal27/27, core286/0, live8/8 and pinned lint0; full integration is pending.
+Two concurrent core286/0 and two load55/0 runs and the0.72s INCOMPLETE readiness
+probe have exact unchanged-source records. Later bounded trust/import and rule
+detail corrections have separate RED/reconstructible snapshots and final checks.
+
+Task 2: initial review complete (0 Critical, 0 High, 3 Medium open).
+Spec and quality need fixes. Fix round 1/5 begins for isolated parser setup,
+owned status child cleanup and explicit missing delivery-document rejection.
+The original frozen tree remains45d528d; review and three bounded probes are
+retained in h02/review-1/. No next milestone or H02 publication yet.
+
+Task 2: fix round 1/5 approved (3 addressed, 0 open). Independent spec
+and quality reviews are clean for the combined H02 task and scoped corrections;
+fix review tree e4534d3. Controller verified163 source/evidence hashes.
+F16 promotion ran actual ordered lint, focal30/30 and shipped-CLI/scaffold
+e2e286/0 layers, exit0; frozen source remained identical across the run.
+Full make check is the remaining local integration gate. H02 decision is appended
+without changing any prior decision bytes; baseline remains unaccepted.
+
+Task 2: complete locally, independent reviews clean; F16 promoted by actual
+three-layer execution. Full make check exit0: 8 quick gates and424 assertions
+(core286 + Gherkin15 + load55 + Sentry68); two authenticated-gh load cases
+explicitly omitted. Source hashes remained unchanged; stderr empty.
+Controller evidence and independent re-review are preserved in h02/controller/.
+Fourteen legacy contracts/receipts remain identical; only F09 state is blocked.
+This is the atomic H02 publication checkpoint. H03/F17 is next.
+
+- Ruling: retain the exact captured unified diff at
+  h02/judge-import-red-05-snapshot/tracked.patch and exclude that single raw
+  capture, like raw logs, from the publication whitespace check — its leading
+  context spaces are patch syntax required for faithful source reconstruction —
+  cost if wrong: artifact whitespace is validated by its hash/reconstruction,
+  while every shipping source and current document remains whitespace-checked.

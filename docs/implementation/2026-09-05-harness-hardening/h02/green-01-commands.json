@@ -1,0 +1,890 @@
+[
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_backup_is_exclusive",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_backup_is_exclusive",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_backup_is_exclusive",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_formatter_nonzero_blocks",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_formatter_nonzero_blocks",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_formatter_nonzero_blocks",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_formatter_nonzero_blocks",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_formatter_nonzero_blocks",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_formatter_nonzero_blocks",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "c45102b42ec015c265414602ed198064bc13a5ca\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_formatter_nonzero_blocks",
+    "argv": [
+      "git",
+      "add",
+      "note.md"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_formatter_nonzero_blocks",
+    "argv": [
+      "bash",
+      "scripts/pre-commit-staged.sh"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "pre-commit: formatter failed (exit 9); run node_modules/.bin/prettier --write <selected files>, review git diff, stage only intended hunks, then retry git commit\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_full_scaffold_live_quick",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_full_scaffold_live_quick",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_full_scaffold_live_quick",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_full_scaffold_live_quick",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/harness-kit/bin/harness-init.sh",
+      "--target",
+      "/tmp/h02-regression-b4sxomtb/test_full_scaffold_live_quick",
+      "--level",
+      "full"
+    ],
+    "exit": 0,
+    "stdout": "Harness init\n  target: /tmp/h02-regression-b4sxomtb/test_full_scaffold_live_quick\n  level:  full\n  verify: echo 'TODO: set the verification command'; false\n\n  write   AGENTS.md\n  write   CLAUDE.md\n  write   init.sh\n  write   PROGRESS.md\n  write   feature_list.json\n  write   clean-state-checklist.md\n  write   session-handoff.md\n  write   DECISIONS.md\n  write   docs/decisions/README.md\n  write   .harness/judge-contract.json\n  write   .harness/installation-profile.json\n  write   scripts/setup-oracles.sh\n  write   requirements-harness.txt\n  write   Makefile\n  write   scripts/verify-feature.sh\n  write   scripts/verify-claims.sh\n  write   scripts/verify-decisions.sh\n  write   .github/workflows/required-quality.yml\n  write   .github/rulesets/required-quality-check.json\n  write   .github/rulesets/required-quality-integrity.json\n  write   scripts/check-arch.sh\n  write   scripts/verify-makefile-gates.sh\n  write   scripts/run-gates.sh\n  write   scripts/verify-agent-notes.sh\n  write   scripts/verify-delivery-doc.sh\n  write   scripts/verify-context-routes.sh\n  write   scripts/verify-oracles.sh\n  write   .harness/oracles/README.md\n  write   .harness/oracles/AC-000.example.yaml.txt\n  write   .harness/context-routes.json\n  write   scripts/verify-impact.template.mjs\n  write   scripts/pre-commit-staged.sh\n  write   scripts/install-githooks.sh\n  write   .agents/notes/README.md\n  write   scripts/clean-state-check.sh\n  write   scripts/session-trace.sh\n  write   scripts/harness-audit.sh\n  write   .harness/arch-rules.json\n  write   templates/sprint-contract.md\n  write   templates/evaluator-rubric.md\n  write   docs/quality-document.md\n  write   .harness/traces/.gitkeep\n  write   .gitignore\n\nDone. Next steps:\n  1. Edit AGENTS.md \u2014 replace the purpose line with what this project actually does.\n  2. Replace the placeholder features in feature_list.json with the real backlog.\n  3. Confirm the verification command is right: echo 'TODO: set the verification command'; false\n  4. Score the result:  /workspace/scratch/adce1c53b293/harness-kit/bin/harness-audit.sh /tmp/h02-regression-b4sxomtb/test_full_scaffold_live_quick\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_full_scaffold_live_quick",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_full_scaffold_live_quick",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_full_scaffold_live_quick",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "66f4bfad4da9fcdb40daa1172d8bbd703c841ec0\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_full_scaffold_live_quick",
+    "argv": [
+      "bash",
+      "scripts/run-gates.sh",
+      "quick"
+    ],
+    "exit": 0,
+    "stdout": "\u2500\u2500 gates \u00b7 aggregate quick \u00b7 profile v1/full\n  decisions-append-only    PASS (0.0s, exit 0)\n  agent-notes-tree         PASS (0.0s, exit 0)\n  arch-boundaries          PASS (0.3s, exit 0)\n  makefile-gates           PASS (0.0s, exit 0)\n  version-sync             NOT_APPLICABLE (Kit release metadata only)\n  delivery-doc             PASS (0.0s, exit 0)\n  context-routes           PASS (0.0s, exit 0)\n  oracles-falsifiable      PASS (0.0s, exit 0)\n\u2500\u2500 7 pass \u00b7 0 blocking \u00b7 1 not applicable\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_integrated_check_declares_live_quick",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_integrated_check_declares_live_quick",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_integrated_check_declares_live_quick",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/workspace/scratch/adce1c53b293/harness-kit",
+    "argv": [
+      "make",
+      "-n",
+      "check"
+    ],
+    "exit": 0,
+    "stdout": "bash scripts/run-gates.sh quick\nmake check-core\nmake[1]: Entering directory '/workspace/scratch/adce1c53b293/harness-kit'\nbash tests/run-tests.sh\nfor p in packs/*/verify-pack.sh; do \\\n  [ -f \"$p\" ] || continue; \\\n  echo \"\"; bash \"$p\" || exit 1; \\\ndone\nmake[1]: Leaving directory '/workspace/scratch/adce1c53b293/harness-kit'\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_live_profile_cannot_be_absent",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_live_profile_cannot_be_absent",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_live_profile_cannot_be_absent",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_live_profile_cannot_be_absent",
+    "argv": [
+      "bash",
+      "scripts/run-gates.sh",
+      "quick"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "NOT_CONFIGURED: ADOPTION_REQUIRED: /tmp/h02-regression-b4sxomtb/test_live_profile_cannot_be_absent/.harness/installation-profile.json: [Errno 2] No such file or directory: '/tmp/h02-regression-b4sxomtb/test_live_profile_cannot_be_absent/.harness/installation-profile.json'\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_oracle_current_bytes_are_checked",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_oracle_current_bytes_are_checked",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_oracle_current_bytes_are_checked",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_oracle_current_bytes_are_checked",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_oracle_current_bytes_are_checked",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_oracle_current_bytes_are_checked",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "096f0939d7ca36bb12395e440c7112567a01b5c1\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_oracle_current_bytes_are_checked",
+    "argv": [
+      "bash",
+      "scripts/verify-oracles.sh"
+    ],
+    "exit": 1,
+    "stdout": "  FINDING  TEST_READY         AC\n",
+    "stderr": "\noracles: AC has history consistency only, no witnessed RED receipt\n    \u00b7 Record falsification.receipt with command, nonzero exit and hashed tests/source/logs; a SHA alone does not witness RED.\n\noracles: AC proof at 096f0939 predates its own tests\n    \u00b7 changed since: test.py\n    \u00b7 The proof no longer covers the test that exists. Break it again and watch it fail.\n\nAn oracle records what would prove the code wrong. Weakening it to go green\nremoves the only thing standing between a plausible answer and a shipped one.\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_oracle_duplicate_keys_rejected",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_oracle_duplicate_keys_rejected",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_oracle_duplicate_keys_rejected",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_oracle_duplicate_keys_rejected",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_oracle_duplicate_keys_rejected",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_oracle_duplicate_keys_rejected",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "3d5f18801a1a650a3898a8e6bf49fb662264edfb\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_oracle_duplicate_keys_rejected",
+    "argv": [
+      "bash",
+      "scripts/verify-oracles.sh"
+    ],
+    "exit": 2,
+    "stdout": "",
+    "stderr": "oracles: .harness/oracles/AC-1.yaml unreadable: duplicate key: status\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_pack_ports_are_os_assigned",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_pack_ports_are_os_assigned",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_pack_ports_are_os_assigned",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "a98d62856bc1a3f30ff580cdabacdb1b438b6bc1\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "add",
+      "note.md"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "bash",
+      "scripts/pre-commit-staged.sh"
+    ],
+    "exit": 0,
+    "stdout": "pre-commit: staged snapshot verified; working-tree bytes preserved\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "show",
+      ":note.md"
+    ],
+    "exit": 0,
+    "stdout": "FORMATTED\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_protected_workflow_keeps_candidate_source",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_protected_workflow_keeps_candidate_source",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_protected_workflow_keeps_candidate_source",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_repair_prose_is_not_command_identity",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_repair_prose_is_not_command_identity",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_repair_prose_is_not_command_identity",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_repair_prose_is_not_command_identity",
+    "argv": [
+      "bash",
+      "scripts/verify-claims.sh"
+    ],
+    "exit": 0,
+    "stdout": "Re-verifying claimed features\n\n\u2500\u2500 C1\n  ok   static\n\n1 claimed feature(s) re-verified. Every passing state is backed by a run.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_status_api_failure_is_indeterminate",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_status_api_failure_is_indeterminate",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_status_api_failure_is_indeterminate",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_status_api_failure_is_indeterminate",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/harness-kit/packs/load-testing/repo-template/bin/perf-resolve-target",
+      "abc123",
+      "fixture/repo",
+      "1",
+      "0"
+    ],
+    "exit": 3,
+    "stdout": "",
+    "stderr": "perf-resolve-target: consulta de statuses fall\u00f3: estado indeterminado (despliegue 42)\nperf-resolve-target: no se pudo determinar si el commit tiene despliegue; consulta incompleta\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_status_requires_observed_local_check",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_status_requires_observed_local_check",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_status_requires_observed_local_check",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_status_requires_observed_local_check",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/harness-kit/bin/harness-status.sh",
+      "--target",
+      "/tmp/h02-regression-b4sxomtb/test_status_requires_observed_local_check"
+    ],
+    "exit": 1,
+    "stdout": "Kit: 2.2.5 (version not recorded)\nBLOCKED_TOOL \u2014 local verification indeterminate: [Errno 2] No such file or directory: '/tmp/h02-regression-b4sxomtb/test_status_requires_observed_local_check/.harness/installation-profile.json'\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_workspace_context_route",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_workspace_context_route",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_workspace_context_route",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_workspace_context_route",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_workspace_context_route",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_workspace_context_route",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "368576393210e045779cc9755bd9f7dde254b474\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-b4sxomtb/test_workspace_context_route",
+    "argv": [
+      "bash",
+      "scripts/verify-context-routes.sh"
+    ],
+    "exit": 1,
+    "stdout": "CITES NOTHING: src/rule.py\n  governed by: AGENTS.md\n  fixture\n",
+    "stderr": "Cite a governing document in a branch commit message or current Agent Note.\n"
+  }
+]

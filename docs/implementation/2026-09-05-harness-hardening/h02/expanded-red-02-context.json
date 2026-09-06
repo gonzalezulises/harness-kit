@@ -1,0 +1,12 @@
+{
+  "baseline_sha": "fff527b2c7a64fb6d70d60d633a0261e68315169",
+  "baseline_tree": "b0ee52e63819994ec08b43942ef5e054cd64c259",
+  "environment": {
+    "H02_KIT": "/workspace/scratch/adce1c53b293/h02-frozen-baseline",
+    "H02_COMMAND_LOG": "docs/implementation/2026-09-05-harness-hardening/h02/expanded-red-02-commands.json"
+  },
+  "suite_tests": 24,
+  "assertion_failures": 22,
+  "errors": 0,
+  "purpose": "Expanded exact-test-byte RED replay against frozen pre-fix baseline; original pre-fix14/14 run remains retained"
+}

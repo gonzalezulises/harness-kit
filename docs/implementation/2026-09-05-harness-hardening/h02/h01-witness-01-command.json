@@ -1,0 +1,9 @@
+[
+  "bash",
+  "-c",
+  "set +e; result=0; for script in red_regressions local_red_regressions supplemental_state_red; do python3 \"$1/docs/reviews/2026-09-05-harness-hardening/$script.py\" --repo \"$2\" --output \"$3/$script\" || result=1; done; exit \"$result\"",
+  "h01-witness",
+  "/workspace/scratch/adce1c53b293/harness-kit",
+  "/workspace/scratch/adce1c53b293/h02-frozen-legacy",
+  "/workspace/scratch/adce1c53b293/h02-h01-witness-01"
+]

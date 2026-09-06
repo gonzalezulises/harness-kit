@@ -47,6 +47,9 @@
 set -uo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+JUDGE_ROOT="$ROOT_DIR"
+ROOT_DIR="${HARNESS_TARGET_ROOT:-$ROOT_DIR}"
+unset HARNESS_TARGET_ROOT
 cd "$ROOT_DIR" || exit 3
 
 DIR="${ORACLES_DIR:-.harness/oracles}"
@@ -60,6 +63,14 @@ fi
 
 command -v python3 >/dev/null 2>&1 || { echo "${RED}oracles: needs python3${RESET}" >&2; exit 3; }
 
+ORACLE_PY="python3"
+if [[ -x "$JUDGE_ROOT/.harness/tools/oracles-venv/bin/python3" ]]; then
+  ORACLE_PY="$JUDGE_ROOT/.harness/tools/oracles-venv/bin/python3"
+fi
+"$ORACLE_PY" -I -c 'import yaml; assert yaml.__version__ == "6.0.3"' >/dev/null 2>&1 || {
+  echo "oracles: TOOL_FAILURE: requires PyYAML==6.0.3; run bash scripts/setup-oracles.sh" >&2; exit 3;
+}
+
 # No oracles yet is a real, honest answer: this gate arrives before the criteria
 # do, and a repo that has written none has nothing to be stale about.
 if [[ ! -d "$DIR" ]] || ! find "$DIR" -name '*.yaml' -o -name '*.yml' 2>/dev/null | grep -q .; then
@@ -70,8 +81,18 @@ fi
 
 # The eight questions of V2 §9.3, as the fields that answer them.
 export DIR MODE
-python3 - <<'PY'
-import os, re, subprocess, sys, traceback
+ORACLE_PY="python3"
+if [[ -x "$JUDGE_ROOT/.harness/tools/oracles-venv/bin/python3" ]]; then
+  ORACLE_PY="$JUDGE_ROOT/.harness/tools/oracles-venv/bin/python3"
+fi
+"$ORACLE_PY" -I - <<'PY'
+import os, re, subprocess, sys, traceback, json, hashlib
+try:
+    import yaml
+    if yaml.__version__ != "6.0.3": raise ImportError("requires PyYAML==6.0.3")
+except ImportError as exc:
+    print("oracles: TOOL_FAILURE: " + str(exc) + "; run bash scripts/setup-oracles.sh", file=sys.stderr)
+    sys.exit(3)
 from pathlib import Path
 
 def _crash(exc_type, exc, tb):
@@ -102,40 +123,48 @@ QUESTIONS = [
 ]
 PLACEHOLDERS = re.compile(r"^\s*(tbd|todo|t\.b\.d\.|xxx|\?+|pending|por definir|-{1,3})\s*$", re.I)
 
-def load_yaml(path):
-    """Minimal reader for the flat-ish shape these files use.
+class StrictLoader(yaml.SafeLoader):
+    def compose_node(self, parent, index):
+        if self.check_event(yaml.AliasEvent):
+            raise ValueError("aliases are not supported in oracle contracts")
+        event = self.peek_event()
+        if getattr(event, "anchor", None): raise ValueError("anchors are not supported")
+        return super().compose_node(parent, index)
 
-    A YAML dependency would be one more thing to install before a gate can run,
-    and a gate nobody can run is not a gate. The accepted shape is documented in
-    the schema: scalars, lists of scalars, and one level of nesting.
-    """
-    data = {}
-    stack = [(0, data)]
-    for raw in path.read_text(encoding="utf-8").splitlines():
-        if not raw.strip() or raw.lstrip().startswith("#"):
-            continue
-        indent = len(raw) - len(raw.lstrip())
-        line = raw.strip()
-        while len(stack) > 1 and indent <= stack[-1][0]:
-            stack.pop()
-        node = stack[-1][1]
-        if line.startswith("- "):
-            node.setdefault("__list__", []).append(line[2:].strip().strip("\"'"))
-            continue
-        if ":" not in line:
-            continue
-        key, _, val = line.partition(":")
-        key, val = key.strip(), val.strip().strip("\"'")
-        if val:
-            node[key] = val
-        else:
-            child = {}
-            node[key] = child
-            stack.append((indent, child))
+def mapping(loader, node, deep=False):
+    result = {}
+    for key_node, value_node in node.value:
+        key = loader.construct_object(key_node, deep=deep)
+        if not isinstance(key, str): raise ValueError("mapping keys must be strings")
+        if key in result: raise ValueError("duplicate key: " + key)
+        result[key] = loader.construct_object(value_node, deep=deep)
+    return result
+StrictLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, mapping)
+
+def load_yaml(path):
+    data = yaml.load(path.read_text(encoding="utf-8"), Loader=StrictLoader)
+    allowed = {"id", "requirement", "criticality", "status", "tests", "falsification"} | {k for k, q in QUESTIONS}
+    if not isinstance(data, dict) or set(data) - allowed: raise ValueError("unknown fields or non-object oracle")
+    for key in ("id", "requirement", "criticality", "status"):
+        if not isinstance(data.get(key), str) or not data[key].strip(): raise ValueError(key + " must be a nonempty string")
+    if data['criticality'] not in {'critical','high','medium','low'}: raise ValueError("invalid criticality")
+    if 'tests' in data and (not isinstance(data['tests'],list) or any(not isinstance(t,str) or not t.strip() for t in data['tests'])): raise ValueError("tests must be a list of paths")
+    if 'falsification' in data and not isinstance(data['falsification'],dict): raise ValueError("falsification must be an object")
+    def value(v):
+        if isinstance(v,str): return
+        if isinstance(v,list):
+            for item in v: value(item)
+        elif isinstance(v,dict):
+            for item in v.values(): value(item)
+        else: raise ValueError("answers must contain strings, mappings or lists of strings")
+    for key, question in QUESTIONS:
+        if key in data: value(data[key])
     return data
 
 def flatten(v):
     """A field answers its question if it holds anything real, at any depth."""
+    if isinstance(v, list):
+        return [s for item in v for s in flatten(item)]
     if isinstance(v, dict):
         out = []
         for k, sub in v.items():
@@ -162,14 +191,20 @@ def is_ancestor(a, b):
 files = sorted(list(DIR.glob("*.yaml")) + list(DIR.glob("*.yml")))
 problems, listing = [], []
 
+parsed = []
 for f in files:
     try:
         o = load_yaml(f)
-    except OSError as exc:
+    except (OSError, UnicodeError, ValueError, yaml.YAMLError) as exc:
         print(f"oracles: {f} unreadable: {exc}", file=sys.stderr)
         sys.exit(2)
 
-    oid = o.get("id") or f.stem
+    parsed.append((f,o))
+if len({o["id"] for f,o in parsed}) != len(parsed):
+    print("oracles: duplicate oracle id",file=sys.stderr); sys.exit(2)
+
+for f, o in parsed:
+    oid = o["id"]
     status = str(o.get("status", "")).strip()
     crit = str(o.get("criticality", "")).strip().lower()
     if status not in {"DRAFT", "DECISION_REQUIRED", "TEST_READY", "DEFERRED", "RETIRED"}:
@@ -218,12 +253,45 @@ for f in files:
             "A test only ever seen passing has not been shown to test anything.",
         ]))
         continue
+    if not re.fullmatch('[0-9a-f]{40}', proved) or not is_ancestor(proved, "HEAD"):
+        problems.append((oid, f"records a proof at {proved[:8]}, which is not in this history", ["Fetch the required history or record the actual witnessed base."]))
+        continue
+    receipt_path = fal.get("receipt")
+    if receipt_path:
+        try:
+            def strict_json(pairs):
+                d = {}
+                for k,v in pairs:
+                    if k in d: raise ValueError("duplicate receipt key")
+                    d[k] = v
+                return d
+            receipt = json.loads(Path(receipt_path).read_text(), object_pairs_hook=strict_json)
+            if not isinstance(receipt,dict) or set(receipt) != {"schema_version","command","exit_code","tests","source","logs"}: raise ValueError("invalid receipt fields")
+            if receipt['schema_version'] != 1 or type(receipt['exit_code']) is not int or receipt['exit_code'] <= 0: raise ValueError("receipt must record observed nonzero RED")
+            if not isinstance(receipt['command'],list) or not receipt['command'] or any(not isinstance(x,str) or not x for x in receipt['command']): raise ValueError("receipt needs exact argv")
+            if not isinstance(receipt['tests'],dict) or set(receipt['tests']) != set(tests): raise ValueError("receipt tests differ from oracle")
+            for group in ['tests','source','logs']:
+                bindings=receipt[group]
+                if not isinstance(bindings,dict) or not bindings: raise ValueError("empty receipt " + group)
+                for path,digest in bindings.items():
+                    if not isinstance(path,str) or Path(path).is_absolute() or '..' in Path(path).parts: raise ValueError("receipt paths must be repository relative")
+                    if not isinstance(digest,str) or not re.fullmatch('[0-9a-f]{64}',digest): raise ValueError("invalid digest")
+                    if hashlib.sha256(Path(path).read_bytes()).hexdigest() != digest: raise ValueError("receipt predates its own tests or changed bytes: " + path)
+            print(f"  local RED receipt consistent: {oid}; a local receipt is not independent authority")
+        except (OSError, ValueError, TypeError, KeyError) as exc:
+            problems.append((oid,"invalid or stale RED receipt",[str(exc)]))
+        continue
     if not is_ancestor(proved, "HEAD"):
         problems.append((oid, f"records a proof at {proved[:8]}, which is not in this history", [
             "Re-run the falsification here and record the commit."]))
         continue
+    problems.append((oid, "has history consistency only, no witnessed RED receipt", ["Record falsification.receipt with command, nonzero exit and hashed tests/source/logs; a SHA alone does not witness RED."]))
     stale = [t for t in tests
              if (c := last_commit_touching(t)) and not is_ancestor(c, proved)]
+    for t in tests:
+        r = subprocess.run(["git", "show", proved + ":" + t], capture_output=True)
+        if r.returncode or r.stdout != Path(t).read_bytes():
+            if t not in stale: stale.append(t)
     if stale:
         problems.append((oid, f"proof at {proved[:8]} predates its own tests", [
             *[f"changed since: {t}" for t in stale],

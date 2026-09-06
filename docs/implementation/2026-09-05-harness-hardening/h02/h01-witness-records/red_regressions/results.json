@@ -1,0 +1,458 @@
+{
+  "source_repo": "/workspace/scratch/adce1c53b293/h02-frozen-legacy",
+  "source_revision": "9ee4eaaf6b19ded4b5e32349d77ba8fdaf6af79e",
+  "source_sha256": {
+    "verify-feature.sh": "3de5c857ac0f8bd574803cf53fb0aa3d6c430241f426a03a11321dd930011635",
+    "verify-claims.sh": "490df3894b603871bbefe2b019d7478b1628e66b32f1984cf84201d7dc13a940",
+    "verify-decisions.sh": "4ebffe568fc05764a20ca0a80eedb4faf7b16db9a54d10c2acb571801757da87"
+  },
+  "source_unchanged_after_run": {
+    "verify-feature.sh": true,
+    "verify-claims.sh": true,
+    "verify-decisions.sh": true
+  },
+  "tests_run": 8,
+  "failure_count": 11,
+  "error_count": 0,
+  "successful": false,
+  "records": [
+    {
+      "test": "__main__.RegressionTests.test_01_blocked_budget_requires_authorized_reopening",
+      "fixtures": [
+        {
+          "path": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_01_blocked_budget_requires_authorized_reopening-exhausted-_jkzwhqu",
+          "base_sha": "918630e40fe9c2524be270dd65e5c8da5cec5222"
+        }
+      ],
+      "calls": [
+        {
+          "cwd": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_01_blocked_budget_requires_authorized_reopening-exhausted-_jkzwhqu",
+          "argv": [
+            "bash",
+            "scripts/verify-feature.sh",
+            "F1"
+          ],
+          "explicit_env": {},
+          "exit": 1,
+          "stdout": "Verifying F1\n\n── Layer: unit\n$ printf \"attempt\\n\" >> attempts.log; test -f corrected-input\n\nFAILED at layer: unit\nHow to fix: check inputs\n\nReview rounds spent: 1/2.\n\nFeature 'F1' stays in its current state. Do not advance to the\nnext layer, and do not mark it passing.\n",
+          "stderr": "",
+          "before": {
+            "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"active\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf \\\"attempt\\\\n\\\" >> attempts.log; test -f corrected-input\",\n          \"repair\": \"check inputs\"\n        }\n      ],\n      \"budgets\": {\n        \"review_rounds_max\": 2,\n        \"repeated_blocker_max\": 9,\n        \"stop_condition\": \"Stop. Owner approval required before more work.\"\n      }\n    }\n  ]\n}\n"
+          },
+          "after": {
+            "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"active\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf \\\"attempt\\\\n\\\" >> attempts.log; test -f corrected-input\",\n          \"repair\": \"check inputs\"\n        }\n      ],\n      \"budgets\": {\n        \"review_rounds_max\": 2,\n        \"repeated_blocker_max\": 9,\n        \"stop_condition\": \"Stop. Owner approval required before more work.\"\n      },\n      \"ledger\": {\n        \"review_rounds\": 1,\n        \"blockers\": [\n          {\n            \"signature\": \"layer:unit\",\n            \"count\": 1\n          }\n        ]\n      }\n    }\n  ]\n}\n"
+          }
+        },
+        {
+          "cwd": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_01_blocked_budget_requires_authorized_reopening-exhausted-_jkzwhqu",
+          "argv": [
+            "bash",
+            "scripts/verify-feature.sh",
+            "F1"
+          ],
+          "explicit_env": {},
+          "exit": 3,
+          "stdout": "Verifying F1\n\n── Layer: unit\n$ printf \"attempt\\n\" >> attempts.log; test -f corrected-input\n\nFAILED at layer: unit\nHow to fix: check inputs\n\nBUDGET_EXHAUSTED — 2 review rounds spent, budget is 2.\nStop condition: Stop. Owner approval required before more work.\n\nF1 is now blocked. Stop working on it.\nDo not retry, do not refactor around it, do not open a new approach.\nEscalate to a human, or split the feature into something smaller.\n",
+          "stderr": "",
+          "before": {
+            "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"active\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf \\\"attempt\\\\n\\\" >> attempts.log; test -f corrected-input\",\n          \"repair\": \"check inputs\"\n        }\n      ],\n      \"budgets\": {\n        \"review_rounds_max\": 2,\n        \"repeated_blocker_max\": 9,\n        \"stop_condition\": \"Stop. Owner approval required before more work.\"\n      },\n      \"ledger\": {\n        \"review_rounds\": 1,\n        \"blockers\": [\n          {\n            \"signature\": \"layer:unit\",\n            \"count\": 1\n          }\n        ]\n      }\n    }\n  ]\n}\n"
+          },
+          "after": {
+            "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"blocked\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf \\\"attempt\\\\n\\\" >> attempts.log; test -f corrected-input\",\n          \"repair\": \"check inputs\"\n        }\n      ],\n      \"budgets\": {\n        \"review_rounds_max\": 2,\n        \"repeated_blocker_max\": 9,\n        \"stop_condition\": \"Stop. Owner approval required before more work.\"\n      },\n      \"ledger\": {\n        \"review_rounds\": 2,\n        \"blockers\": [\n          {\n            \"signature\": \"layer:unit\",\n            \"count\": 2\n          }\n        ]\n      }\n    }\n  ]\n}\n"
+          }
+        },
+        {
+          "cwd": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_01_blocked_budget_requires_authorized_reopening-exhausted-_jkzwhqu",
+          "argv": [
+            "bash",
+            "scripts/verify-feature.sh",
+            "F1"
+          ],
+          "explicit_env": {},
+          "exit": 0,
+          "stdout": "Verifying F1\n\n── Layer: unit\n$ printf \"attempt\\n\" >> attempts.log; test -f corrected-input\nLayer 'unit' passed.\n\nF1 -> passing (evidence recorded in feature_list.json)\nNext: update PROGRESS.md and commit.\n",
+          "stderr": "",
+          "before": {
+            "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"blocked\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf \\\"attempt\\\\n\\\" >> attempts.log; test -f corrected-input\",\n          \"repair\": \"check inputs\"\n        }\n      ],\n      \"budgets\": {\n        \"review_rounds_max\": 2,\n        \"repeated_blocker_max\": 9,\n        \"stop_condition\": \"Stop. Owner approval required before more work.\"\n      },\n      \"ledger\": {\n        \"review_rounds\": 2,\n        \"blockers\": [\n          {\n            \"signature\": \"layer:unit\",\n            \"count\": 2\n          }\n        ]\n      }\n    }\n  ]\n}\n"
+          },
+          "after": {
+            "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"all layers passed — commit 918630e, 2026-09-06T00:50:22Z\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf \\\"attempt\\\\n\\\" >> attempts.log; test -f corrected-input\",\n          \"repair\": \"check inputs\"\n        }\n      ],\n      \"budgets\": {\n        \"review_rounds_max\": 2,\n        \"repeated_blocker_max\": 9,\n        \"stop_condition\": \"Stop. Owner approval required before more work.\"\n      },\n      \"ledger\": {\n        \"review_rounds\": 0,\n        \"blockers\": []\n      }\n    }\n  ],\n  \"last_updated\": \"2026-09-06\"\n}\n"
+          }
+        }
+      ],
+      "observations": {
+        "rejected": false,
+        "attempts_unchanged": false,
+        "still_blocked": false,
+        "ledger_preserved": false,
+        "actual_attempts": 3
+      }
+    },
+    {
+      "test": "__main__.RegressionTests.test_02_empty_command_must_not_execute_repair_text",
+      "fixtures": [
+        {
+          "path": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_02_empty_command_must_not_execute_repair_text-empty-command-atwk_om5",
+          "base_sha": "3b6e2f63cb1cd6ae5a81411389881a04d5065451"
+        }
+      ],
+      "calls": [
+        {
+          "cwd": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_02_empty_command_must_not_execute_repair_text-empty-command-atwk_om5",
+          "argv": [
+            "bash",
+            "scripts/verify-feature.sh",
+            "F1"
+          ],
+          "explicit_env": {},
+          "exit": 0,
+          "stdout": "Verifying F1\n\n── Layer: unit\n$ printf \"repair text ran\\n\" > repair-executed\nLayer 'unit' passed.\n\nF1 -> passing (evidence recorded in feature_list.json)\nNext: update PROGRESS.md and commit.\n",
+          "stderr": "",
+          "before": {
+            "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"active\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"\",\n          \"repair\": \"printf \\\"repair text ran\\\\n\\\" > repair-executed\"\n        }\n      ]\n    }\n  ]\n}\n"
+          },
+          "after": {
+            "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"all layers passed — commit 3b6e2f6, 2026-09-06T00:50:22Z\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"\",\n          \"repair\": \"printf \\\"repair text ran\\\\n\\\" > repair-executed\"\n        }\n      ]\n    }\n  ],\n  \"last_updated\": \"2026-09-06\"\n}\n"
+          }
+        }
+      ],
+      "observations": {}
+    },
+    {
+      "test": "__main__.RegressionTests.test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims",
+      "fixtures": [
+        {
+          "path": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims-invalid-json-ud6bsvn1",
+          "base_sha": "43e42693a99bb6c669d2f198340824db69d84dba"
+        },
+        {
+          "path": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims-partial-schema-error-zymaldxk",
+          "base_sha": "43e42693a99bb6c669d2f198340824db69d84dba"
+        }
+      ],
+      "calls": [
+        {
+          "cwd": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims-invalid-json-ud6bsvn1",
+          "argv": [
+            "bash",
+            "scripts/verify-claims.sh"
+          ],
+          "explicit_env": {},
+          "exit": 0,
+          "stdout": "NO_CLAIMS — no feature is marked passing, so there was nothing to re-verify.\nThis is not a pass: it means the repo claims nothing yet.\n",
+          "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 2, in <module>\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/__init__.py\", line 293, in load\n    return loads(fp.read(),\n           ^^^^^^^^^^^^^^^^\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/__init__.py\", line 346, in loads\n    return _default_decoder.decode(s)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/decoder.py\", line 338, in decode\n    obj, end = self.raw_decode(s, idx=_w(s, 0).end())\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/decoder.py\", line 354, in raw_decode\n    obj, end = self.scan_once(s, idx)\n               ^^^^^^^^^^^^^^^^^^^^^^\njson.decoder.JSONDecodeError: Expecting property name enclosed in double quotes: line 1 column 3 (char 2)\n",
+          "before": {
+            "feature_list.json": "{ invalid json\n"
+          },
+          "after": {
+            "feature_list.json": "{ invalid json\n"
+          }
+        },
+        {
+          "cwd": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims-partial-schema-error-zymaldxk",
+          "argv": [
+            "bash",
+            "scripts/verify-claims.sh"
+          ],
+          "explicit_env": {},
+          "exit": 0,
+          "stdout": "Re-verifying claimed features\n\n── F1\n  ok   unit\n\n1 claimed feature(s) re-verified. Every passing state is backed by a run.\n",
+          "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 13, in <module>\nAttributeError: 'int' object has no attribute 'get'\n",
+          "before": {
+            "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"fixture base receipt\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"echo verified\",\n          \"repair\": \"check inputs\"\n        }\n      ]\n    },\n    {\n      \"id\": \"F2\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"fixture base receipt\"\n      ],\n      \"layers\": [\n        123\n      ]\n    }\n  ]\n}\n"
+          },
+          "after": {
+            "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"fixture base receipt\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"echo verified\",\n          \"repair\": \"check inputs\"\n        }\n      ]\n    },\n    {\n      \"id\": \"F2\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"fixture base receipt\"\n      ],\n      \"layers\": [\n        123\n      ]\n    }\n  ]\n}\n"
+          }
+        }
+      ],
+      "observations": {}
+    },
+    {
+      "test": "__main__.RegressionTests.test_04_claims_require_the_explicit_authority_baseline",
+      "fixtures": [
+        {
+          "path": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_04_claims_require_the_explicit_authority_baseline-missing-nh4s0coy",
+          "base_sha": "7705b3081a01ab3dbdb23f0a4628712a020497b4"
+        },
+        {
+          "path": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_04_claims_require_the_explicit_authority_baseline-malformed-i3ikygl3",
+          "base_sha": "7705b3081a01ab3dbdb23f0a4628712a020497b4"
+        }
+      ],
+      "calls": [
+        {
+          "cwd": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_04_claims_require_the_explicit_authority_baseline-missing-nh4s0coy",
+          "argv": [
+            "bash",
+            "scripts/verify-claims.sh"
+          ],
+          "explicit_env": {
+            "CLAIMS_BASE_FILE": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_04_claims_require_the_explicit_authority_baseline-missing-nh4s0coy/missing-base.json"
+          },
+          "exit": 0,
+          "stdout": "Re-verifying claimed features\n\n── F1\n  ok   unit\n\n1 claimed feature(s) re-verified. Every passing state is backed by a run.\n",
+          "stderr": "",
+          "before": {
+            "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"fixture base receipt\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf checked > layer-executed\",\n          \"repair\": \"check inputs\"\n        }\n      ]\n    }\n  ]\n}\n"
+          },
+          "after": {
+            "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"fixture base receipt\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf checked > layer-executed\",\n          \"repair\": \"check inputs\"\n        }\n      ]\n    }\n  ]\n}\n"
+          }
+        },
+        {
+          "cwd": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_04_claims_require_the_explicit_authority_baseline-malformed-i3ikygl3",
+          "argv": [
+            "bash",
+            "scripts/verify-claims.sh"
+          ],
+          "explicit_env": {
+            "CLAIMS_BASE_FILE": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_04_claims_require_the_explicit_authority_baseline-malformed-i3ikygl3/malformed-base.json"
+          },
+          "exit": 0,
+          "stdout": "Re-verifying claimed features\n\n── F1\n  ok   unit\n\n1 claimed feature(s) re-verified. Every passing state is backed by a run.\n",
+          "stderr": "",
+          "before": {
+            "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"fixture base receipt\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf checked > layer-executed\",\n          \"repair\": \"check inputs\"\n        }\n      ]\n    }\n  ]\n}\n"
+          },
+          "after": {
+            "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"fixture base receipt\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"printf checked > layer-executed\",\n          \"repair\": \"check inputs\"\n        }\n      ]\n    }\n  ]\n}\n"
+          }
+        }
+      ],
+      "observations": {}
+    },
+    {
+      "test": "__main__.RegressionTests.test_05_cached_success_must_not_survive_changed_verification_inputs",
+      "fixtures": [
+        {
+          "path": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_05_cached_success_must_not_survive_changed_verification_inputs-stale-cache-t8i7lk9f",
+          "base_sha": "076766919dfaf574064497ec02d12fa60b79544e"
+        }
+      ],
+      "calls": [
+        {
+          "cwd": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_05_cached_success_must_not_survive_changed_verification_inputs-stale-cache-t8i7lk9f",
+          "argv": [
+            "bash",
+            "scripts/verify-claims.sh"
+          ],
+          "explicit_env": {},
+          "exit": 0,
+          "stdout": "Re-verifying claimed features\n\n── F1\n  ok   before\n  ok   mutation\n  ok   after (reused)\n\n1 claimed feature(s) re-verified. Every passing state is backed by a run.\n1 layer(s) reused an identical command already run in this same checkout.\n",
+          "stderr": "",
+          "before": {
+            "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"fixture base receipt\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"before\",\n          \"cmd\": \"test -f ready && echo ready\",\n          \"repair\": \"restore ready\"\n        },\n        {\n          \"label\": \"mutation\",\n          \"cmd\": \"rm ready\",\n          \"repair\": \"remove obsolete output\"\n        },\n        {\n          \"label\": \"after\",\n          \"cmd\": \"test -f ready && echo ready\",\n          \"repair\": \"restore ready\"\n        }\n      ]\n    }\n  ]\n}\n"
+          },
+          "after": {
+            "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"fixture base receipt\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"before\",\n          \"cmd\": \"test -f ready && echo ready\",\n          \"repair\": \"restore ready\"\n        },\n        {\n          \"label\": \"mutation\",\n          \"cmd\": \"rm ready\",\n          \"repair\": \"remove obsolete output\"\n        },\n        {\n          \"label\": \"after\",\n          \"cmd\": \"test -f ready && echo ready\",\n          \"repair\": \"restore ready\"\n        }\n      ]\n    }\n  ]\n}\n"
+          }
+        }
+      ],
+      "observations": {
+        "direct_final_command_exit": 1
+      }
+    },
+    {
+      "test": "__main__.RegressionTests.test_06_decisions_require_a_resolvable_explicit_base",
+      "fixtures": [
+        {
+          "path": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_06_decisions_require_a_resolvable_explicit_base-unresolvable-ref-sx6gd8mh",
+          "base_sha": "7b8fe81d3dd342886e740a4d8d473ed431c6cdb8"
+        },
+        {
+          "path": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_06_decisions_require_a_resolvable_explicit_base-missing-base-file-404m9yh7",
+          "base_sha": "7b8fe81d3dd342886e740a4d8d473ed431c6cdb8"
+        }
+      ],
+      "calls": [
+        {
+          "cwd": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_06_decisions_require_a_resolvable_explicit_base-unresolvable-ref-sx6gd8mh",
+          "argv": [
+            "bash",
+            "scripts/verify-decisions.sh",
+            "missing-ref"
+          ],
+          "explicit_env": {},
+          "exit": 0,
+          "stdout": "NO_LEDGER — DECISIONS.md does not exist at missing-ref. Nothing to protect yet.\n",
+          "stderr": "",
+          "before": {
+            "DECISIONS.md": "# Decisions\n\n## D1\nNo owner approval required.\n"
+          },
+          "after": {
+            "DECISIONS.md": "# Decisions\n\n## D1\nNo owner approval required.\n"
+          }
+        },
+        {
+          "cwd": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_06_decisions_require_a_resolvable_explicit_base-missing-base-file-404m9yh7",
+          "argv": [
+            "bash",
+            "scripts/verify-decisions.sh"
+          ],
+          "explicit_env": {
+            "DECISIONS_BASE_FILE": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_06_decisions_require_a_resolvable_explicit_base-missing-base-file-404m9yh7/missing-base.md"
+          },
+          "exit": 0,
+          "stdout": "NO_LEDGER — no ledger at /workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_06_decisions_require_a_resolvable_explicit_base-missing-base-file-404m9yh7/missing-base.md. Nothing to protect yet.\n",
+          "stderr": "",
+          "before": {
+            "DECISIONS.md": "# Decisions\n\n## D1\nNo owner approval required.\n"
+          },
+          "after": {
+            "DECISIONS.md": "# Decisions\n\n## D1\nNo owner approval required.\n"
+          }
+        }
+      ],
+      "observations": {}
+    },
+    {
+      "test": "__main__.RegressionTests.test_07_decision_whitespace_must_not_change_executable_policy",
+      "fixtures": [
+        {
+          "path": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_07_decision_whitespace_must_not_change_executable_policy-indentation-ki4bz_tt",
+          "base_sha": "b9edffcd87117b94db42244255fe9b3403b97482"
+        }
+      ],
+      "calls": [
+        {
+          "cwd": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_07_decision_whitespace_must_not_change_executable_policy-indentation-ki4bz_tt",
+          "argv": [
+            "bash",
+            "scripts/verify-decisions.sh",
+            "main"
+          ],
+          "explicit_env": {},
+          "exit": 0,
+          "stdout": "\n1 decision(s) intact.\n",
+          "stderr": "",
+          "before": {
+            "DECISIONS.md": "# Decisions\n\n## D1\nApproved policy example:\n```python\nif authorized:\n    if owner_approved:\n        audit()\n    deploy()\n```\n"
+          },
+          "after": {
+            "DECISIONS.md": "# Decisions\n\n## D1\nApproved policy example:\n```python\nif authorized:\n    if owner_approved:\n        audit()\n    deploy()\n```\n"
+          }
+        }
+      ],
+      "observations": {
+        "executions": {
+          "base": [],
+          "head": [
+            "deploy"
+          ]
+        }
+      }
+    },
+    {
+      "test": "__main__.RegressionTests.test_08_repair_only_change_can_reearn_identical_commands",
+      "fixtures": [
+        {
+          "path": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_08_repair_only_change_can_reearn_identical_commands-repair-only-3k4mcq7c",
+          "base_sha": "98c2ec90dfaaea3bf7879b08c02ca3097e09c341"
+        }
+      ],
+      "calls": [
+        {
+          "cwd": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_08_repair_only_change_can_reearn_identical_commands-repair-only-3k4mcq7c",
+          "argv": [
+            "bash",
+            "scripts/verify-claims.sh"
+          ],
+          "explicit_env": {},
+          "exit": 0,
+          "stdout": "NO_CLAIMS — no feature is marked passing, so there was nothing to re-verify.\nThis is not a pass: it means the repo claims nothing yet.\n",
+          "stderr": "",
+          "before": {
+            "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"active\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"echo verified\",\n          \"repair\": \"Correct inputs and rerun\"\n        }\n      ]\n    }\n  ]\n}\n"
+          },
+          "after": {
+            "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"active\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"echo verified\",\n          \"repair\": \"Correct inputs and rerun\"\n        }\n      ]\n    }\n  ]\n}\n"
+          }
+        },
+        {
+          "cwd": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_08_repair_only_change_can_reearn_identical_commands-repair-only-3k4mcq7c",
+          "argv": [
+            "bash",
+            "scripts/verify-feature.sh",
+            "F1"
+          ],
+          "explicit_env": {},
+          "exit": 0,
+          "stdout": "Verifying F1\n\n── Layer: unit\n$ echo verified\nverified\nLayer 'unit' passed.\n\nF1 -> passing (evidence recorded in feature_list.json)\nNext: update PROGRESS.md and commit.\n",
+          "stderr": "",
+          "before": {
+            "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"active\",\n      \"evidence\": [],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"echo verified\",\n          \"repair\": \"Correct inputs and rerun\"\n        }\n      ]\n    }\n  ]\n}\n"
+          },
+          "after": {
+            "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"all layers passed — commit 98c2ec9, 2026-09-06T00:50:23Z\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"echo verified\",\n          \"repair\": \"Correct inputs and rerun\"\n        }\n      ]\n    }\n  ],\n  \"last_updated\": \"2026-09-06\"\n}\n"
+          }
+        },
+        {
+          "cwd": "/workspace/scratch/adce1c53b293/h02-h01-witness-01/red_regressions/fixtures/test_08_repair_only_change_can_reearn_identical_commands-repair-only-3k4mcq7c",
+          "argv": [
+            "bash",
+            "scripts/verify-claims.sh"
+          ],
+          "explicit_env": {},
+          "exit": 5,
+          "stdout": "",
+          "stderr": "WEAKENED_VERIFICATION\n  F1 is still marked passing, but its verification changed.\n    was: echo verified\n    now: echo verified\n\nThe recorded evidence certifies the command that ran at the time. Changing\nthe command invalidates it. Set the feature back to 'active' and re-run\nscripts/verify-feature.sh so the new command earns its own receipt.\n",
+          "before": {
+            "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"all layers passed — commit 98c2ec9, 2026-09-06T00:50:23Z\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"echo verified\",\n          \"repair\": \"Correct inputs and rerun\"\n        }\n      ]\n    }\n  ],\n  \"last_updated\": \"2026-09-06\"\n}\n"
+          },
+          "after": {
+            "feature_list.json": "{\n  \"features\": [\n    {\n      \"id\": \"F1\",\n      \"state\": \"passing\",\n      \"evidence\": [\n        \"all layers passed — commit 98c2ec9, 2026-09-06T00:50:23Z\"\n      ],\n      \"layers\": [\n        {\n          \"label\": \"unit\",\n          \"cmd\": \"echo verified\",\n          \"repair\": \"Correct inputs and rerun\"\n        }\n      ]\n    }\n  ],\n  \"last_updated\": \"2026-09-06\"\n}\n"
+          }
+        }
+      ],
+      "observations": {}
+    }
+  ],
+  "failures": [
+    {
+      "test": "test_01_blocked_budget_requires_authorized_reopening (__main__.RegressionTests.test_01_blocked_budget_requires_authorized_reopening)",
+      "traceback": "Traceback (most recent call last):\n  File \"/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/red_regressions.py\", line 110, in test_01_blocked_budget_requires_authorized_reopening\n    self.assertTrue(all(observed.values()), 'Exhaustion must block execution and preserve the ledger: ' + repr(observed))\nAssertionError: False is not true : Exhaustion must block execution and preserve the ledger: {'rejected': False, 'attempts_unchanged': False, 'still_blocked': False, 'ledger_preserved': False}\n"
+    },
+    {
+      "test": "test_02_empty_command_must_not_execute_repair_text (__main__.RegressionTests.test_02_empty_command_must_not_execute_repair_text)",
+      "traceback": "Traceback (most recent call last):\n  File \"/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/red_regressions.py\", line 119, in test_02_empty_command_must_not_execute_repair_text\n    self.assertEqual(observed, (True, True, True), 'An empty cmd must fail; repair is data, never an executable layer')\nAssertionError: Tuples differ: (False, False, False) != (True, True, True)\n\nFirst differing element 0:\nFalse\nTrue\n\n- (False, False, False)\n+ (True, True, True) : An empty cmd must fail; repair is data, never an executable layer\n"
+    },
+    {
+      "test": "test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims (__main__.RegressionTests.test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims) (kind='invalid-json')",
+      "traceback": "Traceback (most recent call last):\n  File \"/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/red_regressions.py\", line 132, in test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims\n    self.assertNotEqual(p.returncode, 0, 'Unreadable or partly read claims must be NOT_VERIFIABLE, not green')\nAssertionError: 0 == 0 : Unreadable or partly read claims must be NOT_VERIFIABLE, not green\n"
+    },
+    {
+      "test": "test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims (__main__.RegressionTests.test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims) (kind='partial-schema-error')",
+      "traceback": "Traceback (most recent call last):\n  File \"/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/red_regressions.py\", line 132, in test_03_claim_parse_failures_must_not_approve_empty_or_partial_claims\n    self.assertNotEqual(p.returncode, 0, 'Unreadable or partly read claims must be NOT_VERIFIABLE, not green')\nAssertionError: 0 == 0 : Unreadable or partly read claims must be NOT_VERIFIABLE, not green\n"
+    },
+    {
+      "test": "test_04_claims_require_the_explicit_authority_baseline (__main__.RegressionTests.test_04_claims_require_the_explicit_authority_baseline) (kind='missing')",
+      "traceback": "Traceback (most recent call last):\n  File \"/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/red_regressions.py\", line 143, in test_04_claims_require_the_explicit_authority_baseline\n    self.assertEqual((p.returncode != 0, not (d / 'layer-executed').exists()), (True, True),\nAssertionError: Tuples differ: (False, False) != (True, True)\n\nFirst differing element 0:\nFalse\nTrue\n\n- (False, False)\n+ (True, True) : A declared unreadable authority baseline must block before head layers run\n"
+    },
+    {
+      "test": "test_04_claims_require_the_explicit_authority_baseline (__main__.RegressionTests.test_04_claims_require_the_explicit_authority_baseline) (kind='malformed')",
+      "traceback": "Traceback (most recent call last):\n  File \"/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/red_regressions.py\", line 143, in test_04_claims_require_the_explicit_authority_baseline\n    self.assertEqual((p.returncode != 0, not (d / 'layer-executed').exists()), (True, True),\nAssertionError: Tuples differ: (False, False) != (True, True)\n\nFirst differing element 0:\nFalse\nTrue\n\n- (False, False)\n+ (True, True) : A declared unreadable authority baseline must block before head layers run\n"
+    },
+    {
+      "test": "test_05_cached_success_must_not_survive_changed_verification_inputs (__main__.RegressionTests.test_05_cached_success_must_not_survive_changed_verification_inputs)",
+      "traceback": "Traceback (most recent call last):\n  File \"/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/red_regressions.py\", line 157, in test_05_cached_success_must_not_survive_changed_verification_inputs\n    self.assertNotEqual(p.returncode, 0, 'Identical text after input mutation is not deterministic equivalence')\nAssertionError: 0 == 0 : Identical text after input mutation is not deterministic equivalence\n"
+    },
+    {
+      "test": "test_06_decisions_require_a_resolvable_explicit_base (__main__.RegressionTests.test_06_decisions_require_a_resolvable_explicit_base) (kind='unresolvable-ref')",
+      "traceback": "Traceback (most recent call last):\n  File \"/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/red_regressions.py\", line 168, in test_06_decisions_require_a_resolvable_explicit_base\n    self.assertNotEqual(p.returncode, 0, 'Unknown baseline must not be classified as proven absence of ledger')\nAssertionError: 0 == 0 : Unknown baseline must not be classified as proven absence of ledger\n"
+    },
+    {
+      "test": "test_06_decisions_require_a_resolvable_explicit_base (__main__.RegressionTests.test_06_decisions_require_a_resolvable_explicit_base) (kind='missing-base-file')",
+      "traceback": "Traceback (most recent call last):\n  File \"/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/red_regressions.py\", line 168, in test_06_decisions_require_a_resolvable_explicit_base\n    self.assertNotEqual(p.returncode, 0, 'Unknown baseline must not be classified as proven absence of ledger')\nAssertionError: 0 == 0 : Unknown baseline must not be classified as proven absence of ledger\n"
+    },
+    {
+      "test": "test_07_decision_whitespace_must_not_change_executable_policy (__main__.RegressionTests.test_07_decision_whitespace_must_not_change_executable_policy)",
+      "traceback": "Traceback (most recent call last):\n  File \"/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/red_regressions.py\", line 185, in test_07_decision_whitespace_must_not_change_executable_policy\n    self.assertNotEqual(p.returncode, 0, 'Indentation in code is content; semantic changes require an appended decision')\nAssertionError: 0 == 0 : Indentation in code is content; semantic changes require an appended decision\n"
+    },
+    {
+      "test": "test_08_repair_only_change_can_reearn_identical_commands (__main__.RegressionTests.test_08_repair_only_change_can_reearn_identical_commands)",
+      "traceback": "Traceback (most recent call last):\n  File \"/workspace/scratch/adce1c53b293/harness-kit/docs/reviews/2026-09-05-harness-hardening/red_regressions.py\", line 196, in test_08_repair_only_change_can_reearn_identical_commands\n    self.assertEqual(verified.returncode, 0,\nAssertionError: 5 != 0 : Proposed mechanical exception: a fresh run with identical command bytes must not be blocked only by repair prose\n"
+    }
+  ],
+  "errors": []
+}

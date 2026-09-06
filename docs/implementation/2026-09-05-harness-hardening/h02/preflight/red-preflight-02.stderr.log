@@ -1,0 +1,118 @@
+test_formatter_nonzero_blocks (__main__.Regressions.test_formatter_nonzero_blocks) ... FAIL
+test_full_scaffold_live_quick (__main__.Regressions.test_full_scaffold_live_quick) ... FAIL
+test_oracle_duplicate_keys_rejected (__main__.Regressions.test_oracle_duplicate_keys_rejected) ... FAIL
+test_partial_index_preserves_unstaged_bytes (__main__.Regressions.test_partial_index_preserves_unstaged_bytes) ... FAIL
+test_repair_prose_is_not_command_identity (__main__.Regressions.test_repair_prose_is_not_command_identity) ... FAIL
+test_status_api_failure_is_indeterminate (__main__.Regressions.test_status_api_failure_is_indeterminate) ... FAIL
+test_status_requires_observed_local_check (__main__.Regressions.test_status_requires_observed_local_check) ... FAIL
+test_workspace_context_route (__main__.Regressions.test_workspace_context_route) ... FAIL
+
+======================================================================
+FAIL: test_formatter_nonzero_blocks (__main__.Regressions.test_formatter_nonzero_blocks)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/h02-preflight-evidence/red-probes.py", line 72, in test_formatter_nonzero_blocks
+    self.assertNotEqual(p.returncode, 0, p.stdout+p.stderr)
+AssertionError: 0 == 0 : 
+
+======================================================================
+FAIL: test_full_scaffold_live_quick (__main__.Regressions.test_full_scaffold_live_quick)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/h02-preflight-evidence/red-probes.py", line 50, in test_full_scaffold_live_quick
+    self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+AssertionError: 1 != 0 : ── gates · aggregate quick
+
+  decisions-append-only    PASS (0s)
+  agent-notes-tree         PASS (0s)
+  arch-boundaries          PASS (0s)
+  makefile-gates           PASS (0s)
+  version-sync             NOT_EXECUTED  (missing scripts/verify-version-sync.sh)
+      a required gate is missing from this repo — install it or declare it optional
+  delivery-doc             PASS (0s)
+  context-routes           PASS (0s)
+  oracles-falsifiable      PASS (0s)
+
+── 7 pass · 1 blocking · 0 optional not installed
+
+Blocking:
+  · version-sync NOT_EXECUTED
+
+Only PASS satisfies a gate. A state that is not PASS was not verified,
+and an unverified gate is not a passing one.
+
+
+======================================================================
+FAIL: test_oracle_duplicate_keys_rejected (__main__.Regressions.test_oracle_duplicate_keys_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/h02-preflight-evidence/red-probes.py", line 94, in test_oracle_duplicate_keys_rejected
+    self.assertEqual(p.returncode, 2, p.stdout+p.stderr)
+AssertionError: 0 != 2 :   ok       RETIRED            AC-1
+
+oracles: 1 criteria, every critical one proved falsifiable
+
+
+======================================================================
+FAIL: test_partial_index_preserves_unstaged_bytes (__main__.Regressions.test_partial_index_preserves_unstaged_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/h02-preflight-evidence/red-probes.py", line 78, in test_partial_index_preserves_unstaged_bytes
+    self.assertNotIn('UNRELATED', indexed, 'hook staged unrelated workspace bytes')
+AssertionError: 'UNRELATED' unexpectedly found in 'FORMATTED\nUNRELATED\n' : hook staged unrelated workspace bytes
+
+======================================================================
+FAIL: test_repair_prose_is_not_command_identity (__main__.Regressions.test_repair_prose_is_not_command_identity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/h02-preflight-evidence/red-probes.py", line 58, in test_repair_prose_is_not_command_identity
+    self.assertEqual(p.returncode, 0, p.stdout+p.stderr)
+AssertionError: 5 != 0 : WEAKENED_VERIFICATION
+  C1 is still marked passing, but its verification changed.
+    was: printf ran > witnessed
+    now: printf ran > witnessed
+
+
+======================================================================
+FAIL: test_status_api_failure_is_indeterminate (__main__.Regressions.test_status_api_failure_is_indeterminate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/h02-preflight-evidence/red-probes.py", line 105, in test_status_api_failure_is_indeterminate
+    self.assertEqual(p.returncode, 3, p.stdout+p.stderr)
+AssertionError: 0 != 3 : perf-resolve-target: el commit abc123 no tiene despliegue de vista previa; no hay nada que medir
+
+
+======================================================================
+FAIL: test_status_requires_observed_local_check (__main__.Regressions.test_status_requires_observed_local_check)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/h02-preflight-evidence/red-probes.py", line 100, in test_status_requires_observed_local_check
+    self.assertNotEqual(p.returncode, 0, p.stdout+p.stderr)
+AssertionError: 0 == 0 : READY_LOCAL — todavía nada en GitHub bloquea una fusión.
+
+Kit: 2.2.5  (este repo no registra su versión: se activó con un kit anterior)
+
+Local
+  ok   contrato, estado y presupuestos
+  --   sin re-verificador: un 'passing' escrito a mano nunca se recomprueba
+  --   sin verificación del ledger de decisiones
+
+GitHub
+  --   sin remoto — el veredicto queda por completo en confianza
+
+Siguiente: súbelo a GitHub y corre bin/harness-protect.sh para hacer vinculante la compuerta.
+
+
+======================================================================
+FAIL: test_workspace_context_route (__main__.Regressions.test_workspace_context_route)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/h02-preflight-evidence/red-probes.py", line 88, in test_workspace_context_route
+    self.assertNotEqual(p.returncode, 0, p.stdout+p.stderr)
+AssertionError: 0 == 0 : context-routes: no changes against HEAD — nothing to govern
+
+
+----------------------------------------------------------------------
+Ran 8 tests in 1.274s
+
+FAILED (failures=8)

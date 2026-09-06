@@ -1,0 +1,21 @@
+{
+  "status": "DONE_WITH_CONCERNS",
+  "frozen": true,
+  "fix_round": 1,
+  "source_manifest_sha256": "1c3217b2abcc991bc2c5b4e814dedeaf075cbb3325c069afc3591b73c0ec0306",
+  "tests_sha256": "17d9dad3160a9271277cfbbe6ec271c40a7c5efc35aad2daf478c03fed5e8815",
+  "report": ".superpowers/sdd/migration-plan/task-2-report.md",
+  "report_sha256": "02b19271a61b2f0f09651330b2dadeceb03ed30c75a7a4cfa29110fc629b2a8f",
+  "evidence_manifest_sha256": "d8ca441d0b4df98e88683cd3c13aca9862589ca5fd7cc0e12f96510e220646c2",
+  "files_changed_in_fix": [
+    ".agents/notes/implemented/process/2026-09-06-live-gates-and-isolated-evidence.md",
+    ".harness/oracles/AC-H02.yaml",
+    "bin/harness-status.sh",
+    "docs/harness-capabilities.md",
+    "scripts/setup-oracles.sh",
+    "scripts/verify-delivery-doc.sh",
+    "templates/full/scripts/setup-oracles.sh",
+    "templates/full/scripts/verify-delivery-doc.sh",
+    "tests/h02-hardening-regressions.py"
+  ]
+}

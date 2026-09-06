@@ -1,0 +1,8 @@
+{
+  "risk": "status timeout owns child cleanup",
+  "exit": 1,
+  "seconds": 0.0798857979971217,
+  "stdout": "Kit: 2.2.5 (version not recorded)\nBLOCKED_TOOL \u2014 local verification indeterminate: Command '['make', 'check']' timed out after 0.05 seconds\n",
+  "stderr": "",
+  "child_completed_after_timeout": true
+}

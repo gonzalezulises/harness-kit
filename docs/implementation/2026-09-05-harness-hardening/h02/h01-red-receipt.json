@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "command": [
+    "bash",
+    "-c",
+    "set +e; result=0; for script in red_regressions local_red_regressions supplemental_state_red; do python3 \"$1/docs/reviews/2026-09-05-harness-hardening/$script.py\" --repo \"$2\" --output \"$3/$script\" || result=1; done; exit \"$result\"",
+    "h01-witness",
+    "/workspace/scratch/adce1c53b293/harness-kit",
+    "/workspace/scratch/adce1c53b293/h02-frozen-legacy",
+    "/workspace/scratch/adce1c53b293/h02-h01-witness-01"
+  ],
+  "exit_code": 1,
+  "tests": {
+    "docs/reviews/2026-09-05-harness-hardening/red_regressions.py": "003293dc09ab60cae9c893573dd638ded89732b498788a3a2778d0642759e9eb",
+    "docs/reviews/2026-09-05-harness-hardening/local_red_regressions.py": "8fa060743401e885637b8943057c3e5d2fef8bf8be860eca34b0f988b05459ba",
+    "docs/reviews/2026-09-05-harness-hardening/supplemental_state_red.py": "46681b29d7f44fe26db64297942753b44875683ee1bd0d6f676e88b717508025"
+  },
+  "source": {
+    "docs/implementation/2026-09-05-harness-hardening/h02/h01-legacy-source/scripts/verify-feature.sh": "3de5c857ac0f8bd574803cf53fb0aa3d6c430241f426a03a11321dd930011635",
+    "docs/implementation/2026-09-05-harness-hardening/h02/h01-legacy-source/scripts/verify-claims.sh": "490df3894b603871bbefe2b019d7478b1628e66b32f1984cf84201d7dc13a940",
+    "docs/implementation/2026-09-05-harness-hardening/h02/h01-legacy-source/scripts/verify-decisions.sh": "4ebffe568fc05764a20ca0a80eedb4faf7b16db9a54d10c2acb571801757da87",
+    "docs/implementation/2026-09-05-harness-hardening/h02/h01-legacy-source/scripts/check-arch.sh": "14fcbce241577e361de0610e96a5897d37d31cf6c1a072232e69ff77ec6bd41f",
+    "docs/implementation/2026-09-05-harness-hardening/h02/h01-legacy-source/scripts/run-gates.sh": "518c9638a9d09a57aba1f458b35016436f4f3881a85c95a4a21496b761b41862"
+  },
+  "logs": {
+    "docs/implementation/2026-09-05-harness-hardening/h02/h01-witness-01.stdout.log": "b11dbd4aaa0f52dfce7f316d88738e2b66e2a31cf8067769c101f2c00b2c023e",
+    "docs/implementation/2026-09-05-harness-hardening/h02/h01-witness-01.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/implementation/2026-09-05-harness-hardening/h02/h01-witness-01.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+  }
+}

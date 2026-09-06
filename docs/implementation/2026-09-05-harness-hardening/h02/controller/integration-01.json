@@ -1,0 +1,38 @@
+{
+  "milestone": "H02",
+  "frozen_source_tree": "e4534d3c5388081eafd932ce2ea0641be0eb0bd2",
+  "independent_spec": "APPROVED",
+  "independent_quality": "APPROVED",
+  "remaining_findings": {
+    "critical": 0,
+    "high": 0,
+    "medium": 0,
+    "low": 0
+  },
+  "feature_verification": {
+    "feature": "F16",
+    "exit": 0,
+    "static": "ShellCheck0.11.0",
+    "runtime_tests": 30,
+    "e2e_assertions": 286
+  },
+  "full_check": {
+    "exit": 0,
+    "quick_pass": 8,
+    "core_pass": 286,
+    "gherkin_pass": 15,
+    "load_pass": 55,
+    "sentry_pass": 68,
+    "total_assertions_pass": 424,
+    "load_authenticated_omissions": 2
+  },
+  "legacy_contracts_receipts_unchanged": 14,
+  "legacy_state_exception": "F09 remains blocked; original meaning and evidence preserved",
+  "limitations": [
+    "Protected base policy adoption required",
+    "Authenticated load paths omitted",
+    "Bash3.2/Python3.8 minimum runtime not executed",
+    "No real Codex adapter, containment or deployment acceptance",
+    "No baseline accepted"
+  ]
+}

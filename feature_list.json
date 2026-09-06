@@ -465,20 +465,27 @@
       "priority": 16,
       "area": "harness-hardening",
       "behavior": "Live gates and installed profiles preserve required verification and scoped changes",
-      "state": "not_started",
+      "state": "passing",
       "layers": [
         {
           "label": "static",
-          "cmd": "bash -n scripts/verify-feature.sh && bash -n scripts/verify-claims.sh && bash -n scripts/verify-decisions.sh && bash -n scripts/check-arch.sh && echo shell-syntax-ok",
-          "repair": "Fix source whitespace or conflict markers."
+          "cmd": "make lint",
+          "repair": "Fix the reported shell diagnostics without weakening lint."
         },
         {
           "label": "runtime",
+          "cmd": "PYTHONDONTWRITEBYTECODE=1 python3 tests/h02-hardening-regressions.py",
+          "repair": "Repair the failing gate or index contract while preserving its negative assertions."
+        },
+        {
+          "label": "e2e",
           "cmd": "bash tests/run-tests.sh",
-          "repair": "Fix the first failing contract without weakening its expectation."
+          "repair": "Repair the shipped scaffold or CLI contract; preserve coverage and isolation."
         }
       ],
-      "evidence": [],
+      "evidence": [
+        "all layers passed — commit fff527b, 2026-09-06T01:20:45Z"
+      ],
       "notes": "Approved hardening milestone H02; owner mandate 2026-09-05."
     },
     {

@@ -19,6 +19,8 @@
 set -uo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT_DIR="${HARNESS_TARGET_ROOT:-$ROOT_DIR}"
+unset HARNESS_TARGET_ROOT
 NOTES="$ROOT_DIR/.agents/notes"
 
 if [[ ! -d "$NOTES" ]]; then

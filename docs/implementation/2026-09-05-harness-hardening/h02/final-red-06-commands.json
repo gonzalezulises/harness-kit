@@ -1,0 +1,2191 @@
+[
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_backup_is_exclusive",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_backup_is_exclusive",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_backup_is_exclusive",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_candidate_profile_cannot_downgrade_base",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_candidate_profile_cannot_downgrade_base",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_candidate_profile_cannot_downgrade_base",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_candidate_profile_cannot_downgrade_base",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/h02-frozen-baseline/bin/harness-init.sh",
+      "--target",
+      "/tmp/h02-regression-2ztri2iv/test_candidate_profile_cannot_downgrade_base",
+      "--level",
+      "full"
+    ],
+    "exit": 0,
+    "stdout": "Harness init\n  target: /tmp/h02-regression-2ztri2iv/test_candidate_profile_cannot_downgrade_base\n  level:  full\n  verify: echo 'TODO: set the verification command'; false\n\n  write   AGENTS.md\n  write   CLAUDE.md\n  write   init.sh\n  write   PROGRESS.md\n  write   feature_list.json\n  write   clean-state-checklist.md\n  write   session-handoff.md\n  write   DECISIONS.md\n  write   docs/decisions/README.md\n  write   Makefile\n  write   scripts/verify-feature.sh\n  write   scripts/verify-claims.sh\n  write   scripts/verify-decisions.sh\n  write   .github/workflows/required-quality.yml\n  write   .github/rulesets/required-quality-check.json\n  write   .github/rulesets/required-quality-integrity.json\n  write   scripts/check-arch.sh\n  write   scripts/verify-makefile-gates.sh\n  write   scripts/run-gates.sh\n  write   scripts/verify-agent-notes.sh\n  write   scripts/verify-delivery-doc.sh\n  write   scripts/verify-context-routes.sh\n  write   scripts/verify-oracles.sh\n  write   .harness/oracles/README.md\n  write   .harness/oracles/AC-000.example.yaml.txt\n  write   .harness/context-routes.json\n  write   scripts/verify-impact.template.mjs\n  write   scripts/pre-commit-staged.sh\n  write   scripts/install-githooks.sh\n  write   .agents/notes/README.md\n  write   scripts/clean-state-check.sh\n  write   scripts/session-trace.sh\n  write   scripts/harness-audit.sh\n  write   .harness/arch-rules.json\n  write   templates/sprint-contract.md\n  write   templates/evaluator-rubric.md\n  write   docs/quality-document.md\n  write   .harness/traces/.gitkeep\n  write   .gitignore\n\nDone. Next steps:\n  1. Edit AGENTS.md \u2014 replace the purpose line with what this project actually does.\n  2. Replace the placeholder features in feature_list.json with the real backlog.\n  3. Confirm the verification command is right: echo 'TODO: set the verification command'; false\n  4. Score the result:  /workspace/scratch/adce1c53b293/h02-frozen-baseline/bin/harness-audit.sh /tmp/h02-regression-2ztri2iv/test_candidate_profile_cannot_downgrade_base\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_candidate_profile_cannot_downgrade_base",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_candidate_profile_cannot_downgrade_base",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_candidate_profile_cannot_downgrade_base",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "84e91dbb5fc5e3af6484d4a7659bf5e3daf7d93f\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_formatter_nonzero_blocks",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_formatter_nonzero_blocks",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_formatter_nonzero_blocks",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_formatter_nonzero_blocks",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_formatter_nonzero_blocks",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_formatter_nonzero_blocks",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "8a9cde126e7db880863d358e7c542ba075ea95cd\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_formatter_nonzero_blocks",
+    "argv": [
+      "git",
+      "add",
+      "note.md"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_formatter_nonzero_blocks",
+    "argv": [
+      "bash",
+      "scripts/pre-commit-staged.sh"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_full_aggregate_terminates_without_recursion",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_full_aggregate_terminates_without_recursion",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_full_aggregate_terminates_without_recursion",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_full_aggregate_terminates_without_recursion",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/h02-frozen-baseline/bin/harness-init.sh",
+      "--target",
+      "/tmp/h02-regression-2ztri2iv/test_full_aggregate_terminates_without_recursion",
+      "--level",
+      "full"
+    ],
+    "exit": 0,
+    "stdout": "Harness init\n  target: /tmp/h02-regression-2ztri2iv/test_full_aggregate_terminates_without_recursion\n  level:  full\n  verify: echo 'TODO: set the verification command'; false\n\n  write   AGENTS.md\n  write   CLAUDE.md\n  write   init.sh\n  write   PROGRESS.md\n  write   feature_list.json\n  write   clean-state-checklist.md\n  write   session-handoff.md\n  write   DECISIONS.md\n  write   docs/decisions/README.md\n  write   Makefile\n  write   scripts/verify-feature.sh\n  write   scripts/verify-claims.sh\n  write   scripts/verify-decisions.sh\n  write   .github/workflows/required-quality.yml\n  write   .github/rulesets/required-quality-check.json\n  write   .github/rulesets/required-quality-integrity.json\n  write   scripts/check-arch.sh\n  write   scripts/verify-makefile-gates.sh\n  write   scripts/run-gates.sh\n  write   scripts/verify-agent-notes.sh\n  write   scripts/verify-delivery-doc.sh\n  write   scripts/verify-context-routes.sh\n  write   scripts/verify-oracles.sh\n  write   .harness/oracles/README.md\n  write   .harness/oracles/AC-000.example.yaml.txt\n  write   .harness/context-routes.json\n  write   scripts/verify-impact.template.mjs\n  write   scripts/pre-commit-staged.sh\n  write   scripts/install-githooks.sh\n  write   .agents/notes/README.md\n  write   scripts/clean-state-check.sh\n  write   scripts/session-trace.sh\n  write   scripts/harness-audit.sh\n  write   .harness/arch-rules.json\n  write   templates/sprint-contract.md\n  write   templates/evaluator-rubric.md\n  write   docs/quality-document.md\n  write   .harness/traces/.gitkeep\n  write   .gitignore\n\nDone. Next steps:\n  1. Edit AGENTS.md \u2014 replace the purpose line with what this project actually does.\n  2. Replace the placeholder features in feature_list.json with the real backlog.\n  3. Confirm the verification command is right: echo 'TODO: set the verification command'; false\n  4. Score the result:  /workspace/scratch/adce1c53b293/h02-frozen-baseline/bin/harness-audit.sh /tmp/h02-regression-2ztri2iv/test_full_aggregate_terminates_without_recursion\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_full_aggregate_terminates_without_recursion",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_full_aggregate_terminates_without_recursion",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_full_aggregate_terminates_without_recursion",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "26de3e111726406b660e6bb533a18820c46597bf\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_full_aggregate_terminates_without_recursion",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_full_aggregate_terminates_without_recursion",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_full_aggregate_terminates_without_recursion",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "aed03cd37a56a1ca06c9914c7979400fb083faa4\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_full_aggregate_terminates_without_recursion",
+    "argv": [
+      "bash",
+      "scripts/run-gates.sh",
+      "full"
+    ],
+    "exit": 1,
+    "stdout": "\u2500\u2500 gates \u00b7 aggregate full\n\n  decisions-append-only    PASS (0s)\n  agent-notes-tree         PASS (0s)\n  arch-boundaries          PASS (1s)\n  makefile-gates           PASS (0s)\n  version-sync             NOT_EXECUTED  (missing scripts/verify-version-sync.sh)\n      a required gate is missing from this repo \u2014 install it or declare it optional\n  delivery-doc             PASS (0s)\n  context-routes           PASS (0s)\n  oracles-falsifiable      PASS (0s)\n  claims-reverified        PASS (0s)\n  make-check               NOT_CONFIGURED (0s, exit 2)\n      its configuration or contract is invalid \u2014 fix the config, not the gate\n        makefile-gates           PASS (0s)\n        version-sync             NOT_EXECUTED  (missing scripts/verify-version-sync.sh)\n            a required gate is missing from this repo \u2014 install it or declare it optional\n        delivery-doc             PASS (0s)\n        context-routes           PASS (0s)\n        oracles-falsifiable      PASS (0s)\n      \n      \u2500\u2500 7 pass \u00b7 1 blocking \u00b7 0 optional not installed\n      \n      Blocking:\n        \u00b7 version-sync NOT_EXECUTED\n      \n      Only PASS satisfies a gate. A state that is not PASS was not verified,\n      and an unverified gate is not a passing one.\n      make: *** [Makefile:2: check] Error 1\n\n\u2500\u2500 8 pass \u00b7 2 blocking \u00b7 0 optional not installed\n\nBlocking:\n  \u00b7 version-sync NOT_EXECUTED\n  \u00b7 make-check NOT_CONFIGURED\n\nOnly PASS satisfies a gate. A state that is not PASS was not verified,\nand an unverified gate is not a passing one.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_full_scaffold_live_quick",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_full_scaffold_live_quick",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_full_scaffold_live_quick",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_full_scaffold_live_quick",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/h02-frozen-baseline/bin/harness-init.sh",
+      "--target",
+      "/tmp/h02-regression-2ztri2iv/test_full_scaffold_live_quick",
+      "--level",
+      "full"
+    ],
+    "exit": 0,
+    "stdout": "Harness init\n  target: /tmp/h02-regression-2ztri2iv/test_full_scaffold_live_quick\n  level:  full\n  verify: echo 'TODO: set the verification command'; false\n\n  write   AGENTS.md\n  write   CLAUDE.md\n  write   init.sh\n  write   PROGRESS.md\n  write   feature_list.json\n  write   clean-state-checklist.md\n  write   session-handoff.md\n  write   DECISIONS.md\n  write   docs/decisions/README.md\n  write   Makefile\n  write   scripts/verify-feature.sh\n  write   scripts/verify-claims.sh\n  write   scripts/verify-decisions.sh\n  write   .github/workflows/required-quality.yml\n  write   .github/rulesets/required-quality-check.json\n  write   .github/rulesets/required-quality-integrity.json\n  write   scripts/check-arch.sh\n  write   scripts/verify-makefile-gates.sh\n  write   scripts/run-gates.sh\n  write   scripts/verify-agent-notes.sh\n  write   scripts/verify-delivery-doc.sh\n  write   scripts/verify-context-routes.sh\n  write   scripts/verify-oracles.sh\n  write   .harness/oracles/README.md\n  write   .harness/oracles/AC-000.example.yaml.txt\n  write   .harness/context-routes.json\n  write   scripts/verify-impact.template.mjs\n  write   scripts/pre-commit-staged.sh\n  write   scripts/install-githooks.sh\n  write   .agents/notes/README.md\n  write   scripts/clean-state-check.sh\n  write   scripts/session-trace.sh\n  write   scripts/harness-audit.sh\n  write   .harness/arch-rules.json\n  write   templates/sprint-contract.md\n  write   templates/evaluator-rubric.md\n  write   docs/quality-document.md\n  write   .harness/traces/.gitkeep\n  write   .gitignore\n\nDone. Next steps:\n  1. Edit AGENTS.md \u2014 replace the purpose line with what this project actually does.\n  2. Replace the placeholder features in feature_list.json with the real backlog.\n  3. Confirm the verification command is right: echo 'TODO: set the verification command'; false\n  4. Score the result:  /workspace/scratch/adce1c53b293/h02-frozen-baseline/bin/harness-audit.sh /tmp/h02-regression-2ztri2iv/test_full_scaffold_live_quick\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_full_scaffold_live_quick",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_full_scaffold_live_quick",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_full_scaffold_live_quick",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "136a7763330744347a4ece0c9b9f0c58e27d3e7b\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_full_scaffold_live_quick",
+    "argv": [
+      "bash",
+      "scripts/run-gates.sh",
+      "quick"
+    ],
+    "exit": 1,
+    "stdout": "\u2500\u2500 gates \u00b7 aggregate quick\n\n  decisions-append-only    PASS (0s)\n  agent-notes-tree         PASS (0s)\n  arch-boundaries          PASS (0s)\n  makefile-gates           PASS (0s)\n  version-sync             NOT_EXECUTED  (missing scripts/verify-version-sync.sh)\n      a required gate is missing from this repo \u2014 install it or declare it optional\n  delivery-doc             PASS (0s)\n  context-routes           PASS (0s)\n  oracles-falsifiable      PASS (0s)\n\n\u2500\u2500 7 pass \u00b7 1 blocking \u00b7 0 optional not installed\n\nBlocking:\n  \u00b7 version-sync NOT_EXECUTED\n\nOnly PASS satisfies a gate. A state that is not PASS was not verified,\nand an unverified gate is not a passing one.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_incomplete_ruleset_detail_is_not_known_absence",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_incomplete_ruleset_detail_is_not_known_absence",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_incomplete_ruleset_detail_is_not_known_absence",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_incomplete_ruleset_detail_is_not_known_absence",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/h02-frozen-baseline/bin/harness-init.sh",
+      "--target",
+      "/tmp/h02-regression-2ztri2iv/test_incomplete_ruleset_detail_is_not_known_absence",
+      "--level",
+      "full"
+    ],
+    "exit": 0,
+    "stdout": "Harness init\n  target: /tmp/h02-regression-2ztri2iv/test_incomplete_ruleset_detail_is_not_known_absence\n  level:  full\n  verify: echo 'TODO: set the verification command'; false\n\n  write   AGENTS.md\n  write   CLAUDE.md\n  write   init.sh\n  write   PROGRESS.md\n  write   feature_list.json\n  write   clean-state-checklist.md\n  write   session-handoff.md\n  write   DECISIONS.md\n  write   docs/decisions/README.md\n  write   Makefile\n  write   scripts/verify-feature.sh\n  write   scripts/verify-claims.sh\n  write   scripts/verify-decisions.sh\n  write   .github/workflows/required-quality.yml\n  write   .github/rulesets/required-quality-check.json\n  write   .github/rulesets/required-quality-integrity.json\n  write   scripts/check-arch.sh\n  write   scripts/verify-makefile-gates.sh\n  write   scripts/run-gates.sh\n  write   scripts/verify-agent-notes.sh\n  write   scripts/verify-delivery-doc.sh\n  write   scripts/verify-context-routes.sh\n  write   scripts/verify-oracles.sh\n  write   .harness/oracles/README.md\n  write   .harness/oracles/AC-000.example.yaml.txt\n  write   .harness/context-routes.json\n  write   scripts/verify-impact.template.mjs\n  write   scripts/pre-commit-staged.sh\n  write   scripts/install-githooks.sh\n  write   .agents/notes/README.md\n  write   scripts/clean-state-check.sh\n  write   scripts/session-trace.sh\n  write   scripts/harness-audit.sh\n  write   .harness/arch-rules.json\n  write   templates/sprint-contract.md\n  write   templates/evaluator-rubric.md\n  write   docs/quality-document.md\n  write   .harness/traces/.gitkeep\n  write   .gitignore\n\nDone. Next steps:\n  1. Edit AGENTS.md \u2014 replace the purpose line with what this project actually does.\n  2. Replace the placeholder features in feature_list.json with the real backlog.\n  3. Confirm the verification command is right: echo 'TODO: set the verification command'; false\n  4. Score the result:  /workspace/scratch/adce1c53b293/h02-frozen-baseline/bin/harness-audit.sh /tmp/h02-regression-2ztri2iv/test_incomplete_ruleset_detail_is_not_known_absence\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_incomplete_ruleset_detail_is_not_known_absence",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_incomplete_ruleset_detail_is_not_known_absence",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_incomplete_ruleset_detail_is_not_known_absence",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "407d4ea8c82e45df7b87cd648b37ceb99e9baf9e\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_incomplete_ruleset_detail_is_not_known_absence",
+    "argv": [
+      "git",
+      "remote",
+      "add",
+      "origin",
+      "https://github.com/example/repo.git"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_incomplete_ruleset_detail_is_not_known_absence",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/h02-frozen-baseline/bin/harness-status.sh",
+      "--target",
+      "/tmp/h02-regression-2ztri2iv/test_incomplete_ruleset_detail_is_not_known_absence"
+    ],
+    "exit": 0,
+    "stdout": "READY_LOCAL \u2014 todav\u00eda nada en GitHub bloquea una fusi\u00f3n.\n\nKit: 2.2.5\n\nLocal\n  ok   contrato, estado y presupuestos\n  ok   re-verificador de afirmaciones (verify-claims.sh)\n  ok   ledger de decisiones (solo se agrega)\n\nGitHub\n  ok   workflow presente\n  --   sin ruleset de compuerta: CI reporta pero nada bloquea\n  --   workflow SIN proteger \u2014 un 'if: false' en el job se fusiona en verde\n\nSiguiente: bin/harness-protect.sh example/repo\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_integrated_check_declares_live_quick",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_integrated_check_declares_live_quick",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_integrated_check_declares_live_quick",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/workspace/scratch/adce1c53b293/h02-frozen-baseline",
+    "argv": [
+      "make",
+      "-n",
+      "check"
+    ],
+    "exit": 0,
+    "stdout": "bash tests/run-tests.sh\nfor p in packs/*/verify-pack.sh; do \\\n  [ -f \"$p\" ] || continue; \\\n  echo \"\"; bash \"$p\" || exit 1; \\\ndone\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_integrated_gate_blocks_live_candidate",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_integrated_gate_blocks_live_candidate",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_integrated_gate_blocks_live_candidate",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_integrated_gate_blocks_live_candidate",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/h02-frozen-baseline/bin/harness-init.sh",
+      "--target",
+      "/tmp/h02-regression-2ztri2iv/test_integrated_gate_blocks_live_candidate",
+      "--level",
+      "full"
+    ],
+    "exit": 0,
+    "stdout": "Harness init\n  target: /tmp/h02-regression-2ztri2iv/test_integrated_gate_blocks_live_candidate\n  level:  full\n  verify: echo 'TODO: set the verification command'; false\n\n  write   AGENTS.md\n  write   CLAUDE.md\n  write   init.sh\n  write   PROGRESS.md\n  write   feature_list.json\n  write   clean-state-checklist.md\n  write   session-handoff.md\n  write   DECISIONS.md\n  write   docs/decisions/README.md\n  write   Makefile\n  write   scripts/verify-feature.sh\n  write   scripts/verify-claims.sh\n  write   scripts/verify-decisions.sh\n  write   .github/workflows/required-quality.yml\n  write   .github/rulesets/required-quality-check.json\n  write   .github/rulesets/required-quality-integrity.json\n  write   scripts/check-arch.sh\n  write   scripts/verify-makefile-gates.sh\n  write   scripts/run-gates.sh\n  write   scripts/verify-agent-notes.sh\n  write   scripts/verify-delivery-doc.sh\n  write   scripts/verify-context-routes.sh\n  write   scripts/verify-oracles.sh\n  write   .harness/oracles/README.md\n  write   .harness/oracles/AC-000.example.yaml.txt\n  write   .harness/context-routes.json\n  write   scripts/verify-impact.template.mjs\n  write   scripts/pre-commit-staged.sh\n  write   scripts/install-githooks.sh\n  write   .agents/notes/README.md\n  write   scripts/clean-state-check.sh\n  write   scripts/session-trace.sh\n  write   scripts/harness-audit.sh\n  write   .harness/arch-rules.json\n  write   templates/sprint-contract.md\n  write   templates/evaluator-rubric.md\n  write   docs/quality-document.md\n  write   .harness/traces/.gitkeep\n  write   .gitignore\n\nDone. Next steps:\n  1. Edit AGENTS.md \u2014 replace the purpose line with what this project actually does.\n  2. Replace the placeholder features in feature_list.json with the real backlog.\n  3. Confirm the verification command is right: echo 'TODO: set the verification command'; false\n  4. Score the result:  /workspace/scratch/adce1c53b293/h02-frozen-baseline/bin/harness-audit.sh /tmp/h02-regression-2ztri2iv/test_integrated_gate_blocks_live_candidate\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_integrated_gate_blocks_live_candidate",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_integrated_gate_blocks_live_candidate",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_integrated_gate_blocks_live_candidate",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "45bd2795426a4ec670950d93ea229856d541140e\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_integrated_gate_blocks_live_candidate",
+    "argv": [
+      "make",
+      "check"
+    ],
+    "exit": 2,
+    "stdout": "bash scripts/run-gates.sh quick\n\u2500\u2500 gates \u00b7 aggregate quick\n\n  decisions-append-only    PASS (0s)\n  agent-notes-tree         PASS (0s)\n  arch-boundaries          PASS (0s)\n  makefile-gates           PASS (0s)\n  version-sync             NOT_EXECUTED  (missing scripts/verify-version-sync.sh)\n      a required gate is missing from this repo \u2014 install it or declare it optional\n  delivery-doc             PASS (0s)\n  context-routes           PASS (0s)\n  oracles-falsifiable      PASS (1s)\n\n\u2500\u2500 7 pass \u00b7 1 blocking \u00b7 0 optional not installed\n\nBlocking:\n  \u00b7 version-sync NOT_EXECUTED\n\nOnly PASS satisfies a gate. A state that is not PASS was not verified,\nand an unverified gate is not a passing one.\n",
+    "stderr": "make: *** [Makefile:2: check] Error 1\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_live_profile_cannot_be_absent",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_live_profile_cannot_be_absent",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_live_profile_cannot_be_absent",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_live_profile_cannot_be_absent",
+    "argv": [
+      "bash",
+      "scripts/run-gates.sh",
+      "quick"
+    ],
+    "exit": 0,
+    "stdout": "\u2500\u2500 gates \u00b7 aggregate quick\n\n  decisions-append-only    PASS (0s)\n  agent-notes-tree         PASS (0s)\n  arch-boundaries          PASS (0s)\n  makefile-gates           PASS (0s)\n  version-sync             PASS (0s)\n  delivery-doc             PASS (0s)\n  context-routes           PASS (0s)\n  oracles-falsifiable      PASS (0s)\n\n\u2500\u2500 8 pass \u00b7 0 blocking \u00b7 0 optional not installed\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_oracle_current_bytes_are_checked",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_oracle_current_bytes_are_checked",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_oracle_current_bytes_are_checked",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_oracle_current_bytes_are_checked",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_oracle_current_bytes_are_checked",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_oracle_current_bytes_are_checked",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "e5ba47202ec7cae0d6b618b082ccc31b1fde37cf\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_oracle_current_bytes_are_checked",
+    "argv": [
+      "bash",
+      "scripts/verify-oracles.sh"
+    ],
+    "exit": 0,
+    "stdout": "  ok       TEST_READY         AC\n\noracles: 1 criteria, every critical one proved falsifiable\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_oracle_duplicate_keys_rejected",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_oracle_duplicate_keys_rejected",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_oracle_duplicate_keys_rejected",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_oracle_duplicate_keys_rejected",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_oracle_duplicate_keys_rejected",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_oracle_duplicate_keys_rejected",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "530e20635206300e66916866a5ec7c33a07c8467\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_oracle_duplicate_keys_rejected",
+    "argv": [
+      "bash",
+      "scripts/verify-oracles.sh"
+    ],
+    "exit": 0,
+    "stdout": "  ok       RETIRED            AC-1\n\noracles: 1 criteria, every critical one proved falsifiable\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_oracle_standard_multiline_and_alias_contract",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_oracle_standard_multiline_and_alias_contract",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_oracle_standard_multiline_and_alias_contract",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_oracle_standard_multiline_and_alias_contract",
+    "argv": [
+      "bash",
+      "scripts/verify-oracles.sh"
+    ],
+    "exit": 0,
+    "stdout": "  ok       RETIRED            AC\n\noracles: 1 criteria, every critical one proved falsifiable\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_oracle_standard_multiline_and_alias_contract",
+    "argv": [
+      "bash",
+      "scripts/verify-oracles.sh"
+    ],
+    "exit": 0,
+    "stdout": "  ok       RETIRED            AC\n\noracles: 1 criteria, every critical one proved falsifiable\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_pack_ports_are_os_assigned",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_pack_ports_are_os_assigned",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_pack_ports_are_os_assigned",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_partial_index_handles_names_modes_and_formatter_failure",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_partial_index_handles_names_modes_and_formatter_failure",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_partial_index_handles_names_modes_and_formatter_failure",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_partial_index_handles_names_modes_and_formatter_failure",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_partial_index_handles_names_modes_and_formatter_failure",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_partial_index_handles_names_modes_and_formatter_failure",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "ecf1f9d5dd1e4346fc89a59767948a4afebe9831\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_partial_index_handles_names_modes_and_formatter_failure",
+    "argv": [
+      "git",
+      "add",
+      "note.md"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_partial_index_handles_names_modes_and_formatter_failure",
+    "argv": [
+      "git",
+      "add",
+      "--",
+      "space and\nnewline.md"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_partial_index_handles_names_modes_and_formatter_failure",
+    "argv": [
+      "bash",
+      "scripts/pre-commit-staged.sh"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_partial_index_handles_names_modes_and_formatter_failure",
+    "argv": [
+      "git",
+      "show",
+      ":space and\nnewline.md"
+    ],
+    "exit": 0,
+    "stdout": "STAGED\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "ecf1f9d5dd1e4346fc89a59767948a4afebe9831\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "add",
+      "note.md"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "bash",
+      "scripts/pre-commit-staged.sh"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_partial_index_preserves_unstaged_bytes",
+    "argv": [
+      "git",
+      "show",
+      ":note.md"
+    ],
+    "exit": 0,
+    "stdout": "FORMATTED\nUNRELATED\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_protected_judge_checks_target_and_preserves_source",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_protected_judge_checks_target_and_preserves_source",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_protected_judge_checks_target_and_preserves_source",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_protected_judge_checks_target_and_preserves_source",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/h02-frozen-baseline/bin/harness-init.sh",
+      "--target",
+      "/tmp/h02-regression-2ztri2iv/test_protected_judge_checks_target_and_preserves_source",
+      "--level",
+      "full"
+    ],
+    "exit": 0,
+    "stdout": "Harness init\n  target: /tmp/h02-regression-2ztri2iv/test_protected_judge_checks_target_and_preserves_source\n  level:  full\n  verify: echo 'TODO: set the verification command'; false\n\n  write   AGENTS.md\n  write   CLAUDE.md\n  write   init.sh\n  write   PROGRESS.md\n  write   feature_list.json\n  write   clean-state-checklist.md\n  write   session-handoff.md\n  write   DECISIONS.md\n  write   docs/decisions/README.md\n  write   Makefile\n  write   scripts/verify-feature.sh\n  write   scripts/verify-claims.sh\n  write   scripts/verify-decisions.sh\n  write   .github/workflows/required-quality.yml\n  write   .github/rulesets/required-quality-check.json\n  write   .github/rulesets/required-quality-integrity.json\n  write   scripts/check-arch.sh\n  write   scripts/verify-makefile-gates.sh\n  write   scripts/run-gates.sh\n  write   scripts/verify-agent-notes.sh\n  write   scripts/verify-delivery-doc.sh\n  write   scripts/verify-context-routes.sh\n  write   scripts/verify-oracles.sh\n  write   .harness/oracles/README.md\n  write   .harness/oracles/AC-000.example.yaml.txt\n  write   .harness/context-routes.json\n  write   scripts/verify-impact.template.mjs\n  write   scripts/pre-commit-staged.sh\n  write   scripts/install-githooks.sh\n  write   .agents/notes/README.md\n  write   scripts/clean-state-check.sh\n  write   scripts/session-trace.sh\n  write   scripts/harness-audit.sh\n  write   .harness/arch-rules.json\n  write   templates/sprint-contract.md\n  write   templates/evaluator-rubric.md\n  write   docs/quality-document.md\n  write   .harness/traces/.gitkeep\n  write   .gitignore\n\nDone. Next steps:\n  1. Edit AGENTS.md \u2014 replace the purpose line with what this project actually does.\n  2. Replace the placeholder features in feature_list.json with the real backlog.\n  3. Confirm the verification command is right: echo 'TODO: set the verification command'; false\n  4. Score the result:  /workspace/scratch/adce1c53b293/h02-frozen-baseline/bin/harness-audit.sh /tmp/h02-regression-2ztri2iv/test_protected_judge_checks_target_and_preserves_source\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_protected_judge_checks_target_and_preserves_source",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_protected_judge_checks_target_and_preserves_source",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_protected_judge_checks_target_and_preserves_source",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "4610e2515a9cb792f79d9c5a3b936bb071a2c548\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_protected_judge_checks_target_and_preserves_source-head",
+    "argv": [
+      "git",
+      "add",
+      "src/code.js"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_protected_judge_checks_target_and_preserves_source",
+    "argv": [
+      "bash",
+      "scripts/run-gates.sh",
+      "quick",
+      "--target",
+      "/tmp/h02-regression-2ztri2iv/test_protected_judge_checks_target_and_preserves_source-head"
+    ],
+    "exit": 1,
+    "stdout": "\u2500\u2500 gates \u00b7 aggregate quick\n\n  decisions-append-only    PASS (0s)\n  agent-notes-tree         PASS (0s)\n  arch-boundaries          PASS (1s)\n  makefile-gates           PASS (0s)\n  version-sync             NOT_EXECUTED  (missing scripts/verify-version-sync.sh)\n      a required gate is missing from this repo \u2014 install it or declare it optional\n  delivery-doc             PASS (0s)\n  context-routes           PASS (0s)\n  oracles-falsifiable      PASS (0s)\n\n\u2500\u2500 7 pass \u00b7 1 blocking \u00b7 0 optional not installed\n\nBlocking:\n  \u00b7 version-sync NOT_EXECUTED\n\nOnly PASS satisfies a gate. A state that is not PASS was not verified,\nand an unverified gate is not a passing one.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_protected_oracle_ignores_candidate_interpreter_and_imports",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_protected_oracle_ignores_candidate_interpreter_and_imports",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_protected_oracle_ignores_candidate_interpreter_and_imports",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_protected_oracle_ignores_candidate_interpreter_and_imports",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/h02-frozen-baseline/bin/harness-init.sh",
+      "--target",
+      "/tmp/h02-regression-2ztri2iv/test_protected_oracle_ignores_candidate_interpreter_and_imports",
+      "--level",
+      "full"
+    ],
+    "exit": 0,
+    "stdout": "Harness init\n  target: /tmp/h02-regression-2ztri2iv/test_protected_oracle_ignores_candidate_interpreter_and_imports\n  level:  full\n  verify: echo 'TODO: set the verification command'; false\n\n  write   AGENTS.md\n  write   CLAUDE.md\n  write   init.sh\n  write   PROGRESS.md\n  write   feature_list.json\n  write   clean-state-checklist.md\n  write   session-handoff.md\n  write   DECISIONS.md\n  write   docs/decisions/README.md\n  write   Makefile\n  write   scripts/verify-feature.sh\n  write   scripts/verify-claims.sh\n  write   scripts/verify-decisions.sh\n  write   .github/workflows/required-quality.yml\n  write   .github/rulesets/required-quality-check.json\n  write   .github/rulesets/required-quality-integrity.json\n  write   scripts/check-arch.sh\n  write   scripts/verify-makefile-gates.sh\n  write   scripts/run-gates.sh\n  write   scripts/verify-agent-notes.sh\n  write   scripts/verify-delivery-doc.sh\n  write   scripts/verify-context-routes.sh\n  write   scripts/verify-oracles.sh\n  write   .harness/oracles/README.md\n  write   .harness/oracles/AC-000.example.yaml.txt\n  write   .harness/context-routes.json\n  write   scripts/verify-impact.template.mjs\n  write   scripts/pre-commit-staged.sh\n  write   scripts/install-githooks.sh\n  write   .agents/notes/README.md\n  write   scripts/clean-state-check.sh\n  write   scripts/session-trace.sh\n  write   scripts/harness-audit.sh\n  write   .harness/arch-rules.json\n  write   templates/sprint-contract.md\n  write   templates/evaluator-rubric.md\n  write   docs/quality-document.md\n  write   .harness/traces/.gitkeep\n  write   .gitignore\n\nDone. Next steps:\n  1. Edit AGENTS.md \u2014 replace the purpose line with what this project actually does.\n  2. Replace the placeholder features in feature_list.json with the real backlog.\n  3. Confirm the verification command is right: echo 'TODO: set the verification command'; false\n  4. Score the result:  /workspace/scratch/adce1c53b293/h02-frozen-baseline/bin/harness-audit.sh /tmp/h02-regression-2ztri2iv/test_protected_oracle_ignores_candidate_interpreter_and_imports\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_protected_oracle_ignores_candidate_interpreter_and_imports",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_protected_oracle_ignores_candidate_interpreter_and_imports",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_protected_oracle_ignores_candidate_interpreter_and_imports",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "290b6b6a85a21095d3d07db7549d262ebef58b15\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_protected_oracle_ignores_candidate_interpreter_and_imports",
+    "argv": [
+      "bash",
+      "/tmp/h02-regression-2ztri2iv/test_protected_oracle_ignores_candidate_interpreter_and_imports/scripts/verify-oracles.sh"
+    ],
+    "exit": 0,
+    "stdout": "oracles: none declared in /tmp/h02-regression-2ztri2iv/test_protected_oracle_ignores_candidate_interpreter_and_imports/.harness/oracles\n  Write one when a criterion is critical enough that getting it wrong ships harm.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_protected_oracle_ignores_candidate_interpreter_and_imports",
+    "argv": [
+      "bash",
+      "/tmp/h02-regression-2ztri2iv/test_protected_oracle_ignores_candidate_interpreter_and_imports/scripts/verify-oracles.sh"
+    ],
+    "exit": 0,
+    "stdout": "oracles: none declared in /tmp/h02-regression-2ztri2iv/test_protected_oracle_ignores_candidate_interpreter_and_imports/.harness/oracles\n  Write one when a criterion is critical enough that getting it wrong ships harm.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_protected_workflow_keeps_candidate_source",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_protected_workflow_keeps_candidate_source",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_protected_workflow_keeps_candidate_source",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_receipt_binds_current_bytes_and_rejects_tampering",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_receipt_binds_current_bytes_and_rejects_tampering",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_receipt_binds_current_bytes_and_rejects_tampering",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_receipt_binds_current_bytes_and_rejects_tampering",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_receipt_binds_current_bytes_and_rejects_tampering",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_receipt_binds_current_bytes_and_rejects_tampering",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "2c6ec45412d66acf8c913bcd8260905a5c0df69b\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_receipt_binds_current_bytes_and_rejects_tampering",
+    "argv": [
+      "python3",
+      "test.py"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"/tmp/h02-regression-2ztri2iv/test_receipt_binds_current_bytes_and_rejects_tampering/test.py\", line 1, in <module>\n    assert False, \"deliberate defect\"\n           ^^^^^\nAssertionError: deliberate defect\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_receipt_binds_current_bytes_and_rejects_tampering",
+    "argv": [
+      "bash",
+      "scripts/verify-oracles.sh"
+    ],
+    "exit": 0,
+    "stdout": "  ok       TEST_READY         AC\n\noracles: 1 criteria, every critical one proved falsifiable\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_receipt_binds_current_bytes_and_rejects_tampering",
+    "argv": [
+      "git",
+      "add",
+      "test.py"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_receipt_binds_current_bytes_and_rejects_tampering",
+    "argv": [
+      "bash",
+      "scripts/verify-oracles.sh"
+    ],
+    "exit": 0,
+    "stdout": "  ok       TEST_READY         AC\n\noracles: 1 criteria, every critical one proved falsifiable\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_repair_prose_is_not_command_identity",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_repair_prose_is_not_command_identity",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_repair_prose_is_not_command_identity",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_repair_prose_is_not_command_identity",
+    "argv": [
+      "bash",
+      "scripts/verify-claims.sh"
+    ],
+    "exit": 5,
+    "stdout": "",
+    "stderr": "WEAKENED_VERIFICATION\n  C1 is still marked passing, but its verification changed.\n    was: printf ran > witnessed\n    now: printf ran > witnessed\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_staged_symlink_cannot_escape_formatter_snapshot",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_staged_symlink_cannot_escape_formatter_snapshot",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_staged_symlink_cannot_escape_formatter_snapshot",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_staged_symlink_cannot_escape_formatter_snapshot",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_staged_symlink_cannot_escape_formatter_snapshot",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_staged_symlink_cannot_escape_formatter_snapshot",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "20274b2c7452e39e550ca1a515f9ac682ecfd990\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_staged_symlink_cannot_escape_formatter_snapshot",
+    "argv": [
+      "git",
+      "add",
+      "note.md"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_staged_symlink_cannot_escape_formatter_snapshot",
+    "argv": [
+      "git",
+      "add",
+      "linked.md"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_staged_symlink_cannot_escape_formatter_snapshot",
+    "argv": [
+      "bash",
+      "scripts/pre-commit-staged.sh"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_status_api_failure_is_indeterminate",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_status_api_failure_is_indeterminate",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_status_api_failure_is_indeterminate",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_status_api_failure_is_indeterminate",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/h02-frozen-baseline/packs/load-testing/repo-template/bin/perf-resolve-target",
+      "abc123",
+      "fixture/repo",
+      "1",
+      "0"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": "perf-resolve-target: el commit abc123 no tiene despliegue de vista previa; no hay nada que medir\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_status_distinguishes_remote_api_failure",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_status_distinguishes_remote_api_failure",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_status_distinguishes_remote_api_failure",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_status_distinguishes_remote_api_failure",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/h02-frozen-baseline/bin/harness-init.sh",
+      "--target",
+      "/tmp/h02-regression-2ztri2iv/test_status_distinguishes_remote_api_failure",
+      "--level",
+      "full"
+    ],
+    "exit": 0,
+    "stdout": "Harness init\n  target: /tmp/h02-regression-2ztri2iv/test_status_distinguishes_remote_api_failure\n  level:  full\n  verify: echo 'TODO: set the verification command'; false\n\n  write   AGENTS.md\n  write   CLAUDE.md\n  write   init.sh\n  write   PROGRESS.md\n  write   feature_list.json\n  write   clean-state-checklist.md\n  write   session-handoff.md\n  write   DECISIONS.md\n  write   docs/decisions/README.md\n  write   Makefile\n  write   scripts/verify-feature.sh\n  write   scripts/verify-claims.sh\n  write   scripts/verify-decisions.sh\n  write   .github/workflows/required-quality.yml\n  write   .github/rulesets/required-quality-check.json\n  write   .github/rulesets/required-quality-integrity.json\n  write   scripts/check-arch.sh\n  write   scripts/verify-makefile-gates.sh\n  write   scripts/run-gates.sh\n  write   scripts/verify-agent-notes.sh\n  write   scripts/verify-delivery-doc.sh\n  write   scripts/verify-context-routes.sh\n  write   scripts/verify-oracles.sh\n  write   .harness/oracles/README.md\n  write   .harness/oracles/AC-000.example.yaml.txt\n  write   .harness/context-routes.json\n  write   scripts/verify-impact.template.mjs\n  write   scripts/pre-commit-staged.sh\n  write   scripts/install-githooks.sh\n  write   .agents/notes/README.md\n  write   scripts/clean-state-check.sh\n  write   scripts/session-trace.sh\n  write   scripts/harness-audit.sh\n  write   .harness/arch-rules.json\n  write   templates/sprint-contract.md\n  write   templates/evaluator-rubric.md\n  write   docs/quality-document.md\n  write   .harness/traces/.gitkeep\n  write   .gitignore\n\nDone. Next steps:\n  1. Edit AGENTS.md \u2014 replace the purpose line with what this project actually does.\n  2. Replace the placeholder features in feature_list.json with the real backlog.\n  3. Confirm the verification command is right: echo 'TODO: set the verification command'; false\n  4. Score the result:  /workspace/scratch/adce1c53b293/h02-frozen-baseline/bin/harness-audit.sh /tmp/h02-regression-2ztri2iv/test_status_distinguishes_remote_api_failure\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_status_distinguishes_remote_api_failure",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_status_distinguishes_remote_api_failure",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_status_distinguishes_remote_api_failure",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "0179920f1e49176cb7b8c687c10c918c87d64614\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_status_distinguishes_remote_api_failure",
+    "argv": [
+      "git",
+      "remote",
+      "add",
+      "origin",
+      "https://github.com/example/repo.git"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_status_distinguishes_remote_api_failure",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/h02-frozen-baseline/bin/harness-status.sh",
+      "--target",
+      "/tmp/h02-regression-2ztri2iv/test_status_distinguishes_remote_api_failure"
+    ],
+    "exit": 0,
+    "stdout": "READY_LOCAL \u2014 todav\u00eda nada en GitHub bloquea una fusi\u00f3n.\n\nKit: 2.2.5\n\nLocal\n  ok   contrato, estado y presupuestos\n  ok   re-verificador de afirmaciones (verify-claims.sh)\n  ok   ledger de decisiones (solo se agrega)\n\nGitHub\n  ?    example/repo \u2014 no se pudieron leer los rulesets (gh sin auth, o sin acceso)\n\nSiguiente: bin/harness-protect.sh example/repo\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_status_requires_observed_local_check",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_status_requires_observed_local_check",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_status_requires_observed_local_check",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_status_requires_observed_local_check",
+    "argv": [
+      "bash",
+      "/workspace/scratch/adce1c53b293/h02-frozen-baseline/bin/harness-status.sh",
+      "--target",
+      "/tmp/h02-regression-2ztri2iv/test_status_requires_observed_local_check"
+    ],
+    "exit": 0,
+    "stdout": "READY_LOCAL \u2014 todav\u00eda nada en GitHub bloquea una fusi\u00f3n.\n\nKit: 2.2.5  (este repo no registra su versi\u00f3n: se activ\u00f3 con un kit anterior)\n\nLocal\n  ok   contrato, estado y presupuestos\n  --   sin re-verificador: un 'passing' escrito a mano nunca se recomprueba\n  --   sin verificaci\u00f3n del ledger de decisiones\n\nGitHub\n  --   sin remoto \u2014 el veredicto queda por completo en confianza\n\nSiguiente: s\u00fabelo a GitHub y corre bin/harness-protect.sh para hacer vinculante la compuerta.\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_strict_command_and_environment_identity_still_blocks",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_strict_command_and_environment_identity_still_blocks",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_strict_command_and_environment_identity_still_blocks",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_strict_command_and_environment_identity_still_blocks",
+    "argv": [
+      "bash",
+      "scripts/verify-claims.sh"
+    ],
+    "exit": 5,
+    "stdout": "",
+    "stderr": "WEAKENED_VERIFICATION\n  C1 is still marked passing, but its verification changed.\n    was: printf first\n    now: printf second\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_strict_command_and_environment_identity_still_blocks",
+    "argv": [
+      "bash",
+      "scripts/verify-claims.sh"
+    ],
+    "exit": 5,
+    "stdout": "",
+    "stderr": "WEAKENED_VERIFICATION\n  C1 is still marked passing, but its verification changed.\n    was: printf first\n    now: printf first\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_strict_command_and_environment_identity_still_blocks",
+    "argv": [
+      "bash",
+      "scripts/verify-claims.sh"
+    ],
+    "exit": 5,
+    "stdout": "",
+    "stderr": "WEAKENED_VERIFICATION\n  C1 is still marked passing, but its verification changed.\n    was: printf first\n    now: printf first\n"
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_system_temp_alias_is_resolved_before_snapshot_checks",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_system_temp_alias_is_resolved_before_snapshot_checks",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_system_temp_alias_is_resolved_before_snapshot_checks",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_system_temp_alias_is_resolved_before_snapshot_checks",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_system_temp_alias_is_resolved_before_snapshot_checks",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_system_temp_alias_is_resolved_before_snapshot_checks",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "20274b2c7452e39e550ca1a515f9ac682ecfd990\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_system_temp_alias_is_resolved_before_snapshot_checks",
+    "argv": [
+      "git",
+      "add",
+      "note.md"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_system_temp_alias_is_resolved_before_snapshot_checks",
+    "argv": [
+      "bash",
+      "scripts/pre-commit-staged.sh"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_system_temp_alias_is_resolved_before_snapshot_checks",
+    "argv": [
+      "git",
+      "show",
+      ":note.md"
+    ],
+    "exit": 0,
+    "stdout": "FORMATTED\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_workspace_context_route",
+    "argv": [
+      "git",
+      "init",
+      "-q",
+      "-b",
+      "main"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_workspace_context_route",
+    "argv": [
+      "git",
+      "config",
+      "user.email",
+      "fixture@example.test"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_workspace_context_route",
+    "argv": [
+      "git",
+      "config",
+      "user.name",
+      "H02 fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_workspace_context_route",
+    "argv": [
+      "git",
+      "add",
+      "-A"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_workspace_context_route",
+    "argv": [
+      "git",
+      "commit",
+      "-qm",
+      "fixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_workspace_context_route",
+    "argv": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exit": 0,
+    "stdout": "3b232315b6d62e72e57e6ba95635f10d221689c4\n",
+    "stderr": ""
+  },
+  {
+    "cwd": "/tmp/h02-regression-2ztri2iv/test_workspace_context_route",
+    "argv": [
+      "bash",
+      "scripts/verify-context-routes.sh"
+    ],
+    "exit": 0,
+    "stdout": "context-routes: no changes against HEAD \u2014 nothing to govern\n",
+    "stderr": ""
+  }
+]

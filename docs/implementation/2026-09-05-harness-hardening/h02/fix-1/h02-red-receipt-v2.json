@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "command": [
+    "python3",
+    "tests/h02-hardening-regressions.py"
+  ],
+  "exit_code": 1,
+  "tests": {
+    "tests/h02-hardening-regressions.py": "17d9dad3160a9271277cfbbe6ec271c40a7c5efc35aad2daf478c03fed5e8815"
+  },
+  "source": {
+    "docs/implementation/2026-09-05-harness-hardening/h02/fix-1/pre-fix/scripts/setup-oracles.sh": "5603a52bd11b3c43f51ef4cbe4a6e581b060162d7c1052f79c1c058a280b4288",
+    "docs/implementation/2026-09-05-harness-hardening/h02/fix-1/pre-fix/templates/full/scripts/setup-oracles.sh": "5603a52bd11b3c43f51ef4cbe4a6e581b060162d7c1052f79c1c058a280b4288",
+    "docs/implementation/2026-09-05-harness-hardening/h02/fix-1/pre-fix/bin/harness-status.sh": "5dbf7a8aee03b305722f3d6b0343a05c79d23c8d08f0fd022f72a450d092eb53",
+    "docs/implementation/2026-09-05-harness-hardening/h02/fix-1/pre-fix/scripts/verify-delivery-doc.sh": "51d5fc9219670f824507534674f2d60c8014143bea49fa492bb681e117c2eb8d",
+    "docs/implementation/2026-09-05-harness-hardening/h02/fix-1/pre-fix/templates/full/scripts/verify-delivery-doc.sh": "51d5fc9219670f824507534674f2d60c8014143bea49fa492bb681e117c2eb8d"
+  },
+  "logs": {
+    "docs/implementation/2026-09-05-harness-hardening/h02/fix-1/red-full-02.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/implementation/2026-09-05-harness-hardening/h02/fix-1/red-full-02.stderr.log": "9471f6f1bb77b718c9fb8a7185a17b8554f1fa2b8dde112d54e5ba76b782b236",
+    "docs/implementation/2026-09-05-harness-hardening/h02/fix-1/red-full-02.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "docs/implementation/2026-09-05-harness-hardening/h02/fix-1/red-full-02-commands.json": "2c9c14b0dec2282fc2fb922b9aba023717c0b74ed5197623e70cfe2cd202c63c",
+    "docs/implementation/2026-09-05-harness-hardening/h02/fix-1/red-full-02-context.json": "218c96c7e4cad7d2a735c8ab4893e334e796af8df87be606def75110b1e94c67"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "command": [
+    "python3",
+    "tests/h02-hardening-regressions.py"
+  ],
+  "exit_code": 1,
+  "tests": {
+    "tests/h02-hardening-regressions.py": "c3e558b5131dfcdc48b07e2f2dd4c32d97bdbf87000082dc513ce7f926527c89"
+  },
+  "source": {
+    "docs/implementation/2026-09-05-harness-hardening/h02/baseline-source/Makefile": "738787c5c5109aa7af766edf1398ea4ab2773c8ec88bff8f55c287ff76439f7e",
+    "docs/implementation/2026-09-05-harness-hardening/h02/baseline-source/bin/harness-init.sh": "155966a4ccc0c00d37f3d4a196fb8cf3d963b312cbd22125d83d8cf06bd35dd1",
+    "docs/implementation/2026-09-05-harness-hardening/h02/baseline-source/bin/harness-status.sh": "3cfd980b1a075a5c792bfc146e7c6a2cdb4939e6d5088a2f90f2dcadce35204e",
+    "docs/implementation/2026-09-05-harness-hardening/h02/baseline-source/scripts/run-gates.sh": "518c9638a9d09a57aba1f458b35016436f4f3881a85c95a4a21496b761b41862",
+    "docs/implementation/2026-09-05-harness-hardening/h02/baseline-source/scripts/verify-claims.sh": "0bcc5cd9d2b38eb6a40ae555d715b88b20af0adc89cab2d36349c9d6b570d075",
+    "docs/implementation/2026-09-05-harness-hardening/h02/baseline-source/scripts/pre-commit-staged.sh": "a2eaf92aedbbf14824315da307c035c60b6d0a869cbb8c108eab695c33a0acfe",
+    "docs/implementation/2026-09-05-harness-hardening/h02/baseline-source/scripts/verify-context-routes.sh": "76ddeb583d744d174584d134726f6d01cc284940c2a3b3645ab969e2a4abf3e9",
+    "docs/implementation/2026-09-05-harness-hardening/h02/baseline-source/scripts/verify-oracles.sh": "456b3aae510c2182239d39e6c26777740f69c0948e03d16bfb52b815fb64e532",
+    "docs/implementation/2026-09-05-harness-hardening/h02/baseline-source/scripts/verify-delivery-doc.sh": "3a87237c9ee3a416fb18e0d925f8c2f30cecc7653cc4935d64668093f8ea98ea",
+    "docs/implementation/2026-09-05-harness-hardening/h02/baseline-source/scripts/verify-version-sync.sh": "911edabc096924b15c3877772e1f1d3ecb60b3215e014ed14ca505620698f4d5",
+    "docs/implementation/2026-09-05-harness-hardening/h02/baseline-source/tests/run-tests.sh": "aba73141fa57ea95e836c44d3f30193c0e278693831bf71a6a9535ab5f046e10",
+    "docs/implementation/2026-09-05-harness-hardening/h02/baseline-source/packs/load-testing/verify-pack.sh": "db3e68f00b9188f014b2fef89f2f0dc7700a2c10c2c7353e3e7d2b171c66eb49",
+    "docs/implementation/2026-09-05-harness-hardening/h02/baseline-source/packs/load-testing/repo-template/bin/perf-resolve-target": "28a5e94a38ccdf34aa1b8ccfa661984310cb0042ae76da4a52210048f4fb1b69"
+  },
+  "logs": {
+    "docs/implementation/2026-09-05-harness-hardening/h02/final-red-06.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/implementation/2026-09-05-harness-hardening/h02/final-red-06.stderr.log": "26d35c3ae1fff35045625fe615beebf48ab5d777c3e7d0a320b3af637dce9921",
+    "docs/implementation/2026-09-05-harness-hardening/h02/final-red-06.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "docs/implementation/2026-09-05-harness-hardening/h02/final-red-06-commands.json": "229f204f33a1f687bd115d56c389f5f432f61e1735f77294c43d19bd09bd678a"
+  }
+}

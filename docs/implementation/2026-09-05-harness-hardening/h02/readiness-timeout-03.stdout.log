@@ -1,0 +1,7 @@
+verify-pack: k6 k6 v2.1.0 (commit/83a87a41e2, go1.26.4, linux/amd64)
+
+1. sintaxis
+  ok   bin/perf-check es bash válido
+  ok   bin/perf-check no anula códigos de salida
+  ok   los scripts de k6 son JS válido
+verify-pack: server healthy did not reach readiness within the bound

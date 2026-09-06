@@ -1,0 +1,16 @@
+{
+  "review_tree": "45d528d6cdc0bb15032982909cc5b2f19f595c04",
+  "published_base": "fff527b2c7a64fb6d70d60d633a0261e68315169",
+  "argv": [
+    "python3",
+    "tests/h02-hardening-regressions.py"
+  ],
+  "environment": {
+    "H02_KIT": "/workspace/scratch/adce1c53b293/h02-fix1-baseline",
+    "H02_COMMAND_LOG": "docs/implementation/2026-09-05-harness-hardening/h02/fix-1/red-full-02-commands.json"
+  },
+  "tests": 30,
+  "failed_subtests": 8,
+  "errors": 0,
+  "network": "Setup fixtures use PIP_NO_INDEX=1, disabled pip config, empty local wheel/cache paths; no package download occurs."
+}

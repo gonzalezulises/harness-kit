@@ -1,0 +1,30 @@
+test_backup_is_exclusive (__main__.Regressions.test_backup_is_exclusive) ... ok
+test_candidate_profile_cannot_downgrade_base (__main__.Regressions.test_candidate_profile_cannot_downgrade_base) ... ok
+test_formatter_nonzero_blocks (__main__.Regressions.test_formatter_nonzero_blocks) ... ok
+test_full_aggregate_terminates_without_recursion (__main__.Regressions.test_full_aggregate_terminates_without_recursion) ... ok
+test_full_scaffold_live_quick (__main__.Regressions.test_full_scaffold_live_quick) ... ok
+test_integrated_check_declares_live_quick (__main__.Regressions.test_integrated_check_declares_live_quick) ... ok
+test_integrated_gate_blocks_live_candidate (__main__.Regressions.test_integrated_gate_blocks_live_candidate) ... ok
+test_live_profile_cannot_be_absent (__main__.Regressions.test_live_profile_cannot_be_absent) ... ok
+test_oracle_current_bytes_are_checked (__main__.Regressions.test_oracle_current_bytes_are_checked) ... ok
+test_oracle_duplicate_keys_rejected (__main__.Regressions.test_oracle_duplicate_keys_rejected) ... ok
+test_oracle_standard_multiline_and_alias_contract (__main__.Regressions.test_oracle_standard_multiline_and_alias_contract) ... ok
+test_pack_ports_are_os_assigned (__main__.Regressions.test_pack_ports_are_os_assigned) ... ok
+test_partial_index_handles_names_modes_and_formatter_failure (__main__.Regressions.test_partial_index_handles_names_modes_and_formatter_failure) ... ok
+test_partial_index_preserves_unstaged_bytes (__main__.Regressions.test_partial_index_preserves_unstaged_bytes) ... ok
+test_protected_judge_checks_target_and_preserves_source (__main__.Regressions.test_protected_judge_checks_target_and_preserves_source) ... ok
+test_protected_workflow_keeps_candidate_source (__main__.Regressions.test_protected_workflow_keeps_candidate_source) ... ok
+test_receipt_binds_current_bytes_and_rejects_tampering (__main__.Regressions.test_receipt_binds_current_bytes_and_rejects_tampering) ... ok
+test_repair_prose_is_not_command_identity (__main__.Regressions.test_repair_prose_is_not_command_identity) ... ok
+test_staged_symlink_cannot_escape_formatter_snapshot (__main__.Regressions.test_staged_symlink_cannot_escape_formatter_snapshot) ... ok
+test_status_api_failure_is_indeterminate (__main__.Regressions.test_status_api_failure_is_indeterminate) ... ok
+test_status_distinguishes_remote_api_failure (__main__.Regressions.test_status_distinguishes_remote_api_failure) ... ok
+test_status_requires_observed_local_check (__main__.Regressions.test_status_requires_observed_local_check) ... ok
+test_strict_command_and_environment_identity_still_blocks (__main__.Regressions.test_strict_command_and_environment_identity_still_blocks) ... ok
+test_system_temp_alias_is_resolved_before_snapshot_checks (__main__.Regressions.test_system_temp_alias_is_resolved_before_snapshot_checks) ... ok
+test_workspace_context_route (__main__.Regressions.test_workspace_context_route) ... ok
+
+----------------------------------------------------------------------
+Ran 25 tests in 7.050s
+
+OK

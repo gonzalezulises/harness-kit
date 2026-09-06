@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "installation": "minimal",
+  "gates": {
+    "decisions-append-only": {
+      "applicable": false,
+      "reason": "Minimal contract scaffold has no full mechanical gates"
+    },
+    "agent-notes-tree": {
+      "applicable": false,
+      "reason": "Minimal contract scaffold has no full mechanical gates"
+    },
+    "arch-boundaries": {
+      "applicable": false,
+      "reason": "Minimal contract scaffold has no full mechanical gates"
+    },
+    "makefile-gates": {
+      "applicable": false,
+      "reason": "Minimal contract scaffold has no full mechanical gates"
+    },
+    "version-sync": {
+      "applicable": false,
+      "reason": "Kit release metadata only"
+    },
+    "delivery-doc": {
+      "applicable": false,
+      "reason": "Minimal contract scaffold has no full mechanical gates"
+    },
+    "context-routes": {
+      "applicable": false,
+      "reason": "Minimal contract scaffold has no full mechanical gates"
+    },
+    "oracles-falsifiable": {
+      "applicable": false,
+      "reason": "Minimal contract scaffold has no full mechanical gates"
+    },
+    "claims-reverified": {
+      "applicable": false,
+      "reason": "Minimal contract scaffold has no full mechanical gates"
+    },
+    "make-check": {
+      "applicable": false,
+      "reason": "Minimal contract scaffold has no full mechanical gates"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+test_protected_oracle_ignores_candidate_interpreter_and_imports (__main__.Regressions.test_protected_oracle_ignores_candidate_interpreter_and_imports) ... 
+  test_protected_oracle_ignores_candidate_interpreter_and_imports (__main__.Regressions.test_protected_oracle_ignores_candidate_interpreter_and_imports) (kind='import') ... FAIL
+  test_protected_oracle_ignores_candidate_interpreter_and_imports (__main__.Regressions.test_protected_oracle_ignores_candidate_interpreter_and_imports) (kind='interpreter') ... FAIL
+
+======================================================================
+FAIL: test_protected_oracle_ignores_candidate_interpreter_and_imports (__main__.Regressions.test_protected_oracle_ignores_candidate_interpreter_and_imports) (kind='import')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h02-hardening-regressions.py", line 186, in test_protected_oracle_ignores_candidate_interpreter_and_imports
+    self.assertFalse((target/'candidate-executed').exists(),'candidate code ran inside protected oracle judge')
+AssertionError: True is not false : candidate code ran inside protected oracle judge
+
+======================================================================
+FAIL: test_protected_oracle_ignores_candidate_interpreter_and_imports (__main__.Regressions.test_protected_oracle_ignores_candidate_interpreter_and_imports) (kind='interpreter')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-kit/tests/h02-hardening-regressions.py", line 186, in test_protected_oracle_ignores_candidate_interpreter_and_imports
+    self.assertFalse((target/'candidate-executed').exists(),'candidate code ran inside protected oracle judge')
+AssertionError: True is not false : candidate code ran inside protected oracle judge
+
+----------------------------------------------------------------------
+Ran 1 test in 0.684s
+
+FAILED (failures=2)

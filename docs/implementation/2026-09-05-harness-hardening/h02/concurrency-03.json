@@ -1,0 +1,161 @@
+{
+  "records": [
+    {
+      "label": "core-a-03",
+      "argv": [
+        "bash",
+        "tests/run-tests.sh"
+      ],
+      "pid": 9,
+      "start_monotonic": 90599.593061774,
+      "started_at": "2026-09-06T00:53:30.965808+00:00",
+      "exit": 0,
+      "end_monotonic": 90636.56460437,
+      "seconds": 36.97154326700547
+    },
+    {
+      "label": "core-b-03",
+      "argv": [
+        "bash",
+        "tests/run-tests.sh"
+      ],
+      "pid": 10,
+      "start_monotonic": 90599.593577857,
+      "started_at": "2026-09-06T00:53:30.966189+00:00",
+      "exit": 0,
+      "end_monotonic": 90636.564694293,
+      "seconds": 36.971116536005866
+    },
+    {
+      "label": "pack-a-03",
+      "argv": [
+        "bash",
+        "packs/load-testing/verify-pack.sh"
+      ],
+      "pid": 11,
+      "start_monotonic": 90599.593944289,
+      "started_at": "2026-09-06T00:53:30.966533+00:00",
+      "exit": 0,
+      "end_monotonic": 90639.386425212,
+      "seconds": 39.79248109301261
+    },
+    {
+      "label": "pack-b-03",
+      "argv": [
+        "bash",
+        "packs/load-testing/verify-pack.sh"
+      ],
+      "pid": 12,
+      "start_monotonic": 90599.594289789,
+      "started_at": "2026-09-06T00:53:30.966848+00:00",
+      "exit": 0,
+      "end_monotonic": 90639.386501264,
+      "seconds": 39.792211544991005
+    },
+    {
+      "label": "readiness-timeout-03",
+      "argv": [
+        "bash",
+        "packs/load-testing/verify-pack.sh"
+      ],
+      "fault_env": {
+        "HARNESS_TEST_SERVER_DELAY": "2",
+        "HARNESS_TEST_READY_TIMEOUT": "0.05"
+      },
+      "exit": 3,
+      "seconds": 0.7220653420081362,
+      "asserted": true
+    }
+  ],
+  "source_sha256": {
+    "scripts/verify-context-routes.sh": "0ee7b5ebe6262bdb402b8ab4b090b63a180c95de061e875a0bb04ae02caf77ab",
+    "scripts/sync-version.sh": "2875362785659ae928045ab076770e814bf6ffb6577591092690fab1b0b59c47",
+    "scripts/session-trace.sh": "fb715af352deaf329d70f500915904224092d631b499fc0cf6887cfc3774b6c8",
+    "scripts/install-githooks.sh": "31340ca1017ccef41b781ebace026c68d6c521fb0ed8e610faaa5b7b2dbb80a3",
+    "scripts/verify-feature.sh": "c0b3250428d41570bcd3b6b384b24921ba7088ad70cb824cff4e364ff71a7a4b",
+    "scripts/verify-oracles.sh": "4d6d20c8a77f922808faa62990672ae02335ae2b3f83adae1fa62b5f087c10e6",
+    "scripts/verify-makefile-gates.sh": "bc21976e8419401a8c31311bfa8c5cb600103bcf42a37ca4b7549751a598412a",
+    "scripts/check-prerequisites.sh": "67fcff396a1a4c800c91707debd319e7d52b7f7185ce0a794e48c1824678ba4a",
+    "scripts/pre-commit-staged.sh": "093e3f08660e9082ca0e0d001a07178195bb68986de5cca55fa374b1712c4895",
+    "scripts/verify-decisions.sh": "87301a5e33335543c6b01ba8c8693c0934027b7cc7eb6256f5e77a67b025fd3f",
+    "scripts/clean-state-check.sh": "3d9a90cb5cd2df8199e44833bc224cbc6952ac1bbac719469c078141360dafae",
+    "scripts/verify-agent-notes.sh": "6fcd57c93b6d13de76b18785df99462e6dad71f6e6051ea789fa36c8a6776bac",
+    "scripts/verify-claims.sh": "5a9e9806562606a5da143a038f355521275ab776ec8488ea2564149e15737613",
+    "scripts/check-arch.sh": "18afb8d073efbb3bac83c6819088d87c59689a799d8d539098db738c76dcd4e8",
+    "scripts/verify-delivery-doc.sh": "41eaee9ed024442cb626ba7e9ad72c7850b6bf31d4ad7993d65353bcc1cb658f",
+    "scripts/run-gates.sh": "a07410e776871cc8620e19494fad34965d6f59b55c36896b88b42cd57449664d",
+    "scripts/verify-version-sync.sh": "179da84040c3895f151e47f23677adbeaf63c7cc4b6d714e71c7b9f6f0d0fb7b",
+    "scripts/setup-oracles.sh": "19557f25a297f1720b20f5ae7be7d1f1656ecb0472429712e799b7479453341d",
+    "bin/harness-init.sh": "f4dedd5d2898014c3550361117531c9dde8358e89dbd30c2a2586b5b5f4255ec",
+    "bin/harness-activate.sh": "a123624214620c2bac13f2cc1825625f41bf915fe355a73ca26b4d1b36147cf1",
+    "bin/harness-protect.sh": "6e4a3491bfe7f115e7a6d67c0a9ebc03776e795a732f2b18570c73403e1e18d8",
+    "bin/harness-status.sh": "c9585eb2f568835ed5307e53292b71123808676a028ff580a71404445509488a",
+    "bin/harness-audit.sh": "49aa8b0b60c03ae0eb16bcba6efc4bf5571919d83d534cfc9feca8711c284295",
+    "templates/full/scripts/verify-context-routes.sh": "0ee7b5ebe6262bdb402b8ab4b090b63a180c95de061e875a0bb04ae02caf77ab",
+    "templates/full/scripts/session-trace.sh": "fb715af352deaf329d70f500915904224092d631b499fc0cf6887cfc3774b6c8",
+    "templates/full/scripts/install-githooks.sh": "31340ca1017ccef41b781ebace026c68d6c521fb0ed8e610faaa5b7b2dbb80a3",
+    "templates/full/scripts/verify-feature.sh": "c0b3250428d41570bcd3b6b384b24921ba7088ad70cb824cff4e364ff71a7a4b",
+    "templates/full/scripts/verify-oracles.sh": "4d6d20c8a77f922808faa62990672ae02335ae2b3f83adae1fa62b5f087c10e6",
+    "templates/full/scripts/verify-makefile-gates.sh": "bc21976e8419401a8c31311bfa8c5cb600103bcf42a37ca4b7549751a598412a",
+    "templates/full/scripts/pre-commit-staged.sh": "093e3f08660e9082ca0e0d001a07178195bb68986de5cca55fa374b1712c4895",
+    "templates/full/scripts/verify-decisions.sh": "87301a5e33335543c6b01ba8c8693c0934027b7cc7eb6256f5e77a67b025fd3f",
+    "templates/full/scripts/clean-state-check.sh": "8074a62de1143f120f9fe8bde57ba2599819b7a6b12f4a57fdd3973d9a1137c5",
+    "templates/full/scripts/verify-agent-notes.sh": "6fcd57c93b6d13de76b18785df99462e6dad71f6e6051ea789fa36c8a6776bac",
+    "templates/full/scripts/verify-claims.sh": "5a9e9806562606a5da143a038f355521275ab776ec8488ea2564149e15737613",
+    "templates/full/scripts/check-arch.sh": "18afb8d073efbb3bac83c6819088d87c59689a799d8d539098db738c76dcd4e8",
+    "templates/full/scripts/verify-delivery-doc.sh": "41eaee9ed024442cb626ba7e9ad72c7850b6bf31d4ad7993d65353bcc1cb658f",
+    "templates/full/scripts/run-gates.sh": "a07410e776871cc8620e19494fad34965d6f59b55c36896b88b42cd57449664d",
+    "templates/full/scripts/setup-oracles.sh": "19557f25a297f1720b20f5ae7be7d1f1656ecb0472429712e799b7479453341d",
+    "tests/run-tests.sh": "bdd265416564568eed513eeb95dcaec9242df74dca38b7da2f1d84200d2728f6",
+    "tests/h01-hardening-regressions.py": "643119db4c33129246270813bad647c2e21a175d4b58140e7a96d604d29c0e21",
+    "tests/h02-hardening-regressions.py": "b57a5bce485570d87e8a2d9cd6140f5d4b1ef0b6a6b5ac07ecfc49cfa063560a",
+    "packs/load-testing/verify-pack.sh": "1b907d01c222ed63a97a4a27a6f3562d264cf509b8f7c2832356af9087a581ce",
+    "packs/load-testing/repo-template/bin/perf-resolve-target": "2f469f2672b6f22dffd98422eeebdb0dec98de75fc3a05be23c22287a7f20383"
+  },
+  "source_unchanged": {
+    "scripts/verify-context-routes.sh": true,
+    "scripts/sync-version.sh": true,
+    "scripts/session-trace.sh": true,
+    "scripts/install-githooks.sh": true,
+    "scripts/verify-feature.sh": true,
+    "scripts/verify-oracles.sh": true,
+    "scripts/verify-makefile-gates.sh": true,
+    "scripts/check-prerequisites.sh": true,
+    "scripts/pre-commit-staged.sh": true,
+    "scripts/verify-decisions.sh": true,
+    "scripts/clean-state-check.sh": true,
+    "scripts/verify-agent-notes.sh": true,
+    "scripts/verify-claims.sh": true,
+    "scripts/check-arch.sh": true,
+    "scripts/verify-delivery-doc.sh": true,
+    "scripts/run-gates.sh": true,
+    "scripts/verify-version-sync.sh": true,
+    "scripts/setup-oracles.sh": true,
+    "bin/harness-init.sh": true,
+    "bin/harness-activate.sh": true,
+    "bin/harness-protect.sh": true,
+    "bin/harness-status.sh": true,
+    "bin/harness-audit.sh": true,
+    "templates/full/scripts/verify-context-routes.sh": true,
+    "templates/full/scripts/session-trace.sh": true,
+    "templates/full/scripts/install-githooks.sh": true,
+    "templates/full/scripts/verify-feature.sh": true,
+    "templates/full/scripts/verify-oracles.sh": true,
+    "templates/full/scripts/verify-makefile-gates.sh": true,
+    "templates/full/scripts/pre-commit-staged.sh": true,
+    "templates/full/scripts/verify-decisions.sh": true,
+    "templates/full/scripts/clean-state-check.sh": true,
+    "templates/full/scripts/verify-agent-notes.sh": true,
+    "templates/full/scripts/verify-claims.sh": true,
+    "templates/full/scripts/check-arch.sh": true,
+    "templates/full/scripts/verify-delivery-doc.sh": true,
+    "templates/full/scripts/run-gates.sh": true,
+    "templates/full/scripts/setup-oracles.sh": true,
+    "tests/run-tests.sh": true,
+    "tests/h01-hardening-regressions.py": true,
+    "tests/h02-hardening-regressions.py": true,
+    "packs/load-testing/verify-pack.sh": true,
+    "packs/load-testing/repo-template/bin/perf-resolve-target": true
+  },
+  "coverage": "kit contention; authenticated GitHub cases deliberately unavailable; no Aurobalance causal reproduction"
+}

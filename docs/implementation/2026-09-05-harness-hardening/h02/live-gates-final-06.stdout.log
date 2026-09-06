@@ -1,0 +1,10 @@
+── gates · aggregate quick · profile v1/kit
+  decisions-append-only    PASS (0.0s, exit 0)
+  agent-notes-tree         PASS (0.1s, exit 0)
+  arch-boundaries          PASS (0.3s, exit 0)
+  makefile-gates           PASS (0.0s, exit 0)
+  version-sync             PASS (0.0s, exit 0)
+  delivery-doc             PASS (0.0s, exit 0)
+  context-routes           PASS (0.0s, exit 0)
+  oracles-falsifiable      PASS (0.1s, exit 0)
+── 8 pass · 0 blocking · 0 not applicable

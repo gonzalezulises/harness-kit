@@ -1,0 +1,8 @@
+test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import (__main__.Regressions.test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import) ... ok
+test_status_timeout_terminates_owned_descendants_only (__main__.Regressions.test_status_timeout_terminates_owned_descendants_only) ... ok
+test_explicit_missing_delivery_source_blocks_with_default_absence_allowed (__main__.Regressions.test_explicit_missing_delivery_source_blocks_with_default_absence_allowed) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 10.598s
+
+OK
