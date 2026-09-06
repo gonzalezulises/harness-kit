@@ -1,0 +1,23 @@
+{
+  "docs/implementation/2026-09-05-harness-hardening/h07/api-red.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+  "docs/implementation/2026-09-05-harness-hardening/h07/api-red.log": "efd3fa45b413fe0338cb8e00ed0f13dd77b7ead19d6fb5aa209920d57a94edca",
+  "docs/implementation/2026-09-05-harness-hardening/h07/causal-red-02.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+  "docs/implementation/2026-09-05-harness-hardening/h07/causal-red-02.log": "48f6ba30d437d4cb5905b5b46ce9631f1df52abe60ee44009c3f7943fd5a0ff3",
+  "docs/implementation/2026-09-05-harness-hardening/h07/causal-red.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+  "docs/implementation/2026-09-05-harness-hardening/h07/causal-red.log": "c6203f75cc44f68976b4a6b0868658dbc487268650eb290e5766c7586556929a",
+  "docs/implementation/2026-09-05-harness-hardening/h07/causal-source-manifest.json": "21c1c4a67e699a7a543ff7856e158dac44cd7bdfdb9ed9c4692743e22900d6ad",
+  "docs/implementation/2026-09-05-harness-hardening/h07/causal-source-v2-manifest.json": "e81cee6f130d03d4526de3af28646d792b57e0ffca258cb5a9e4c77529ee0930",
+  "docs/implementation/2026-09-05-harness-hardening/h07/e2e-final.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+  "docs/implementation/2026-09-05-harness-hardening/h07/e2e-final.log": "da653600452d31347fdabddbb26575d6bea93f74d542adea202c1d9be87194aa",
+  "docs/implementation/2026-09-05-harness-hardening/h07/prototype-red.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+  "docs/implementation/2026-09-05-harness-hardening/h07/prototype-red.log": "a643588aa122029b9f9d6240203dbf3b3a6dd1e4d702207a451d887fe6cfc004",
+  "docs/implementation/2026-09-05-harness-hardening/h07/red-receipt.json": "f9333e24467ed5eb3b4cc7fd121ce12fa743b7d02fd3112e8ea845a5b0da8934",
+  "docs/implementation/2026-09-05-harness-hardening/h07/runtime-final.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+  "docs/implementation/2026-09-05-harness-hardening/h07/runtime-final.log": "ba19fb9c804b48f745201f21038591894766980e46dbd12204e97ad7ef584685",
+  "docs/implementation/2026-09-05-harness-hardening/h07/runtime-initial.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+  "docs/implementation/2026-09-05-harness-hardening/h07/runtime-initial.log": "41c9b7388b364aadba9ce9662effa03a2d494cd42ff5f21b738e051b2cbe5852",
+  "docs/implementation/2026-09-05-harness-hardening/h07/source-manifest.json": "116ee8602c2394f10dbf5b27ca499e933dfdb84bfb0767aecc7a77f95eabb7ad",
+  "docs/implementation/2026-09-05-harness-hardening/h07/static-final.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+  "docs/implementation/2026-09-05-harness-hardening/h07/static-final.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "docs/implementation/2026-09-05-harness-hardening/h07/verify-static.sh": "8c2bdc25354ed956cd81970eb533fa144daacef91ac7c0b075386b38f13af4b3"
+}

@@ -1,0 +1,126 @@
+✔ signed preflight freezes approved preference, isolated configuration and opaque ownership (1303.25708ms)
+✔ absent remote schema keeps exact model/effort/auth and local schema (1095.717345ms)
+✔ preflight blocks auth without catalog ranking guesses (613.4381ms)
+✔ preflight blocks cancelled without catalog ranking guesses (660.723695ms)
+✔ preflight blocks partial without catalog ranking guesses (600.298775ms)
+✔ preflight blocks unsupported without catalog ranking guesses (609.456757ms)
+✔ preflight blocks duplicates without catalog ranking guesses (598.504574ms)
+✔ changed binary blocks between rounds (868.202932ms)
+✔ changed dependency blocks between rounds (869.748506ms)
+✔ changed protocol blocks between rounds (871.781459ms)
+✔ schema/bundle/config pins and approval freshness cannot change (1307.077736ms)
+✔ trusted shadow copies exact Git objects and modes without inherited config, hooks or credentials (941.097731ms)
+✔ trusted shadow rejects symlink (760.051006ms)
+✔ trusted shadow rejects alternates (750.883486ms)
+✖ trusted shadow rejects dirty-primary (784.688437ms)
+✔ trusted shadow rejects shadow-tamper (1076.854754ms)
+✖ e2e case 7: exact shadow stops before unavailable reviewer launch and budget spending (934.628901ms)
+✔ e2e case 8: only closed local output validates; no fixture or PASS becomes acceptance (1234.265499ms)
+✔ local output fails closed for malformed (947.425037ms)
+✖ local output fails closed for extra (962.356229ms)
+✔ local output fails closed for duplicate (964.42089ms)
+✔ local output fails closed for cancelled (977.215213ms)
+✔ local output fails closed for mismatch (957.168001ms)
+✔ local output fails closed for location (974.215235ms)
+✔ local output fails closed for oversize (965.258228ms)
+✖ e2e case 9: fabricated execution receipt cannot authorize independent review (1283.528125ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 22
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 24255.289208
+
+✖ failing tests:
+
+test at docs/implementation/2026-09-05-harness-hardening/h07/causal-red-source-v2/tests/review.test.mjs:73:75
+✖ trusted shadow rejects dirty-primary (784.688437ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(shadow.status)
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/docs/implementation/2026-09-05-harness-hardening/h07/causal-red-source-v2/tests/review.test.mjs:80:15)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at docs/implementation/2026-09-05-harness-hardening/h07/causal-red-source-v2/tests/review.test.mjs:83:1
+✖ e2e case 7: exact shadow stops before unavailable reviewer launch and budget spending (934.628901ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'REVIEW_VERIFIED'
+  - 'BLOCKED_BY_REQUIRED_CAPABILITY'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/docs/implementation/2026-09-05-harness-hardening/h07/causal-red-source-v2/tests/review.test.mjs:85:47)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'REVIEW_VERIFIED',
+    expected: 'BLOCKED_BY_REQUIRED_CAPABILITY',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/implementation/2026-09-05-harness-hardening/h07/causal-red-source-v2/tests/review.test.mjs:96:97
+✖ local output fails closed for extra (962.356229ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'REVIEW_OUTPUT_VALIDATED'
+  - 'POLICY'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/docs/implementation/2026-09-05-harness-hardening/h07/causal-red-source-v2/tests/review.test.mjs:102:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'REVIEW_OUTPUT_VALIDATED',
+    expected: 'POLICY',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/implementation/2026-09-05-harness-hardening/h07/causal-red-source-v2/tests/review.test.mjs:104:1
+✖ e2e case 9: fabricated execution receipt cannot authorize independent review (1283.528125ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'REVIEW_VERIFIED'
+  - 'BLOCKED_BY_MISSING_AUTHORITY_BINDING'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/docs/implementation/2026-09-05-harness-hardening/h07/causal-red-source-v2/tests/review.test.mjs:107:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'REVIEW_VERIFIED',
+    expected: 'BLOCKED_BY_MISSING_AUTHORITY_BINDING',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

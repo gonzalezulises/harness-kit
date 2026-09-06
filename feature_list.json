@@ -612,21 +612,29 @@
       "priority": 21,
       "area": "harness-hardening",
       "behavior": "Independent Codex review freezes compatible model/config and validates output locally",
-      "state": "not_started",
+      "state": "passing",
       "layers": [
         {
           "label": "static",
-          "cmd": "bash -n scripts/verify-feature.sh && bash -n scripts/verify-claims.sh && bash -n scripts/verify-decisions.sh && bash -n scripts/check-arch.sh && echo shell-syntax-ok",
-          "repair": "Fix source whitespace or conflict markers."
+          "cmd": "make lint && bash docs/implementation/2026-09-05-harness-hardening/h07/verify-static.sh",
+          "repair": "Fix syntax and lint while preserving reviewer trust and exact binding checks."
         },
         {
           "label": "runtime",
-          "cmd": "bash packs/autonomy/verify-pack.sh",
-          "repair": "Fix the first failing contract without weakening its expectation."
+          "cmd": "node --test --test-skip-pattern='^e2e' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs",
+          "repair": "Fix the first policy, shadow, freshness or local output-validation failure without granting unavailable execution."
+        },
+        {
+          "label": "e2e",
+          "cmd": "node --test --test-name-pattern='^e2e' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs",
+          "repair": "Keep unavailable review non-executed and uncharged; local outputs or forged receipts cannot become authenticated review evidence."
         }
       ],
-      "evidence": [],
-      "notes": "Approved hardening milestone H07; owner mandate 2026-09-05."
+      "evidence": [
+        "all layers passed — commit 19851a2, 2026-09-06T03:13:46Z"
+      ],
+      "notes": "Approved H07 portable contract implementation; live reviewer/backend and real acceptance remain NOT_EXECUTED, not certified by fixture tests.",
+      "user_visible_behavior": "A consumer prepares an exact trusted Git shadow and frozen review contract, rejects malformed or forged review outputs, and receives an explicit uncharged stop while the live containment/session backend is unavailable."
     },
     {
       "id": "F22",

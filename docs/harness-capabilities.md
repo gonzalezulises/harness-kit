@@ -53,8 +53,9 @@ stop; every classification explicitly withholds execution authorization.
 This package requires Node>=22 and the exact YAML2.9.0/Zod4.5.4 lockfile setup in
 `packs/autonomy/index.md`. It lives entirely below
 `scripts/quality-orchestrator/`, preserving the consumer root package.json.
-Legacy minimal/full installation does not include it. H09 owns automatic
-`--with autonomy` adoption; the current pack is copied explicitly. H04 now adds
+Legacy minimal/full installation does not include it. H09 owns explicit
+`--with autonomy` installation; authority adoption remains separate. The current
+pack is copied explicitly. H04 now adds
 verified journal/replay, mechanical fresh runs, objective reservations and lossless
 legacy projection:35 focused cases, full integration521/0, independent approval.
 H05 adds33 focused cases for closed local canonical/source-digest writes, fenced
@@ -66,6 +67,9 @@ H06 adds reusable signed continuation, durable closed regressions and three
 separate objective-wide budgets plus a shared total. Its25 focused cases and
 full integration579/0 passed after the independently detected signature bypass
 and missing-observation defects were corrected. Old artifact acceptance never
-authorizes new bytes; new runs do not reset budget. H07–H09 review, release and
-canary remain pending. No runtime
-owner keys or product baseline acceptance are created by installation.
+authorizes new bytes; new runs do not reset budget. H07 supplies frozen diagnostic
+Codex policy, exact Git shadows and strict local output validation:28 focused
+cases and full607/0 passed with independent approval. It has no live launch or
+authenticated receipt backend; matching raw JSON cannot satisfy independent
+review, and unavailable preflight consumes no review budget. H08–H09 release and
+canary remain pending. Installation creates no owner key or baseline acceptance.

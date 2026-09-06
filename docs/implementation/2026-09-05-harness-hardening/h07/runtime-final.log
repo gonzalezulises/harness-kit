@@ -1,0 +1,36 @@
+✔ signed preflight freezes approved preference, isolated configuration and opaque ownership (1349.661029ms)
+✔ absent remote schema keeps exact model/effort/auth and local schema (1121.058807ms)
+✔ preflight blocks auth without catalog ranking guesses (642.615943ms)
+✔ preflight blocks cancelled without catalog ranking guesses (636.274891ms)
+✔ preflight blocks partial without catalog ranking guesses (603.670197ms)
+✔ preflight blocks unsupported without catalog ranking guesses (634.899323ms)
+✔ preflight blocks duplicates without catalog ranking guesses (661.443235ms)
+✔ changed binary blocks between rounds (918.394882ms)
+✔ changed dependency blocks between rounds (907.426389ms)
+✔ changed protocol blocks between rounds (899.734624ms)
+✔ schema/bundle/config pins and approval freshness cannot change (1347.026695ms)
+✔ trusted shadow copies exact Git objects and modes without inherited config, hooks or credentials (971.735448ms)
+✔ trusted shadow rejects symlink (777.274406ms)
+✔ trusted shadow rejects alternates (749.410522ms)
+✔ trusted shadow rejects dirty-primary (806.453567ms)
+✔ trusted shadow rejects shadow-tamper (1117.502782ms)
+✔ prototype-shaped filename remains covered by primary manifest (1136.210142ms)
+✔ prototype-shaped filename remains covered by shadow manifest (1192.902403ms)
+✔ e2e case 7: exact shadow stops before unavailable reviewer launch and budget spending (1959.979844ms)
+✔ e2e case 8: only closed local output validates; no fixture or PASS becomes acceptance (1319.46751ms)
+✔ local output fails closed for malformed (1064.347454ms)
+✔ local output fails closed for extra (969.548239ms)
+✔ local output fails closed for duplicate (963.203377ms)
+✔ local output fails closed for cancelled (1042.119664ms)
+✔ local output fails closed for mismatch (982.794014ms)
+✔ local output fails closed for location (1013.752737ms)
+✔ local output fails closed for oversize (989.346465ms)
+✔ e2e case 9: fabricated execution receipt cannot authorize independent review (2591.20525ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 29712.709907

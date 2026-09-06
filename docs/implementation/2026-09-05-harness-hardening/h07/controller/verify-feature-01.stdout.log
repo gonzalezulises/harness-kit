@@ -1,0 +1,65 @@
+Verifying F21
+
+── Layer: static
+$ make lint && bash docs/implementation/2026-09-05-harness-hardening/h07/verify-static.sh
+make[1]: Entering directory '/workspace/scratch/adce1c53b293/harness-kit'
+shellcheck -S warning bin/*.sh scripts/*.sh tests/*.sh \
+  templates/full/scripts/*.sh packs/*/verify-pack.sh
+make[1]: Leaving directory '/workspace/scratch/adce1c53b293/harness-kit'
+PASS: six H07 source/test syntax checks and integration whitespace
+Layer 'static' passed.
+
+── Layer: runtime
+$ node --test --test-skip-pattern='^e2e' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs
+✔ signed preflight freezes approved preference, isolated configuration and opaque ownership (1721.166031ms)
+✔ absent remote schema keeps exact model/effort/auth and local schema (1233.159816ms)
+✔ preflight blocks auth without catalog ranking guesses (657.067261ms)
+✔ preflight blocks cancelled without catalog ranking guesses (624.724837ms)
+✔ preflight blocks partial without catalog ranking guesses (649.871411ms)
+✔ preflight blocks unsupported without catalog ranking guesses (623.432349ms)
+✔ preflight blocks duplicates without catalog ranking guesses (616.584867ms)
+✔ changed binary blocks between rounds (902.940117ms)
+✔ changed dependency blocks between rounds (943.280516ms)
+✔ changed protocol blocks between rounds (895.138567ms)
+✔ schema/bundle/config pins and approval freshness cannot change (1365.792905ms)
+✔ trusted shadow copies exact Git objects and modes without inherited config, hooks or credentials (965.068392ms)
+✔ trusted shadow rejects symlink (771.911753ms)
+✔ trusted shadow rejects alternates (787.496173ms)
+✔ trusted shadow rejects dirty-primary (813.378949ms)
+✔ trusted shadow rejects shadow-tamper (1109.009331ms)
+✔ prototype-shaped filename remains covered by primary manifest (1138.8435ms)
+✔ prototype-shaped filename remains covered by shadow manifest (1121.260594ms)
+✔ local output fails closed for malformed (953.117978ms)
+✔ local output fails closed for extra (995.70206ms)
+✔ local output fails closed for duplicate (947.088482ms)
+✔ local output fails closed for cancelled (983.440334ms)
+✔ local output fails closed for mismatch (975.158985ms)
+✔ local output fails closed for location (959.019466ms)
+✔ local output fails closed for oversize (950.543474ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 24076.80187
+Layer 'runtime' passed.
+
+── Layer: e2e
+$ node --test --test-name-pattern='^e2e' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs
+✔ e2e case 7: exact shadow stops before unavailable reviewer launch and budget spending (1956.037394ms)
+✔ e2e case 8: only closed local output validates; no fixture or PASS becomes acceptance (1331.066453ms)
+✔ e2e case 9: fabricated execution receipt cannot authorize independent review (2588.771769ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6192.277562
+Layer 'e2e' passed.
+
+F21 -> passing (evidence recorded in feature_list.json)
+Next: update PROGRESS.md and commit.

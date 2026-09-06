@@ -1,0 +1,29 @@
+{
+  "command": [
+    "make",
+    "check"
+  ],
+  "cwd": "/workspace/scratch/adce1c53b293/harness-kit",
+  "started_at": "2026-09-06T03:15:24.813902+00:00",
+  "parent_commit": "19851a295fdac9159dad8161f4fd1dbd446c308a",
+  "source_hashes": {
+    ".agents/notes/implemented/architecture/2026-09-06-codex-review-refuses-unavailable-execution.md": "9019ca7a1c7a73796fd334f185709abddbc2c700558376885b1eefe60f73fe4b",
+    ".harness/oracles/AC-H07.yaml": "0afafae33d540411d671c30f322287ab36f2583b97bcaa36c9db398174b343cc",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/classify.mjs": "d484a4e205ef877f0e02845e95cdcb9de842513c2afa0ffc38d4d5c3ff4f5178",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/contracts-review-v1.md": "0ccda6f601f92d9a22144f2bef452c23ffa10d3b1b9dd5ec76a0c82d7dcf3bd1",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/index.mjs": "0050a86db0a0202d6f7a273c9f0b6631eb183e52d7d2c10b604ad8c90fe5261e",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/review-shadow.mjs": "84221bac483c39e517b288b11910a25e33e8c665e5a3d59faba657e97fef71dd",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/review.mjs": "3a8760b34063769a1daa99082347db408c393e08a447f38d22a3e7e29b8cb6f8",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/review.schema.mjs": "bfdc0bd9cf4551bac6ce43e41691e3f61aaf7c8b9a468a41893f8a38adcc8dfa",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs": "bebe2481b6d12d9b5f0c70cd15b3cd96c16183ebb7d493983d1a77a5697fb741"
+  },
+  "environment": {
+    "NO_COLOR": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "K6_NO_USAGE_REPORT": "true",
+    "tooling": [
+      "k6 2.1.0",
+      "ShellCheck 0.11.0"
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+✖ signed preflight freezes approved preference, isolated configuration and opaque ownership (957.634516ms)
+✔ absent remote schema keeps exact model/effort/auth and local schema (760.664638ms)
+✔ preflight blocks auth without catalog ranking guesses (628.58042ms)
+✔ preflight blocks cancelled without catalog ranking guesses (663.698641ms)
+✔ preflight blocks partial without catalog ranking guesses (624.176958ms)
+✔ preflight blocks unsupported without catalog ranking guesses (627.730319ms)
+✔ preflight blocks duplicates without catalog ranking guesses (635.840858ms)
+✔ changed binary blocks between rounds (966.900651ms)
+✔ changed dependency blocks between rounds (936.051015ms)
+✔ changed protocol blocks between rounds (944.691269ms)
+✔ schema/bundle/config pins and approval freshness cannot change (1327.595161ms)
+✔ trusted shadow copies exact Git objects and modes without inherited config, hooks or credentials (936.797207ms)
+✔ trusted shadow rejects symlink (764.452432ms)
+✔ trusted shadow rejects alternates (785.328274ms)
+✔ trusted shadow rejects dirty-primary (824.74021ms)
+✔ trusted shadow rejects shadow-tamper (1123.181621ms)
+✔ e2e case 7: exact shadow and signed objective attempt stop before unavailable reviewer launch (1854.493061ms)
+✔ e2e case 8: only closed local output validates; no fixture or PASS becomes acceptance (1247.431161ms)
+✔ local output fails closed for malformed (931.527861ms)
+✔ local output fails closed for extra (942.287324ms)
+✔ local output fails closed for duplicate (957.147016ms)
+✔ local output fails closed for cancelled (942.875128ms)
+✔ local output fails closed for mismatch (936.23786ms)
+✔ local output fails closed for location (928.2896ms)
+✔ local output fails closed for oversize (931.346108ms)
+✔ e2e case 9: fabricated execution receipt cannot authorize independent review (2523.142092ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 25
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 26040.679907
+
+✖ failing tests:
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:37:1
+✖ signed preflight freezes approved preference, isolated configuration and opaque ownership (957.634516ms)
+  TypeError: Cannot assign to read only property '0' of object '[object Array]'
+      at Array.reverse (<anonymous>)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:41:65)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)

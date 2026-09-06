@@ -329,3 +329,15 @@ Durable intent precedes budget reservation and effects. Private local-capability
 Three named review/remediation categories and the shared total derive from journal reservations. The first signed configuration fixes objective limits; fresh runs, new grant IDs and unsuccessful effects never refund them. Monotonic revocation denies future permission without rewriting original approvals. Required public observed-defect data is validated before mutation.
 
 **Consequences.** This continuation proves only the supported record/digest identity contracts. Product regression execution and actual independent review require their own supported capabilities and evidence. A grant permits work, not acceptance of new baseline/golden bytes. Existing journals are not silently reinterpreted under the changed wire binding. The original verification receipts and causal Critical-fix evidence remain preserved; no baseline acceptance or deployment follows.
+
+---
+
+## 2026-09-06 — H07: diagnostic review preparation cannot certify execution
+
+**Context.** Reviewer configuration/schema friction should be repairable without silently changing model, authentication or isolation. This environment cannot perform the required authenticated isolated Codex session.
+
+**Decision.** Reuse the existing approval/runtime boundary for signed ordered model/effort policy, frozen artifact/config/schema pins and data-only protocol descriptions. Construct exact shadows with fixed pinned Git object plumbing under clean configuration/environment, verifying raw commit/tree/blob identities and complete primary/shadow manifests. Treat output as untrusted strict JSON/Zod data, including duplicate-key and exact-location checks.
+
+No fixture catalog, raw output, matching or signed raw receipt creates authenticated independent-review evidence. The current build prepares contracts and shadows, and refuses real execution before budget spending. A supported future launch must implement containment, actual authenticated discovery/session supervision, reservation before start, and receipt/counterexample provenance. H08 cannot consume these diagnostic outputs as review approval.
+
+**Consequences.** Portable preparation/refusal is locally verified; the original real-session acceptance criterion remains unachieved. No sandbox service or hypothetical launch backend is added to mask missing capability. Exact causal evidence closes the primary __proto__ manifest defect. Generated dependencies are reconstructed from pinned lockfiles, not vendored in proof snapshots. Baseline/deployment authority remains separate.

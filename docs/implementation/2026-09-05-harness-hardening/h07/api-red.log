@@ -1,0 +1,371 @@
+✖ signed preflight freezes approved preference, isolated configuration and opaque ownership (74.771338ms)
+✖ absent remote schema keeps exact model/effort/auth and local schema (41.943849ms)
+✖ preflight blocks auth without catalog ranking guesses (35.149741ms)
+✖ preflight blocks cancelled without catalog ranking guesses (34.305433ms)
+✖ preflight blocks partial without catalog ranking guesses (34.036035ms)
+✖ preflight blocks unsupported without catalog ranking guesses (32.869993ms)
+✖ preflight blocks duplicates without catalog ranking guesses (29.64622ms)
+✖ changed binary blocks between rounds (29.234951ms)
+✖ changed dependency blocks between rounds (30.412242ms)
+✖ changed protocol blocks between rounds (31.677721ms)
+✖ schema/bundle/config pins and approval freshness cannot change (34.30322ms)
+✖ trusted shadow copies exact Git objects and modes without inherited config, hooks or credentials (43.880971ms)
+✖ trusted shadow rejects symlink (45.662752ms)
+✖ trusted shadow rejects alternates (27.835663ms)
+✖ trusted shadow rejects dirty-primary (31.89998ms)
+✖ trusted shadow rejects shadow-tamper (32.634375ms)
+✖ e2e case 7: exact shadow and signed objective attempt stop before unavailable reviewer launch (31.694616ms)
+✖ e2e case 8: only closed local output validates; no fixture or PASS becomes acceptance (35.668979ms)
+✖ local output fails closed for malformed (33.504039ms)
+✖ local output fails closed for extra (31.721425ms)
+✖ local output fails closed for duplicate (31.348475ms)
+✖ local output fails closed for cancelled (31.291059ms)
+✖ local output fails closed for mismatch (30.401336ms)
+✖ local output fails closed for location (29.551019ms)
+✖ local output fails closed for oversize (30.749255ms)
+✖ e2e case 9: fabricated execution receipt cannot authorize independent review (28.791738ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 0
+ℹ fail 26
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1248.761988
+
+✖ failing tests:
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:37:1
+✖ signed preflight freezes approved preference, isolated configuration and opaque ownership (74.771338ms)
+  TypeError: r.describeReviewPolicy is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:30:34)
+      at Object.bind (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:31:37)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:39:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:44:1
+✖ absent remote schema keeps exact model/effort/auth and local schema (41.943849ms)
+  TypeError: r.describeReviewPolicy is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:30:34)
+      at Object.bind (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:31:37)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:45:60)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:48:78
+✖ preflight blocks auth without catalog ranking guesses (35.149741ms)
+  TypeError: r.describeReviewPolicy is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:30:34)
+      at Object.bind (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:31:37)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:50:15)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:48:78
+✖ preflight blocks cancelled without catalog ranking guesses (34.305433ms)
+  TypeError: r.describeReviewPolicy is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:30:34)
+      at Object.bind (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:31:37)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:50:15)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:48:78
+✖ preflight blocks partial without catalog ranking guesses (34.036035ms)
+  TypeError: r.describeReviewPolicy is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:30:34)
+      at Object.bind (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:31:37)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:50:15)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:48:78
+✖ preflight blocks unsupported without catalog ranking guesses (32.869993ms)
+  TypeError: r.describeReviewPolicy is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:30:34)
+      at Object.bind (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:31:37)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:50:15)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:48:78
+✖ preflight blocks duplicates without catalog ranking guesses (29.64622ms)
+  TypeError: r.describeReviewPolicy is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:30:34)
+      at Object.bind (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:31:37)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:50:15)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:52:54
+✖ changed binary blocks between rounds (29.234951ms)
+  TypeError: r.describeReviewPolicy is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:30:34)
+      at Object.bind (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:31:37)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:53:24)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:52:54
+✖ changed dependency blocks between rounds (30.412242ms)
+  TypeError: r.describeReviewPolicy is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:30:34)
+      at Object.bind (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:31:37)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:53:24)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:52:54
+✖ changed protocol blocks between rounds (31.677721ms)
+  TypeError: r.describeReviewPolicy is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:30:34)
+      at Object.bind (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:31:37)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:53:24)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:56:1
+✖ schema/bundle/config pins and approval freshness cannot change (34.30322ms)
+  TypeError: r.describeReviewPolicy is not a function
+      at Object.describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:30:34)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:57:24)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:60:1
+✖ trusted shadow copies exact Git objects and modes without inherited config, hooks or credentials (43.880971ms)
+  TypeError: r.describeReviewPolicy is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:30:34)
+      at Object.bind (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:31:37)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:62:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:69:75
+✖ trusted shadow rejects symlink (45.662752ms)
+  TypeError: r.describeReviewPolicy is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:30:34)
+      at Object.bind (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:31:37)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:72:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:69:75
+✖ trusted shadow rejects alternates (27.835663ms)
+  TypeError: r.describeReviewPolicy is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:30:34)
+      at Object.bind (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:31:37)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:72:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:69:75
+✖ trusted shadow rejects dirty-primary (31.89998ms)
+  TypeError: r.describeReviewPolicy is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:30:34)
+      at Object.bind (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:31:37)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:72:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:69:75
+✖ trusted shadow rejects shadow-tamper (32.634375ms)
+  TypeError: r.describeReviewPolicy is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:30:34)
+      at Object.bind (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:31:37)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:72:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:79:1
+✖ e2e case 7: exact shadow and signed objective attempt stop before unavailable reviewer launch (31.694616ms)
+  TypeError: r.describeReviewPolicy is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:30:34)
+      at Object.bind (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:31:37)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:80:24)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:85:1
+✖ e2e case 8: only closed local output validates; no fixture or PASS becomes acceptance (35.668979ms)
+  TypeError: r.describeReviewPolicy is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:30:34)
+      at Object.bind (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:31:37)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:86:24)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:92:97
+✖ local output fails closed for malformed (33.504039ms)
+  TypeError: r.describeReviewPolicy is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:30:34)
+      at Object.bind (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:31:37)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:93:24)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:92:97
+✖ local output fails closed for extra (31.721425ms)
+  TypeError: r.describeReviewPolicy is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:30:34)
+      at Object.bind (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:31:37)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:93:24)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:92:97
+✖ local output fails closed for duplicate (31.348475ms)
+  TypeError: r.describeReviewPolicy is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:30:34)
+      at Object.bind (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:31:37)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:93:24)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:92:97
+✖ local output fails closed for cancelled (31.291059ms)
+  TypeError: r.describeReviewPolicy is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:30:34)
+      at Object.bind (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:31:37)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:93:24)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:92:97
+✖ local output fails closed for mismatch (30.401336ms)
+  TypeError: r.describeReviewPolicy is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:30:34)
+      at Object.bind (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:31:37)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:93:24)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:92:97
+✖ local output fails closed for location (29.551019ms)
+  TypeError: r.describeReviewPolicy is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:30:34)
+      at Object.bind (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:31:37)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:93:24)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:92:97
+✖ local output fails closed for oversize (30.749255ms)
+  TypeError: r.describeReviewPolicy is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:30:34)
+      at Object.bind (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:31:37)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:93:24)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:100:1
+✖ e2e case 9: fabricated execution receipt cannot authorize independent review (28.791738ms)
+  TypeError: r.describeReviewPolicy is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:30:34)
+      at Object.bind (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:31:37)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs:101:24)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

@@ -1,0 +1,19 @@
+{
+  "docs/implementation/2026-09-05-harness-hardening/h07/causal-red-source-v2/continuation.mjs": "939c95db08dcb8235311ad3e621bc448618f1a50bd815b660e91c02d480eb8e2",
+  "docs/implementation/2026-09-05-harness-hardening/h07/causal-red-source-v2/review-shadow.mjs": "638c9356ffe5d85d53d779571a3fec54a35da0dd5377594582fa768ea53c4922",
+  "docs/implementation/2026-09-05-harness-hardening/h07/causal-red-source-v2/identity.mjs": "f6bc4cf109851e22bece790619fe736808d7af52b06f79e9b00047e0106cfb21",
+  "docs/implementation/2026-09-05-harness-hardening/h07/causal-red-source-v2/budget.mjs": "bcf6bacf43d1bee8dfc28f6951d17cd8391f89411609bde61b58cba8f8c8b24b",
+  "docs/implementation/2026-09-05-harness-hardening/h07/causal-red-source-v2/classify.mjs": "d484a4e205ef877f0e02845e95cdcb9de842513c2afa0ffc38d4d5c3ff4f5178",
+  "docs/implementation/2026-09-05-harness-hardening/h07/causal-red-source-v2/review.mjs": "4d39b5efb7a3fa22b339626aa6fd3c7542de2a9ee75dbcea253c5d94f823cb85",
+  "docs/implementation/2026-09-05-harness-hardening/h07/causal-red-source-v2/journal.mjs": "6b53ad0b3ef8454907bfde344f5b942fa6abf28d4904608f1c7f309dad5de2ea",
+  "docs/implementation/2026-09-05-harness-hardening/h07/causal-red-source-v2/package.json": "6c8370fa233ab09d20b96330d90a9541d0b3f2c71aa19025988677b879262296",
+  "docs/implementation/2026-09-05-harness-hardening/h07/causal-red-source-v2/review.schema.mjs": "2a95dbb0e012eba9cb0d35e7fb91d06f025e6210b250e035addd85e488dc80c7",
+  "docs/implementation/2026-09-05-harness-hardening/h07/causal-red-source-v2/authority.mjs": "7facc38c306d2f469de8a67cc48aaaf14c58d93bbb10b744a111716f10e078ed",
+  "docs/implementation/2026-09-05-harness-hardening/h07/causal-red-source-v2/index.mjs": "0050a86db0a0202d6f7a273c9f0b6631eb183e52d7d2c10b604ad8c90fe5261e",
+  "docs/implementation/2026-09-05-harness-hardening/h07/causal-red-source-v2/capabilities.mjs": "0084e0f78e233c7dbd4ff751afe07faf839f62f475831d46fb35908960d3c6a6",
+  "docs/implementation/2026-09-05-harness-hardening/h07/causal-red-source-v2/package-lock.json": "19d4495481f1a940a52ab63684bc400b938cc7c6bc744be889fa453030ba622c",
+  "docs/implementation/2026-09-05-harness-hardening/h07/causal-red-source-v2/schemas/digest.v1.json": "3739807b2640848ddfcdf441eb72ca4801b77ebcfe22b5a2434bd9b2aac97972",
+  "docs/implementation/2026-09-05-harness-hardening/h07/causal-red-source-v2/schemas/record.v1.json": "6a9d79d9cc43b5a1f197e43f2915adc5e855fb902435fce1ee15532dccadbc4b",
+  "docs/implementation/2026-09-05-harness-hardening/h07/causal-red-source-v2/tests/review.test.mjs": "3dd26fe2c195d7db3c367e371bd2f507c4f96f3b1db54bdfe1fed9e688567add",
+  "docs/implementation/2026-09-05-harness-hardening/h07/causal-red-source-v2/tests/helpers.mjs": "8eab979a11d050cc4f835a4824e42daa71e93bf4a18e0c2b45577ed589a48afc"
+}

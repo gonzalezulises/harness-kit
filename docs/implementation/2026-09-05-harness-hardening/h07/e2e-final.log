@@ -1,0 +1,11 @@
+✔ e2e case 7: exact shadow stops before unavailable reviewer launch and budget spending (2064.940117ms)
+✔ e2e case 8: only closed local output validates; no fixture or PASS becomes acceptance (1282.660428ms)
+✔ e2e case 9: fabricated execution receipt cannot authorize independent review (2650.928354ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6340.520971
