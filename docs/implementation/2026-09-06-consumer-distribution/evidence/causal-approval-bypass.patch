@@ -1,0 +1,11 @@
+--- a/bin/harness-consumer.py
++++ b/bin/harness-consumer.py
+@@ -570,7 +570,7 @@
+ 
+ 
+ def read_plan(args, expected_kind):
+-    reject(not args.approve_plan, 'MISSING_PLAN_APPROVAL', 'exact --approve-plan digest required')
++    # Causal falsification: approval-presence check removed.
+     plan = load_json(pathlib.Path(args.plan).resolve(), 'PLAN_DIGEST_MISMATCH')
+     supplied = plan.get('planDigest')
+     subject = dict(plan); subject.pop('planDigest', None)

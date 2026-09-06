@@ -1,0 +1,2 @@
+3aee24ef49a6427efa54eaee7ccb727db3685e5dc8622820889d9c92059a539a  reconstructed FIX1 bin/harness-consumer.py
+697a4d35215c42da2a78f0de0c1fa66c7d0025704b561fe3532d501ba950e85c  tests/consumer-distribution.test.py

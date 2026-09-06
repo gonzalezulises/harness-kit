@@ -3,7 +3,48 @@
 The durable memory of this repository. Every session reads this first and writes to it
 last. If it disagrees with your recollection, this file wins.
 
-## Current state — 2026-09-06 execution backend continuation
+## Current state — 2026-09-06 consumer distribution
+
+F26 is complete on this independent branch over frozen PR33 continuation
+`a798c88`. Its plan, review and compact verification receipt are in
+`docs/implementation/2026-09-06-consumer-distribution/`. The supported
+`autonomy-runtime.v1` profile provides reproducible exact-SHA bundles, read-only
+plans, explicit digest approval, atomic generation selection, drift refusal,
+SIGKILL resume and rollback preserving newer consumer configuration and journal.
+A fresh Git consumer clone runs the real QO with locked vendored yaml/zod after
+source, bundle and npm cache become unavailable. Casabat is untouched.
+
+The harness issued F26 passing receipts: static PASS, runtime31/31 and E2E2/2.
+Final `make check` exits0 in360.776s; current `./init.sh` exits0 with286/0.
+Both preserve the exact85-source manifest. All24 earlier feature records are
+unchanged and no feature is active. The first full gate correctly refused a
+missing local runtime dependency; a locked offline install repaired only the
+environment before the successful retry. No green claim relies on that failure.
+
+Independent scoped review closed all F26 Critical/High. One additional recovery
+correction exceeded the local plan's two-correction work budget; all three
+engineering corrections are disclosed. P0's runtime limit stays two. The
+unavailable original RED test variant remains Medium backlog, while current
+unauthorized-activation and recovery counterexamples retain reconstructible
+patches and exact source/test bindings. See `evidence/review.json` and
+`evidence/verification.json` for the reviewed scope and causal limits.
+
+Status is FIXTURE_PROFILE_VALIDATED, with installation NOT_ADOPTED. No published
+release, remote source-owner authentication, baseline acceptance, merge or
+production adoption is claimed. Unsupported major/schema/stable-manager changes
+require a migration and fail closed. Two authenticated-gh load cases remain
+outside local acceptance. The separate P0 commit `6400e65` has a passing local
+gate, but its real authenticated pilot and automatic remote PR creation remain
+incomplete; P0_PRODUCT_LOOP_READY is not established.
+
+Next action is publication of the prepared separate commits after resolution of
+the prior automatic approval block. No remote ref was updated and no alternate
+publication route was attempted. The interrupted whole-branch review remains
+INCOMPLETE; this bounded distribution approval does not replace it. Consumer
+adoption instructions are in `docs/consumer-distribution.md`; do not run them on
+Casabat without a separate adoption task.
+
+## Previous verified state — 2026-09-06 execution backend continuation
 
 F24 now connects the fixed GitHub execution transport, Codex stdio worker and
 H07/H08 evidence bridge. Independent backend review identified four concrete

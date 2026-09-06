@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "harness.consumer-installation.v1",
+  "title": "Harness consumer distribution contracts",
+  "oneOf": [
+    { "$ref": "#/$defs/descriptor" },
+    { "$ref": "#/$defs/manifest" },
+    { "$ref": "#/$defs/plan" }
+  ],
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "gitSha": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+    "semver": { "type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:[-+][0-9A-Za-z.-]+)?$" },
+    "descriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "profile", "bundleDigest", "sourceSha", "planDigest", "generation", "adoptionStatus", "adoptionDate", "receipt", "installationDigest"],
+      "properties": {
+        "schemaVersion": { "const": 1 },
+        "profile": { "const": "autonomy-runtime.v1" },
+        "bundleDigest": { "$ref": "#/$defs/sha256" },
+        "sourceSha": { "$ref": "#/$defs/gitSha" },
+        "planDigest": { "$ref": "#/$defs/sha256" },
+        "generation": { "type": "string", "pattern": "^generations/[a-f0-9]{64}$" },
+        "adoptionStatus": { "const": "NOT_ADOPTED" },
+        "adoptionDate": { "type": "null" },
+        "receipt": { "type": "string", "pattern": "^receipts/[a-f0-9]{64}\\.json$" },
+        "installationDigest": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "release": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "tag", "published"],
+      "properties": {
+        "status": { "enum": ["RELEASE_CANDIDATE", "TAGGED_SOURCE"] },
+        "tag": { "type": ["string", "null"] },
+        "published": { "const": false }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "lineageRoot", "identityClaim", "sha", "version", "release"],
+      "properties": {
+        "repository": { "type": "string", "minLength": 3 },
+        "lineageRoot": { "$ref": "#/$defs/gitSha" },
+        "identityClaim": { "const": "DECLARED_NOT_REMOTE_VERIFIED" },
+        "sha": { "$ref": "#/$defs/gitSha" },
+        "version": { "$ref": "#/$defs/semver" },
+        "release": { "$ref": "#/$defs/release" }
+      }
+    },
+    "dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["package", "version", "integrity", "archiveBytes"],
+      "properties": {
+        "package": { "enum": ["yaml", "zod"] },
+        "version": { "type": "string", "minLength": 1 },
+        "integrity": { "type": "string", "pattern": "^sha512-[A-Za-z0-9+/]+={0,2}$" },
+        "archiveBytes": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "generationFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "target", "sha256", "mode", "sourcePath", "sourceMode"],
+      "properties": {
+        "path": { "type": "string", "pattern": "^runtime/" },
+        "target": { "const": "generation" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "mode": { "enum": [292, 365] },
+        "sourcePath": { "type": "string", "minLength": 1 },
+        "sourceMode": { "type": "integer", "minimum": 0, "maximum": 511 }
+      }
+    },
+    "stableFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "target", "sha256", "mode", "sourcePath", "sourceMode", "installPath"],
+      "properties": {
+        "path": { "enum": ["bootstrap.mjs", "harness-consumer.py", "consumer-installation.v1.json", ".gitignore"] },
+        "target": { "const": "stable" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "mode": { "enum": [292, 365] },
+        "sourcePath": { "type": "string", "minLength": 1 },
+        "sourceMode": { "type": "integer", "minimum": 0, "maximum": 511 },
+        "installPath": { "enum": ["bootstrap.mjs", "harness-consumer.py", "consumer-installation.v1.json", ".gitignore"] }
+      }
+    },
+    "manifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "profile", "source", "dependencies", "files", "bundleDigest"],
+      "properties": {
+        "schemaVersion": { "const": 1 },
+        "profile": { "const": "autonomy-runtime.v1" },
+        "source": { "$ref": "#/$defs/source" },
+        "dependencies": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "$ref": "#/$defs/dependency" } },
+        "files": { "type": "array", "minItems": 1, "items": { "oneOf": [{ "$ref": "#/$defs/generationFile" }, { "$ref": "#/$defs/stableFile" }] } },
+        "bundleDigest": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "kind", "profile", "configSchema", "stateSchema", "targetRoot", "targetHead", "lockPath", "beforeBundleDigest", "bundleDigest", "sourceSha", "installedVersion", "targetVersion", "preserved", "create", "change", "managedDrift", "migrations", "incompatibilities", "allowedWrites", "availableRollback", "planDigest"],
+      "properties": {
+        "schemaVersion": { "const": 1 },
+        "kind": { "enum": ["install", "upgrade", "rollback"] },
+        "profile": { "const": "autonomy-runtime.v1" },
+        "configSchema": { "const": "autonomy-config.v1" },
+        "stateSchema": { "const": "autonomy-state.v1" },
+        "targetRoot": { "type": "string", "minLength": 1 },
+        "targetHead": { "$ref": "#/$defs/gitSha" },
+        "lockPath": { "type": "string", "pattern": "^/" },
+        "beforeBundleDigest": { "oneOf": [{ "$ref": "#/$defs/sha256" }, { "type": "null" }] },
+        "bundleDigest": { "$ref": "#/$defs/sha256" },
+        "sourceSha": { "$ref": "#/$defs/gitSha" },
+        "installedVersion": { "oneOf": [{ "$ref": "#/$defs/semver" }, { "type": "null" }] },
+        "targetVersion": { "$ref": "#/$defs/semver" },
+        "preserved": { "type": "object", "additionalProperties": { "$ref": "#/$defs/sha256" } },
+        "create": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "change": { "const": [".harness/distribution/active.json"] },
+        "managedDrift": { "const": [] },
+        "migrations": { "const": [] },
+        "incompatibilities": { "const": [] },
+        "allowedWrites": {
+          "type": "array",
+          "prefixItems": [
+            { "type": "string", "pattern": "^/" },
+            { "const": ".harness/distribution/" }
+          ],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "availableRollback": { "type": "array", "items": { "$ref": "#/$defs/sha256" }, "uniqueItems": true },
+        "planDigest": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  }
+}

@@ -727,6 +727,40 @@
       ],
       "notes": "Owner continuation 2026-09-06. Four initial scoped review findings are fixed and independently closed. CI integration uses protected base only. Fixtures do not certify live execution, containment, baseline acceptance or deployment.",
       "user_visible_behavior": "A consumer connects approved remote execution workflows, resumes an uncertain operation without duplicate effects or charges, and derives release progress only from exact authenticated observations."
+    },
+    {
+      "id": "F26",
+      "priority": 26,
+      "area": "consumer-distribution",
+      "behavior": "Versioned autonomy-runtime.v1 bundles support exact approved plans, atomic installation, upgrade, drift detection, resume and verified rollback while preserving consumer configuration and journal.",
+      "user_visible_behavior": "A fixture consumer installs and runs the real pinned runtime offline without the Harness Kit checkout; plan/apply/verify/upgrade-plan/upgrade/rollback produce machine-readable provenance and an adoption handoff.",
+      "state": "passing",
+      "verification": [
+        "Demonstrate the twelve requested fixture scenarios plus unsuitable tree, missing binding, concurrent apply and post-verification failure.",
+        "Prove installation, upgrade, rollback, drift detection and actual offline runtime operation without upstream or package cache.",
+        "Keep consumer adoption, owner baseline acceptance, merge and release explicit; never modify Casabat."
+      ],
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "python3 -I bin/harness-consumer.py --help > /dev/null && python3 -I -m json.tool schemas/consumer-installation.v1.json > /dev/null && node --check assets/harness-consumer-bootstrap.mjs && echo consumer-static-contract-ok",
+          "repair": "Fix CLI syntax or strict schema without weakening provenance or overwrite guards."
+        },
+        {
+          "label": "runtime",
+          "cmd": "python3 -I tests/consumer-distribution.test.py -k ConsumerRuntime",
+          "repair": "Fix the concrete transaction/provenance/ownership defect; do not overwrite managed drift."
+        },
+        {
+          "label": "e2e",
+          "cmd": "python3 -I tests/consumer-distribution.test.py -k ConsumerEndToEnd",
+          "repair": "Repair the real offline fixture cycle while preserving configuration, journal and human adoption boundary."
+        }
+      ],
+      "evidence": [
+        "all layers passed — commit a798c88, 2026-09-06T17:52:40Z"
+      ],
+      "notes": "Owner-authorized independent increment based on frozen local PR33 a798c88; no consumer adoption or publication is authorized by a fixture result."
     }
   ]
 }

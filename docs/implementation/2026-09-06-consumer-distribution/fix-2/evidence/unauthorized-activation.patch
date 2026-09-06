@@ -1,0 +1,18 @@
+--- a/bin/harness-consumer.py
++++ b/bin/harness-consumer.py
+@@ -821,13 +821,13 @@
+ 
+ 
+ def read_plan(args, expected_kind):
+-    reject(not args.approve_plan, 'MISSING_PLAN_APPROVAL', 'exact --approve-plan digest required')
++    # Causal mutant: missing approval is accepted.
+     plan_path = pathlib.Path(os.path.abspath(args.plan))
+     reject(plan_path.resolve() != plan_path, 'BUNDLE_PATH_UNSAFE',
+            'plan path and ancestors must be plain')
+     plan = validate_plan(load_regular_json(plan_path, 'PLAN_SCHEMA_INVALID'))
+     supplied = plan['planDigest']
+-    reject(args.approve_plan != supplied, 'PLAN_APPROVAL_MISMATCH', 'approval does not match exact plan')
++    # Causal mutant: plan approval equality is not enforced.
+     reject(plan.get('kind') != expected_kind, 'PLAN_BINDING_CHANGED', 'plan kind differs from command')
+     return plan
+ 

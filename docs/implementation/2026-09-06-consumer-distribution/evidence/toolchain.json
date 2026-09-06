@@ -1,0 +1,60 @@
+{
+  "node": {
+    "path": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "sha256": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+    "version_output": [
+      "v24.19.0"
+    ]
+  },
+  "python3": {
+    "path": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+    "sha256": "021044895e95be79dc2f110367607e684119afbc8ce75f6f0eec94844e0acec7",
+    "version_output": [
+      "Python 3.12.13"
+    ]
+  },
+  "git": {
+    "path": "/usr/local/bin/git",
+    "sha256": "2dae8066ef4d6a926561b4b0eaca7b458d4f5b56bb83760656e6baa7fc3e974f",
+    "version_output": [
+      "git version 2.51.1"
+    ]
+  },
+  "bash": {
+    "path": "/usr/bin/bash",
+    "sha256": "bc5945feb8bd26203ebfafea5ce1878bb2e32cb8fb50ab7ae395cfb1e1aaaef1",
+    "version_output": [
+      "GNU bash, version 5.2.21(1)-release (x86_64-pc-linux-gnu)",
+      "Copyright (C) 2022 Free Software Foundation, Inc.",
+      "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>",
+      ""
+    ]
+  },
+  "make": {
+    "path": "/usr/bin/make",
+    "sha256": "d78b8f1d099fbcfb6f2f49ab87223b9b68fb3956642f92d6ec6de812e8afa965",
+    "version_output": [
+      "GNU Make 4.3",
+      "Built for x86_64-pc-linux-gnu",
+      "Copyright (C) 1988-2020 Free Software Foundation, Inc.",
+      "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>"
+    ]
+  },
+  "k6": {
+    "path": "/workspace/scratch/adce1c53b293/tooling/k6-v2.1.0-linux-amd64/k6",
+    "sha256": "bd3c9bf5022f80ec98c4dd31175d64c6764e34a17af58944a99b055b64f33616",
+    "version_output": [
+      "k6 v2.1.0 (commit/83a87a41e2, go1.26.4, linux/amd64)"
+    ]
+  },
+  "shellcheck": {
+    "path": "/workspace/scratch/adce1c53b293/tooling/shellcheck/shellcheck-v0.11.0/shellcheck",
+    "sha256": "4da528ddb3a4d1b7b24a59d4e16eb2f5fd960f4bd9a3708a15baddbdf1d5a55b",
+    "version_output": [
+      "ShellCheck - shell script analysis tool",
+      "version: 0.11.0",
+      "license: GNU General Public License, version 3",
+      "website: https://www.shellcheck.net"
+    ]
+  }
+}

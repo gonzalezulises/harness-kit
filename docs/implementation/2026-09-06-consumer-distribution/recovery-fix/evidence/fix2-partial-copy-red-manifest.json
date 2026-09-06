@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "command": [
+    "python3",
+    "-I",
+    "tests/consumer-distribution.test.py",
+    "ConsumerRuntime.test_sigkill_during_started_copy_recovers_only_safe_partial_staging"
+  ],
+  "exit_code": 1,
+  "tests": {
+    "tests/consumer-distribution.test.py": "3651818b4be511ac88f8c96aead84c962d8e3ff714004393d109613a5199c76a"
+  },
+  "source": {
+    "docs/implementation/2026-09-06-consumer-distribution/recovery-fix/evidence/fix-2-to-recovery-fix.patch": "71c903926d1da6cbba965e97c559c456b9a8be28c9f4bf88896fe249c33168a7"
+  },
+  "logs": {
+    "docs/implementation/2026-09-06-consumer-distribution/recovery-fix/evidence/fix2-partial-copy-red.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/implementation/2026-09-06-consumer-distribution/recovery-fix/evidence/fix2-partial-copy-red.stderr.log": "36f4910774c614e7b30539210e1e0a0fb08cb5fcac96e3d388a763b60d496373",
+    "docs/implementation/2026-09-06-consumer-distribution/recovery-fix/evidence/fix2-partial-copy-red.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+  },
+  "observed": "same approved plan left STARTED with one exact staged file; retry returned MANAGED_FILE_DRIFT",
+  "tested_source_sha256": "051f880bed8b7788c77ae3265a9b3378c537a2e8ff58cb3078f26dac9e600d4e",
+  "reconstruction": "reverse the cited patch from recovery_fix source and require tested_source_sha256"
+}

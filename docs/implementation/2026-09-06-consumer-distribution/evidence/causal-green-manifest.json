@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "command": [
+    "python3",
+    "-I",
+    "tests/consumer-distribution.test.py",
+    "-k",
+    "ConsumerRuntime.test_changed_plan_and_adulterated_bundle_block_before_writes"
+  ],
+  "exit_code": 0,
+  "tests": {
+    "tests/consumer-distribution.test.py": "cdeae1af616e85b35140a351a40f49e2dda578a738e32a01ab76acf2caf8a0d2"
+  },
+  "source": {
+    "bin/harness-consumer.py": "1643ef9b406086922e322d1435ea80b665cdad4a9814df50e56a66098f61a691"
+  },
+  "logs": {
+    "docs/implementation/2026-09-06-consumer-distribution/evidence/causal-green.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/implementation/2026-09-06-consumer-distribution/evidence/causal-green.stderr.log": "a46911edd763467092c9df84422e9d13a88feec00a60fd3034ef00cb3bf279f6",
+    "docs/implementation/2026-09-06-consumer-distribution/evidence/causal-green.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+  }
+}

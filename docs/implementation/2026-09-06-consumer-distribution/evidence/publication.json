@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "kind": "DERIVED_GIT_TRANSPORT_BINDING",
+  "localVerifiedCommit": "e4fbc90306b4e3eda4ba1f48bcc8b0b22355b7d0",
+  "localVerifiedTree": "d1bab4c94097d9fb046a7f7c39f62b5f2de1337b",
+  "localBaseCommit": "a798c88ad625be2478d24df52c0dc45c51e2d4e4",
+  "publishedBaseCommit": "0a51623b5db42951a6091847a179262182abd67d",
+  "identicalBaseTree": "e8d1478bac30de53ae02a0cabd23fcd6cfe37457",
+  "reason": "The GitHub connector recreated commit metadata. The published base has exactly the same full Git tree as the original local witness anchor. Only its executable ancestry reference is rebound; observed RED/GREEN receipts remain unchanged.",
+  "changedBinding": {
+    "path": ".harness/oracles/AC-CONSUMER-DISTRIBUTION.yaml",
+    "field": "falsification.proved_sha",
+    "before": "a798c88ad625be2478d24df52c0dc45c51e2d4e4",
+    "after": "0a51623b5db42951a6091847a179262182abd67d",
+    "beforeSha256": "de5afa2393bdf26cb90cfa813a96cfb868c86b20e725079c30299c7fa3307fb2",
+    "afterSha256": "6733e672988b8d878f3d14cc225f696152351d719b47804ecbc542ad9476f337"
+  },
+  "runtimeCode": "UNCHANGED",
+  "tests": "UNCHANGED",
+  "observedEvidence": "UNCHANGED",
+  "authorityOrBaselineAcceptance": "NOT_PERFORMED",
+  "affectedGate": [
+    "bash",
+    "scripts/verify-oracles.sh"
+  ],
+  "verificationResult": {
+    "status": "PASS",
+    "exit": 0,
+    "criteria": 13,
+    "durationSeconds": 0.179136021,
+    "outputSha256": "adc15aa0587669052a63e5960ff1c9c77ceea62bbd0e22d96138d3339705e257",
+    "summary": "All 13 critical oracle receipts are consistent; only the equivalent Git ancestry binding changed.",
+    "capability": "Local content/ancestry consistency; not independent authority or production acceptance."
+  }
+}

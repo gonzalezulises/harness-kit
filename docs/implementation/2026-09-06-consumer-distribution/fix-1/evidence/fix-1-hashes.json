@@ -1,0 +1,33 @@
+{
+  "review_source_manifest_sha256": "ac74f76732cdae48a5cbf2dd3f26df29364ccd5af6da94bf4643d1ea8fba6885",
+  "files": {
+    "bin/harness-consumer.py": {
+      "reviewed_sha256": "1643ef9b406086922e322d1435ea80b665cdad4a9814df50e56a66098f61a691",
+      "fixed_sha256": "3aee24ef49a6427efa54eaee7ccb727db3685e5dc8622820889d9c92059a539a"
+    },
+    "tests/consumer-distribution.test.py": {
+      "reviewed_sha256": "cdeae1af616e85b35140a351a40f49e2dda578a738e32a01ab76acf2caf8a0d2",
+      "fixed_sha256": "cd61ac98c686b7ef75efb7038e0a231fceb0e56a42936ae0c7dd8ae3ce14c091"
+    },
+    "schemas/consumer-installation.v1.json": {
+      "reviewed_sha256": "4d415502283032f80f5a790753a5cc6edd3ff775048bece250f6df306e37f10e",
+      "fixed_sha256": "f4ccee050bddf8dfe83cdb1b8885b6f3c8681b7a989772a4734f06dd7f0bd6b8"
+    },
+    "docs/consumer-distribution.md": {
+      "reviewed_sha256": "6a318ad4be5141945bbf74698bbb70efbabaa465d42943d0034ebf2d6b7354e8",
+      "fixed_sha256": "97bcac9da80c9b32d62e56ce5c7c84cadf08f8ce9e46e1059c247114d2e817f0"
+    },
+    "bin/ARCHITECTURE.md": {
+      "reviewed_sha256": null,
+      "fixed_sha256": "3970e48c18dee3c82d40817efa5fea0d87f3348d1a9ee7fca23451e78582d29c"
+    },
+    ".agents/notes/implemented/process/2026-09-06-reproducible-offline-consumer-distribution.md": {
+      "reviewed_sha256": "97c66293d78653318aff572e76c3e780923174e7ec7e3606d02a41ffd0523e7c",
+      "fixed_sha256": "f493f6b9002e86e34f0cfec0297053baa550402aa49ce0257cc47300786cc88e"
+    },
+    ".harness/oracles/AC-CONSUMER-DISTRIBUTION.yaml": {
+      "reviewed_sha256": "1c03b8f12c10c5c31450ab63e51008ed702e31f7de221741b0573d3e1888bd51",
+      "fixed_sha256": "02b57aa2bff0ed34f170669ba36b8bb133f7cc6fe1e0fa8110e29a3850e99e9d"
+    }
+  }
+}

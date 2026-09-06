@@ -18,5 +18,11 @@ try {
   process.exit(69);
 }
 JS
-node --test --test-reporter=tap "$RUNTIME_DIR"/tests/*.test.mjs
+# This file temporarily mutates a shared dependency; finish it before parallel tests.
+node --test --test-reporter=tap "$RUNTIME_DIR/tests/capabilities.test.mjs"
+runtime_tests=()
+for test_file in "$RUNTIME_DIR"/tests/*.test.mjs; do
+  [[ "$test_file" == "$RUNTIME_DIR/tests/capabilities.test.mjs" ]] || runtime_tests+=("$test_file")
+done
+node --test --test-reporter=tap "${runtime_tests[@]}"
 node --test --test-reporter=tap "$PACK_DIR"/tests/*.test.mjs

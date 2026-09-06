@@ -30,6 +30,7 @@ check-core: ## Fixture suites and packs (quick gates run separately)
 	bash scripts/check-prerequisites.sh full
 	bash tests/run-tests.sh
 	python3 tests/protected-workflow-regression.py
+	python3 tests/consumer-distribution.test.py
 # The packs ship their own failure matrices. Linting them was never the same as
 # running them: a pack could regress with the repo's gate still green, which is
 # the exact failure the packs exist to prevent.

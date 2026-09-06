@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "command": [
+    "python3",
+    "-I",
+    "tests/consumer-distribution.test.py",
+    "-k",
+    "ConsumerRuntime.test_missing_approval_cannot_create_managed_effects"
+  ],
+  "exit_code": 0,
+  "tests": {
+    "tests/consumer-distribution.test.py": "697a4d35215c42da2a78f0de0c1fa66c7d0025704b561fe3532d501ba950e85c"
+  },
+  "source": {
+    "bin/harness-consumer.py": "051f880bed8b7788c77ae3265a9b3378c537a2e8ff58cb3078f26dac9e600d4e"
+  },
+  "logs": {
+    "docs/implementation/2026-09-06-consumer-distribution/fix-2/evidence/unauthorized-green.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/implementation/2026-09-06-consumer-distribution/fix-2/evidence/unauthorized-green.stderr.log": "849039f10e88df0fa7b9bb9e8e2b912b7f49370533a9a4dde9d94b3cea834d6c",
+    "docs/implementation/2026-09-06-consumer-distribution/fix-2/evidence/unauthorized-green.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+  }
+}
