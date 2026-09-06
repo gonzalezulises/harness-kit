@@ -1,0 +1,37 @@
+✔ H04 maximum accepted key reconciles without widening candidate keys (387.137045ms)
+✔ H04 publication retains verified intermediate B before successor C (410.375209ms)
+✔ e2e: public capability writes canonical source and derived digest with persistent exact receipt (2628.334306ms)
+✔ canonical write uses exact numeric lexemes and preserves accepted semantics (1311.845491ms)
+✔ capability rejects traversal before mutation (299.636392ms)
+✔ capability rejects deny before mutation (442.070372ms)
+✔ capability rejects symlink before mutation (447.880616ms)
+✔ capability rejects hardlink before mutation (447.420307ms)
+✔ capability rejects extra before mutation (301.822767ms)
+✔ capability rejects callback before mutation (321.175862ms)
+✔ deny wins even when host allowlist overlaps (451.166308ms)
+✔ forged context, grant, permit and lease never confer execution authority (887.789025ms)
+✔ execute rechecks source after prepare (1036.23639ms)
+✔ execute rechecks frozen after prepare (1016.9537ms)
+✔ execute rechecks commit after prepare (1024.215826ms)
+✔ execute rechecks alias after prepare (1045.702281ms)
+✔ execute rechecks mode after prepare (1036.742236ms)
+✔ exclusive leases reject second owner and stale handles after release (2037.445891ms)
+✔ untrusted subprocess capability refuses missing real containment before spawn (294.266097ms)
+✔ canonical preparation validates dependent frozen documents before any effect (439.279313ms)
+✔ e2e: actual postcondition mismatch retains pending intent and never repeats a partial write (1827.193846ms)
+✔ e2e: crash after complete publication reconciles exact bytes without republishing (1925.700503ms)
+✔ expired grant stops a previously prepared effect before spend (744.238984ms)
+✔ runtime and transitive dependency bundle changes block prepared effects (876.564426ms)
+✔ host must pin installed implementation and claim only supported local mode (294.92988ms)
+✔ oversized source and symlink ancestors are refused before write (437.653174ms)
+✔ supervisor rejects unexpected frozen delta after last output publication (1476.324724ms)
+✔ generic target reconciliation cannot substitute a supervised capability receipt (reopen=false) (1631.904994ms)
+✔ generic target reconciliation cannot substitute a supervised capability receipt (reopen=true) (1668.974041ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 27466.1864

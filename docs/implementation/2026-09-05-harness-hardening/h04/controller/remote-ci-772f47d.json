@@ -1,0 +1,19 @@
+{
+  "commit": "772f47da8a96335346a126481fd11590126d75cb",
+  "base": "88ea1e6c45faf5b5db9e29935eef6e25e50f633b",
+  "run_id": 34006151797,
+  "job_id": 101413595556,
+  "conclusion": "failure",
+  "reason": "ADOPTION_REQUIRED: protected base lacks the required judge contract; no head fallback",
+  "passed": [
+    "lint",
+    "Gherkin"
+  ],
+  "skipped": [
+    "repository pipeline",
+    "protected claims",
+    "prior decisions"
+  ],
+  "log_sha256": "158810f43a4dad52a9927602d15d1bde51c7132ecaf06e170b10a8f1e9d1c093",
+  "baseline_accepted": false
+}

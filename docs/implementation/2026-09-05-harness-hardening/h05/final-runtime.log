@@ -1,0 +1,34 @@
+✔ H04 maximum accepted key reconciles without widening candidate keys (405.641263ms)
+✔ H04 publication retains verified intermediate B before successor C (340.928752ms)
+✔ canonical write uses exact numeric lexemes and preserves accepted semantics (1447.11629ms)
+✔ capability rejects traversal before mutation (303.357057ms)
+✔ capability rejects deny before mutation (446.904937ms)
+✔ capability rejects symlink before mutation (446.638333ms)
+✔ capability rejects hardlink before mutation (450.160783ms)
+✔ capability rejects extra before mutation (312.543606ms)
+✔ capability rejects callback before mutation (319.472008ms)
+✔ deny wins even when host allowlist overlaps (445.67873ms)
+✔ forged context, grant, permit and lease never confer execution authority (875.320821ms)
+✔ execute rechecks source after prepare (1081.533962ms)
+✔ execute rechecks frozen after prepare (1045.108205ms)
+✔ execute rechecks commit after prepare (1035.555579ms)
+✔ execute rechecks alias after prepare (1076.212169ms)
+✔ execute rechecks mode after prepare (1077.305803ms)
+✔ exclusive leases reject second owner and stale handles after release (2035.518041ms)
+✔ untrusted subprocess capability refuses missing real containment before spawn (292.935066ms)
+✔ canonical preparation validates dependent frozen documents before any effect (452.652186ms)
+✔ expired grant stops a previously prepared effect before spend (761.20333ms)
+✔ runtime and transitive dependency bundle changes block prepared effects (874.763668ms)
+✔ host must pin installed implementation and claim only supported local mode (294.514751ms)
+✔ oversized source and symlink ancestors are refused before write (454.064992ms)
+✔ supervisor rejects unexpected frozen delta after last output publication (1512.272975ms)
+✔ generic target reconciliation cannot substitute a supervised capability receipt (reopen=false) (1599.368093ms)
+✔ generic target reconciliation cannot substitute a supervised capability receipt (reopen=true) (1649.475761ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 21382.983171

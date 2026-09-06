@@ -1,0 +1,38 @@
+✔ H04 maximum accepted key reconciles without widening candidate keys (617.877993ms)
+✔ H04 publication retains verified intermediate B before successor C (346.004608ms)
+✔ canonical write uses exact numeric lexemes and preserves accepted semantics (1504.061033ms)
+✔ capability rejects traversal before mutation (383.839997ms)
+✔ capability rejects deny before mutation (446.451095ms)
+✔ capability rejects symlink before mutation (445.652936ms)
+✔ capability rejects hardlink before mutation (437.759221ms)
+✔ capability rejects extra before mutation (306.044157ms)
+✔ capability rejects callback before mutation (302.199454ms)
+✔ deny wins even when host allowlist overlaps (494.411706ms)
+✔ forged context, grant, permit and lease never confer execution authority (871.119423ms)
+✔ execute rechecks source after prepare (1042.057512ms)
+✔ execute rechecks frozen after prepare (1133.570759ms)
+✔ execute rechecks commit after prepare (1107.628085ms)
+✔ execute rechecks alias after prepare (1021.06925ms)
+✔ execute rechecks mode after prepare (1133.189232ms)
+✔ exclusive leases reject second owner and stale handles after release (2102.531035ms)
+✔ untrusted subprocess capability refuses missing real containment before spawn (318.881299ms)
+✔ canonical preparation validates dependent frozen documents before any effect (457.742469ms)
+✔ expired grant stops a previously prepared effect before spend (747.269546ms)
+✔ runtime and transitive dependency bundle changes block prepared effects (905.242157ms)
+✔ host must pin installed implementation and claim only supported local mode (331.677664ms)
+✔ oversized source and symlink ancestors are refused before write (450.110978ms)
+✔ supervisor rejects unexpected frozen delta after last output publication (1659.230932ms)
+✔ generic target reconciliation cannot substitute a supervised capability receipt (reopen=false) (1655.377738ms)
+✔ generic target reconciliation cannot substitute a supervised capability receipt (reopen=true) (1664.735345ms)
+✔ H05-R1 rejects canonical output missing accepted-before identity before permit, spend or effects (624.306952ms)
+✔ H05-R1 rejects canonical output outside adopted scope before permit, spend or effects (620.143399ms)
+✔ H05-R1 rejects derived target omitted from accepted context before permit, spend or effects (595.101419ms)
+✔ H05-R1 rejects derived source and target outside adopted context before permit, spend or effects (584.701008ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 24623.440641

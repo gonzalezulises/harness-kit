@@ -3,8 +3,10 @@
 H03 supplies pure typed identity, scoped cryptographic approval verification and
 conservative batch classification. It does not execute effects, run commands,
 issue permits or certify a release. H04 adds journal/replay, objective budget
-reservations, mechanical fresh runs and lossless legacy migration. H05–H09 build
-on this boundary. Archived policy proposals remain inactive and unchanged.
+reservations, mechanical fresh runs and lossless legacy migration. H05 adds
+closed canonical/source-digest writes with scoped permits, exclusive leases and
+actual postcondition receipts. Subprocess effects remain blocked by unavailable
+required containment. H06–H09 build on this boundary. Archived policy proposals remain inactive and unchanged.
 
 The single installable package is `repo-template/scripts/quality-orchestrator/`.
 Copy that directory intact to the consumer's `scripts/quality-orchestrator/`
@@ -37,7 +39,7 @@ install these optional dependencies before that aggregate command. Legacy
 minimal/full scaffolds do not receive this package or a new Node prerequisite.
 
 Read `repo-template/scripts/quality-orchestrator/contracts-v1.md` and
-`contracts-journal-v1.md` in that directory before embedding
+`contracts-journal-v1.md` and `contracts-capabilities-v1.md` in that directory before embedding
 this runtime. Host trust is operator-established, not selected by request JSON.
 No CLI generates an owner key, adopts policy, or accepts a baseline. Test keys
 exist only in the test fixture helper and do not enroll production authority.

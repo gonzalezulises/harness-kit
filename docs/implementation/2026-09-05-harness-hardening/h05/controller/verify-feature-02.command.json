@@ -1,0 +1,36 @@
+{
+  "command": [
+    "make",
+    "verify-feature",
+    "F=F19"
+  ],
+  "cwd": "/workspace/scratch/adce1c53b293/harness-kit",
+  "started_at": "2026-09-06T02:34:27.100576+00:00",
+  "parent_commit": "772f47da8a96335346a126481fd11590126d75cb",
+  "source_hashes": {
+    ".agents/notes/implemented/architecture/2026-09-06-closed-runtime-effects.md": "f27c1319921157ec083f564e9f1f755f796a939e7dabdd6f4ac0b31ef76b178f",
+    ".harness/oracles/AC-H05.yaml": "25444ae8c916fdf38cdea3a87c1b93642659723d1a3ff7bfedcfc452a8706d8f",
+    "docs/quality-document.md": "a39ed6624e8044f02010a993eec517c097dc10de8982ac8074beea811cad80b6",
+    "packs/autonomy/index.md": "629773241cbdb79ad8b5de339b83fbc1ede4fc4eebdfa9145c89de74bbf46486",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/authority.mjs": "1132c6387873a404b7aa517411b46f2baf4fb8e44bf8e1e547b7b9c36d5e2af4",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/capabilities.mjs": "e14232dae9798664105f994353596fbf047201e2a2212ceee5e98dfd886f2d54",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/classify.mjs": "6af70429610438bfdc3207593f62f46f16ab70e10afbea2db3a44243b9176888",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/contracts-capabilities-v1.md": "1e13086eddef25ee603aa3004f5ff41d32d88b6b0f1b558fe8441351e7fa0983",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/identity.mjs": "f6bc4cf109851e22bece790619fe736808d7af52b06f79e9b00047e0106cfb21",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/index.mjs": "a573989db65033675cf93448c273d95a373830316b007de46279794caafc9387",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/journal.mjs": "8942083beedaf05357d6f20727c4d2b79d61c51380e75c80f8a78a9236290211",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/package-lock.json": "19d4495481f1a940a52ab63684bc400b938cc7c6bc744be889fa453030ba622c",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/package.json": "6c8370fa233ab09d20b96330d90a9541d0b3f2c71aa19025988677b879262296",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs": "95ed2f3d23416629e8226ffbdd15cb28139e83b7abbe588a6d52e7ff03db291b",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/helpers.mjs": "8eab979a11d050cc4f835a4824e42daa71e93bf4a18e0c2b45577ed589a48afc"
+  },
+  "environment": {
+    "NO_COLOR": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "K6_NO_USAGE_REPORT": "true",
+    "tooling": [
+      "k6 2.1.0",
+      "ShellCheck 0.11.0"
+    ]
+  }
+}

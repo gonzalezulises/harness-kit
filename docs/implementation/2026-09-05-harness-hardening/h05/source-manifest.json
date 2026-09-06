@@ -1,0 +1,17 @@
+{
+  ".harness/oracles/AC-H05.yaml": "bef77e4f993bc788d7d8c1d0b766a146f220e7fefd9bfa4ad0dbc676e9d31c74",
+  ".agents/notes/implemented/architecture/2026-09-06-closed-runtime-effects.md": "f27c1319921157ec083f564e9f1f755f796a939e7dabdd6f4ac0b31ef76b178f",
+  "docs/quality-document.md": "a39ed6624e8044f02010a993eec517c097dc10de8982ac8074beea811cad80b6",
+  "packs/autonomy/index.md": "629773241cbdb79ad8b5de339b83fbc1ede4fc4eebdfa9145c89de74bbf46486",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/capabilities.mjs": "0de1979a779f20224747f5b27a58a708b4b9b99e9fb256f6f6a7c206ae6d45b2",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/classify.mjs": "6af70429610438bfdc3207593f62f46f16ab70e10afbea2db3a44243b9176888",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/index.mjs": "a573989db65033675cf93448c273d95a373830316b007de46279794caafc9387",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/journal.mjs": "8942083beedaf05357d6f20727c4d2b79d61c51380e75c80f8a78a9236290211",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/authority.mjs": "1132c6387873a404b7aa517411b46f2baf4fb8e44bf8e1e547b7b9c36d5e2af4",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/identity.mjs": "f6bc4cf109851e22bece790619fe736808d7af52b06f79e9b00047e0106cfb21",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/package.json": "6c8370fa233ab09d20b96330d90a9541d0b3f2c71aa19025988677b879262296",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/package-lock.json": "19d4495481f1a940a52ab63684bc400b938cc7c6bc744be889fa453030ba622c",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/contracts-capabilities-v1.md": "f5bfbf33c2ff6ec5968c6abf90c23afda3ca674c4e9944843907301d7b7dc7e4",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs": "4522ae0692f1fad6e5d197584286ef058b00a619abe1dc5e8ad3b34944ecdcc1",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/helpers.mjs": "8eab979a11d050cc4f835a4824e42daa71e93bf4a18e0c2b45577ed589a48afc"
+}

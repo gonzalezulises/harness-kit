@@ -1,0 +1,11 @@
+✔ e2e: public capability writes canonical source and derived digest with persistent exact receipt (2507.658192ms)
+✔ e2e: actual postcondition mismatch retains pending intent and never repeats a partial write (1776.664362ms)
+✔ e2e: crash after complete publication reconciles exact bytes without republishing (1962.052693ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6561.379976

@@ -12,7 +12,7 @@ const binding=z.strictObject({commit:z.string().regex(/^[a-f0-9]{40}([a-f0-9]{24
 export const runSchema=z.strictObject({version:z.literal(1),runId:hash,parentRunId:hash.nullable(),binding,verdict:z.enum(['OPEN','STALE','FAILED','INCOMPLETE'])});
 const start=z.strictObject({kind:z.literal('start'),operationKey,baselineDigest:hash,budgetLimit:integer,run:runSchema});
 const replace=z.strictObject({kind:z.literal('replace-run'),operationKey,oldRunId:hash,run:runSchema});
-const reserve=z.strictObject({kind:z.literal('reserve'),operationKey,runId:hash,units:integer.refine(v=>v>0),inputDigest:hash,effectKind:z.literal('local-capability.v1').optional()});
+const reserve=z.strictObject({kind:z.literal('reserve'),operationKey,runId:hash,units:integer.refine(v=>v>0),inputDigest:hash});
 const close=z.strictObject({kind:z.literal('close-run'),operationKey,runId:hash,verdict:z.enum(['STALE','FAILED','INCOMPLETE'])});
 const outcome=z.strictObject({kind:z.literal('outcome'),operationKey:z.string().min(1).max(210),intentKey:id,status:z.enum(['COMPLETED','NOT_APPLIED']),outputDigest:hash.nullable()}).refine(v=>v.status==='COMPLETED'?v.outputDigest!==null:v.outputDigest===null);
 const legacy=z.strictObject({kind:z.literal('legacy-import'),operationKey,format:z.literal('feature-list.v1'),bytesBase64:base64,sourceDigest:hash});
@@ -211,10 +211,9 @@ export function journalBoundary(host,runtime,auth,contextPaths,internal={}) {
       return replay(ctx,{requireWitness:true});
     }),
     start:(ctx,key)=>safe(()=>{const verified=context(ctx),value=finalBinding(ctx);return append(null,{kind:'start',operationKey:key,baselineDigest:verified.baselineDigest,budgetLimit:config.budgetLimit,run:makeRun(null,value,key)},ctx);}),
-    appendEvent:(expectedHead,input,ctx)=>safe(()=>{const parsed=z.discriminatedUnion('kind',[reserve.omit({effectKind:true}),close]).safeParse(input);must(parsed.success,'unsupported or malformed candidate event','POLICY');return append(expectedHead,parsed.data,ctx);}),
+    appendEvent:(expectedHead,input,ctx)=>safe(()=>{const parsed=z.discriminatedUnion('kind',[reserve,close]).safeParse(input);must(parsed.success,'unsupported or malformed candidate event','POLICY');return append(expectedHead,parsed.data,ctx);}),
     replaceStaleRun:(expectedHead,oldRunId,key,ctx)=>safe(()=>{context(ctx);const value=finalBinding(ctx);return append(expectedHead,{kind:'replace-run',operationKey:key,oldRunId,run:makeRun(oldRunId,value,key)},ctx);}),
     reconcile:(expectedHead,key,ctx)=>safe(()=>{const loaded=read(ctx),intent=loaded.intents.get(key);must(intent,'unknown intent key','POLICY');
-      must(!intent.effectKind,'local capability requires supervised postcondition reconciliation','POLICY');
       const existing=loaded.keys.get('reconcile:'+key);if(existing)return receipt(existing);
       let result;try{result=config.reconcileOperation?.(freeze({...common,...intent}));}catch{fail('INCOMPLETE','target reconciliation unavailable');}
       const parsed=z.strictObject({status:z.enum(['COMPLETED','NOT_APPLIED','UNKNOWN']),outputDigest:hash.nullable()}).safeParse(result);must(parsed.success&&parsed.data.status!=='UNKNOWN','target cannot reconcile immutable operation key');

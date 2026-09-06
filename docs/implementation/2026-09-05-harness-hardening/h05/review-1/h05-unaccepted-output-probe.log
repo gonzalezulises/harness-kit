@@ -1,0 +1,26 @@
+authority paths [ 'policy.yaml' ] accepted paths [ 'policy.yaml' ]
+start APPENDED
+direct classifier for requested output UNKNOWN
+describe {
+  status: 'CAPABILITY_DESCRIBED',
+  subjectDigest: 'e18bd4cda4bd8f6c9f789ca33a706a21479e116b9a406803597b4f35ba1c270e',
+  scopeDigest: '708d61ed5c3f0b5e2ec21cfe46e044c3a1fb376f4c840f28560d2a377ccbfca6',
+  outputs: [ 'record.yaml' ],
+  execution: 'NOT_EXECUTED'
+}
+execution {
+  status: 'EFFECT_VERIFIED',
+  operationKey: 'outside-accepted',
+  capability: 'canonical-write.v1',
+  runId: 'ac7c25b51a8669315ec3d14fe504db92cb40203673ab868d1ea39b964a3cfa14',
+  inputDigest: 'e18bd4cda4bd8f6c9f789ca33a706a21479e116b9a406803597b4f35ba1c270e',
+  bundleDigest: '11c107e845035a60adec8daaa166611ffe3eaa5976a223cc90e9002f0fb33a00',
+  preManifestDigest: 'c6fedab72263f8f86a133d8f744e0f8c5d3bddb4a534389f16ab34d085f8e08a',
+  postManifestDigest: 'c1f9aac3d3bdbe853dcc27c9af5b321e7b17d2593c2114671312bdcd853300c6',
+  delta: [ 'record.yaml' ],
+  postconditions: 'VERIFIED',
+  assurance: 'TRUSTED_RUNTIME_EXCLUSIVE',
+  execution: 'EXECUTED'
+}
+actual output changed true
+spent 1

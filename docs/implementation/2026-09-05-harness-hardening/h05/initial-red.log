@@ -1,0 +1,293 @@
+✖ H04 maximum accepted key reconciles without widening candidate keys (71.158664ms)
+✖ H04 publication retains verified intermediate B before successor C (47.158303ms)
+✖ e2e: public capability writes canonical source and derived digest with persistent exact receipt (9.223089ms)
+✖ canonical write uses exact numeric lexemes and preserves accepted semantics (8.654459ms)
+✖ capability rejects traversal before mutation (8.651305ms)
+✖ capability rejects deny before mutation (7.185909ms)
+✖ capability rejects symlink before mutation (7.642994ms)
+✖ capability rejects hardlink before mutation (8.7761ms)
+✖ capability rejects extra before mutation (7.91059ms)
+✖ capability rejects callback before mutation (10.280843ms)
+✖ deny wins even when host allowlist overlaps (7.184226ms)
+✖ forged context, grant, permit and lease never confer execution authority (7.129595ms)
+✖ execute rechecks source after prepare (6.093335ms)
+✖ execute rechecks frozen after prepare (7.493553ms)
+✖ execute rechecks commit after prepare (6.099985ms)
+✖ execute rechecks alias after prepare (7.557238ms)
+✖ execute rechecks mode after prepare (7.102726ms)
+✖ exclusive leases reject second owner and stale handles after release (7.14601ms)
+✖ untrusted subprocess capability refuses missing real containment before spawn (5.918526ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 0
+ℹ fail 19
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 408.142927
+
+✖ failing tests:
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:27:1
+✖ H04 maximum accepted key reconciles without widening candidate keys (71.158664ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'INCOMPLETE'
+  - 'APPENDED'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:30:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'INCOMPLETE',
+    expected: 'APPENDED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:33:1
+✖ H04 publication retains verified intermediate B before successor C (47.158303ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'EXTERNALLY_WITNESSED_CURRENT'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:39:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'EXTERNALLY_WITNESSED_CURRENT',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:41:1
+✖ e2e: public capability writes canonical source and derived digest with persistent exact receipt (9.223089ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:42:27)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:49:1
+✖ canonical write uses exact numeric lexemes and preserves accepted semantics (8.654459ms)
+  TypeError: r.describeCapability is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:22:52)
+      at Object.prepare (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:23:58)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:50:29)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:53:79
+✖ capability rejects traversal before mutation (8.651305ms)
+  TypeError: r.describeCapability is not a function
+      at Object.describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:22:52)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:59:21)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:53:79
+✖ capability rejects deny before mutation (7.185909ms)
+  TypeError: r.describeCapability is not a function
+      at Object.describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:22:52)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:59:21)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:53:79
+✖ capability rejects symlink before mutation (7.642994ms)
+  TypeError: r.describeCapability is not a function
+      at Object.describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:22:52)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:59:21)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:53:79
+✖ capability rejects hardlink before mutation (8.7761ms)
+  TypeError: r.describeCapability is not a function
+      at Object.describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:22:52)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:59:21)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:53:79
+✖ capability rejects extra before mutation (7.91059ms)
+  TypeError: r.describeCapability is not a function
+      at Object.describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:22:52)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:59:21)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:53:79
+✖ capability rejects callback before mutation (10.280843ms)
+  TypeError: r.describeCapability is not a function
+      at Object.describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:22:52)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:59:21)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:61:1
+✖ deny wins even when host allowlist overlaps (7.184226ms)
+  TypeError: r.describeCapability is not a function
+      at Object.describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:22:52)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:61:131)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:62:1
+✖ forged context, grant, permit and lease never confer execution authority (7.129595ms)
+  TypeError: s.r.describeCapability is not a function
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:63:40)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:66:65
+✖ execute rechecks source after prepare (6.093335ms)
+  TypeError: r.describeCapability is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:22:52)
+      at Object.prepare (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:23:58)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:67:29)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:66:65
+✖ execute rechecks frozen after prepare (7.493553ms)
+  TypeError: r.describeCapability is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:22:52)
+      at Object.prepare (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:23:58)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:67:29)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:66:65
+✖ execute rechecks commit after prepare (6.099985ms)
+  TypeError: r.describeCapability is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:22:52)
+      at Object.prepare (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:23:58)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:67:29)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:66:65
+✖ execute rechecks alias after prepare (7.557238ms)
+  TypeError: r.describeCapability is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:22:52)
+      at Object.prepare (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:23:58)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:67:29)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:66:65
+✖ execute rechecks mode after prepare (7.102726ms)
+  TypeError: r.describeCapability is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:22:52)
+      at Object.prepare (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:23:58)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:67:29)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:75:1
+✖ exclusive leases reject second owner and stale handles after release (7.14601ms)
+  TypeError: r.describeCapability is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:22:52)
+      at Object.prepare (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:23:58)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:76:24)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:80:1
+✖ untrusted subprocess capability refuses missing real containment before spawn (5.918526ms)
+  TypeError: s.r.describeCapability is not a function
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs:81:37)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

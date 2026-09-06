@@ -282,3 +282,51 @@ Two nonblocking Medium findings are assigned to H05 operation/witness integratio
 
 Task 4 is complete locally with that explicit backlog. H05 is next after freezing
 the atomic publication index. No baseline or product deployment was accepted.
+
+Task 5: active after H04 independent approval/no High/Critical and full check521/0.
+H04 indexfc084ebd is frozen for exact publication. H05 owns its capabilities plus
+the two explicit Medium integration fixes; all edits stay outside the index.
+
+Task 4: published96438e8..772f47d with exact local/remote treefc084ebd.
+H05 worktree edits survived unchanged outside the index. PR33 records H01–H04
+complete, H05 active, H06–H09 pending and the two Medium items still open.
+
+H04 exact-head CI run34006151797/job101413595556: lint/Gherkin PASS;
+protected-base live judge stops ADOPTION_REQUIRED, later full pipeline/claims/
+decisions skipped. Exact raw log and SHA256 recorded in h04/controller/remote-ci-772f47d.*.
+PR33 updated with the actual result. No rules, baseline or authority changed.
+
+Task 5 initial frozen review tree8739edee, base772f47d: controller validated15
+source and24 evidence hashes. Actual F19 static/runtime26/e2e3 layers passed29
+tests with source unchanged, but independent review reproduced a High before
+full integration. A registered writable output omitted from the accepted context
+and adopted authority can be described, granted and written as EFFECT_VERIFIED;
+only binding.documents were classified, so the extra output was never checked.
+The scratch probe and exact output are preserved under h05/review-1/.
+F19 remains active and its earlier test receipt is retained, not treated as
+milestone completion. Full integration has not run on this initial version.
+Fix round1/5: require every output in accepted context before projected proof;
+capture current-test assertion RED before the bounded fix, then scoped re-review.
+
+Task 5 fix1 frozen at tree9c6a49ac: one output-membership guard and4 new
+regressions. Each recorded actual EFFECT_VERIFIED where POLICY was required
+on the reviewed defective source before the fix; final static0/runtime30/e2e3
+passed. Controller validated12 source+20 new evidence hashes. Old receipts
+remain unchanged. Scoped independent re-review and final F19 layers are running;
+first full integration follows after that High is independently closed.
+
+Task 5 fix1 independent specification and quality APPROVED; H05-R1 addressed,
+no remaining finding or fix-created blocker. Final F19 actual static/runtime30/
+e2e3 layers passed33 tests, source unchanged. The H04-M1/M2 fixes were also
+independently reviewed as correct. First H05 full integration is running on
+the reviewed source; no full-suite result is claimed until completion.
+
+Task 5 complete locally: full-check-01 exit0, source unchanged, stderr empty,
+8 quick PASS and554 assertions (core286 + autonomy130 + Gherkin15 + load55 +
+Sentry68), with two authenticated-gh load cases explicitly omitted. F19 final
+ordered layers ran33 focal cases. Independent specification and quality approved;
+H05-R1 High and the two carried H04 Medium findings are resolved. No open finding.
+Actual subprocess containment remains BLOCKED_BY_REQUIRED_CAPABILITY/NOT_EXECUTED,
+and local runtime-exclusive effects do not certify malicious same-UID isolation
+or product release. All exact receipts/reviews are in h05/controller/.
+H06 is next after freezing this atomic publication index.

@@ -1,0 +1,22 @@
+{
+  "docs/implementation/2026-09-05-harness-hardening/h05/fix-1/causal-red.log": "64ec23a2ec03433d1e98bb2fef25dce141dde11cf0b6243c0efd4fbeb92e6a0b",
+  "docs/implementation/2026-09-05-harness-hardening/h05/fix-1/final-e2e.log": "5ff1c0d919efd997b6e2803d8b7a2b3d62b1e825569058a349aa54fdde080197",
+  "docs/implementation/2026-09-05-harness-hardening/h05/fix-1/final-runtime.log": "9fd2ec8d898ee8ff15ec413efdc14f1487208a9af1dd21e1ff556a30777f17d1",
+  "docs/implementation/2026-09-05-harness-hardening/h05/fix-1/final-static.log": "475336c0d901ea82f37358ecdf7ed6598dd054ae86569a210f39cf139720ee06",
+  "docs/implementation/2026-09-05-harness-hardening/h05/fix-1/live-red.log": "e6f00c687a93ddd0769e47ef82dd5dc226717a9293ee26171da0b4b293356609",
+  "docs/implementation/2026-09-05-harness-hardening/h05/fix-1/prior-evidence-unchanged.log": "7508821742d5573a30d5b6d6dc9562689250884a19969d60464698d35c9543d9",
+  "docs/implementation/2026-09-05-harness-hardening/h05/fix-1/red-receipt.json": "0b3418ef5922117bebf7e28e553b1c6953526a213bd3d070d7c52f9f27d75c49",
+  "docs/implementation/2026-09-05-harness-hardening/h05/fix-1/report.md": "7d9ad28ad4f8bba61cd3418fd724b7110e3808e6b86f097c8c68c45a838d61af",
+  "docs/implementation/2026-09-05-harness-hardening/h05/fix-1/reproduce-red.sh": "d4f9d304dc9c3cd8f80e948ba7cdde399e19dc46c9c82cb7ede49c72d06b57f3",
+  "docs/implementation/2026-09-05-harness-hardening/h05/fix-1/source-before-membership/authority.mjs": "1132c6387873a404b7aa517411b46f2baf4fb8e44bf8e1e547b7b9c36d5e2af4",
+  "docs/implementation/2026-09-05-harness-hardening/h05/fix-1/source-before-membership/capabilities.mjs": "0de1979a779f20224747f5b27a58a708b4b9b99e9fb256f6f6a7c206ae6d45b2",
+  "docs/implementation/2026-09-05-harness-hardening/h05/fix-1/source-before-membership/classify.mjs": "6af70429610438bfdc3207593f62f46f16ab70e10afbea2db3a44243b9176888",
+  "docs/implementation/2026-09-05-harness-hardening/h05/fix-1/source-before-membership/identity.mjs": "f6bc4cf109851e22bece790619fe736808d7af52b06f79e9b00047e0106cfb21",
+  "docs/implementation/2026-09-05-harness-hardening/h05/fix-1/source-before-membership/index.mjs": "a573989db65033675cf93448c273d95a373830316b007de46279794caafc9387",
+  "docs/implementation/2026-09-05-harness-hardening/h05/fix-1/source-before-membership/journal.mjs": "8942083beedaf05357d6f20727c4d2b79d61c51380e75c80f8a78a9236290211",
+  "docs/implementation/2026-09-05-harness-hardening/h05/fix-1/source-before-membership/package-lock.json": "19d4495481f1a940a52ab63684bc400b938cc7c6bc744be889fa453030ba622c",
+  "docs/implementation/2026-09-05-harness-hardening/h05/fix-1/source-before-membership/package.json": "6c8370fa233ab09d20b96330d90a9541d0b3f2c71aa19025988677b879262296",
+  "docs/implementation/2026-09-05-harness-hardening/h05/fix-1/source-before-membership/tests/capabilities.test.mjs": "95ed2f3d23416629e8226ffbdd15cb28139e83b7abbe588a6d52e7ff03db291b",
+  "docs/implementation/2026-09-05-harness-hardening/h05/fix-1/source-before-membership/tests/helpers.mjs": "8eab979a11d050cc4f835a4824e42daa71e93bf4a18e0c2b45577ed589a48afc",
+  "docs/implementation/2026-09-05-harness-hardening/h05/fix-1/source-manifest.json": "00b9ae7e546e11e2e86a8ac1a51b0f2f6cc640898b8d088ca2dafce92e2b02a8"
+}

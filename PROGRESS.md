@@ -5,7 +5,7 @@ last. If it disagrees with your recollection, this file wins.
 
 ## Current State — 2026-09-06 implementation
 
-The owner instructed **“Implementa todas las mejoras”** after the audit and MIGRATION-01 proposal. The architecture decision is approved; the previous implementation block is resolved. H01–H09 execute sequentially on PR #33. H01/F15, H02/F16, H03/F17 and H04/F18 are complete after independent review and actual three-layer verification. H05–H09 are not started. The owner also requested avoiding overengineering: reuse this runtime, implement the concrete contracts and defer nonblocking minor findings.
+The owner instructed **“Implementa todas las mejoras”** after the audit and MIGRATION-01 proposal. The architecture decision is approved; the previous implementation block is resolved. H01–H09 execute sequentially on PR #33. H01/F15 through H05/F19 are complete after independent review and actual three-layer verification. H06–H09 are not started. The owner also requested avoiding overengineering: reuse this runtime, implement the concrete contracts and defer nonblocking minor findings.
 
 Startup verification: `./init.sh` exit 0, 273 core assertions. The [implementation ledger](docs/implementation/2026-09-05-harness-hardening/ledger.md) records current tests, reviews, rulings and next action. No baseline accepted and no consumer deployment authorized.
 
@@ -71,7 +71,7 @@ assertions and8 quick gates with zero failures; two authenticated-gh load cases
 remain explicitly omitted. The first full attempt was interrupted by automatic
 approval review of unrelated k6 telemetry; the completed second run disables
 that report with its official opt-out and preserves every test expectation.
-H04 journal, replay and stale-run recovery passed35 focused tests and full check521/0. Independent review approved with two nonblocking Medium items assigned to H05 integration: maximum-length reconciliation keys and retaining a verified intermediate witness. H05 capabilities are next. H03 is published at96438e8
+H04 journal/replay passed35 focused tests and full check521/0, published at772f47d. H05 closed local effects passed33 focused tests and full check554/0. Independent review approved after one High output-membership correction; both H04 Medium availability findings are also fixed. H06 reusable continuation and budgets are next. Actual untrusted subprocess containment remains unavailable and NOT_EXECUTED. H03 is published at96438e8
 with exact tree69e1282c. Remote CI passes lint/Gherkin but stops at the protected
 base ADOPTION_REQUIRED gate; later stages are skipped, not PASS.
 Legacy contracts and receipts remain preserved; F09 stays blocked under the

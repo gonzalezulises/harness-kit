@@ -57,6 +57,10 @@ Legacy minimal/full installation does not include it. H09 owns automatic
 `--with autonomy` adoption; the current pack is copied explicitly. H04 now adds
 verified journal/replay, mechanical fresh runs, objective reservations and lossless
 legacy projection:35 focused cases, full integration521/0, independent approval.
-Two Medium availability findings are assigned to H05 integration; see the ledger.
-H05–H09 effects, continuation, review and release remain pending. No runtime
+H05 adds33 focused cases for closed local canonical/source-digest writes, fenced
+ownership and actual postcondition receipts. Its independent review is approved,
+full integration passed554 assertions, and both H04 Medium findings are fixed.
+Every output requires accepted-before membership; exact grants cannot expand
+adopted authority. Unavailable real subprocess containment returns NOT_EXECUTED.
+H06–H09 continuation, review, release and canary remain pending. No runtime
 owner keys or product baseline acceptance are created by installation.

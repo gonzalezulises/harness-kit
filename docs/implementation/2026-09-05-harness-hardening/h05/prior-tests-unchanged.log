@@ -1,0 +1,5 @@
+packs/autonomy/repo-template/scripts/quality-orchestrator/tests/authority.test.mjs 025d557717fd2c0301fe446295a0fcbf5ba9fc90f3028e70e963605291a78bb5 UNCHANGED
+packs/autonomy/repo-template/scripts/quality-orchestrator/tests/classify.test.mjs 36ac68ee2097823442bf5dc0af74446b71af07c2bd24e8ae4cd48705a900ea40 UNCHANGED
+packs/autonomy/repo-template/scripts/quality-orchestrator/tests/helpers.mjs 8eab979a11d050cc4f835a4824e42daa71e93bf4a18e0c2b45577ed589a48afc UNCHANGED
+packs/autonomy/repo-template/scripts/quality-orchestrator/tests/identity.test.mjs c2da53a7a86c1434df6833c1823cd2a79aa1cf8112419fd943ab99e3b10820e2 UNCHANGED
+packs/autonomy/repo-template/scripts/quality-orchestrator/tests/journal.test.mjs 2b1727e3d4e299c78b843732fd1989e641d1366a4e36cce29f35bb3194389318 UNCHANGED

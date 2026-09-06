@@ -1,0 +1,35 @@
+✔ H04 maximum accepted key reconciles without widening candidate keys (672.125707ms)
+✔ H04 publication retains verified intermediate B before successor C (357.069822ms)
+✔ e2e: public capability writes canonical source and derived digest with persistent exact receipt (2514.443583ms)
+✔ canonical write uses exact numeric lexemes and preserves accepted semantics (1285.686775ms)
+✔ capability rejects traversal before mutation (297.808366ms)
+✔ capability rejects deny before mutation (514.945329ms)
+✔ capability rejects symlink before mutation (440.626008ms)
+✔ capability rejects hardlink before mutation (428.170778ms)
+✔ capability rejects extra before mutation (290.397048ms)
+✔ capability rejects callback before mutation (294.06769ms)
+✔ deny wins even when host allowlist overlaps (431.769818ms)
+✔ forged context, grant, permit and lease never confer execution authority (871.890268ms)
+✔ execute rechecks source after prepare (1065.354788ms)
+✔ execute rechecks frozen after prepare (1160.897873ms)
+✔ execute rechecks commit after prepare (1237.713881ms)
+✔ execute rechecks alias after prepare (1119.8231ms)
+✔ execute rechecks mode after prepare (1012.828625ms)
+✔ exclusive leases reject second owner and stale handles after release (2098.832618ms)
+✔ untrusted subprocess capability refuses missing real containment before spawn (289.207642ms)
+✔ canonical preparation validates dependent frozen documents before any effect (428.983155ms)
+✔ e2e: actual postcondition mismatch retains pending intent and never repeats a partial write (1802.26371ms)
+✔ e2e: crash after complete publication reconciles exact bytes without republishing (1940.36516ms)
+✔ expired grant stops a previously prepared effect before spend (746.978908ms)
+✔ runtime and transitive dependency bundle changes block prepared effects (868.934699ms)
+✔ host must pin installed implementation and claim only supported local mode (294.442158ms)
+✔ oversized source and symlink ancestors are refused before write (431.692501ms)
+✔ supervisor rejects unexpected frozen delta after last output publication (1448.789367ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 24685.848853

@@ -1,0 +1,70 @@
+Verifying F19
+
+── Layer: static
+$ make lint && bash docs/implementation/2026-09-05-harness-hardening/h05/verify-static.sh
+make[1]: Entering directory '/workspace/scratch/adce1c53b293/harness-kit'
+shellcheck -S warning bin/*.sh scripts/*.sh tests/*.sh \
+  templates/full/scripts/*.sh packs/*/verify-pack.sh
+make[1]: Leaving directory '/workspace/scratch/adce1c53b293/harness-kit'
+PASS: H05 runtime, integration and focal test syntax
+Layer 'static' passed.
+
+── Layer: runtime
+$ node --test --test-skip-pattern='e2e:' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs
+✔ H04 maximum accepted key reconciles without widening candidate keys (363.540569ms)
+✔ H04 publication retains verified intermediate B before successor C (329.410657ms)
+✔ canonical write uses exact numeric lexemes and preserves accepted semantics (1327.111849ms)
+✔ capability rejects traversal before mutation (304.554723ms)
+✔ capability rejects deny before mutation (466.194901ms)
+✔ capability rejects symlink before mutation (443.430767ms)
+✔ capability rejects hardlink before mutation (438.797243ms)
+✔ capability rejects extra before mutation (295.924172ms)
+✔ capability rejects callback before mutation (291.532742ms)
+✔ deny wins even when host allowlist overlaps (435.667308ms)
+✔ forged context, grant, permit and lease never confer execution authority (865.335399ms)
+✔ execute rechecks source after prepare (1015.682214ms)
+✔ execute rechecks frozen after prepare (1029.935948ms)
+✔ execute rechecks commit after prepare (1050.238893ms)
+✔ execute rechecks alias after prepare (1041.664651ms)
+✔ execute rechecks mode after prepare (1024.454701ms)
+✔ exclusive leases reject second owner and stale handles after release (2001.493162ms)
+✔ untrusted subprocess capability refuses missing real containment before spawn (293.244663ms)
+✔ canonical preparation validates dependent frozen documents before any effect (441.896583ms)
+✔ expired grant stops a previously prepared effect before spend (766.996605ms)
+✔ runtime and transitive dependency bundle changes block prepared effects (865.855434ms)
+✔ host must pin installed implementation and claim only supported local mode (291.437799ms)
+✔ oversized source and symlink ancestors are refused before write (432.009588ms)
+✔ supervisor rejects unexpected frozen delta after last output publication (1499.016747ms)
+✔ generic target reconciliation cannot substitute a supervised capability receipt (reopen=false) (1645.907026ms)
+✔ generic target reconciliation cannot substitute a supervised capability receipt (reopen=true) (1655.590166ms)
+✔ H05-R1 rejects canonical output missing accepted-before identity before permit, spend or effects (604.957278ms)
+✔ H05-R1 rejects canonical output outside adopted scope before permit, spend or effects (601.208298ms)
+✔ H05-R1 rejects derived target omitted from accepted context before permit, spend or effects (591.679985ms)
+✔ H05-R1 rejects derived source and target outside adopted context before permit, spend or effects (613.925983ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 23357.262736
+Layer 'runtime' passed.
+
+── Layer: e2e
+$ node --test --test-name-pattern='^e2e:' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs
+✔ e2e: public capability writes canonical source and derived digest with persistent exact receipt (2830.828554ms)
+✔ e2e: actual postcondition mismatch retains pending intent and never repeats a partial write (1853.431892ms)
+✔ e2e: crash after complete publication reconciles exact bytes without republishing (1977.764917ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6978.179613
+Layer 'e2e' passed.
+
+F19 -> passing (evidence recorded in feature_list.json)
+Next: update PROGRESS.md and commit.

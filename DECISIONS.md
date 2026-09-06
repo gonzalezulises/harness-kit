@@ -305,3 +305,15 @@ Exact numeric source forms remain distinct. Unsupported schemas, directives, com
 Fresh runs re-read the complete final workspace and re-prove mechanical equivalence against the original accepted context. Intent and objective spending precede effects; uncertain outcomes require the original target key. Dead-owner recovery needs exact scoped approval and confirmation that the recorded process is dead. Legacy bytes remain lossless and LEGACY_UNVERIFIED; an adopted-v2 marker blocks direct legacy writes.
 
 **Consequences.** H04 exposes negative terminal states and reservations, with no execution permit or PASS certification. Missing witnesses, uncertain targets, torn tails and interrupted recovery ownership stop. The host owns trusted state/adapter custody; same-UID replacement is outside this guarantee. H09 owns marker adoption. Two nonblocking availability findings are tracked explicitly for H05; no generic synchronization service is introduced.
+
+---
+
+## 2026-09-06 — H05: closed local effects and actual postconditions
+
+**Context.** Mechanical eligibility must not authorize arbitrary writes, accept an unreviewed before state or turn generic target feedback into an effect receipt.
+
+**Decision.** Use two built-in operations on the same runtime: canonical record serialization and one canonical-source/registered-digest batch. Require each output in the exact accepted context and adopted scope, validate the complete projected document set, and bind the exact plan to host-pinned source/dependencies/Node, configuration, workspace, run and authority. Opaque permits and fenced leases separate preparation from use; deny paths and frozen manifests constrain every publication.
+
+Durable intent precedes budget reservation and effects. Private local-capability provenance survives reopening; generic reconciliation cannot settle those intents. Only actual complete postconditions produce the effect receipt and journal outcome. Reconciliation never republishes uncertain writes. H06 will connect reusable approved continuation to these existing operations; no new per-plan approval mechanism is introduced as a substitute for that work.
+
+**Consequences.** The supported mode assumes trusted runtime-exclusive cooperating writers. Partial multi-file effects or interrupted ownership remain incomplete; no atomic batch or malicious same-UID containment is claimed. Unavailable subprocess containment blocks before spawn. The two H04 availability defects are corrected. No baseline, owner key or deployment authorization follows from an effect receipt.
