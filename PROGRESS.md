@@ -3,7 +3,51 @@
 The durable memory of this repository. Every session reads this first and writes to it
 last. If it disagrees with your recollection, this file wins.
 
-## Current state — P0-PRODUCT-LOOP independent increment
+## Current state — human interruption reduction, 2026-09-06
+
+F27 is implemented on feat/human-interruption-reduction, based on published P0
+`dd8a20c` (#35). Final `make check` exited0 in591.41s: core286, autonomy runtime289
+(33+256), installation/canary5 and all remaining required packs. The new file
+contains25 cases (22 runtime,3 e2e), included in that full gate. Final startup
+passed286/0 in70.16s. All50 selected source hashes stayed unchanged;14 critical
+oracles pass with the current-byte durable-ingest RED. The initial matrix and
+scope are in docs/implementation/2026-09-06-human-interruption/plan.md; compact
+final bindings are in evidence/controller-verification.json alongside it.
+
+The earlier feature-layer receipt (18 runtime/3 e2e) is retained as PRE_FIX_ONLY.
+The first full gate observed one verifier effect without its settled product
+step; the original child outputs/interleaving are UNKNOWN. A deterministic
+filesystem-lock fixture then reproduced retained acknowledgement publication
+failure. Bounded custody reacquisition now publishes retained evidence once,
+rechecking live source and authority. Its causal RED, six focal GREEN cases and
+the unchanged historical nonce test are retained; the final full gate passed.
+No historical test assertions, timeout settings or suite scheduling were changed.
+
+F27 remains blocked on independent review: the platform automatically interrupted
+the scoped reviewer with "possible cybersecurity risk" and produced no completed
+report. Status is INCOMPLETE, approval NOT_OBTAINED, findings UNKNOWN. No alternate
+review attempt or Product Owner decision is invented. Publication target is a
+separate draft on feat/human-interruption-reduction, based on #35; its GitHub PR
+provides the remote publication receipt. No readiness or independent approval is
+claimed. Historical F09 and F25 remain blocked with their exact records.
+
+The preceding work is published: #33 at0a51623, #34 protected judge atb6b93e4,
+#35 P0 atdd8a20c and #36 distribution at43e3283. GitHub recreated commit metadata;
+base trees matched, and the two new oracle ancestry references were mechanically
+rebound with published derivation receipts and13/13 affected oracles passing.
+Required quality passed for #34. #33/#35/#36 stopped at ADOPTION_REQUIRED because
+the protected base has not adopted the judge policy. No merge or ruleset change
+was performed. Casabat and Aurobalance remain untouched.
+
+The owner instruction supersedes automatic PO escalation for tooling failure
+within explicit product.v2. The closed recovery paths preserve signed limits;
+unknown or exhausted operational capability is not itself a human decision.
+There is no universal diagnosis/repair engine. Release continuity follows only
+supplied already-authorized effects, demonstrated with local fixtures. Real
+model sessions, host containment, remote product PR autonomy and production
+acceptance remain unproved; the current work grants none of them.
+
+## Previous state — P0-PRODUCT-LOOP independent increment
 
 Base `a798c88` is the frozen local PR33 continuation. F25 adds the bounded
 product controller, explicit product journal contract and truthful JSON CLI

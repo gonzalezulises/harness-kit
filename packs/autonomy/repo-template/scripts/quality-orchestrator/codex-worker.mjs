@@ -3,7 +3,7 @@ import path from 'node:path';
 import {spawn} from 'node:child_process';
 import {z} from 'zod';
 import {canonical,digestData,sha256} from './identity.mjs';
-import {reviewJSONSchema,reviewSchema,reviewSchemaDigest,reviewPath} from './review.schema.mjs';
+import {productReviewV2JSONSchema,productReviewV2Schema,productReviewV2SchemaDigest,reviewJSONSchema,reviewSchema,reviewSchemaDigest,reviewPath} from './review.schema.mjs';
 import {productPatchSchema,productPatchJSONSchema,productPatchSchemaDigest} from './product.schema.mjs';
 import {plainReviewRoot} from './review-shadow.mjs';
 const hash=z.string().regex(/^[a-f0-9]{64}$/),absolute=z.string().refine(path.isAbsolute);
@@ -20,9 +20,9 @@ export async function runCodexWorker(host,request){
     for(const root of [config.sourceRoot,config.homeRoot,config.scratchRoot])plainReviewRoot(root);
     must(new Set([config.sourceRoot,config.homeRoot,config.scratchRoot]).size===3,'worker roots must be distinct');
     must(!fs.existsSync(path.join(config.homeRoot,'.codex/config.toml'))&&!fs.existsSync(path.join(config.homeRoot,'.config')),'worker HOME must not contain inherited configuration');
-    const proposal=request?.operation==='product-patch-proposal',outputSchema=proposal?productPatchSchema:reviewSchema,outputJSONSchema=proposal?productPatchJSONSchema:reviewJSONSchema,outputSchemaDigest=proposal?productPatchSchemaDigest:reviewSchemaDigest;
+    const productV2=request?.operation==='product-review-v2',proposal=request?.operation==='product-patch-proposal',outputSchema=proposal?productPatchSchema:productV2?productReviewV2Schema:reviewSchema,outputJSONSchema=proposal?productPatchJSONSchema:productV2?productReviewV2JSONSchema:reviewJSONSchema,outputSchemaDigest=proposal?productPatchSchemaDigest:productV2?productReviewV2SchemaDigest:reviewSchemaDigest;
     const catalog=request?.operation==='catalog',review=request?.review,pins=catalog?request.pins:review?.pins;
-    must(catalog||proposal||['review','independent-review'].includes(request?.operation),'unsupported worker operation');
+    must(catalog||proposal||productV2||['review','independent-review'].includes(request?.operation),'unsupported worker operation');
     must(pins&&pins.workerDigest===sha256(fs.readFileSync(new URL(import.meta.url)))&&pins.protocolDigest===config.protocolDigest&&pins.containmentDigest===config.containmentDigest&&pins.artifactsDigest===config.artifactsDigest&&pins.schemaDigest===outputSchemaDigest,'worker pins differ from frozen request');
     const protocol=JSON.parse(fs.readFileSync(config.protocolPath,'utf8')),remoteSchema=Object.hasOwn(protocol.properties||{},'outputSchema');
     const expected=catalog?null:review.expectedReceipt,authMode=catalog?request.authMode:expected.authMode;
@@ -72,17 +72,20 @@ export async function runCodexWorker(host,request){
       const turn=await rpc('turn/start',{threadId:thread.thread.id,model:expected.model,effort:expected.effort,cwd:config.sourceRoot,approvalPolicy:'never',environments:[],input:[{type:'text',text:review.policy.prompt,text_elements:[]}],...(remoteSchema?{outputSchema:outputJSONSchema}:{})});must(turn.turn?.id,'missing turn identity');
       let completed=turnNotifications.find(m=>m.method==='turn/completed')?.params;
       if(!completed)completed=await new Promise((resolve,reject)=>{turnWait={resolve,reject};if(fatal)reject(fatal);});
-      must(completed.threadId===thread.thread.id&&completed.turn?.id===turn.turn.id&&completed.turn.status==='completed'&&!completed.turn.error,'review turn was not completed');
+      must(completed.threadId===thread.thread.id&&completed.turn?.id===turn.turn.id,'review turn identity mismatch');
+      if(productV2&&completed.turn.status==='failed'&&completed.turn.error){must(sourceManifest()===before,'source changed during rejected review');output={rejection:{cause:'REVIEW_TRANSPORT_REJECTED',sourceDigest:before,sessionId:thread.thread.id}};}else{
+      must(completed.turn.status==='completed'&&!completed.turn.error,'review turn was not completed');
       const finals=turnNotifications.filter(m=>m.method==='item/completed'&&m.params.threadId===thread.thread.id&&m.params.turnId===turn.turn.id&&m.params.item?.type==='agentMessage'&&m.params.item.phase==='final_answer');
-      must(finals.length===1,'missing or ambiguous final review output');const raw=finals[0].params.item.text;must(typeof raw==='string'&&Buffer.byteLength(raw)<=maxOutput,'review final output bound exceeded');outputSchema.parse(JSON.parse(raw));
+      must(finals.length===1,'missing or ambiguous final review output');const raw=finals[0].params.item.text;must(typeof raw==='string'&&Buffer.byteLength(raw)<=maxOutput,'review final output bound exceeded');if(!productV2)outputSchema.parse(JSON.parse(raw));
       must(sourceManifest()===before,'source changed during review');
       output={output:raw,receipt:{version:1,...expected,sessionId:thread.thread.id,rawOutputDigest:sha256(raw),exitCode:0,termination:'COMPLETED',simulation:false}};
+      }
     }
     finishing=true;child.stdin.end();const ended=await closed;must(!fatal&&ended.code===0&&!ended.signal,'worker did not terminate cleanly');clearTimeout(timer);
     // Terminate residual members of the original process group. Preventing
     // setsid/namespace escapes and proving complete cleanup belongs to the host.
     try{process.kill(-child.pid,'SIGKILL');}catch(error){must(error.code==='ESRCH','worker group cleanup failed');}
-    return {status:'WORKER_OBSERVED',output,execution:'COMPLETED',containment:'OPERATOR_SUPPLIED'};
+    return {status:output.rejection?'WORKER_REVIEW_REJECTED':'WORKER_OBSERVED',output,execution:'COMPLETED',containment:'OPERATOR_SUPPLIED'};
   }catch(error){return {status:'INCOMPLETE',reason:error.message,execution:'NOT_VERIFIED'};}
   finally{if(timer)clearTimeout(timer);if(child?.pid)try{process.kill(-child.pid,'SIGKILL');}catch{/* already terminated */}}
 }

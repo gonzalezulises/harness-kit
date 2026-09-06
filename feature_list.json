@@ -763,6 +763,38 @@
         "Final make check exit0: core286/0, runtime264/0, installation/canary5/0 and remaining packs pass; selected48 sources unchanged. Startup286/0 reused only for unchanged core inputs. docs/implementation/2026-09-06-product-loop/evidence/verification.json. Real authority/authentication/containment/pilot remain NOT_EXECUTED; automatic remote PR creation UNIMPLEMENTED."
       ],
       "notes": "Portable controller and real-process fixtures verified in scoped review. P0 acceptance remains blocked: local handoff is not a published PR and authenticated real pilot is unproved. M1 linked-worktree PR preparation and M3 malformed verifier UTF-8 remain Medium backlog. No P0_PRODUCT_LOOP_READY."
+    },
+    {
+      "id": "F27",
+      "priority": 27,
+      "area": "human-interruption-reduction",
+      "behavior": "An explicitly authorized product.v2 objective auto-remediates mechanical/tooling failures, ingests durable normalized review bytes, preserves bounded resource accounting and interrupts the Product Owner only for a justified real decision.",
+      "user_visible_behavior": "Ten small synthetic regression scenarios continue through the actual authorized recovery path without copy/paste or spurious reapproval; release continuity follows only previously authorized obligations.",
+      "state": "blocked",
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash docs/implementation/2026-09-06-product-loop/verify-static.sh && node --check packs/autonomy/repo-template/scripts/quality-orchestrator/tests/human-interruption.test.mjs",
+          "repair": "Fix syntax or opt-in contract compatibility without changing historical semantics or weakening evidence."
+        },
+        {
+          "label": "runtime",
+          "cmd": "node --test --test-skip-pattern='^e2e' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/human-interruption.test.mjs",
+          "repair": "Resolve the first concrete mechanical recovery or fail-closed invariant defect inside the authorized scope."
+        },
+        {
+          "label": "e2e",
+          "cmd": "node --test --test-name-pattern='^e2e' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/human-interruption.test.mjs",
+          "repair": "Repair the actual controller/persistence/recovery path; fixture GREEN does not certify real authority or deployment."
+        }
+      ],
+      "evidence": [
+        "all layers passed — commit dd8a20c, 2026-09-06T19:03:33Z",
+        "Pre-fix make verify-feature F=F27 exit0: static, runtime18/18 and e2e3/3; pre-fix50-source manifest unchanged. The issued receipt is preserved and does not cover the later publication-lock correction.",
+        "Final make check exit0: core286, runtime289 (33+256), installation/canary5 and all remaining required packs; includes final25 new cases (22 runtime+3 e2e). Startup286/0 and14 oracles pass. Selected50 source hashes remained unchanged; controller-verification.json binds commands/results.",
+        "Independent F27 review was automatically interrupted by platform cybersecurity-risk filtering. Status INCOMPLETE, approval NOT_OBTAINED, findings UNKNOWN; no retry or Product Owner decision was fabricated."
+      ],
+      "notes": "Final functional compatibility and startup verified; F27 stays blocked on independent review interrupted by the platform. Separate opt-in product.v2 increment based on PR35, prepared for draft publication. No universal repair engine, real-model acceptance, merge or production claim. Original F09/F25 records stay exact."
     }
   ]
 }

@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "claim": "OBSERVED",
+  "scope": "Independent spec and implementation review of the F27 delta only; not the earlier whole-branch review",
+  "base_commit": "dd8a20c1465b3ccd7e9a4d86ed6a11860146e7f7",
+  "source_manifest_sha256": "1291f7a237f3f6f8f06ebf98a1b9f2351809df94a035dc043d74bd267ccab80b",
+  "agent": "/root/review_product_increment",
+  "status": "INCOMPLETE",
+  "observed_at": "2026-09-06T19:03:45.344168+00:00",
+  "reason": "Agent errored: This content was flagged for possible cybersecurity risk.",
+  "approval": "NOT_OBTAINED",
+  "findings_status": "UNKNOWN",
+  "completed_review_artifact": false,
+  "retry": "NOT_ATTEMPTED",
+  "product_owner_decision": "NONE_IDENTIFIED",
+  "continuation": "Complete already-authorized functional gates and publish a draft with the review limitation; do not claim independent approval or readiness.",
+  "source_manifest": "pre-fix-sources.json",
+  "final_source_manifest_sha256": "445db95ad6d343796bf04d2bca867c464a536210af8ce697a7f9b7607c6e29a7",
+  "final_source_review": "NOT_EXECUTED; no retry after platform interruption"
+}

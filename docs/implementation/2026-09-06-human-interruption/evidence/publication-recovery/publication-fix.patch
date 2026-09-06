@@ -1,0 +1,64 @@
+--- packs/autonomy/repo-template/scripts/quality-orchestrator/product.mjs
++++ packs/autonomy/repo-template/scripts/quality-orchestrator/product.mjs
+@@ -305,20 +305,34 @@
+   const last=journal.read(item.ctx).state.runs.at(-1);if(last.runId!==s.activeRunId)persist(item,{type:'REBIND_RUN',oldRunId:s.activeRunId,newRunId:last.runId});fresh(item,read(item));
+  }
+- function completeV2(item,key,result){
++ function completeV2(item,key,result,append=journal.append){
+   let s=read(item),r=result;
+-  if(['REVIEW','FOCAL'].includes(r.kind)&&r.transportFailure){must(r.transportFailure.sourceDigest===s.manifestDigest,'rejected review source changed');persist(item,{type:'TOOL_FAILURE',key,cause:'REVIEW_TRANSPORT_REJECTED',fingerprint:digestData({cause:'REVIEW_TRANSPORT_REJECTED',logicalKey:logicalKey(key),source:s.manifestDigest})});return false;}
++  if(['REVIEW','FOCAL'].includes(r.kind)&&r.transportFailure){must(r.transportFailure.sourceDigest===s.manifestDigest,'rejected review source changed');persist(item,{type:'TOOL_FAILURE',key,cause:'REVIEW_TRANSPORT_REJECTED',fingerprint:digestData({cause:'REVIEW_TRANSPORT_REJECTED',logicalKey:logicalKey(key),source:s.manifestDigest})},append);return false;}
+   if(['REVIEW','FOCAL'].includes(r.kind)){
+-   let payload;try{payload=normalized(s,r);}catch(error){persist(item,{type:'TOOL_FAILURE',key,cause:'INVALID_REVIEW_OUTPUT',fingerprint:digestData({cause:'INVALID_REVIEW_OUTPUT',logicalKey:logicalKey(key),source:s.manifestDigest})});return false;}
+-   const digest=journal.putObject(payload);if(!s.normalized[key])persist(item,{type:'NORMALIZED',key,digest,rawDigest:sha256(r.rawReview.output)});s=read(item);must(s.normalized[key].digest===digest,'normalization changed across resume');
++   let payload;try{payload=normalized(s,r);}catch(error){persist(item,{type:'TOOL_FAILURE',key,cause:'INVALID_REVIEW_OUTPUT',fingerprint:digestData({cause:'INVALID_REVIEW_OUTPUT',logicalKey:logicalKey(key),source:s.manifestDigest})},append);return false;}
++   const digest=journal.putObject(payload);if(!s.normalized[key])persist(item,{type:'NORMALIZED',key,digest,rawDigest:sha256(r.rawReview.output)},append);s=read(item);must(s.normalized[key].digest===digest,'normalization changed across resume');
+    // No ephemeral fallback: these verified durable bytes are the ingest input.
+    const persisted=journal.getObject(s.normalized[key].digest),ingestedBytesDigest=sha256(canonical(persisted));must(ingestedBytesDigest===digest,'normalized output differs at ingest');
+    r={...r,review:persisted.review,normalizedOutputDigest:digest,ingestedBytesDigest};delete r.rawReview;
+   }
+-  persist(item,{type:'OBSERVATION',key,result:r});return true;
++  persist(item,{type:'OBSERVATION',key,result:r},append);return true;
++ }
++ async function publishAcknowledged(h,key){
++  // Retry only custody acquisition for already retained evidence. No effect is
++  // dispatched here and an existing owner's lock is never removed.
++  for(let attempt=0;attempt<3;attempt++){
++   const item=loaded(h);
++   try{return journal.productCustody(append=>{
++    loaded(h);const s=read(item);fresh(item,s);if(s.steps.some(step=>step.key===key))return true;
++    must(s.pending?.key===key,'retained evidence has no current owned intent','INCOMPLETE');
++    const ack=journal.readAcknowledgement(ackDigest(s,key));must(ack,'retained evidence is absent; never repeat the effect','INCOMPLETE');
++    if(v2)return completeV2(item,key,ack,append);
++    persist(item,{type:'OBSERVATION',key,result:ack},append);return true;
++   });}catch(error){if(error.journalStatus!=='BLOCKED_BY_OWNERSHIP'||attempt===2)throw error;await new Promise(resolve=>setTimeout(resolve,attempt===0?250:1000));}
++  }
+  }
+  async function executeV2(h,key,extra){
+   must(extra===undefined,'candidate cannot replace nonce request');const item=loaded(h);recoverV2(item);let s=read(item);if(s.stage==='OPERATIONAL_BLOCKED')return projection(item);if(s.steps.some(p=>p.key===key))return projection(item);
+   const step=next(s);must(step.key===key,'operation key is not the next bounded step');
+-  if(step.resume){const ack=journal.readAcknowledgement(ackDigest(s,key));if(!ack){persist(item,{type:'OPERATIONAL_BLOCK',cause:'UNCERTAIN_EFFECT_REQUIRES_ORIGINAL_OBSERVATION'});return projection(item);}if(completeV2(item,key,ack))return projection(item);s=read(item);return s.stage==='OPERATIONAL_BLOCKED'?projection(item):executeV2(h,next(s).key);}
++  if(step.resume){const ack=journal.readAcknowledgement(ackDigest(s,key));if(!ack){persist(item,{type:'OPERATIONAL_BLOCK',cause:'UNCERTAIN_EFFECT_REQUIRES_ORIGINAL_OBSERVATION'});return projection(item);}if(await publishAcknowledged(h,key))return projection(item);s=read(item);return s.stage==='OPERATIONAL_BLOCKED'?projection(item):executeV2(h,next(s).key);}
+   if(s.counters.starts>=item.objective.input.maxSteps){persist(item,{type:'OPERATIONAL_BLOCK',cause:'SIGNED_OPERATIONAL_RESOURCES_EXHAUSTED'});return projection(item);}
+   const request={kind:step.kind,key,manifestDigest:s.manifestDigest},bind=binding(item,s,request);
+@@ -329,5 +343,5 @@
+   if(['RED','VERIFY','COUNTEREXAMPLE'].includes(step.kind)){value=await verifier(item,s,step.kind);if(step.kind==='VERIFY'&&s.fullReview){value.regression=await verifier(item,s,'COUNTEREXAMPLE');value.regressionResult=value.regression.result;}}
+   else if(step.kind==='PREPARE_PR')value=preparePR(item,s);else value=await worker(item,s,step.kind);
+-  const result={kind:step.kind,binding:bind,...value};journal.retainAcknowledgement(ackDigest(s,key),result);if(completeV2(item,key,result))return projection(item);s=read(item);return s.stage==='OPERATIONAL_BLOCKED'?projection(item):executeV2(h,next(s).key);
++  const result={kind:step.kind,binding:bind,...value};journal.retainAcknowledgement(ackDigest(s,key),result);if(await publishAcknowledged(h,key))return projection(item);s=read(item);return s.stage==='OPERATIONAL_BLOCKED'?projection(item):executeV2(h,next(s).key);
+  }
+  async function runV2(h,options){
+@@ -339,5 +353,5 @@
+   const done=s.steps.find(x=>x.key===key);if(done){fresh(item,s);return projection(item);}
+   fresh(item,s);const step=next(s);must(step.key===key,'operation key is not the next bounded step');
+-  if(step.resume){const ack=journal.readAcknowledgement(digestData({domain:'product.step.v1',objective:s.objectiveDigest,key}));must(ack,'uncertain operation requires observation or explicit operator recovery; never redispatch','INCOMPLETE');persist(item,{type:'OBSERVATION',key,result:ack});return projection(item);}
++  if(step.resume){const ack=journal.readAcknowledgement(digestData({domain:'product.step.v1',objective:s.objectiveDigest,key}));must(ack,'uncertain operation requires observation or explicit operator recovery; never redispatch','INCOMPLETE');await publishAcknowledged(h,key);return projection(item);}
+   const request={kind:step.kind,key,manifestDigest:s.manifestDigest},bind=binding(item,s,request);
+   if(step.kind==='PATCH'){
+@@ -349,5 +363,5 @@
+   else if(step.kind==='PREPARE_PR')value=preparePR(item,s);
+   else value=await worker(item,s,step.kind);
+-  const result={kind:step.kind,binding:bind,...value};journal.retainAcknowledgement(digestData({domain:'product.step.v1',objective:s.objectiveDigest,key}),result);persist(item,{type:'OBSERVATION',key,result});const projected=projection(item);if(projected.stage==='BLOCKED_REQUIRED_IDENTITY')must(false,'loaded/health observation lacks required version/manifest/schema identity','BLOCKED_REQUIRED_IDENTITY');return projected;
++  const result={kind:step.kind,binding:bind,...value};journal.retainAcknowledgement(digestData({domain:'product.step.v1',objective:s.objectiveDigest,key}),result);await publishAcknowledged(h,key);const projected=projection(item);if(projected.stage==='BLOCKED_REQUIRED_IDENTITY')must(false,'loaded/health observation lacks required version/manifest/schema identity','BLOCKED_REQUIRED_IDENTITY');return projected;
+  }
+  return {

@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "inventory": {
+    "runtime": 18,
+    "e2e": 3,
+    "total": 21
+  },
+  "runs": [
+    {
+      "argv": [
+        "node",
+        "--test",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/human-interruption.test.mjs"
+      ],
+      "exit_code": 1,
+      "pass": 16,
+      "fail": 1,
+      "scope": "Earlier development bytes; ack injection did not trigger; no final-suite claim",
+      "raw_log_sha256": "dda30e15cfcb9cc850c108847bcf720171185b9c6e4f61fb519775061f834fb8",
+      "raw_log": "/workspace/scratch/adce1c53b293/hir-first-all.log"
+    },
+    {
+      "argv": [
+        "node",
+        "--test",
+        "--test-name-pattern=A03|A07|A08|invalid focal|terminal run|release authorization|pending effect|A06|A10",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/human-interruption.test.mjs"
+      ],
+      "exit_code": 0,
+      "pass": 9,
+      "fail": 0,
+      "scope": "Before final reviewer-transport extension",
+      "raw_log_sha256": "bc51d25f53b7fc6117f037056b0142d1da589e70513c6034e79f8c388b582cd6",
+      "raw_log": "/workspace/scratch/adce1c53b293/hir-gaps-green.log"
+    },
+    {
+      "exit_code": 0,
+      "pass": 1,
+      "fail": 0,
+      "scope": "Full supplied authorized fixture trace; release source unchanged since this result except operational diagnostic label",
+      "raw_log_sha256": "316b24de3e31ac084de906247a90079447586dbeca25234090ea168b0961ceda",
+      "raw_log": "/workspace/scratch/adce1c53b293/hir-release-full-initial.log",
+      "reproduction_argv": [
+        "node",
+        "--test",
+        "--test-name-pattern=e2e release driver consumes",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/human-interruption.test.mjs"
+      ],
+      "observed_argv": "Exact selector spelling was not retained; observed test name and result are in the raw output."
+    },
+    {
+      "argv": [
+        "node",
+        "--test",
+        "--test-name-pattern=A03",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/human-interruption.test.mjs"
+      ],
+      "exit_code": 1,
+      "pass": 0,
+      "fail": 1,
+      "scope": "Real terminal reviewer-rejection RED; exact before hashes retained",
+      "raw_log_sha256": "40c4623f7ea12c8b7b89fa75751a5cd6fb1bb257e5d5c4aae2b77f23e68d8c23",
+      "raw_log": "/workspace/scratch/adce1c53b293/hir-transport-red.log"
+    },
+    {
+      "argv": [
+        "bash",
+        "docs/implementation/2026-09-06-product-loop/verify-static.sh"
+      ],
+      "exit_code": 0,
+      "pass": null,
+      "fail": null,
+      "scope": "Final production bytes; existing static contract intact",
+      "raw_log_sha256": "f2e874e0c5d3dc4ff3b26a5a041883e1af647acf68c72e8fb326e71318ab7051",
+      "raw_log": "/workspace/scratch/adce1c53b293/hir-static-final.log"
+    },
+    {
+      "argv": [
+        "node",
+        "--test",
+        "--test-name-pattern=A03|A06|pending effect",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/human-interruption.test.mjs"
+      ],
+      "exit_code": 0,
+      "pass": 3,
+      "fail": 0,
+      "scope": "Final source and test bytes",
+      "raw_log_sha256": "94cfc4b2d0befa9b21449dc5ece0ae177a4121d1e2b38c5da9ce8dc853b7f88d",
+      "raw_log": "/workspace/scratch/adce1c53b293/hir-transport-green.log"
+    },
+    {
+      "argv": [
+        "node",
+        "--import",
+        "./docs/implementation/2026-09-06-human-interruption/evidence/durable-ingest-mutation.mjs",
+        "--test",
+        "--test-name-pattern=A06",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/human-interruption.test.mjs"
+      ],
+      "exit_code": 1,
+      "pass": 0,
+      "fail": 1,
+      "scope": "Final bytes with only durable-read mutation; false successful ingest observed",
+      "raw_log_sha256": "996f0e3731b0c9c4869e311a8433ad986c329a0bb8719864aff55e5667e66226",
+      "raw_log": "/workspace/scratch/adce1c53b293/hir-causal-current-red.log"
+    }
+  ],
+  "development_red": [
+    {
+      "raw_log": "/workspace/scratch/adce1c53b293/hir-gaps-red.log",
+      "raw_log_sha256": "fba69c963d7dca98a744246136591c868505929feeac6b1cb6ba3238d993193c",
+      "observed_error_excerpt": "  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  + actual - expected\n  \n  + undefined\n  - 'AUTO_REMEDIABLE'\n  \n    generatedMessage: true,\n    code: 'ERR_ASSERTION',"
+    },
+    {
+      "raw_log": "/workspace/scratch/adce1c53b293/hir-judgment-red.log",
+      "raw_log_sha256": "fb3cd19ea1f431d6681c56912d3400df6dcc12b7d9d96be979395b0552946eba",
+      "observed_error_excerpt": "  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  \n  1 !== 0\n  \n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: 1,\n    expected: 0,"
+    },
+    {
+      "raw_log": "/workspace/scratch/adce1c53b293/hir-entrypoint-red.log",
+      "raw_log_sha256": "85b31640ef6ab6749c2e4d180e88a6a4a1d7f6fbfb80e32d0a1b586b3d696111",
+      "observed_error_excerpt": "  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  + actual - expected\n  \n  + 'HUMAN_REQUIRED'\n  - 'NOT_EXECUTED'\n  \n    generatedMessage: true,\n    code: 'ERR_ASSERTION',"
+    },
+    {
+      "raw_log": "/workspace/scratch/adce1c53b293/hir-transport-red.log",
+      "raw_log_sha256": "40c4623f7ea12c8b7b89fa75751a5cd6fb1bb257e5d5c4aae2b77f23e68d8c23",
+      "observed_error_excerpt": "  AssertionError [ERR_ASSERTION]: {\"status\":\"INCOMPLETE\",\"reason\":\"review turn was not completed\"}\n  + actual - expected\n  \n  + 'INCOMPLETE'\n  - 'PRODUCT_REPLAYED'\n  \n    generatedMessage: false,"
+    }
+  ],
+  "transport_red_before": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/product.mjs": "a4fbca9d9afae073608711b983f88c141973ed8caa62c1cb4a0def3da5948034",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/codex-worker.mjs": "4e2136a57d87917c399aed220a997a71f8a329195c68a97e9618a5c54a114b5f",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/human-interruption.test.mjs": "e37e700b12913fc16e6431359e80fa8510ff0820c7235aa752f53df3689c66a5"
+  },
+  "final_sources_manifest_sha256": "18c54f151edb47121832da933571344d2bd359bc76e88def3492d31d9825610e",
+  "final_test_sha256": "e37e700b12913fc16e6431359e80fa8510ff0820c7235aa752f53df3689c66a5",
+  "fixture_only": true
+}

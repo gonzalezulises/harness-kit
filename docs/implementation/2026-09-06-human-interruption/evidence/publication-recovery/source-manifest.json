@@ -1,0 +1,16 @@
+{
+  "base_commit": "dd8a20c1465b3ccd7e9a4d86ed6a11860146e7f7",
+  "sources": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/codex-worker.mjs": "9a1e3e15b9c976b4fb62e459e333fbccddff8ee147658e600484f956179b6234",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/continuation.mjs": "a388a4a8af12a316ea3bc4c9f63085ffd5fa69c56d4fcd393f9e16c104fb9401",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/journal.mjs": "592c089b7bd6aa7f35301898f51047d471f08858e87a1b7f9369d706b6972af0",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/product.mjs": "4e7213881c760a7283db74d1d8126efd4308b0fb0ef2ca50ffd4b9a67e8f8a9d",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/product.schema.mjs": "71c7b65393ede915cb753f6a523e8cf69ef8b488641f396a63f7c2d5c628ff6c",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/release.mjs": "c8fa39d37716ba9a16c58f237b3a8d71e9879742aa47e2fc4c02db2dd766332d",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/review.mjs": "f4fd59029498799e177c9a6cef6f4dd332835d13d1efafea85642901ec11a5af",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/review.schema.mjs": "f51ace62072b29ce8984414e4ee97b022768eea23bd26b49193b428aabb3396a",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/human-interruption.test.mjs": "1165badb6a2ddd4e9d9c0cf6c521aa850ac22ebc68e7757270e85b89253726ea",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/contracts-human-interruption-v1.md": "dd36736fd8d0cbf900b9ef2692ca5b811bef9d7dda5cb281fe40a484bc1fc83c",
+    ".agents/notes/implemented/feature/2026-09-06-human-interruption.md": "5f7bbd942c29d3b9a47be73addf04ae21853c1a2327e141a470bc56e1602606a"
+  }
+}

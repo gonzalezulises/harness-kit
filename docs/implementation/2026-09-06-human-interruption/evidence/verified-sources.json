@@ -1,0 +1,154 @@
+{
+  "files": {
+    "Makefile": {
+      "sha256": "57506bcd9b58a4ac249106ee0341d3a9c19008f43487f35ec2484f32ae323691"
+    },
+    "bin/harness-status.sh": {
+      "sha256": "f25018004e944a68b5a29150c4390f359e93c9d08cc8fa47ea8b3442ec58feef"
+    },
+    "docs/implementation/2026-09-06-product-loop/verify-static.sh": {
+      "sha256": "8b6568a92f8d4a1ebbccb1cfd4f76052181693f87225c364667061f8c14355bb"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/authority.mjs": {
+      "sha256": "c835ae848b7a6ad4dfc024b5eb2495fa6c6dc68f6cafa89dd7c3a0b12f8cfe26"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/budget.mjs": {
+      "sha256": "bcf6bacf43d1bee8dfc28f6951d17cd8391f89411609bde61b58cba8f8c8b24b"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/capabilities.mjs": {
+      "sha256": "12730d65dcfd2c93742c9b1417bfc9147dd769549ac02ddb31472e88a688d61a"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/classify.mjs": {
+      "sha256": "497fb60b930dc8a3ac00062d297d865ccbfa6f713f31ed1ad050ff315fe90e49"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/codex-worker.mjs": {
+      "sha256": "9a1e3e15b9c976b4fb62e459e333fbccddff8ee147658e600484f956179b6234"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/continuation.mjs": {
+      "sha256": "a388a4a8af12a316ea3bc4c9f63085ffd5fa69c56d4fcd393f9e16c104fb9401"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/contracts-capabilities-v1.md": {
+      "sha256": "c1b80efc5c76b0c22090bbd532c1dcbfa7269c5d663b5c90e4fcb6c6adb5d4ad"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/contracts-continuation-v1.md": {
+      "sha256": "3c32d5bf60add70d7084bf2e895f0d39bd3c5eb6011a9ced061a31edb0901bc7"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/contracts-execution-v1.md": {
+      "sha256": "c521f4cf6939f2fab392507673ae7299febc1a3187111f60412c69f521f4495c"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/contracts-human-interruption-v1.md": {
+      "sha256": "dd36736fd8d0cbf900b9ef2692ca5b811bef9d7dda5cb281fe40a484bc1fc83c"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/contracts-journal-v1.md": {
+      "sha256": "ae9e948d45595f2d5be8d61bc02c455ebe22d5467c6286a36c296aee10472755"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/contracts-product-v1.md": {
+      "sha256": "f6a61be90ea3568ad98a61b1a74132a360d98c67b31b764152d838009bff3269"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/contracts-release-v1.md": {
+      "sha256": "187f8aa8bc5cc050bb27f77a120cf93cae0882fede9d8a57aa030f8ce4a04941"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/contracts-review-v1.md": {
+      "sha256": "0ccda6f601f92d9a22144f2bef452c23ffa10d3b1b9dd5ec76a0c82d7dcf3bd1"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/contracts-v1.md": {
+      "sha256": "c50877646e70fcd34c35fc7ee484321ea75edd19575680a607eb09a7f3c51f1f"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/execution.mjs": {
+      "sha256": "03b940f788662e802f3759982497103105eae64cec0065ecf938166825f55076"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/execution.schema.mjs": {
+      "sha256": "014c78202f297a3918c13e672412dcb8a83a50b79fc025adceb08b667b86fdbe"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/github-actions.mjs": {
+      "sha256": "db760d896e42f14e88f06165021c11ac146b3c4ad84fc929a486fc5245003bb1"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/identity.mjs": {
+      "sha256": "f6bc4cf109851e22bece790619fe736808d7af52b06f79e9b00047e0106cfb21"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/index.mjs": {
+      "sha256": "706b908393a05f6fcd8c00e22aedee38c8ad58dedde826feb7373bef8c71b09e"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/journal.mjs": {
+      "sha256": "592c089b7bd6aa7f35301898f51047d471f08858e87a1b7f9369d706b6972af0"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/package-lock.json": {
+      "sha256": "19d4495481f1a940a52ab63684bc400b938cc7c6bc744be889fa453030ba622c"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/package.json": {
+      "sha256": "6c8370fa233ab09d20b96330d90a9541d0b3f2c71aa19025988677b879262296"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/product.mjs": {
+      "sha256": "4e7213881c760a7283db74d1d8126efd4308b0fb0ef2ca50ffd4b9a67e8f8a9d"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/product.schema.mjs": {
+      "sha256": "71c7b65393ede915cb753f6a523e8cf69ef8b488641f396a63f7c2d5c628ff6c"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/release.mjs": {
+      "sha256": "c8fa39d37716ba9a16c58f237b3a8d71e9879742aa47e2fc4c02db2dd766332d"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/release.schema.mjs": {
+      "sha256": "9c719f1be018e38bfe8c95baa77281940211c2b4651a69e9835e88bffef98122"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/review-shadow.mjs": {
+      "sha256": "84221bac483c39e517b288b11910a25e33e8c665e5a3d59faba657e97fef71dd"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/review.mjs": {
+      "sha256": "f4fd59029498799e177c9a6cef6f4dd332835d13d1efafea85642901ec11a5af"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/review.schema.mjs": {
+      "sha256": "f51ace62072b29ce8984414e4ee97b022768eea23bd26b49193b428aabb3396a"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/schemas/digest.v1.json": {
+      "sha256": "3739807b2640848ddfcdf441eb72ca4801b77ebcfe22b5a2434bd9b2aac97972"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/schemas/record.v1.json": {
+      "sha256": "6a9d79d9cc43b5a1f197e43f2915adc5e855fb902435fce1ee15532dccadbc4b"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/authority.test.mjs": {
+      "sha256": "025d557717fd2c0301fe446295a0fcbf5ba9fc90f3028e70e963605291a78bb5"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs": {
+      "sha256": "95ed2f3d23416629e8226ffbdd15cb28139e83b7abbe588a6d52e7ff03db291b"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/classify.test.mjs": {
+      "sha256": "36ac68ee2097823442bf5dc0af74446b71af07c2bd24e8ae4cd48705a900ea40"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation-authority.test.mjs": {
+      "sha256": "c92ab95f4f48c537fc7f7b9b0f73352248bf7931527920658505f128ed157973"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs": {
+      "sha256": "73748aef967814045b3961f3eae2e00675eca0f50d1530257a2418b520a14bf3"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/execution-backend.test.mjs": {
+      "sha256": "d45e809ba74e7dd6f0109ad702b97d3961c175ef917ef272abad80afcfcb505d"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/helpers.mjs": {
+      "sha256": "8eab979a11d050cc4f835a4824e42daa71e93bf4a18e0c2b45577ed589a48afc"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/human-interruption.test.mjs": {
+      "sha256": "1165badb6a2ddd4e9d9c0cf6c521aa850ac22ebc68e7757270e85b89253726ea"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/identity.test.mjs": {
+      "sha256": "c2da53a7a86c1434df6833c1823cd2a79aa1cf8112419fd943ab99e3b10820e2"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/journal.test.mjs": {
+      "sha256": "2b1727e3d4e299c78b843732fd1989e641d1366a4e36cce29f35bb3194389318"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/literal-filename.test.mjs": {
+      "sha256": "1db50a3c4fd5af7d6a238ac12757af61e686fe04488756702b2191692dc0953d"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-loop.test.mjs": {
+      "sha256": "47b4a3f207c45e71cb1040c499b1dd23db869b31a7eb641d8ad79b503e3df2a4"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs": {
+      "sha256": "a5bd6cc0b4a1c6987398365b9c95dd4fa58d9a4af6ab1b7b16c5ed942b29152a"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs": {
+      "sha256": "bebe2481b6d12d9b5f0c70cd15b3cd96c16183ebb7d493983d1a77a5697fb741"
+    },
+    "packs/autonomy/verify-pack.sh": {
+      "sha256": "51e6b0751c06420b2877086451827dfb4d4d70f894b98e9f7f3da10ce0dc2077"
+    }
+  }
+}

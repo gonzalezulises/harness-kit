@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "before_source_and_causal_test_sha256": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/product.mjs": "80a9f17f06cfadd23f46964368ec48d685073dc28f571b930c3998de25403ed5",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/human-interruption.test.mjs": "1165badb6a2ddd4e9d9c0cf6c521aa850ac22ebc68e7757270e85b89253726ea"
+  },
+  "current_test_sha256": "1165badb6a2ddd4e9d9c0cf6c521aa850ac22ebc68e7757270e85b89253726ea",
+  "current_source_manifest_sha256": "6ed9cd260c11bc06956be1d29aace509d14f70f03ab6c80f6b23f1a3de3a4b1f",
+  "fix_patch_sha256": "cb4b1a9a4773ace446d56f5ab85badde37b5fe5c2b50a2ec31fb3910d429a65a",
+  "inventory": {
+    "runtime": 22,
+    "e2e": 3,
+    "total": 25
+  },
+  "runs": [
+    {
+      "argv": [
+        "node",
+        "--test",
+        "--test-name-pattern=publication contention reconciles retained v1",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/human-interruption.test.mjs"
+      ],
+      "exit_code": 1,
+      "pass": 0,
+      "fail": 1,
+      "raw_log": "/workspace/scratch/adce1c53b293/hir-publication-causal-red.log",
+      "raw_log_sha256": "973051611b668d79144d3bd1fc6c464c7b1a49d5f63517a905aba7df40dbb4cf"
+    },
+    {
+      "argv": [
+        "node",
+        "--test",
+        "--test-name-pattern=publication retry rechecks",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/human-interruption.test.mjs"
+      ],
+      "exit_code": 1,
+      "pass": 0,
+      "fail": 1,
+      "raw_log": "/workspace/scratch/adce1c53b293/hir-publication-authority-red.log",
+      "raw_log_sha256": "01e74c83b88d480342ab6898f4b6a4bc3075be6c9d4e6dd46ab496edbd884fc9"
+    },
+    {
+      "argv": [
+        "bash",
+        "docs/implementation/2026-09-06-product-loop/verify-static.sh"
+      ],
+      "exit_code": 0,
+      "pass": null,
+      "fail": null,
+      "raw_log": "/workspace/scratch/adce1c53b293/hir-publication-static.log",
+      "raw_log_sha256": "f2e874e0c5d3dc4ff3b26a5a041883e1af647acf68c72e8fb326e71318ab7051"
+    },
+    {
+      "argv": [
+        "node",
+        "--test",
+        "--test-name-pattern=publication contention|persistent publication|publication retry rechecks|A06|pending effect",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/human-interruption.test.mjs"
+      ],
+      "exit_code": 0,
+      "pass": 6,
+      "fail": 0,
+      "raw_log": "/workspace/scratch/adce1c53b293/hir-publication-green.log",
+      "raw_log_sha256": "1fc1b6f9ef9da0972cec7ccd0ac64f66a1fa9375d5ed83fc1f5f0d4bd8173939"
+    },
+    {
+      "argv": [
+        "node",
+        "--test",
+        "--test-name-pattern=two actual processes competing",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-loop.test.mjs"
+      ],
+      "exit_code": 0,
+      "pass": 1,
+      "fail": 0,
+      "raw_log": "/workspace/scratch/adce1c53b293/hir-publication-compatibility.log",
+      "raw_log_sha256": "c23de34ec0eab521d2885e084cbd104c7431220419b7ace5775dcd1c220964ac"
+    },
+    {
+      "argv": [
+        "node",
+        "--import",
+        "./docs/implementation/2026-09-06-human-interruption/evidence/publication-recovery/durable-ingest-mutation.mjs",
+        "--test",
+        "--test-name-pattern=A06",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/human-interruption.test.mjs"
+      ],
+      "exit_code": 1,
+      "pass": 0,
+      "fail": 1,
+      "raw_log": "/workspace/scratch/adce1c53b293/hir-publication-oracle-red.log",
+      "raw_log_sha256": "fa1684de63b816e4f7e75e5ba8b913d3ebf4b0a5d38f0cb308cdc26d0ff892aa"
+    }
+  ],
+  "causal_observation": {
+    "effects": 1,
+    "observations": 0,
+    "filesystem_lock_collisions": 1,
+    "status": "BLOCKED_BY_OWNERSHIP"
+  },
+  "original_global_interleaving": "UNKNOWN; child outputs were not retained",
+  "historical_test_modified": false,
+  "full_gate_run_by_implementer": false,
+  "review_retry": false
+}

@@ -7,7 +7,7 @@ import {stop} from './authority.mjs';
 import {executionAsync} from './execution.mjs';
 import {budgetLimitsSchema,mechanicalBudget} from './budget.mjs';
 import {installedBundleDigest} from './capabilities.mjs';
-import {reviewHostSchema,reviewInputSchema,reviewPolicySchema,reviewSchema,reviewReceiptSchema,reviewSchemaDigest,reviewJSONSchema} from './review.schema.mjs';
+import {productReviewV2Schema,reviewHostSchema,reviewInputSchema,reviewPolicySchema,reviewSchema,reviewReceiptSchema,reviewSchemaDigest,reviewJSONSchema} from './review.schema.mjs';
 import {buildReviewShadow,plainReviewRoot,reviewManifest,requireReview as must} from './review-shadow.mjs';
 
 // Operator-only bootstrap, like the journal boundary. No candidate provider,
@@ -113,4 +113,25 @@ export function reviewBoundary(host,runtime,auth,execution,journal,internal={}){
       return freeze({status:'REVIEW_OUTPUT_VALIDATED',...output,assurance:'recomputed',acceptance:'NOT_EXECUTED',independentReviewVerified:false,counterexamples:'NOT_EXECUTED',unresolvedHighCritical:output.findings.filter(f=>['High','Critical'].includes(f.severity)).length});
     })
   };
+}
+
+export function normalizeProductReview(output,{objectiveDigest,files,cases}){
+  must(typeof output==='string'&&Buffer.byteLength(output)<=1024*1024,'review output exceeds bound');
+  must(parseDocument(output,{strict:true,uniqueKeys:true}).errors.length===0,'invalid or duplicate review fields');
+  const raw=productReviewV2Schema.parse(JSON.parse(output));must(raw.verdict===(raw.findings.length?'FAIL':'PASS'),'review verdict contradicts judgment');
+  const evidence=[],tests=[],findings=raw.findings.map(f=>{
+    must(Object.hasOwn(files,f.path)&&f.line<=files[f.path].lines,'finding outside exact source');
+    const selected=f.evidence_refs.map(ref=>{
+      const normalized=ref.replace(/^\.\//,''),match=/^(.+?)(?:#L([1-9][0-9]*))?$/.exec(normalized),name=match?.[1],line=match?.[2]?Number(match[2]):f.line;
+      must(name&&Object.hasOwn(files,name)&&line<=files[name].lines,'evidence reference does not resolve in authorized source');
+      return {path:name,line,sourceDigest:files[name].digest};
+    });
+    let caseId=null;if(f.counterexample!==null){const c=JSON.parse(f.counterexample);must(c&&Object.keys(c).length===1&&cases.some(x=>x.id===c.caseId),'counterexample does not identify an approved case');caseId=c.caseId;}
+    const judgment={severity:f.severity,path:f.path,line:f.line,description:f.description,counterexample:f.counterexample};
+    const id='finding:'+digestData({domain:'harness.finding.v2',objectiveDigest,judgment});
+    evidence.push({findingId:id,refs:selected});if(caseId)tests.push({findingId:id,caseId,durable_test_id:'test:'+digestData({domain:'harness.durable-test.v1',objectiveDigest,case:cases.find(c=>c.id===caseId)})});
+    return {id,...judgment};
+  });
+  must(new Set(findings.map(f=>f.id)).size===findings.length,'duplicate normalized finding identity');
+  return freeze({domain:'harness.normalized-review.v1',objectiveDigest,review:{version:1,verdict:raw.verdict,findings},evidence,tests});
 }

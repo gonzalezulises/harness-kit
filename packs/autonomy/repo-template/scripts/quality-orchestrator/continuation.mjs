@@ -1,3 +1,6 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {sha256 as productRawHash} from './identity.mjs';
 import { z } from 'zod';
 import { canonical, digestData, freeze } from './identity.mjs';
 import { stop } from './authority.mjs';
@@ -70,3 +73,20 @@ export function continuationBoundary(runtime,auth,journal,files,acceptedRecords,
     })
   };
 }
+
+// Closed, originally signed representation/derived-output transform for product.v2.
+// No candidate supplied command, after-bytes, semantic assertion or verifier.
+export function describeProductCorrection(rule,scope,runtime,root){
+  const names=[rule.path,rule.goldenPath,rule.corpusPath];must(new Set(names).size===3&&names.every(p=>scope.paths.includes(p)),'remediation paths exceed original mutable scope');
+  const source=readProductFile(root,rule.path),identity=runtime.identify(source,'record.v1');must(identity.status==='IDENTIFIED','remediation source must implement record.v1');
+  const yaml=Object.keys(identity.value).sort().map(k=>`${k}: ${k==='threshold'?identity.value[k].lexeme:JSON.stringify(identity.value[k])}\n`).join('');
+  const after={[rule.path]:Buffer.from(yaml).toString('base64'),[rule.goldenPath]:Buffer.from(canonical({sourcePath:rule.path,semanticDigest:identity.semanticSha256,canonicalDigest:identity.canonicalSha256})).toString('base64'),[rule.corpusPath]:Buffer.from(canonical({sourcePath:rule.path,record:identity.value})).toString('base64')};
+  return {rule,semanticDigest:identity.semanticSha256,before:Object.fromEntries(names.map(p=>[p,productRawHash(readProductFile(root,p))])),after};
+}
+export function verifyProductCorrection(proof,scope,runtime,root){
+  const recomputed=describeProductCorrection(proof.rule,scope,runtime,root);
+  must(recomputed.semanticDigest===proof.semanticDigest,'record semantics differ from original authorized correction','SEMANTIC_DELTA');
+  must(canonical(recomputed.after)===canonical(proof.after),'derived outputs differ from original authorized transform','SEMANTIC_DELTA');return recomputed;
+}
+
+function readProductFile(root,name){const full=path.join(root,name),stat=fs.lstatSync(full);must(stat.isFile()&&!stat.isSymbolicLink()&&stat.nlink===1&&fs.realpathSync(full)===full,'unsafe remediation file');return fs.readFileSync(full);}

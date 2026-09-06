@@ -29,6 +29,8 @@ export const witnessSchema=z.strictObject({version:z.literal(1),repositoryId:id,
 export const JOURNAL_RUNTIME_BINDING=digestData({protocol:'harness.journal.v1',runtimeBinding:RUNTIME_BINDING,contracts:{event:z.toJSONSchema(eventSchema,{unrepresentable:'any'}),run:z.toJSONSchema(runSchema),witness:z.toJSONSchema(witnessSchema)}});
 export const productEventSchema=eventSchema.extend({version:z.literal(2),operation:z.union([operation,productEventOperationSchema])});
 export const PRODUCT_JOURNAL_RUNTIME_BINDING=digestData({protocol:'harness.journal.product.v1',parent:JOURNAL_RUNTIME_BINDING,event:z.toJSONSchema(productEventSchema,{unrepresentable:'any'})});
+export const productEventV2Schema=productEventSchema.extend({version:z.literal(3)});
+export const PRODUCT_V2_JOURNAL_RUNTIME_BINDING=digestData({protocol:'harness.journal.product.v2',parent:PRODUCT_JOURNAL_RUNTIME_BINDING,event:z.toJSONSchema(productEventV2Schema,{unrepresentable:'any'})});
 const rawHash=bytes=>createHash('sha256').update(bytes).digest('hex');
 const fail=(status,reason)=>{throw Object.assign(Error(reason),{journalStatus:status});};
 const must=(condition,reason,status='INCOMPLETE')=>{if(!condition)fail(status,reason);};
@@ -39,14 +41,14 @@ function parseCanonical(bytes,schema) {
 // Only the host constructor calls this factory. Host readers are trusted acquisition
 // adapters; returned data is still checked here. They never decide verification.
 export function journalBoundary(host,runtime,auth,contextPaths,internal={}) {
-  const config=z.strictObject({contract:z.literal('product.v1').optional(),directory:z.string().min(1),objectiveId:id,journalId:id,actorId:id,budgetLimit:integer,readFinalBinding:z.custom(v=>typeof v==='function'),readLatestWitness:z.custom(v=>typeof v==='function').optional(),compareAndAppendWitness:z.custom(v=>typeof v==='function').optional(),reconcileOperation:z.custom(v=>typeof v==='function').optional()}).parse(host);
+  const config=z.strictObject({contract:z.enum(['product.v1','product.v2']).optional(),directory:z.string().min(1),objectiveId:id,journalId:id,actorId:id,budgetLimit:integer,readFinalBinding:z.custom(v=>typeof v==='function'),readLatestWitness:z.custom(v=>typeof v==='function').optional(),compareAndAppendWitness:z.custom(v=>typeof v==='function').optional(),reconcileOperation:z.custom(v=>typeof v==='function').optional()}).parse(host);
   must(path.isAbsolute(config.directory),'host journal directory must be absolute','POLICY');
   const directory=config.directory,objects=path.join(directory,'objects'),log=path.join(directory,'events.jsonl'),headFile=path.join(directory,'HEAD'),lockFile=path.join(directory,'LOCK'),floorFile=path.join(directory,'WITNESS');
   fs.mkdirSync(objects,{recursive:true,mode:0o700});
   const scopeDigest=digestData({objectiveId:config.objectiveId,journalId:config.journalId});
-  const product=config.contract==='product.v1',decodeEvent=product?productEventSchema:eventSchema,decodeOperation=product?z.union([operation,productEventOperationSchema]):operation;
+  const productV2=config.contract==='product.v2',product=productV2||config.contract==='product.v1',decodeEvent=productV2?productEventV2Schema:product?productEventSchema:eventSchema,decodeOperation=product?z.union([operation,productEventOperationSchema]):operation;
   must(!product||!config.readLatestWitness&&!config.compareAndAppendWitness,'product journal does not yet support external witness','POLICY');
-  const common={version:product?2:1,repositoryId:auth.repositoryId,objectiveId:config.objectiveId,journalId:config.journalId,authorityDigest:auth.authorityDigest,runtimeDigest:product?PRODUCT_JOURNAL_RUNTIME_BINDING:JOURNAL_RUNTIME_BINDING};
+  const common={version:productV2?3:product?2:1,repositoryId:auth.repositoryId,objectiveId:config.objectiveId,journalId:config.journalId,authorityDigest:auth.authorityDigest,runtimeDigest:productV2?PRODUCT_V2_JOURNAL_RUNTIME_BINDING:product?PRODUCT_JOURNAL_RUNTIME_BINDING:JOURNAL_RUNTIME_BINDING};
   const safe=fn=>{try{return fn();}catch(error){return stop(error.journalStatus||'INCOMPLETE',error.message);}};
   function context(handle) {
     const checked=runtime.inspectContext(handle);must(checked.status==='VERIFIED_CONTEXT',checked.reason||'verified context required',checked.status);return checked;
@@ -227,7 +229,7 @@ export function journalBoundary(host,runtime,auth,contextPaths,internal={}) {
     const subject={domain:'harness.journal-lock-recovery.v1',...common,headDigest:state.headDigest,lockDigest:rawHash(raw)};
     return {status:'RECOVERY_DESCRIBED',subjectDigest:digestData(subject),scopeDigest:digestData({action:'release-dead-local-owner',objectiveId:config.objectiveId,journalId:config.journalId}),pid:lock.pid,headDigest:state.headDigest,lockDigest:subject.lockDigest};
   }
-  Object.assign(internal,{read,append,finalBinding,putObject,getObject,productContract:product,
+  Object.assign(internal,{read,append,finalBinding,putObject,getObject,productContract:product,productVersion:productV2?2:1,
     productCustody:fn=>{must(product,'product journal required','POLICY');return exclusive(()=>fn(appendOwned));},
     retainAcknowledgement:(descriptorDigest,ack)=>{hash.parse(descriptorDigest);const digest=putObject(ack);writeExclusive(path.join(objects,'ack-'+descriptorDigest+'.json'),canonical({digest}));},
     readAcknowledgement:descriptorDigest=>{hash.parse(descriptorDigest);const file=path.join(objects,'ack-'+descriptorDigest+'.json');return fs.existsSync(file)?getObject(JSON.parse(fs.readFileSync(file,'utf8')).digest):null;}

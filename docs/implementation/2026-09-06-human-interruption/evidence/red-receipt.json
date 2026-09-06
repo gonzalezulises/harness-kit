@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "command": [
+    "node",
+    "--import",
+    "./docs/implementation/2026-09-06-human-interruption/evidence/durable-ingest-mutation.mjs",
+    "--test",
+    "--test-name-pattern=A06",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/human-interruption.test.mjs"
+  ],
+  "exit_code": 1,
+  "tests": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/human-interruption.test.mjs": "e37e700b12913fc16e6431359e80fa8510ff0820c7235aa752f53df3689c66a5"
+  },
+  "source": {
+    "docs/implementation/2026-09-06-human-interruption/evidence/durable-ingest-mutation.patch": "0caa46177ebba91585b1d0063fb514fae3b66c607900bbec2adf9033b5554896",
+    "docs/implementation/2026-09-06-human-interruption/evidence/durable-ingest-mutation.mjs": "1a1d2021aed3b83217f9f80029693a533ece5338e99ebb0ed81726d307758dd0"
+  },
+  "logs": {
+    "docs/implementation/2026-09-06-human-interruption/evidence/current-red-excerpt.txt": "16d121a2bf311e22c4635d5b0e8d0bff4b77cd75c6c2810daf5bc12d8abdf71d"
+  }
+}

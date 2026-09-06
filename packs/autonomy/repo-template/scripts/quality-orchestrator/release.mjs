@@ -191,6 +191,24 @@ export function releaseBoundary(runtime,auth,journal,execution,review={}){
   const prepared=new Map();
   const replayRelease=handle=>safe(()=>{const item=owned(handle),replay=Object.freeze(Object.create(null));replays.set(replay,{objective:handle,headDigest:item.state.headDigest,runId:item.state.runs.at(-1).runId});return replay;});
   return {
+    runRelease:(handle,input)=>executionAsync(async()=>{
+      const options=z.strictObject({authorizedExecutions:z.array(z.strictObject({wire:z.unknown(),input:z.record(z.string(),z.unknown())})).max(30),authorizedActions:z.array(z.unknown()).max(30),maxSteps:z.number().int().positive().max(30)}).parse(input);
+      const blocked=(result,cause)=>freeze({...result,status:'OPERATIONAL_BLOCKED',interruption:{classification:'OPERATIONAL_DIAGNOSIS',cause,evidenceDigest:digestData({cause,next:result.nextObligation})}});
+      for(let count=0;count<options.maxSteps;count++){
+        const item=owned(handle),result=decision(handle,replayRelease(handle));if(result.status==='PRODUCTION_PASS')return result;if(!execution)return blocked(result,'REQUIRED_CAPABILITY_UNAVAILABLE');
+        if(item.state.pending.length){const resumed=await runtime.resumeReleaseExecution(handle,item.state.pending[0]);if(resumed.status!=='EXECUTION_VERIFIED')return blocked(result,'ORIGINAL_OPERATION_RECONCILIATION_PENDING');continue;}
+        const operation=result.nextObligation.kind==='accept-artifact'?'artifact-acceptance':result.nextObligation.kind==='revalidate-deployment'?'deployment':kinds[result.nextObligation.kind];
+        const entry=options.authorizedExecutions.find(e=>e.wire?.request?.operation===operation&&canonical(e.wire.request.binding)===canonical(releaseBinding(item.objective))&&!journal.read(item.ctx).intents.has(e.wire.budget?.scope?.operationKey));
+        if(!entry)return blocked(result,'EXACT_AUTHORIZED_INPUT_UNAVAILABLE');
+        const requestInput={...entry.input};if(!requestInput.actionApproval&&['artifact-acceptance','deployment'].includes(operation)){
+          const action=operation==='artifact-acceptance'?'accept-artifact':result.nextObligation.kind==='revalidate-deployment'?'readback':'deploy',expected=actionExpectation(item,action,action==='readback'?{operationKey:result.nextObligation.operationKey}:undefined);requestInput.actionApproval=options.authorizedActions.find(a=>a?.kind===expected.kind&&a?.subjectDigest===expected.subjectDigest&&a?.scopeDigest===expected.scopeDigest);
+        }
+        const described=runtime.describeReleaseExecution(handle,requestInput);if(described.status!=='EXECUTION_DESCRIBED')return blocked(result,'EXACT_AUTHORIZED_INPUT_UNAVAILABLE');must(canonical(described.request)===canonical(entry.wire.request)&&canonical(described.budget)===canonical(entry.wire.budget),'supplied release authorization differs from next exact obligation');
+        const started=await runtime.executeReleaseObligation(handle,entry.wire);if(!['EXECUTION_PENDING','EXECUTION_VERIFIED'].includes(started.status))return blocked(decision(handle,replayRelease(handle)),'EXECUTION_NOT_SETTLED');
+        const resumed=await runtime.resumeReleaseExecution(handle,entry.wire.budget.scope.operationKey);if(resumed.status!=='EXECUTION_VERIFIED')return blocked(decision(handle,replayRelease(handle)),'ORIGINAL_OPERATION_RECONCILIATION_PENDING');
+      }
+      return decision(handle,replayRelease(handle));
+    }),
     describeReleaseApproval:(handle,action,details)=>safe(()=>{const item=owned(handle);return freeze({status:'RELEASE_APPROVAL_DESCRIBED',...actionExpectation(item,action,details)});}),
     describeReleaseExecution:(handle,input)=>executionSafe(()=>{
       const item=owned(handle),clean=z.strictObject({operationKey:z.string().min(1).max(200),limits:budgetLimitsSchema,actionApproval:z.unknown().optional(),reviewBinding:z.any().optional(),reviewShadow:z.any().optional(),rollback:z.strictObject({deploymentId:z.string().min(1).max(200),previousDeploymentId:z.string().min(1).max(200)}).optional()}).parse(input),request=requestFor(item,clean);

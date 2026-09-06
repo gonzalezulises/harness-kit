@@ -1,0 +1,10 @@
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to:
+  
+  'PRODUCT_REPLAYED'
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'PRODUCT_REPLAYED',
+    expected: 'PRODUCT_REPLAYED',
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }

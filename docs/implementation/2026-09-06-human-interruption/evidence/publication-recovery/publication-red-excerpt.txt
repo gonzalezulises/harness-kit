@@ -1,0 +1,11 @@
+  AssertionError [ERR_ASSERTION]: {"result":{"status":"BLOCKED_BY_OWNERSHIP","reason":"existing owner requires explicit scoped recovery; elapsed time is insufficient"},"effects":1,"observations":0,"collisions":1}
+  
+  0 !== 1
+  
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

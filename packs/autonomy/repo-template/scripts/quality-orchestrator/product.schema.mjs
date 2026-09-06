@@ -22,3 +22,20 @@ export const productPayloadSchema=z.discriminatedUnion('type',[
  z.strictObject({type:z.literal('DIFFERENCE'),difference:z.strictObject({id,desired:z.string().min(1).max(4000),observed:z.string().min(1).max(4000)})})
 ]);
 export {reviewSchema};
+
+// Explicit opt-in: historical v1 schemas and hashes above remain unchanged.
+export const humanDecisionCategories=['PRODUCT_DECISION','AUTHORITY_CONFLICT','SEMANTIC_RULE_CHANGE','DOMAIN_MEANING','ARCHITECTURE_EXPANSION','SHARED_SEMANTICS','SECURITY_PRIVACY_DATA','DESTRUCTIVE_MIGRATION','EXTERNAL_PRODUCTION_APPROVAL','ROLLBACK_DECISION'];
+export const humanInterruptionSchema=z.strictObject({classification:z.literal('HUMAN_DECISION_REQUIRED'),category:z.enum(humanDecisionCategories),decision:id,authorityGap:z.string().min(1).max(2000),alternatives:z.array(z.string().min(1).max(1000)).min(2).max(10),consequences:z.array(z.string().min(1).max(1000)).min(2).max(10),evidenceDigest:productHash});
+export const productRemediationRuleSchema=z.strictObject({kind:z.literal('canonical-record.v1'),path:reviewPath,goldenPath:reviewPath,corpusPath:reviewPath});
+export const productInputV2Schema=productInputSchema.extend({version:z.literal(2),operations:z.strictObject({toolingRetries:z.number().int().nonnegative().max(5),noProgressLimit:positive.max(5)}),remediations:z.array(productRemediationRuleSchema).max(10)});
+export const productObjectiveV2Schema=productObjectiveSchema.extend({version:z.literal(2),domain:z.literal('harness.product-objective.v2'),initialFiles:z.record(reviewPath,z.strictObject({digest:productHash,mode:z.enum(['100644','100755']),lines:z.number().int().nonnegative()})),input:productInputV2Schema,remediationProofs:z.array(z.strictObject({rule:productRemediationRuleSchema,semanticDigest:productHash,before:z.record(reviewPath,productHash),after:z.record(reviewPath,z.string().max(2*1024*1024))})).max(10)});
+export const productPayloadV2Schema=z.discriminatedUnion('type',[
+ ...productPayloadSchema.options.filter(s=>s.shape.type.value!=='BOUND'),
+ z.strictObject({type:z.literal('BOUND'),wire:z.strictObject({objective:productObjectiveV2Schema,approval:z.unknown()})}),
+ z.strictObject({type:z.literal('NORMALIZED'),key:id,digest:productHash,rawDigest:productHash}),
+ z.strictObject({type:z.literal('TOOL_FAILURE'),key:id,cause:id,fingerprint:productHash}),
+ z.strictObject({type:z.literal('OPERATIONAL_BLOCK'),cause:id}),
+ z.strictObject({type:z.literal('REBIND_RUN'),oldRunId:productHash,newRunId:productHash}),
+ z.strictObject({type:z.literal('REMEDIATION_INTENT'),proofIndex:z.number().int().nonnegative(),beforeManifestDigest:productHash}),
+ z.strictObject({type:z.literal('REMEDIATION_OBSERVATION'),proofIndex:z.number().int().nonnegative(),afterManifestDigest:productHash,approvalDigest:productHash})
+]);

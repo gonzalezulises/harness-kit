@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "command": [
+    "make",
+    "check"
+  ],
+  "sourceCommit": "dd8a20c1465b3ccd7e9a4d86ed6a11860146e7f7",
+  "sourceManifestSha256": "1291f7a237f3f6f8f06ebf98a1b9f2351809df94a035dc043d74bd267ccab80b",
+  "exit_code": 2,
+  "elapsed_seconds": 486.27675410300435,
+  "source_unchanged": true,
+  "streams": {
+    "stdout": {
+      "sha256": "d3b4fb1d4cb6493074686fef1ea75d1984da5e97f4ee2ad5b72d9f1a87263878",
+      "bytes": 71830
+    },
+    "stderr": {
+      "sha256": "cc3fad534bf684d534e64c27f46dc4bbdbffc850d67aa23d12129a68f69d1a8e",
+      "bytes": 86
+    }
+  },
+  "verification_summaries": [
+    "286 passed, 0 failed",
+    "# tests 33",
+    "# pass 33",
+    "# fail 0",
+    "# skipped 0",
+    "# tests 252",
+    "# pass 251",
+    "# fail 1",
+    "# skipped 0"
+  ],
+  "first_failure_excerpt": "not ok 188 - e2e two actual processes competing for one step nonce create one verifier effect\n---\nduration_ms: 6004.185708\ntype: 'test'\nlocation: '/workspace/scratch/adce1c53b293/harness-human-interruption/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-loop.test.mjs:72:1'\nfailureType: 'testCodeFailure'\nerror: |-\nExpected values to be strictly equal:\n\n0 !== 1\n\ncode: 'ERR_ASSERTION'\nname: 'AssertionError'\nexpected: 1\nactual: 0\noperator: 'strictEqual'\nstack: |-\nTestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-human-interruption/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-loop.test.mjs:72:1609)\nprocess.processTicksAndRejections (node:internal/process/task_queues:104:5)\nasync Test.run (node:internal/test_runner/test:1389:7)\nasync Test.processPendingSubtests (node:internal/test_runner/test:960:7)\n...\n# Subtest: e2e actual CLI source passes through product RED author patch High remediation and local PR preparation\nok 189 - e2e actual CLI source passes through product RED author patch High remediation and local PR preparation\n---\nduration_ms: 28187.51743\ntype: 'test'\n...",
+  "error_excerpt": "make[1]: *** [Makefile:33: check-core] Error 1\nmake: *** [Makefile:26: check] Error 2\n",
+  "environment": {
+    "NO_COLOR": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "K6_NO_USAGE_REPORT": "true",
+    "unsupportedNpmConfigRemoved": true
+  },
+  "sourceManifest": "pre-fix-sources.json",
+  "diagnosis": "The original two-process test observed one verifier effect but no settled product step. Child result reasons were not retained; root cause is not proven by this run. The isolated unchanged test and four diagnostic concurrent instances passed."
+}

@@ -1,0 +1,34 @@
+id: AC-HUMAN-INTERRUPTION
+requirement: Mechanical review recovery continues without an unjustified human gate and ingests only durable normalized output
+criticality: critical
+status: TEST_READY
+observable: A product.v2 objective repairs invalid infrastructure output and resumes the same authorized objective while semantic changes remain fail-closed
+oracle:
+  expected: Deterministic normalization preserves reviewer judgment and persisted canonical bytes equal both the ledger digest input and bytes ingested
+cases:
+  positive:
+  - Ten mechanical and tooling fixture causes are AUTO_REMEDIABLE and exercise verified continuation
+  negative:
+  - A semantic delta, invalid authority or uncertain effect never receives execution permission from a mechanical label
+  boundary:
+  - An interruption before ingest rereads durable output; corrupt or absent bytes never receive a successful ingest receipt
+context: Synthetic harness-kit fixtures; product.v2 explicit opt-in; no Casabat, Aurobalance, merge, baseline acceptance or real deployment
+side_effects:
+  must:
+  - Persist before ingest, preserve judgment and historical journal bytes, charge bounded attempts and reuse only proved authorized remediation
+  must_not:
+  - Manufacture human alternatives, evidence or IDs from ambiguous meaning, reset signed limits, duplicate uncertain effects or renew expired authority
+false_positive: A class label or successful schema parse alone cannot prove safe remediation or production completion
+owner: harness-kit maintainers under AGENTS.md and the owner HUMAN INTERRUPTION REDUCTION requirement of 2026-09-06
+evidence:
+  formats:
+  - Current source and test hashes, causal RED/GREEN command and exit, minimal error, structured receipt and exact reproduction
+  questions:
+  - Observe a defect that causes an unjustified human interrupt or ingest of bytes different from the durable output before marking this oracle TEST_READY
+tests:
+- packs/autonomy/repo-template/scripts/quality-orchestrator/tests/human-interruption.test.mjs
+
+falsification:
+  defect: Replacing both durable object reads with ephemeral reconstruction admits PRODUCT_REPLAYED after the normalized object was removed before ingest; the exact current A06 case observes ERR_ASSERTION and exit1 for that false admission
+  proved_sha: dd8a20c1465b3ccd7e9a4d86ed6a11860146e7f7
+  receipt: docs/implementation/2026-09-06-human-interruption/evidence/publication-recovery/red-receipt.json
