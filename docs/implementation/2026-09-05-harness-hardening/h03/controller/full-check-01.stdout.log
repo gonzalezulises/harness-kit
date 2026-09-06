@@ -1,0 +1,783 @@
+bash scripts/run-gates.sh quick
+── gates · aggregate quick · profile v1/kit
+  decisions-append-only    PASS (0.0s, exit 0)
+  agent-notes-tree         PASS (0.1s, exit 0)
+  arch-boundaries          PASS (0.4s, exit 0)
+  makefile-gates           PASS (0.0s, exit 0)
+  version-sync             PASS (0.0s, exit 0)
+  delivery-doc             PASS (0.0s, exit 0)
+  context-routes           PASS (0.0s, exit 0)
+  oracles-falsifiable      PASS (0.1s, exit 0)
+── 8 pass · 0 blocking · 0 not applicable
+make check-core
+make[1]: Entering directory '/workspace/scratch/adce1c53b293/harness-kit'
+bash scripts/check-prerequisites.sh full
+Prerequisites verified for full scope; no verification tests ran in this step.
+bash tests/run-tests.sh
+harness-kit test suite
+  ok   H01 verifier hardening regressions
+
+1. Syntax
+  ok   syntax harness-activate.sh
+  ok   syntax harness-audit.sh
+  ok   syntax harness-init.sh
+  ok   syntax harness-protect.sh
+  ok   syntax harness-status.sh
+  ok   syntax check-arch.sh
+  ok   syntax clean-state-check.sh
+  ok   syntax install-githooks.sh
+  ok   syntax pre-commit-staged.sh
+  ok   syntax run-gates.sh
+  ok   syntax session-trace.sh
+  ok   syntax setup-oracles.sh
+  ok   syntax verify-agent-notes.sh
+  ok   syntax verify-claims.sh
+  ok   syntax verify-context-routes.sh
+  ok   syntax verify-decisions.sh
+  ok   syntax verify-delivery-doc.sh
+  ok   syntax verify-feature.sh
+  ok   syntax verify-makefile-gates.sh
+  ok   syntax verify-oracles.sh
+  ok   syntax run-tests.sh
+  ok   in sync: scripts/check-arch.sh
+  ok   in sync: scripts/clean-state-check.sh
+  ok   in sync: scripts/install-githooks.sh
+  ok   in sync: scripts/pre-commit-staged.sh
+  ok   in sync: scripts/run-gates.sh
+  ok   in sync: scripts/session-trace.sh
+  ok   in sync: scripts/setup-oracles.sh
+  ok   in sync: scripts/verify-agent-notes.sh
+  ok   in sync: scripts/verify-claims.sh
+  ok   in sync: scripts/verify-context-routes.sh
+  ok   in sync: scripts/verify-decisions.sh
+  ok   in sync: scripts/verify-delivery-doc.sh
+  ok   in sync: scripts/verify-feature.sh
+  ok   in sync: scripts/verify-makefile-gates.sh
+  ok   in sync: scripts/verify-oracles.sh
+  ok   valid json feature_list.json
+  ok   valid json arch-rules.json
+
+2. Audit on a bare repo
+  ok   bare repo fails critical checks (1/7)
+  ok   audit exits 1 when critical checks fail
+
+3. Stable denominator
+  ok   same total for empty and bare repo (comparable scores)
+
+4. init --dry-run writes nothing
+  ok   dry run left no AGENTS.md
+
+5. init --level minimal
+  ok   minimal wrote AGENTS.md
+  ok   minimal wrote CLAUDE.md
+  ok   minimal wrote init.sh
+  ok   minimal wrote PROGRESS.md
+  ok   minimal wrote feature_list.json
+  ok   minimal wrote clean-state-checklist.md
+  ok   minimal wrote DECISIONS.md
+  ok   minimal wrote docs/decisions/README.md
+  ok   init.sh is executable
+  ok   all placeholders substituted in AGENTS.md
+  ok   detected the real verify command
+  ok   minimal harness passes all 7 critical checks
+
+6. init --level full
+  ok   full wrote Makefile
+  ok   full wrote scripts/verify-feature.sh
+  ok   full wrote scripts/check-arch.sh
+  ok   full wrote scripts/clean-state-check.sh
+  ok   full wrote scripts/session-trace.sh
+  ok   full wrote .harness/arch-rules.json
+  ok   full wrote templates/sprint-contract.md
+  ok   full wrote templates/evaluator-rubric.md
+  ok   full wrote docs/quality-document.md
+  ok   full harness scores >= 70/84 (got 81)
+  ok   gitignored the trace artifact
+
+7. init never clobbers without --force
+  ok   existing AGENTS.md preserved
+  ok   --force does overwrite
+
+8. verify-feature gate
+  ok   passing layers promote the feature
+  ok   evidence recorded on promotion
+  ok   failing layer exits non-zero
+  ok   failure prints repair guidance
+  ok   failure names the layer
+  ok   budgeted failure is blocked pending recovery authority
+  ok   layer calling exit still prints repair
+  ok   unknown feature id exits 66
+  ok   multiline layer command passes
+  ok   multiline layer keeps both commands
+  ok   repair prose never enters the execution channel
+
+9. clean-state-check
+  ok   clean tree passes the clock-out gate
+  ok   stray .orig file fails the gate
+  ok   .DS_Store alone does not fail the gate
+  ok   .DS_Store is reported as a note
+  ok   verify command that cd's does not leak the working directory
+  ok   passing-without-evidence is caught
+  ok   WIP=1 violation is caught
+
+10. check-arch
+  ok   clean repo passes arch rules
+  ok   committed secret trips a rule
+  ok   violation reports WHAT
+  ok   env-var reference and function call are not flagged
+  ok   violation reports WHY
+  ok   violation reports FIX
+  ok   violation names the offending file
+  ok   conflict markers trip a rule
+
+11. session-trace
+  ok   trace file written
+  ok   three events recorded
+  ok   every trace line is valid JSON
+
+12. NO_COLOR and JSON hygiene
+  ok   NO_COLOR suppresses ANSI codes
+  ok   --json emits parseable JSON
+
+  ok   fixture has no budget_defaults (the case that used to break)
+  ok   complete budgets pass enf.stopcond without budget_defaults
+13. budgets — the anti-loop gate
+  ok   missing stop_condition exits 67
+  ok   first failure still exits 1
+  ok   first failure consumes one round
+  ok   first failure still prints repair
+  ok   first failure reports budget spent
+  ok   ungranted retry exits policy code 5
+  ok   recovery authority requirement is named
+  ok   remaining budget is not relabelled exhausted
+  ok   failed feature remains blocked
+  ok   state edit and raised maximum do not grant recovery
+  ok   ungranted recovery rejects before layer effects
+  ok   failed ledger restores blocked state
+  ok   rejected recovery preserves spent rounds
+  ok   repeated blocker exits 4
+  ok   repeated blocker is named
+  ok   ledger accumulated before attempted recovery
+  ok   edited command still needs recovery authority
+  ok   edited command reports recovery requirement
+  ok   edited command does not execute without recovery authority
+  ok   rejected recovery preserves prior review rounds
+  ok   no budgets means unchanged exit 1
+  ok   no budgets still prints repair
+
+14. verify-claims — re-check what the repo claims is passing
+  ok   honest passing claim exits 0
+  ok   reports how many claims were re-verified
+  ok   false claim exits 1
+  ok   false claim is named FALSE_CLAIM
+  ok   false claim names the feature
+  ok   unverifiable claim exits 2
+  ok   claim without evidence exits 2
+  ok   missing evidence is named
+  ok   unclaimed features do not block
+  ok   no claims still exits 0
+  ok   no claims is stated, not silent
+  ok   required-quality workflow is scaffolded
+  ok   weakened verification exits 5
+  ok   the weakening is named
+  ok   it names the feature
+  ok   it shows the command that was there before
+  ok   changing the command while going back to active is allowed
+  ok   unchanged layers pass against a base
+  ok   a new feature is not a weakening
+  ok   no base still falls back to FALSE_CLAIM
+
+15. workflow integrity — the gate must protect its own definition
+  ok   every action is pinned to a 40-hex SHA
+  ok   integrity ruleset payload is scaffolded
+  ok   integrity ruleset targets push
+  ok   integrity ruleset is active
+  ok   integrity ruleset has no bypass actors
+  ok   integrity ruleset restricts the workflow path
+  ok   required-check ruleset payload is scaffolded
+  ok   harness-protect.sh exists
+  ok   harness-protect.sh parses
+  ok   AGENTS.md documents the skipped-job bypass
+
+16. audit rubric v2 — the score measures what is now enforced
+  ok   json declares the rubric version
+  ok   text output names the rubric
+  ok   rubric adds enforcement checks (10)
+  ok   full scaffold passes every enforcement check
+  ok   missing verify-claims.sh is caught
+  ok   unpinned action is caught
+  ok   budgets without stop_condition is caught
+
+17. verify-decisions — the record of WHY cannot be rewritten
+  ok   unchanged ledger passes
+  ok   appending a decision is allowed
+  ok   rewriting an earlier decision exits 1
+  ok   the rewrite is named
+  ok   the altered decision is identified
+  ok   deleting an earlier decision exits 1
+  ok   the deleted decision is identified
+  ok   DECISIONS_BASE_FILE path catches the rewrite too
+  ok   DECISIONS_BASE_FILE path passes an intact ledger
+  ok   absent ledger in base is not an error
+
+18. activate / status — one command, and an honest answer
+  ok   status reports NOT_ACTIVATED before anything exists
+  ok   status exits non-zero when not activated
+  ok   activate --dry-run wrote nothing
+  ok   activate exits 0 on a local repo
+  ok   activate installed AGENTS.md
+  ok   activate installed feature_list.json
+  ok   activate installed Makefile
+  ok   activate installed scripts/verify-claims.sh
+  ok   activate installed scripts/verify-decisions.sh
+  ok   activate installed .github/workflows/required-quality.yml
+  ok   activate names the detected verify command
+  ok   activate reports READY_LOCAL without a remote
+  ok   status agrees after activation
+  ok   status exits 0 when activated
+  ok   activate is idempotent and never clobbers
+  ok   --with gherkin installs the runner
+  ok   --with gherkin installs the validator
+  ok   gherkin stays opt-in when not requested
+  ok   an unknown pack is a usage error (exit 64)
+  ok   the unknown pack is named in the error
+  ok   a rejected --with installs nothing
+
+19. version and fleet drift
+  ok   VERSION file exists
+  ok   VERSION is semver (2.2.5)
+  ok   audit reports the VERSION file
+  ok   target records the kit version
+  ok   recorded version matches the kit
+  ok   status shows the kit version
+  ok   an up-to-date repo is not reported as stale
+  ok   a stale repo is reported
+  ok   the stale report names both versions
+  ok   version-sync passes when every copy agrees
+  ok   version-sync rejects a stale .harness/kit-version
+  ok   version-sync rejects a manifest that disagrees with VERSION
+  ok   sync-version.sh repairs the drift its own error message points at
+
+20. Declared gates must do real work
+  ok   scaffolded e2e without a command fails closed
+  ok   the empty e2e explains itself
+  ok   a placeholder target is rejected
+  ok   the offending target is named
+  ok   a Makefile whose targets all work is accepted
+  ok   installed: scripts/check-arch.sh
+  ok   installed: scripts/verify-agent-notes.sh
+  ok   installed: scripts/verify-claims.sh
+  ok   installed: scripts/verify-context-routes.sh
+  ok   installed: scripts/verify-decisions.sh
+  ok   installed: scripts/verify-delivery-doc.sh
+  ok   installed: scripts/verify-makefile-gates.sh
+  ok   installed: scripts/verify-oracles.sh
+  ok   makefile-gates is a registered gate
+
+21. verify-claims observes every declared execution
+  ok   shared-layer claims still exit 0
+  ok   an identical command runs for every declaration
+  ok   every feature is still reported
+  ok   two distinct commands both run
+  ok   a shared failing command still fails
+  ok   it fails once per feature that declares it
+
+15 — verify-delivery-doc
+  ok   a runbook describing the previous release fails
+  ok   it names the stale deploy tag
+  ok   it names the unmentioned migration
+  ok   it flags the section about an older version
+  ok   it flags the dead relative link
+  ok   an unresolvable DELIVERY_BASE is NOT_CONFIGURED, not a pass
+  ok   the corrected runbook passes
+  ok   and says which release it describes
+  ok   a changelog's own tags are not flagged
+  ok   no runbook heading is a skip, not a failure
+  ok   and the skip says why
+  ok   a delivering repo cannot lose its runbook silently
+
+16 — run-gates state machine
+  ok   a passing gate exits 0
+  ok   and reports PASS
+  ok   FAIL blocks the run
+  ok   FAIL is reported by name
+  ok   NOT_CONFIGURED blocks the run
+  ok   NOT_CONFIGURED is reported by name
+  ok   TOOL_FAILURE blocks the run
+  ok   TOOL_FAILURE is reported by name
+  ok   INCOMPLETE blocks the run
+  ok   INCOMPLETE is reported by name
+  ok   POLICY blocks the run
+  ok   POLICY is reported by name
+  ok   UNKNOWN blocks the run
+  ok   UNKNOWN is reported by name
+  ok   an unknown state says nothing was verified
+  ok   a missing REQUIRED gate blocks
+  ok   and is named NOT_EXECUTED
+  ok   a declared inapplicable kit-only gate does not block
+  ok   and states explicit applicability
+  ok   a passing gate does not offset a blocking one
+
+17 — verify-context-routes
+  ok   a governed change citing nothing fails
+  ok   it names the documents that govern it
+  ok   and says why they govern
+  ok   the same change, citing its source, passes
+  ok   a citation inside an Agent Note counts
+  ok   an ungoverned change is not nagged
+  ok   --list advises without blocking
+  ok   and prints the reading list
+  ok   an unresolvable base never passes
+  ok   a missing route map is NOT_CONFIGURED
+  ok   a malformed route map is NOT_CONFIGURED
+
+18 — verify-oracles
+  ok   no oracles is a pass, stated out loud
+  ok   an unanswered question blocks TEST_READY
+  ok   and the message quotes the question
+  ok   «TBD» does not count as answered
+  ok   a critical criterion with no falsification blocks
+  ok   and says what a test only seen passing proves
+  ok   a proved criterion passes
+  ok   editing the test after the proof goes stale
+  ok   and names the test that moved
+  ok   and says the proof no longer covers it
+  ok   a SHA outside this history blocks
+  ok   and says so plainly
+  ok   a test that does not exist blocks
+  ok   a critical DRAFT blocks
+  ok   and says no code should rely on it yet
+  ok   a retired criterion is not enforced
+  ok   --list never blocks
+  ok   and shows the status
+  ok   H02 live gates, profile, hook, oracle and status regression matrix
+
+────────────────────────────────────────
+286 passed, 0 failed
+All tests passed.
+
+TAP version 13
+# Subtest: valid pinned adoption and accepted baseline yield opaque instance handles
+ok 1 - valid pinned adoption and accepted baseline yield opaque instance handles
+  ---
+  duration_ms: 20.552068
+  type: 'test'
+  ...
+# Subtest: receipt repo blocks even when signed
+ok 2 - receipt repo blocks even when signed
+  ---
+  duration_ms: 1.899498
+  type: 'test'
+  ...
+# Subtest: receipt subject blocks even when signed
+ok 3 - receipt subject blocks even when signed
+  ---
+  duration_ms: 1.629128
+  type: 'test'
+  ...
+# Subtest: receipt scope blocks even when signed
+ok 4 - receipt scope blocks even when signed
+  ---
+  duration_ms: 1.780251
+  type: 'test'
+  ...
+# Subtest: receipt kind blocks even when signed
+ok 5 - receipt kind blocks even when signed
+  ---
+  duration_ms: 1.791718
+  type: 'test'
+  ...
+# Subtest: receipt role blocks even when signed
+ok 6 - receipt role blocks even when signed
+  ---
+  duration_ms: 1.924935
+  type: 'test'
+  ...
+# Subtest: receipt issuer blocks even when signed
+ok 7 - receipt issuer blocks even when signed
+  ---
+  duration_ms: 1.511554
+  type: 'test'
+  ...
+# Subtest: receipt key blocks even when signed
+ok 8 - receipt key blocks even when signed
+  ---
+  duration_ms: 1.947078
+  type: 'test'
+  ...
+# Subtest: receipt expired blocks even when signed
+ok 9 - receipt expired blocks even when signed
+  ---
+  duration_ms: 2.15824
+  type: 'test'
+  ...
+# Subtest: receipt future blocks even when signed
+ok 10 - receipt future blocks even when signed
+  ---
+  duration_ms: 1.612384
+  type: 'test'
+  ...
+# Subtest: receipt epoch blocks even when signed
+ok 11 - receipt epoch blocks even when signed
+  ---
+  duration_ms: 1.451245
+  type: 'test'
+  ...
+# Subtest: receipt decision blocks even when signed
+ok 12 - receipt decision blocks even when signed
+  ---
+  duration_ms: 1.858637
+  type: 'test'
+  ...
+# Subtest: altered receipt signature and unknown fields block
+ok 13 - altered receipt signature and unknown fields block
+  ---
+  duration_ms: 3.578849
+  type: 'test'
+  ...
+# Subtest: missing time/revocation authority stops and revocation invalidates existing handles
+ok 14 - missing time/revocation authority stops and revocation invalidates existing handles
+  ---
+  duration_ms: 4.710403
+  type: 'test'
+  ...
+# Subtest: trusted inputs are copied and time/checkpoint freshness is checked repeatedly
+ok 15 - trusted inputs are copied and time/checkpoint freshness is checked repeatedly
+  ---
+  duration_ms: 3.853456
+  type: 'test'
+  ...
+# Subtest: authority bytes reject duplicate keys, unknown policy and noncanonical serialization
+ok 16 - authority bytes reject duplicate keys, unknown policy and noncanonical serialization
+  ---
+  duration_ms: 1.547878
+  type: 'test'
+  ...
+# Subtest: signature domain separation prevents signatures over ordinary JSON from authorizing
+ok 17 - signature domain separation prevents signatures over ordinary JSON from authorizing
+  ---
+  duration_ms: 1.875402
+  type: 'test'
+  ...
+# Subtest: adoption rejects even host-pinned signed authority for a different runtime/schema contract
+ok 18 - adoption rejects even host-pinned signed authority for a different runtime/schema contract
+  ---
+  duration_ms: 0.841674
+  type: 'test'
+  ...
+# Subtest: unavailable trusted clock is a structured stop on existing handles
+ok 19 - unavailable trusted clock is a structured stop on existing handles
+  ---
+  duration_ms: 3.650846
+  type: 'test'
+  ...
+# Subtest: loadAuthority preserves the expired stop at constructor reinspection
+ok 20 - loadAuthority preserves the expired stop at constructor reinspection
+  ---
+  duration_ms: 2.21259
+  type: 'test'
+  ...
+# Subtest: loadAuthority preserves the unavailable stop at constructor reinspection
+ok 21 - loadAuthority preserves the unavailable stop at constructor reinspection
+  ---
+  duration_ms: 1.568048
+  type: 'test'
+  ...
+# Subtest: loadAuthority preserves an original verifyApproval signature stop
+ok 22 - loadAuthority preserves an original verifyApproval signature stop
+  ---
+  duration_ms: 2.037411
+  type: 'test'
+  ...
+# Subtest: verifyContext preserves the expired stop at constructor reinspection
+ok 23 - verifyContext preserves the expired stop at constructor reinspection
+  ---
+  duration_ms: 2.873778
+  type: 'test'
+  ...
+# Subtest: verifyContext preserves the unavailable stop at constructor reinspection
+ok 24 - verifyContext preserves the unavailable stop at constructor reinspection
+  ---
+  duration_ms: 5.013069
+  type: 'test'
+  ...
+# Subtest: verifyContext preserves an original verifyApproval signature stop
+ok 25 - verifyContext preserves an original verifyApproval signature stop
+  ---
+  duration_ms: 2.545883
+  type: 'test'
+  ...
+# Subtest: recomputes canonical reorder and returns assessment without execution permission
+ok 26 - recomputes canonical reorder and returns assessment without execution permission
+  ---
+  duration_ms: 18.252448
+  type: 'test'
+  ...
+# Subtest: closed derived content digest update is recomputed from accepted/canonical source
+ok 27 - closed derived content digest update is recomputed from accepted/canonical source
+  ---
+  duration_ms: 9.249781
+  type: 'test'
+  ...
+# Subtest: semantic change, docs extension and arbitrary proof names cannot become mechanical
+ok 28 - semantic change, docs extension and arbitrary proof names cannot become mechanical
+  ---
+  duration_ms: 5.065678
+  type: 'test'
+  ...
+# Subtest: before substitution and unsigned/substituted baseline cannot be accepted
+ok 29 - before substitution and unsigned/substituted baseline cannot be accepted
+  ---
+  duration_ms: 4.77701
+  type: 'test'
+  ...
+# Subtest: forged, copied, foreign and stale contexts block
+ok 30 - forged, copied, foreign and stale contexts block
+  ---
+  duration_ms: 7.388931
+  type: 'test'
+  ...
+# Subtest: known normative changes require a human; mixed batches never partially authorize
+ok 31 - known normative changes require a human; mixed batches never partially authorize
+  ---
+  duration_ms: 3.607151
+  type: 'test'
+  ...
+# Subtest: empty batches, duplicate paths and missing before bindings are unknown
+ok 32 - empty batches, duplicate paths and missing before bindings are unknown
+  ---
+  duration_ms: 2.505404
+  type: 'test'
+  ...
+# Subtest: derived source substitution, recursive source and nonmechanical batch source block
+ok 33 - derived source substitution, recursive source and nonmechanical batch source block
+  ---
+  duration_ms: 6.332971
+  type: 'test'
+  ...
+# Subtest: candidate cannot replace schema, trust roots, policy or execution adapter
+ok 34 - candidate cannot replace schema, trust roots, policy or execution adapter
+  ---
+  duration_ms: 4.055123
+  type: 'test'
+  ...
+# Subtest: copied source bytes cannot mutate an already accepted context
+ok 35 - copied source bytes cannot mutate an already accepted context
+  ---
+  duration_ms: 4.347045
+  type: 'test'
+  ...
+# Subtest: baseline order is code-unit deterministic across case and locale
+ok 36 - baseline order is code-unit deterministic across case and locale
+  ---
+  duration_ms: 3.615183
+  type: 'test'
+  ...
+# Subtest: adding an explicit default TAG directive cannot earn canonical reorder eligibility
+ok 37 - adding an explicit default TAG directive cannot earn canonical reorder eligibility
+  ---
+  duration_ms: 3.428378
+  type: 'test'
+  ...
+# Subtest: key reorder preserves canonical and semantic identity while content changes
+ok 38 - key reorder preserves canonical and semantic identity while content changes
+  ---
+  duration_ms: 19.181422
+  type: 'test'
+  ...
+# Subtest: lower threshold remains distinct
+ok 39 - lower threshold remains distinct
+  ---
+  duration_ms: 4.022355
+  type: 'test'
+  ...
+# Subtest: large integers remains distinct
+ok 40 - large integers remains distinct
+  ---
+  duration_ms: 4.069365
+  type: 'test'
+  ...
+# Subtest: near decimals remains distinct
+ok 41 - near decimals remains distinct
+  ---
+  duration_ms: 3.516018
+  type: 'test'
+  ...
+# Subtest: signed zero remains distinct
+ok 42 - signed zero remains distinct
+  ---
+  duration_ms: 3.874977
+  type: 'test'
+  ...
+# Subtest: exponents remains distinct
+ok 43 - exponents remains distinct
+  ---
+  duration_ms: 3.245057
+  type: 'test'
+  ...
+# Subtest: decimal spelling remains distinct
+ok 44 - decimal spelling remains distinct
+  ---
+  duration_ms: 3.962968
+  type: 'test'
+  ...
+# Subtest: human text whitespace and enum remain distinct
+ok 45 - human text whitespace and enum remain distinct
+  ---
+  duration_ms: 5.598686
+  type: 'test'
+  ...
+# Subtest: renamed field rejects
+ok 46 - renamed field rejects
+  ---
+  duration_ms: 2.143919
+  type: 'test'
+  ...
+# Subtest: unknown field rejects
+ok 47 - unknown field rejects
+  ---
+  duration_ms: 1.378568
+  type: 'test'
+  ...
+# Subtest: boolean as string rejects
+ok 48 - boolean as string rejects
+  ---
+  duration_ms: 1.656318
+  type: 'test'
+  ...
+# Subtest: number as string rejects
+ok 49 - number as string rejects
+  ---
+  duration_ms: 1.631511
+  type: 'test'
+  ...
+# Subtest: number as bool rejects
+ok 50 - number as bool rejects
+  ---
+  duration_ms: 4.879132
+  type: 'test'
+  ...
+# Subtest: duplicate keys rejects
+ok 51 - duplicate keys rejects
+  ---
+  duration_ms: 6.324919
+  type: 'test'
+  ...
+# Subtest: alias rejects
+ok 52 - alias rejects
+  ---
+  duration_ms: 2.241784
+  type: 'test'
+  ...
+# Subtest: tag rejects
+ok 53 - tag rejects
+  ---
+  duration_ms: 1.810857
+  type: 'test'
+  ...
+# Subtest: lossy form rejects
+ok 54 - lossy form rejects
+  ---
+  duration_ms: 1.701726
+  type: 'test'
+  ...
+# Subtest: hex rejects
+ok 55 - hex rejects
+  ---
+  duration_ms: 1.72526
+  type: 'test'
+  ...
+# Subtest: invalid enum rejects
+ok 56 - invalid enum rejects
+  ---
+  duration_ms: 4.093841
+  type: 'test'
+  ...
+# Subtest: merge key rejects
+ok 57 - merge key rejects
+  ---
+  duration_ms: 3.392434
+  type: 'test'
+  ...
+# Subtest: unknown schema, schema hash claim and invalid UTF8 reject
+ok 58 - unknown schema, schema hash claim and invalid UTF8 reject
+  ---
+  duration_ms: 3.889088
+  type: 'test'
+  ...
+# Subtest: identities cannot be mutated and repository binding changes semantics
+ok 59 - identities cannot be mutated and repository binding changes semantics
+  ---
+  duration_ms: 3.170506
+  type: 'test'
+  ...
+# Subtest: human comments and directives are unsupported instead of silently erased
+ok 60 - human comments and directives are unsupported instead of silently erased
+  ---
+  duration_ms: 3.754329
+  type: 'test'
+  ...
+# Subtest: a YAML mapping cannot impersonate the internal numeric domain representation
+ok 61 - a YAML mapping cannot impersonate the internal numeric domain representation
+  ---
+  duration_ms: 1.745961
+  type: 'test'
+  ...
+# Subtest: explicit default-handle TAG directives reject instead of inheriting implicit defaults
+ok 62 - explicit default-handle TAG directives reject instead of inheriting implicit defaults
+  ---
+  duration_ms: 3.711676
+  type: 'test'
+  ...
+1..62
+# tests 62
+# suites 0
+# pass 62
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 275.489658
+
+Gherkin pack — failure matrix
+
+  ok   valid run passes (exit 0)
+  ok   valid run passes with a matching --expect (exit 0)
+  ok   zero execution blocks (exit 2)
+  ok   executing fewer scenarios than declared blocks (exit 2)
+  ok   FAILED blocks (exit 1)
+  ok   UNDEFINED blocks (exit 1)
+  ok   AMBIGUOUS blocks (exit 1)
+  ok   PENDING blocks (exit 1)
+  ok   SKIPPED blocks (exit 1)
+  ok   duplicate scenario id blocks (exit 1)
+  ok   malformed report blocks (exit 3)
+  ok   truncated report blocks (exit 3)
+  ok   missing report blocks (exit 3)
+  ok   --expect rejects a non-numeric argument (exit 64)
+  ok   validator runs inside a "type": "module" repo
+
+────────────────────────────────────────
+15 passed, 0 failed
+Every failure mode blocks.
+
+verify-pack: k6 k6 v2.1.0 (commit/83a87a41e2, go1.26.4, linux/amd64)
+
+1. sintaxis
+  ok   bin/perf-check es bash válido
+  ok   bin/perf-check no anula códigos de salida
+  ok   los scripts de k6 son JS válido
+fixture-server healthy owned-pid=22943 port=43531 work=/tmp/tmp.Z1kC9pFBb9
+fixture-server redirect-login owned-pid=22948 port=37083 work=/tmp/tmp.Z1kC9pFBb9
+fixture-server login-200 owned-pid=22953 port=36263 work=/tmp/tmp.Z1kC9pFBb9
+fixture-server slow owned-pid=22958 port=43191 work=/tmp/tmp.Z1kC9pFBb9
+fixture-server unauthorized owned-pid=22963 port=41281 work=/tmp/tmp.Z1kC9pFBb9
+fixture-server shell owned-pid=22968 port=44441 work=/tmp/tmp.Z1kC9pFBb9
+
+2. la compuerta aprueba cuando debe
+  ok   app sana con marcador aprueba
+
+3. la compuerta bloquea el falso verde
+  ok   redirección a pantalla de autenticación
+  ok   200 sin el marcador de la aplicación
+  ok   objetivo autenticado sin marcador declarado

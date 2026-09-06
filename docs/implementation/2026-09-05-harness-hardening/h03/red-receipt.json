@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "docs/implementation/2026-09-05-harness-hardening/h03/final-falsification-source/tests/authority.test.mjs",
+    "docs/implementation/2026-09-05-harness-hardening/h03/final-falsification-source/tests/classify.test.mjs",
+    "docs/implementation/2026-09-05-harness-hardening/h03/final-falsification-source/tests/identity.test.mjs"
+  ],
+  "exit_code": 1,
+  "logs": {
+    "docs/implementation/2026-09-05-harness-hardening/h03/final-red.stdout.log": "3ef427d0173af9c72fabd6293b0e750d3dcd038fc712a1359689dca7624c8b2a",
+    "docs/implementation/2026-09-05-harness-hardening/h03/final-red.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "tests": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/authority.test.mjs": "ab9a23935ee68f2d6220048ee555c307d5063d75e266606fb26f2dd68f462f6b",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/classify.test.mjs": "6e51172aee0b39fa3fe8e9a1398abe3621d454fe1aed2baccff024d2b587f2ab",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/helpers.mjs": "8eab979a11d050cc4f835a4824e42daa71e93bf4a18e0c2b45577ed589a48afc",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/identity.test.mjs": "93b8d84ddb753afd8366588fa9ff0fe57f55e3789e75df3b4b6964d2e5bfdf7a"
+  },
+  "source": {
+    "docs/implementation/2026-09-05-harness-hardening/h03/final-falsification-source/authority.mjs": "c14be069881a7f3656d64ac3199f0656c78ee982dca7ebeae8ccb86564bce578",
+    "docs/implementation/2026-09-05-harness-hardening/h03/final-falsification-source/classify.mjs": "2ad4dce092178724b942ec9b4e4015437d9cd43221d8a42e01907aae60b4ed4e",
+    "docs/implementation/2026-09-05-harness-hardening/h03/final-falsification-source/identity.mjs": "0a302f7f96d4cc61d4c5f6007f23dc4c403bf420613a1bf66faab088006f8553",
+    "docs/implementation/2026-09-05-harness-hardening/h03/final-falsification-source/index.mjs": "f432d8adce532354f4e2f13c3de0efbb48ab66c7850cf8be0b794c32cce419e3",
+    "docs/implementation/2026-09-05-harness-hardening/h03/final-falsification-source/package-lock.json": "19d4495481f1a940a52ab63684bc400b938cc7c6bc744be889fa453030ba622c",
+    "docs/implementation/2026-09-05-harness-hardening/h03/final-falsification-source/package.json": "6c8370fa233ab09d20b96330d90a9541d0b3f2c71aa19025988677b879262296",
+    "docs/implementation/2026-09-05-harness-hardening/h03/final-falsification-source/tests/authority.test.mjs": "ab9a23935ee68f2d6220048ee555c307d5063d75e266606fb26f2dd68f462f6b",
+    "docs/implementation/2026-09-05-harness-hardening/h03/final-falsification-source/tests/classify.test.mjs": "6e51172aee0b39fa3fe8e9a1398abe3621d454fe1aed2baccff024d2b587f2ab",
+    "docs/implementation/2026-09-05-harness-hardening/h03/final-falsification-source/tests/helpers.mjs": "8eab979a11d050cc4f835a4824e42daa71e93bf4a18e0c2b45577ed589a48afc",
+    "docs/implementation/2026-09-05-harness-hardening/h03/final-falsification-source/tests/identity.test.mjs": "93b8d84ddb753afd8366588fa9ff0fe57f55e3789e75df3b4b6964d2e5bfdf7a"
+  }
+}

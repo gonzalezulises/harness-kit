@@ -1,0 +1,490 @@
+TAP version 13
+# Subtest: valid pinned adoption and accepted baseline yield opaque instance handles
+ok 1 - valid pinned adoption and accepted baseline yield opaque instance handles
+  ---
+  duration_ms: 18.983106
+  type: 'test'
+  ...
+# Subtest: receipt repo blocks even when signed
+ok 2 - receipt repo blocks even when signed
+  ---
+  duration_ms: 1.687414
+  type: 'test'
+  ...
+# Subtest: receipt subject blocks even when signed
+ok 3 - receipt subject blocks even when signed
+  ---
+  duration_ms: 1.541328
+  type: 'test'
+  ...
+# Subtest: receipt scope blocks even when signed
+ok 4 - receipt scope blocks even when signed
+  ---
+  duration_ms: 1.622729
+  type: 'test'
+  ...
+# Subtest: receipt kind blocks even when signed
+ok 5 - receipt kind blocks even when signed
+  ---
+  duration_ms: 1.761213
+  type: 'test'
+  ...
+# Subtest: receipt role blocks even when signed
+ok 6 - receipt role blocks even when signed
+  ---
+  duration_ms: 1.542991
+  type: 'test'
+  ...
+# Subtest: receipt issuer blocks even when signed
+ok 7 - receipt issuer blocks even when signed
+  ---
+  duration_ms: 1.501119
+  type: 'test'
+  ...
+# Subtest: receipt key blocks even when signed
+ok 8 - receipt key blocks even when signed
+  ---
+  duration_ms: 1.714775
+  type: 'test'
+  ...
+# Subtest: receipt expired blocks even when signed
+ok 9 - receipt expired blocks even when signed
+  ---
+  duration_ms: 1.87473
+  type: 'test'
+  ...
+# Subtest: receipt future blocks even when signed
+ok 10 - receipt future blocks even when signed
+  ---
+  duration_ms: 1.612393
+  type: 'test'
+  ...
+# Subtest: receipt epoch blocks even when signed
+ok 11 - receipt epoch blocks even when signed
+  ---
+  duration_ms: 1.27867
+  type: 'test'
+  ...
+# Subtest: receipt decision blocks even when signed
+ok 12 - receipt decision blocks even when signed
+  ---
+  duration_ms: 1.860239
+  type: 'test'
+  ...
+# Subtest: altered receipt signature and unknown fields block
+ok 13 - altered receipt signature and unknown fields block
+  ---
+  duration_ms: 3.380276
+  type: 'test'
+  ...
+# Subtest: missing time/revocation authority stops and revocation invalidates existing handles
+ok 14 - missing time/revocation authority stops and revocation invalidates existing handles
+  ---
+  duration_ms: 4.361657
+  type: 'test'
+  ...
+# Subtest: trusted inputs are copied and time/checkpoint freshness is checked repeatedly
+ok 15 - trusted inputs are copied and time/checkpoint freshness is checked repeatedly
+  ---
+  duration_ms: 3.422608
+  type: 'test'
+  ...
+# Subtest: authority bytes reject duplicate keys, unknown policy and noncanonical serialization
+ok 16 - authority bytes reject duplicate keys, unknown policy and noncanonical serialization
+  ---
+  duration_ms: 1.875642
+  type: 'test'
+  ...
+# Subtest: signature domain separation prevents signatures over ordinary JSON from authorizing
+ok 17 - signature domain separation prevents signatures over ordinary JSON from authorizing
+  ---
+  duration_ms: 1.621426
+  type: 'test'
+  ...
+# Subtest: adoption rejects even host-pinned signed authority for a different runtime/schema contract
+ok 18 - adoption rejects even host-pinned signed authority for a different runtime/schema contract
+  ---
+  duration_ms: 0.951947
+  type: 'test'
+  ...
+# Subtest: unavailable trusted clock is a structured stop on existing handles
+ok 19 - unavailable trusted clock is a structured stop on existing handles
+  ---
+  duration_ms: 3.594973
+  type: 'test'
+  ...
+# Subtest: loadAuthority preserves the expired stop at constructor reinspection
+not ok 20 - loadAuthority preserves the expired stop at constructor reinspection
+  ---
+  duration_ms: 3.169926
+  type: 'test'
+  location: '/workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/authority.test.mjs:47:50'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [Object: null prototype] {}
+    - {
+    -   reason: 'approval is not current',
+    -   status: 'BLOCKED_BY_STALE_AUTHORITY'
+    - }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'BLOCKED_BY_STALE_AUTHORITY'
+    reason: 'approval is not current'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/authority.test.mjs:61:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: loadAuthority preserves the unavailable stop at constructor reinspection
+not ok 21 - loadAuthority preserves the unavailable stop at constructor reinspection
+  ---
+  duration_ms: 2.065563
+  type: 'test'
+  location: '/workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/authority.test.mjs:47:50'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [Object: null prototype] {}
+    - {
+    -   reason: 'trusted time source unavailable',
+    -   status: 'BLOCKED_BY_STALE_AUTHORITY'
+    - }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'BLOCKED_BY_STALE_AUTHORITY'
+    reason: 'trusted time source unavailable'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/authority.test.mjs:61:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: loadAuthority preserves an original verifyApproval signature stop
+ok 22 - loadAuthority preserves an original verifyApproval signature stop
+  ---
+  duration_ms: 2.019975
+  type: 'test'
+  ...
+# Subtest: verifyContext preserves the expired stop at constructor reinspection
+not ok 23 - verifyContext preserves the expired stop at constructor reinspection
+  ---
+  duration_ms: 2.866336
+  type: 'test'
+  location: '/workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/authority.test.mjs:47:50'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [Object: null prototype] {}
+    - {
+    -   reason: 'approval is not current',
+    -   status: 'BLOCKED_BY_STALE_AUTHORITY'
+    - }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'BLOCKED_BY_STALE_AUTHORITY'
+    reason: 'approval is not current'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/authority.test.mjs:61:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: verifyContext preserves the unavailable stop at constructor reinspection
+not ok 24 - verifyContext preserves the unavailable stop at constructor reinspection
+  ---
+  duration_ms: 4.509665
+  type: 'test'
+  location: '/workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/authority.test.mjs:47:50'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [Object: null prototype] {}
+    - {
+    -   reason: 'trusted time source unavailable',
+    -   status: 'BLOCKED_BY_STALE_AUTHORITY'
+    - }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    status: 'BLOCKED_BY_STALE_AUTHORITY'
+    reason: 'trusted time source unavailable'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/authority.test.mjs:61:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: verifyContext preserves an original verifyApproval signature stop
+ok 25 - verifyContext preserves an original verifyApproval signature stop
+  ---
+  duration_ms: 2.412546
+  type: 'test'
+  ...
+# Subtest: recomputes canonical reorder and returns assessment without execution permission
+ok 26 - recomputes canonical reorder and returns assessment without execution permission
+  ---
+  duration_ms: 18.770732
+  type: 'test'
+  ...
+# Subtest: closed derived content digest update is recomputed from accepted/canonical source
+ok 27 - closed derived content digest update is recomputed from accepted/canonical source
+  ---
+  duration_ms: 9.83087
+  type: 'test'
+  ...
+# Subtest: semantic change, docs extension and arbitrary proof names cannot become mechanical
+ok 28 - semantic change, docs extension and arbitrary proof names cannot become mechanical
+  ---
+  duration_ms: 4.942685
+  type: 'test'
+  ...
+# Subtest: before substitution and unsigned/substituted baseline cannot be accepted
+ok 29 - before substitution and unsigned/substituted baseline cannot be accepted
+  ---
+  duration_ms: 4.756831
+  type: 'test'
+  ...
+# Subtest: forged, copied, foreign and stale contexts block
+ok 30 - forged, copied, foreign and stale contexts block
+  ---
+  duration_ms: 7.042348
+  type: 'test'
+  ...
+# Subtest: known normative changes require a human; mixed batches never partially authorize
+ok 31 - known normative changes require a human; mixed batches never partially authorize
+  ---
+  duration_ms: 4.618446
+  type: 'test'
+  ...
+# Subtest: empty batches, duplicate paths and missing before bindings are unknown
+ok 32 - empty batches, duplicate paths and missing before bindings are unknown
+  ---
+  duration_ms: 2.462279
+  type: 'test'
+  ...
+# Subtest: derived source substitution, recursive source and nonmechanical batch source block
+ok 33 - derived source substitution, recursive source and nonmechanical batch source block
+  ---
+  duration_ms: 5.797769
+  type: 'test'
+  ...
+# Subtest: candidate cannot replace schema, trust roots, policy or execution adapter
+ok 34 - candidate cannot replace schema, trust roots, policy or execution adapter
+  ---
+  duration_ms: 4.182301
+  type: 'test'
+  ...
+# Subtest: copied source bytes cannot mutate an already accepted context
+ok 35 - copied source bytes cannot mutate an already accepted context
+  ---
+  duration_ms: 3.356912
+  type: 'test'
+  ...
+# Subtest: baseline order is code-unit deterministic across case and locale
+ok 36 - baseline order is code-unit deterministic across case and locale
+  ---
+  duration_ms: 4.257813
+  type: 'test'
+  ...
+# Subtest: adding an explicit default TAG directive cannot earn canonical reorder eligibility
+ok 37 - adding an explicit default TAG directive cannot earn canonical reorder eligibility
+  ---
+  duration_ms: 3.285887
+  type: 'test'
+  ...
+# Subtest: key reorder preserves canonical and semantic identity while content changes
+ok 38 - key reorder preserves canonical and semantic identity while content changes
+  ---
+  duration_ms: 17.541907
+  type: 'test'
+  ...
+# Subtest: lower threshold remains distinct
+ok 39 - lower threshold remains distinct
+  ---
+  duration_ms: 3.506793
+  type: 'test'
+  ...
+# Subtest: large integers remains distinct
+ok 40 - large integers remains distinct
+  ---
+  duration_ms: 4.081693
+  type: 'test'
+  ...
+# Subtest: near decimals remains distinct
+ok 41 - near decimals remains distinct
+  ---
+  duration_ms: 3.242442
+  type: 'test'
+  ...
+# Subtest: signed zero remains distinct
+ok 42 - signed zero remains distinct
+  ---
+  duration_ms: 3.78225
+  type: 'test'
+  ...
+# Subtest: exponents remains distinct
+ok 43 - exponents remains distinct
+  ---
+  duration_ms: 3.34229
+  type: 'test'
+  ...
+# Subtest: decimal spelling remains distinct
+ok 44 - decimal spelling remains distinct
+  ---
+  duration_ms: 4.240437
+  type: 'test'
+  ...
+# Subtest: human text whitespace and enum remain distinct
+ok 45 - human text whitespace and enum remain distinct
+  ---
+  duration_ms: 5.167287
+  type: 'test'
+  ...
+# Subtest: renamed field rejects
+ok 46 - renamed field rejects
+  ---
+  duration_ms: 2.252579
+  type: 'test'
+  ...
+# Subtest: unknown field rejects
+ok 47 - unknown field rejects
+  ---
+  duration_ms: 1.361563
+  type: 'test'
+  ...
+# Subtest: boolean as string rejects
+ok 48 - boolean as string rejects
+  ---
+  duration_ms: 1.584302
+  type: 'test'
+  ...
+# Subtest: number as string rejects
+ok 49 - number as string rejects
+  ---
+  duration_ms: 1.791137
+  type: 'test'
+  ...
+# Subtest: number as bool rejects
+ok 50 - number as bool rejects
+  ---
+  duration_ms: 1.430283
+  type: 'test'
+  ...
+# Subtest: duplicate keys rejects
+ok 51 - duplicate keys rejects
+  ---
+  duration_ms: 1.71186
+  type: 'test'
+  ...
+# Subtest: alias rejects
+ok 52 - alias rejects
+  ---
+  duration_ms: 1.799831
+  type: 'test'
+  ...
+# Subtest: tag rejects
+ok 53 - tag rejects
+  ---
+  duration_ms: 1.638872
+  type: 'test'
+  ...
+# Subtest: lossy form rejects
+ok 54 - lossy form rejects
+  ---
+  duration_ms: 1.805639
+  type: 'test'
+  ...
+# Subtest: hex rejects
+ok 55 - hex rejects
+  ---
+  duration_ms: 1.625202
+  type: 'test'
+  ...
+# Subtest: invalid enum rejects
+ok 56 - invalid enum rejects
+  ---
+  duration_ms: 2.964061
+  type: 'test'
+  ...
+# Subtest: merge key rejects
+ok 57 - merge key rejects
+  ---
+  duration_ms: 3.192219
+  type: 'test'
+  ...
+# Subtest: unknown schema, schema hash claim and invalid UTF8 reject
+ok 58 - unknown schema, schema hash claim and invalid UTF8 reject
+  ---
+  duration_ms: 1.510813
+  type: 'test'
+  ...
+# Subtest: identities cannot be mutated and repository binding changes semantics
+ok 59 - identities cannot be mutated and repository binding changes semantics
+  ---
+  duration_ms: 2.580033
+  type: 'test'
+  ...
+# Subtest: human comments and directives are unsupported instead of silently erased
+ok 60 - human comments and directives are unsupported instead of silently erased
+  ---
+  duration_ms: 3.45062
+  type: 'test'
+  ...
+# Subtest: a YAML mapping cannot impersonate the internal numeric domain representation
+ok 61 - a YAML mapping cannot impersonate the internal numeric domain representation
+  ---
+  duration_ms: 1.604231
+  type: 'test'
+  ...
+# Subtest: explicit default-handle TAG directives reject instead of inheriting implicit defaults
+ok 62 - explicit default-handle TAG directives reject instead of inheriting implicit defaults
+  ---
+  duration_ms: 4.356619
+  type: 'test'
+  ...
+1..62
+# tests 62
+# suites 0
+# pass 58
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 264.729368

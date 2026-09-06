@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "digest.v1 typed domain value",
+  "type": "object", "additionalProperties": false,
+  "required": ["sourcePath", "sourceContentSha256"],
+  "properties": {
+    "sourcePath": {"type": "string", "minLength": 1},
+    "sourceContentSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

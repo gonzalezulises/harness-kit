@@ -1,0 +1,15 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/authority.test.mjs",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/classify.test.mjs",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/identity.test.mjs"
+  ],
+  "exit_code": 0,
+  "logs": {
+    "docs/implementation/2026-09-05-harness-hardening/h03/final-green.stdout.log": "8c85d72f9010802dc7cda61770acc58090d450aa6345024478bd33fab60250af",
+    "docs/implementation/2026-09-05-harness-hardening/h03/final-green.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

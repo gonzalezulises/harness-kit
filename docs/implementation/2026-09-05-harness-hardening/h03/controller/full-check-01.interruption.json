@@ -1,0 +1,12 @@
+{
+  "status": "TOOL_ACTION_REJECTED",
+  "attempt": "full-check-01",
+  "completion_observed": false,
+  "exit_code": null,
+  "rejected_action": "HTTPS usage report from k6 to Grafana statistics host",
+  "automatic_review_reason": "The authorized full test run triggered an HTTPS connection to the untrusted Grafana statistics host, but the actual telemetry payload is not established or explicitly authorized and could disclose repository or environment metadata.",
+  "safe_remediation": "K6_NO_USAGE_REPORT=true; official k6 opt-out, also verified in installed k6 2.1.0 run --help",
+  "official_reference": "https://grafana.com/docs/k6/latest/set-up/usage-collection/",
+  "owned_controller_or_k6_processes_remaining": 0,
+  "raw_streams_preserved": true
+}

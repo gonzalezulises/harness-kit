@@ -1,0 +1,11 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/authority.test.mjs",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/classify.test.mjs",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/identity.test.mjs"
+  ],
+  "exit_code": 0
+}

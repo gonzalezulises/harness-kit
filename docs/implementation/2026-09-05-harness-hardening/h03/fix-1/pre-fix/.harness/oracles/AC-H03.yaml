@@ -1,0 +1,39 @@
+id: AC-H03
+requirement: Recompute typed identity and scoped cryptographic authority without candidate assertions
+criticality: critical
+status: TEST_READY
+observable: Canonical reorder is eligible; exact scalar changes and forged authority cannot become mechanical
+oracle:
+  expected: Closed pure checks return assessments with no execution permission; unsupported proofs stop
+cases:
+  positive:
+  - Canonical key reorder and exactly recomputed source digest are eligible
+  - Host-pinned Ed25519 receipts bind adopted authority and accepted before manifest
+  negative:
+  - Type, whitespace, numeric lexeme, field and enum changes are not equivalent
+  - Duplicate keys, aliases, tags, invalid UTF-8, forged handles and substituted before bindings block
+  boundary:
+  - Large integers, signed zero and exponent lexemes remain exact
+  - Mixed batches aggregate the most restrictive result and authorize no partial execution
+context: Pinned YAML1.2/Zod runtime with isolated test issuer fixtures and operator-established trust bindings
+side_effects:
+  must:
+  - Recompute identities and verify signatures locally
+  must_not:
+  - Write product files, issue permits, generate production keys or infer human approval from JSON booleans
+false_positive: Eligibility requires a positive functional proof; adverse fail-closed tests alone cannot establish implementation
+owner: harness-kit maintainers under AGENTS.md and MIGRATION-01 in DECISIONS.md
+evidence:
+  formats:
+  - Exact requirement tests before source, command exit streams and reconstructible source snapshots
+  - Absence errors are separate from executable assertion RED
+tests:
+- packs/autonomy/repo-template/scripts/quality-orchestrator/tests/authority.test.mjs
+- packs/autonomy/repo-template/scripts/quality-orchestrator/tests/classify.test.mjs
+- packs/autonomy/repo-template/scripts/quality-orchestrator/tests/helpers.mjs
+- packs/autonomy/repo-template/scripts/quality-orchestrator/tests/identity.test.mjs
+
+falsification:
+  defect: Preserved executable versions omit closed digest derivation, use locale ordering, erase comments, accept mapping-shaped numeric tokens and throw on unavailable host time. The final overlay has six assertion failures with the exact current tests; source identity is given by hashes, not the history anchor.
+  proved_sha: fff527b2c7a64fb6d70d60d633a0261e68315169
+  receipt: docs/implementation/2026-09-05-harness-hardening/h03/red-receipt.json

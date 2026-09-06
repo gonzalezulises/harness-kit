@@ -1,0 +1,11 @@
+{
+  "status": "FROZEN",
+  "round": 1,
+  "review_base": "29445190ae94fd85771d5b41223104f8e1d1c011",
+  "pre_fix_tree": "f508b942704143a5d58c45b7eb4fdbd0180f096a",
+  "report_sha256": "4f89fc5a8bf9fae62805d2eda3757dca4cf8a62f163b95197d96973a3373a590",
+  "manifest_sha256": "efae26593dbf662af434df60a299cdbae82e01989b588529fb8786ed20b2667b",
+  "entries": 116,
+  "tests": "62/62 GREEN;62 tests/56 pass/6 assertion RED",
+  "scope": "R1/R2; no index/refs/commits; prior report prefix unchanged"
+}

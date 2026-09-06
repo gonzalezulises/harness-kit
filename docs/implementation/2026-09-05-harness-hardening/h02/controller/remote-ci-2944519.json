@@ -1,0 +1,18 @@
+{
+  "head_sha": "29445190ae94fd85771d5b41223104f8e1d1c011",
+  "base_sha": "88ea1e6c45faf5b5db9e29935eef6e25e50f633b",
+  "run_id": 34004221994,
+  "job_id": 101408391783,
+  "conclusion": "failure",
+  "reason": "ADOPTION_REQUIRED: protected base lacks the required judge contract; no head fallback",
+  "passed": [
+    "Lint every shell script",
+    "Gherkin failure matrix"
+  ],
+  "not_executed": [
+    "Repository verification pipeline",
+    "Protected claims checker",
+    "Append-only decisions checker"
+  ],
+  "log_sha256": "35c3eae3b0d10ae1fcb6d3c70a819ad72389d280305cd1ddbdd09d0dde47f3a9"
+}

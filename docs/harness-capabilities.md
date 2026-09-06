@@ -39,3 +39,21 @@ The isolated setup helper uses Python isolated mode for both pip installation an
 Status verification owns a new process session/group. On timeout it sends TERM to that group, escalates to KILL after a bounded wait, and reaps its direct verifier; unrelated processes are outside the cleanup target. This covers ordinary recipe descendants, not deliberately escaped or malicious same-UID processes.
 
 A full scaffold with no default runbook remains valid. A nonempty explicit DELIVERY_DOC is a declared source: missing, non-file or unreadable paths block even when DELIVERY_DOC_REQUIRED is0. Correct the path or restore the readable document rather than silently disabling the check.
+
+
+## Optional H03 runtime
+
+The opt-in `packs/autonomy` package now provides typed YAML identity, host-pinned
+Ed25519 approval verification and conservative pure change classification. Its
+62 focused cases execute; the earlier isolated copied-package canary passed54/54. Independent H03
+review is approved and full integration passed486 assertions. Numeric lexemes, schema/normalizer/repository bindings and the
+accepted before manifest are preserved. Unknown proofs and untrusted handles
+stop; every classification explicitly withholds execution authorization.
+
+This package requires Node>=22 and the exact YAML2.9.0/Zod4.5.4 lockfile setup in
+`packs/autonomy/index.md`. It lives entirely below
+`scripts/quality-orchestrator/`, preserving the consumer root package.json.
+Legacy minimal/full installation does not include it. H09 owns automatic
+`--with autonomy` adoption; the current pack is copied explicitly. H04–H09 journal,
+effects, budgets, review and release capabilities are still pending. No runtime
+owner keys or product baseline acceptance are created by installation.

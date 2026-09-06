@@ -280,3 +280,16 @@ it. Features cannot be marked done without recorded evidence.
 Repair guidance is excluded from layer identity, while exact command bytes and every other contract field remain protected. Oracle parsing uses PyYAML==6.0.3 installed in an isolated repository tools environment. Critical/high evidence requires a local content-bound RED receipt, exact current test bytes and resolvable proof history; local receipts do not supply independent authentication. Staged formatting preserves working-tree bytes, rejects symlinks and blocks formatter errors. Infrastructure uses owned processes, OS-assigned ports and bounded readiness. API failures remain indeterminate.
 
 **Consequences.** Full consumers acquire a pinned parser dependency, existing critical oracles need actual witnessed receipts, and old protected bases need explicit policy adoption. Original H01 evidence and F09 blocked receipts remain intact. H02 does not authorize baseline acceptance, branch-rule weakening or product deployment. See the H02 Agent Note and docs/harness-capabilities.md.
+
+
+---
+
+## 2026-09-06 — H03: typed identity and scoped authority
+
+**Context.** MIGRATION-01 requires proof of mechanical equivalence without turning derived artifacts or agent assertions into authority.
+
+**Decision.** Use one opt-in nested Node package with pinned YAML2.9.0 and Zod4.5.4, strict built-in schemas and per-runtime opaque handles. The operator establishes repository, actual runtime/dependency bundle, schema contract, exact authority digest, enrolled Ed25519 keys, current time/revocation basis and registered file classes. Adoption and baseline receipts bind exact scoped authority and recomputed input manifests. Candidate booleans, callbacks and serialized summaries cannot create authority.
+
+Exact numeric source forms remain distinct. Unsupported schemas, directives, comments and proofs stop. Closed ordinary-data key reorder and source-content digest derivation produce assessments only. Protected authority-source byte changes still require a human; this v1 proof does not rebind their trust anchors. Classification grants neither execution permission nor completed postconditions.
+
+**Consequences.** Initial schemas are deliberately narrow; Node is optional for legacy consumers and dependencies install in the runtime subdirectory. Future contracts extend this same verified boundary. No owner key enrollment, policy adoption, baseline acceptance or deployment authority follows from implementation. See the H03 Agent Note and packs/autonomy/index.md.

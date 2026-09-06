@@ -1,0 +1,49 @@
+{
+  "command": [
+    "make",
+    "verify-feature",
+    "F=F17"
+  ],
+  "cwd": "/workspace/scratch/adce1c53b293/harness-kit",
+  "started_at": "2026-09-06T01:56:11.818562+00:00",
+  "parent_commit": "29445190ae94fd85771d5b41223104f8e1d1c011",
+  "source_hashes": {
+    ".agents/notes/implemented/architecture/2026-09-06-h03-typed-authority-runtime.md": "6f52e8dfd7f9284848cf54c71664351fc40c2d05b3f62c2c6d37e03cc6854bf1",
+    ".agents/notes/implemented/testing/2026-09-06-local-load-fixtures-disable-usage-telemetry.md": "81906ecebb3cf0c02dc045d26c9497b1e4cd535e894004ce721a5ae30123265c",
+    ".harness/oracles/AC-H03.yaml": "5d43792c9553a5442db093ccef00de387b34f026100158c242f3a110665640cc",
+    "docs/harness-capabilities.md": "0aaf798e6f16fc34a5b1e68818512f55d3637de336f66e4f4e2b7e4467a34bd5",
+    "docs/quality-document.md": "46e7153b7af83937656c78a3557308baf365b2d67a715ecafaf734519f985204",
+    "packs/autonomy/index.md": "8289887fb8fddb700cee3aea756dc7570c9ff4a6df990d6187f09375b35712df",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/.gitignore": "4d56952b0fb13bf8f9b6c13a6d4c34a075bac3af447636a1df4335d7576e2f97",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/authority.mjs": "e3ef007851b931c804c58e1ca619b9f168153f0a93a1f23c86c49c1bd7edec98",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/classify.mjs": "e62c9f9d8cd1ac7e80d3a5811a18bfd3cd602a1e8c9cd371164be901bd889697",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/contracts-v1.md": "50927566043c343b67cbf89ea2aae5443ec3be7355472ea89a331819c91a5c05",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/identity.mjs": "f6bc4cf109851e22bece790619fe736808d7af52b06f79e9b00047e0106cfb21",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/index.mjs": "f432d8adce532354f4e2f13c3de0efbb48ab66c7850cf8be0b794c32cce419e3",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/package-lock.json": "19d4495481f1a940a52ab63684bc400b938cc7c6bc744be889fa453030ba622c",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/package.json": "6c8370fa233ab09d20b96330d90a9541d0b3f2c71aa19025988677b879262296",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/schemas/digest.v1.json": "3739807b2640848ddfcdf441eb72ca4801b77ebcfe22b5a2434bd9b2aac97972",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/schemas/record.v1.json": "6a9d79d9cc43b5a1f197e43f2915adc5e855fb902435fce1ee15532dccadbc4b",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/authority.test.mjs": "025d557717fd2c0301fe446295a0fcbf5ba9fc90f3028e70e963605291a78bb5",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/classify.test.mjs": "36ac68ee2097823442bf5dc0af74446b71af07c2bd24e8ae4cd48705a900ea40",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/helpers.mjs": "8eab979a11d050cc4f835a4824e42daa71e93bf4a18e0c2b45577ed589a48afc",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/identity.test.mjs": "c2da53a7a86c1434df6833c1823cd2a79aa1cf8112419fd943ab99e3b10820e2",
+    "packs/autonomy/verify-pack.sh": "c6746f933ab34c3a7fd454e30f9e7085d813f5e56bea27165432f8ed4c598f94",
+    "packs/load-testing/verify-pack.sh": "93c4c55294c85553533438b34082996830fead64671652f0fb69c2717cbcf02a"
+  },
+  "environment": {
+    "NO_COLOR": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "K6_NO_USAGE_REPORT": "true",
+    "tooling": [
+      "k6 2.1.0",
+      "ShellCheck 0.11.0"
+    ]
+  },
+  "exit_code": 0,
+  "elapsed_seconds": 4.304908470003284,
+  "finished_at": "2026-09-06T01:56:16.125427+00:00",
+  "source_unchanged": true,
+  "stdout_sha256": "3718e5acce86caec90b69f7b744a7e62b4d03f29eb6a64ea40b9f8567f931ac8",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

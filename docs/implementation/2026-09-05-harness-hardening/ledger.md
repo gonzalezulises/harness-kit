@@ -164,3 +164,80 @@ This is the atomic H02 publication checkpoint. H03/F17 is next.
   context spaces are patch syntax required for faithful source reconstruction —
   cost if wrong: artifact whitespace is validated by its hash/reconstruction,
   while every shipping source and current document remains whitespace-checked.
+
+Task 3: active after H02 clean independent review, actual feature promotion
+and full check424/0. H02 index tree53290b4 is frozen for exact API publication;
+H03 source/state edits stay in the working tree until that commit is imported.
+The same immutable-index publication ruling used for H01 applies.
+
+Task 2: published fff527b..2944519, exact remote/local tree53290b4;
+H03 working-tree changes stayed outside the index and survived import.
+H02 review and full check424/0 are complete. Actual exact-head remote run
+34004221994 reports failure; job detail is being inspected before classifying it.
+
+H02 remote CI classified from actual job101408391783 logs: lint and Gherkin
+passed; protected live-policy step stopped with ADOPTION_REQUIRED because
+base88ea1e6 has no required judge contract. Repository pipeline, protected
+claims and decision checks were skipped, not passed. Exact log and digest are
+in h02/controller/remote-ci-2944519.*. No rule, authority or baseline changed.
+
+Task 3: initial implementation frozen at review treef508b94, base2944519.
+Controller validated154 manifest entries and the report seal. Independent
+review_h03 examines specification and quality. Reported local evidence54/54
+and copied-consumer54/54; full controller integration remains pending.
+
+Task 3: initial review requests two bounded Medium fixes, no Critical/High.
+Fix round 1/5 starts for explicit TAG directive rejection and stale constructor
+stop propagation; original frozen treef508b94 remains reconstructible.
+Review and three probe artifacts are retained in h03/review-1/.
+- Ruling: keep changed protected-class source bytes behind a human gate; only
+  ordinary registered data uses canonical-equivalence eligibility in this v1
+  contract — authority source bindings are exact and this proof does not rebind
+  them — cost if wrong: protected-source formatting incurs a conservative stop
+  until a separately approved proof contract covers that authority boundary.
+
+Task 3: fix round 1/5 approved (2 addressed, 0 open), treea358faa.
+Independent specification and quality are approved; controller verified116
+source/evidence/report manifest entries. F17 ordered static, identity/authority
+runtime and public-classifier integration layers actually passed (exit0), with
+source unchanged. Full make check is running. H03 decision is appended; original
+decision bytes and all historical receipts remain preserved.
+
+H03 full-check-01 did not complete: automatic approval review rejected an
+HTTPS k6 usage-report connection because its payload was not established or
+authorized. No exit/result receipt exists; preserved partial logs are not GREEN.
+Read-only process inspection found no matching controller/k6 process remaining.
+- Ruling: disable k6 usage telemetry with its documented K6_NO_USAGE_REPORT=true
+  option for fixture/controller verification — this removes an unrelated
+  outbound metadata effect and preserves every test expectation — cost if wrong:
+  fixture usage is absent from vendor telemetry; product performance claims
+  and thresholds are unchanged. No alternate route retries the denied report.
+Task 3 integration fix round 2/5: add the opt-out to the fixture runner and
+record the coupling; scoped review and a new full run follow before publication.
+
+- Owner steering, 2026-09-06: asked how much remains and explicitly requested
+  avoiding overengineering. H01/H02 are published, H03 is in final integration,
+  and H04–H09 remain. Continue the authorized scope with the smallest concrete
+  implementation that satisfies each contract. Reuse the existing runtime and
+  pinned dependencies; add no speculative extension framework or service.
+  Nonblocking Medium/Low findings may go to the original permitted backlog.
+  Keep High/Critical fixes, causal evidence, independent review and required
+  integration gates. Reuse evidence instead of duplicating snapshots or rerunning
+  checks without a specific remaining risk. This changes execution priority,
+  not authority, acceptance criteria or the meaning of PASS.
+
+Task 3 integration fix round 2/5: independent specification and quality both
+APPROVED, zero findings, staged tree965733a5. Controller verified16 manifest
+entries; H03 source and tests retain their previously reviewed bytes. Actual
+F17 three-layer re-verification passed62 tests, exit0, source unchanged. The new
+full-check-02 runs with the documented fixture/controller telemetry opt-out;
+the interrupted first attempt remains preserved and is not counted as GREEN.
+
+Task 3: complete locally. Full-check-02 exit0, source unchanged, stderr empty:
+8 quick PASS and486 assertions (core286 + autonomy62 + Gherkin15 + load55 +
+Sentry68); two authenticated-gh load cases explicitly omitted. Independent
+specification/quality and both bounded correction reviews are approved, with
+no open finding. Actual F17 promotion receipts and complete raw verification
+streams are in h03/controller/. The interrupted first attempt and exact remote
+H02 ADOPTION_REQUIRED CI evidence remain separate. No baseline is accepted.
+H04 is next after freezing this atomic publication index.

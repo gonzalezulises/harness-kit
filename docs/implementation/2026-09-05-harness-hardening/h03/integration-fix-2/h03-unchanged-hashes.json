@@ -1,0 +1,17 @@
+{
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/.gitignore": "4d56952b0fb13bf8f9b6c13a6d4c34a075bac3af447636a1df4335d7576e2f97",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/authority.mjs": "e3ef007851b931c804c58e1ca619b9f168153f0a93a1f23c86c49c1bd7edec98",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/classify.mjs": "e62c9f9d8cd1ac7e80d3a5811a18bfd3cd602a1e8c9cd371164be901bd889697",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/contracts-v1.md": "50927566043c343b67cbf89ea2aae5443ec3be7355472ea89a331819c91a5c05",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/identity.mjs": "f6bc4cf109851e22bece790619fe736808d7af52b06f79e9b00047e0106cfb21",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/index.mjs": "f432d8adce532354f4e2f13c3de0efbb48ab66c7850cf8be0b794c32cce419e3",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/package-lock.json": "19d4495481f1a940a52ab63684bc400b938cc7c6bc744be889fa453030ba622c",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/package.json": "6c8370fa233ab09d20b96330d90a9541d0b3f2c71aa19025988677b879262296",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/schemas/digest.v1.json": "3739807b2640848ddfcdf441eb72ca4801b77ebcfe22b5a2434bd9b2aac97972",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/schemas/record.v1.json": "6a9d79d9cc43b5a1f197e43f2915adc5e855fb902435fce1ee15532dccadbc4b",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/authority.test.mjs": "025d557717fd2c0301fe446295a0fcbf5ba9fc90f3028e70e963605291a78bb5",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/classify.test.mjs": "36ac68ee2097823442bf5dc0af74446b71af07c2bd24e8ae4cd48705a900ea40",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/helpers.mjs": "8eab979a11d050cc4f835a4824e42daa71e93bf4a18e0c2b45577ed589a48afc",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/identity.test.mjs": "c2da53a7a86c1434df6833c1823cd2a79aa1cf8112419fd943ab99e3b10820e2",
+  "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/red-receipt-v2.json": "196f962bc81a5d4908bcfccfe40753cf5575ef3b3b9b8dfafa2636b4235c505c"
+}

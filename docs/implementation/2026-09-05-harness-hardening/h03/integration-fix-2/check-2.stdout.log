@@ -1,0 +1,144 @@
+
+In packs/load-testing/verify-pack.sh line 29:
+    kill $SERVER_PIDS 2>/dev/null
+         ^----------^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean:
+    kill "$SERVER_PIDS" 2>/dev/null
+
+
+In packs/load-testing/verify-pack.sh line 30:
+    wait $SERVER_PIDS 2>/dev/null
+         ^----------^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean:
+    wait "$SERVER_PIDS" 2>/dev/null
+
+
+In packs/load-testing/verify-pack.sh line 233:
+  PERF_TARGET=http://127.0.0.1:${HEALTHY_PORT} PERF_APP_MARKER=$MARKER PERF_P95_MS=2000
+                               ^-------------^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean:
+  PERF_TARGET=http://127.0.0.1:"${HEALTHY_PORT}" PERF_APP_MARKER=$MARKER PERF_P95_MS=2000
+
+
+In packs/load-testing/verify-pack.sh line 238:
+  PERF_TARGET=http://127.0.0.1:${REDIRECT_PORT} PERF_AUTH=iap PERF_IAP_TOKEN=x PERF_APP_MARKER=$MARKER
+                               ^--------------^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean:
+  PERF_TARGET=http://127.0.0.1:"${REDIRECT_PORT}" PERF_AUTH=iap PERF_IAP_TOKEN=x PERF_APP_MARKER=$MARKER
+
+
+In packs/load-testing/verify-pack.sh line 240:
+  PERF_TARGET=http://127.0.0.1:${LOGIN_PORT} PERF_AUTH=iap PERF_IAP_TOKEN=x PERF_APP_MARKER=$MARKER
+                               ^-----------^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean:
+  PERF_TARGET=http://127.0.0.1:"${LOGIN_PORT}" PERF_AUTH=iap PERF_IAP_TOKEN=x PERF_APP_MARKER=$MARKER
+
+
+In packs/load-testing/verify-pack.sh line 242:
+  PERF_TARGET=http://127.0.0.1:${LOGIN_PORT} PERF_AUTH=iap PERF_IAP_TOKEN=x
+                               ^-----------^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean:
+  PERF_TARGET=http://127.0.0.1:"${LOGIN_PORT}" PERF_AUTH=iap PERF_IAP_TOKEN=x
+
+
+In packs/load-testing/verify-pack.sh line 244:
+  PERF_TARGET=http://127.0.0.1:${UNAUTHORIZED_PORT} PERF_AUTH=bearer PERF_BEARER=x PERF_APP_MARKER=$MARKER
+                               ^------------------^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean:
+  PERF_TARGET=http://127.0.0.1:"${UNAUTHORIZED_PORT}" PERF_AUTH=bearer PERF_BEARER=x PERF_APP_MARKER=$MARKER
+
+
+In packs/load-testing/verify-pack.sh line 246:
+  PERF_TARGET=http://127.0.0.1:${HEALTHY_PORT} PERF_AUTH=iap PERF_APP_MARKER=$MARKER
+                               ^-------------^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean:
+  PERF_TARGET=http://127.0.0.1:"${HEALTHY_PORT}" PERF_AUTH=iap PERF_APP_MARKER=$MARKER
+
+
+In packs/load-testing/verify-pack.sh line 253:
+  PERF_TARGET=http://127.0.0.1:${SLOW_PORT} PERF_APP_MARKER=$MARKER PERF_P95_MS=50
+                               ^----------^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean:
+  PERF_TARGET=http://127.0.0.1:"${SLOW_PORT}" PERF_APP_MARKER=$MARKER PERF_P95_MS=50
+
+
+In packs/load-testing/verify-pack.sh line 257:
+( cd "$WORK/fixture" && env PERF_TARGET=http://127.0.0.1:${HEALTHY_PORT} \
+                                                         ^-------------^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean:
+( cd "$WORK/fixture" && env PERF_TARGET=http://127.0.0.1:"${HEALTHY_PORT}" \
+
+
+In packs/load-testing/verify-pack.sh line 260:
+  PERF_TARGET=http://127.0.0.1:${SLOW_PORT} PERF_APP_MARKER=$MARKER PERF_P95_MS=2000
+                               ^----------^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean:
+  PERF_TARGET=http://127.0.0.1:"${SLOW_PORT}" PERF_APP_MARKER=$MARKER PERF_P95_MS=2000
+
+
+In packs/load-testing/verify-pack.sh line 274:
+  PERF_TARGET=http://127.0.0.1:${HEALTHY_PORT} PERF_APP_MARKER=$MARKER PERF_P95_MS=2000
+                               ^-------------^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean:
+  PERF_TARGET=http://127.0.0.1:"${HEALTHY_PORT}" PERF_APP_MARKER=$MARKER PERF_P95_MS=2000
+
+
+In packs/load-testing/verify-pack.sh line 297:
+  PERF_TARGET=http://127.0.0.1:${HEALTHY_PORT} PERF_APP_MARKER=$MARKER PERF_P95_MS=2000
+                               ^-------------^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean:
+  PERF_TARGET=http://127.0.0.1:"${HEALTHY_PORT}" PERF_APP_MARKER=$MARKER PERF_P95_MS=2000
+
+
+In packs/load-testing/verify-pack.sh line 387:
+PLAN_BRANCH="$(grep -A9 'Upgrade to GitHub Pro' '${TEMPLATE}/bin/perf-init.sh' 2>/dev/null || \
+                                                ^----------------------------^ SC2016 (info): Expressions don't expand in single quotes, use double quotes for that.
+
+
+In packs/load-testing/verify-pack.sh line 515:
+bash "${TEMPLATE}/bin/perf-discover" http://127.0.0.1:${HEALTHY_PORT} "/" >"$DISC" 2>&1
+                                                      ^-------------^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean:
+bash "${TEMPLATE}/bin/perf-discover" http://127.0.0.1:"${HEALTHY_PORT}" "/" >"$DISC" 2>&1
+
+
+In packs/load-testing/verify-pack.sh line 521:
+bash "${TEMPLATE}/bin/perf-discover" http://127.0.0.1:${SHELL_PORT} "/" >"$WORK/disc-shell.log" 2>&1
+                                                      ^-----------^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean:
+bash "${TEMPLATE}/bin/perf-discover" http://127.0.0.1:"${SHELL_PORT}" "/" >"$WORK/disc-shell.log" 2>&1
+
+
+In packs/load-testing/verify-pack.sh line 527:
+bash "${TEMPLATE}/bin/perf-discover" http://127.0.0.1:${REDIRECT_PORT} "/" >"$WORK/disc-redir.log" 2>&1
+                                                      ^--------------^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean:
+bash "${TEMPLATE}/bin/perf-discover" http://127.0.0.1:"${REDIRECT_PORT}" "/" >"$WORK/disc-redir.log" 2>&1
+
+
+In packs/load-testing/verify-pack.sh line 539:
+  curl -s --max-time 8 http://127.0.0.1:${HEALTHY_PORT}/ > "$WORK/probe-body.html"
+                                        ^-------------^ SC2086 (info): Double quote to prevent globbing and word splitting.
+
+Did you mean:
+  curl -s --max-time 8 http://127.0.0.1:"${HEALTHY_PORT}"/ > "$WORK/probe-body.html"
+
+For more information:
+  https://www.shellcheck.net/wiki/SC2016 -- Expressions don't expand in singl...
+  https://www.shellcheck.net/wiki/SC2086 -- Double quote to prevent globbing ...

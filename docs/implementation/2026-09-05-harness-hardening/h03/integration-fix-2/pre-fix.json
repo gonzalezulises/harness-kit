@@ -1,0 +1,8 @@
+{
+  "runner": {
+    "path": "packs/load-testing/verify-pack.sh",
+    "sha256": "1b907d01c222ed63a97a4a27a6f3562d264cf509b8f7c2832356af9087a581ce"
+  },
+  "report_sha256": "4f89fc5a8bf9fae62805d2eda3757dca4cf8a62f163b95197d96973a3373a590",
+  "interruption_record_sha256": "e4a4269a35db78a56b24bdf069114cd89fd0751c710f394e69693221305fcf48"
+}

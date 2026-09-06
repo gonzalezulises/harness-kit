@@ -1,0 +1,8 @@
+{
+  "status": "FROZEN",
+  "review_base": "29445190ae94fd85771d5b41223104f8e1d1c011",
+  "manifest_sha256": "75ff18a6d6d56a882b894554cb9c8783616a466f2ece3a5b17e6b74232dbfa77",
+  "report_sha256": "a9b104564d766f376de416b6341e7d82532106db8c5f93fb5ad04fe52171bf12",
+  "entries": 154,
+  "scope": "H03 shipping source/tests/contracts/current docs/evidence/report; index and refs untouched"
+}

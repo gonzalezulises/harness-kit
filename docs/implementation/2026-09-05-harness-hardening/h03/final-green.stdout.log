@@ -1,0 +1,334 @@
+TAP version 13
+# Subtest: valid pinned adoption and accepted baseline yield opaque instance handles
+ok 1 - valid pinned adoption and accepted baseline yield opaque instance handles
+  ---
+  duration_ms: 20.661181
+  type: 'test'
+  ...
+# Subtest: receipt repo blocks even when signed
+ok 2 - receipt repo blocks even when signed
+  ---
+  duration_ms: 1.852227
+  type: 'test'
+  ...
+# Subtest: receipt subject blocks even when signed
+ok 3 - receipt subject blocks even when signed
+  ---
+  duration_ms: 1.34703
+  type: 'test'
+  ...
+# Subtest: receipt scope blocks even when signed
+ok 4 - receipt scope blocks even when signed
+  ---
+  duration_ms: 1.493567
+  type: 'test'
+  ...
+# Subtest: receipt kind blocks even when signed
+ok 5 - receipt kind blocks even when signed
+  ---
+  duration_ms: 1.476522
+  type: 'test'
+  ...
+# Subtest: receipt role blocks even when signed
+ok 6 - receipt role blocks even when signed
+  ---
+  duration_ms: 1.284909
+  type: 'test'
+  ...
+# Subtest: receipt issuer blocks even when signed
+ok 7 - receipt issuer blocks even when signed
+  ---
+  duration_ms: 1.327422
+  type: 'test'
+  ...
+# Subtest: receipt key blocks even when signed
+ok 8 - receipt key blocks even when signed
+  ---
+  duration_ms: 1.43413
+  type: 'test'
+  ...
+# Subtest: receipt expired blocks even when signed
+ok 9 - receipt expired blocks even when signed
+  ---
+  duration_ms: 1.686893
+  type: 'test'
+  ...
+# Subtest: receipt future blocks even when signed
+ok 10 - receipt future blocks even when signed
+  ---
+  duration_ms: 1.44147
+  type: 'test'
+  ...
+# Subtest: receipt epoch blocks even when signed
+ok 11 - receipt epoch blocks even when signed
+  ---
+  duration_ms: 1.251309
+  type: 'test'
+  ...
+# Subtest: receipt decision blocks even when signed
+ok 12 - receipt decision blocks even when signed
+  ---
+  duration_ms: 1.523581
+  type: 'test'
+  ...
+# Subtest: altered receipt signature and unknown fields block
+ok 13 - altered receipt signature and unknown fields block
+  ---
+  duration_ms: 2.735331
+  type: 'test'
+  ...
+# Subtest: missing time/revocation authority stops and revocation invalidates existing handles
+ok 14 - missing time/revocation authority stops and revocation invalidates existing handles
+  ---
+  duration_ms: 3.671185
+  type: 'test'
+  ...
+# Subtest: trusted inputs are copied and time/checkpoint freshness is checked repeatedly
+ok 15 - trusted inputs are copied and time/checkpoint freshness is checked repeatedly
+  ---
+  duration_ms: 3.061794
+  type: 'test'
+  ...
+# Subtest: authority bytes reject duplicate keys, unknown policy and noncanonical serialization
+ok 16 - authority bytes reject duplicate keys, unknown policy and noncanonical serialization
+  ---
+  duration_ms: 1.334462
+  type: 'test'
+  ...
+# Subtest: signature domain separation prevents signatures over ordinary JSON from authorizing
+ok 17 - signature domain separation prevents signatures over ordinary JSON from authorizing
+  ---
+  duration_ms: 1.734283
+  type: 'test'
+  ...
+# Subtest: adoption rejects even host-pinned signed authority for a different runtime/schema contract
+ok 18 - adoption rejects even host-pinned signed authority for a different runtime/schema contract
+  ---
+  duration_ms: 0.978626
+  type: 'test'
+  ...
+# Subtest: unavailable trusted clock is a structured stop on existing handles
+ok 19 - unavailable trusted clock is a structured stop on existing handles
+  ---
+  duration_ms: 2.961937
+  type: 'test'
+  ...
+# Subtest: recomputes canonical reorder and returns assessment without execution permission
+ok 20 - recomputes canonical reorder and returns assessment without execution permission
+  ---
+  duration_ms: 18.27834
+  type: 'test'
+  ...
+# Subtest: closed derived content digest update is recomputed from accepted/canonical source
+ok 21 - closed derived content digest update is recomputed from accepted/canonical source
+  ---
+  duration_ms: 7.871131
+  type: 'test'
+  ...
+# Subtest: semantic change, docs extension and arbitrary proof names cannot become mechanical
+ok 22 - semantic change, docs extension and arbitrary proof names cannot become mechanical
+  ---
+  duration_ms: 4.315967
+  type: 'test'
+  ...
+# Subtest: before substitution and unsigned/substituted baseline cannot be accepted
+ok 23 - before substitution and unsigned/substituted baseline cannot be accepted
+  ---
+  duration_ms: 4.038668
+  type: 'test'
+  ...
+# Subtest: forged, copied, foreign and stale contexts block
+ok 24 - forged, copied, foreign and stale contexts block
+  ---
+  duration_ms: 5.356316
+  type: 'test'
+  ...
+# Subtest: known normative changes require a human; mixed batches never partially authorize
+ok 25 - known normative changes require a human; mixed batches never partially authorize
+  ---
+  duration_ms: 6.164418
+  type: 'test'
+  ...
+# Subtest: empty batches, duplicate paths and missing before bindings are unknown
+ok 26 - empty batches, duplicate paths and missing before bindings are unknown
+  ---
+  duration_ms: 2.698708
+  type: 'test'
+  ...
+# Subtest: derived source substitution, recursive source and nonmechanical batch source block
+ok 27 - derived source substitution, recursive source and nonmechanical batch source block
+  ---
+  duration_ms: 4.600619
+  type: 'test'
+  ...
+# Subtest: candidate cannot replace schema, trust roots, policy or execution adapter
+ok 28 - candidate cannot replace schema, trust roots, policy or execution adapter
+  ---
+  duration_ms: 3.323682
+  type: 'test'
+  ...
+# Subtest: copied source bytes cannot mutate an already accepted context
+ok 29 - copied source bytes cannot mutate an already accepted context
+  ---
+  duration_ms: 2.62573
+  type: 'test'
+  ...
+# Subtest: baseline order is code-unit deterministic across case and locale
+ok 30 - baseline order is code-unit deterministic across case and locale
+  ---
+  duration_ms: 2.235803
+  type: 'test'
+  ...
+# Subtest: key reorder preserves canonical and semantic identity while content changes
+ok 31 - key reorder preserves canonical and semantic identity while content changes
+  ---
+  duration_ms: 16.822169
+  type: 'test'
+  ...
+# Subtest: lower threshold remains distinct
+ok 32 - lower threshold remains distinct
+  ---
+  duration_ms: 3.178657
+  type: 'test'
+  ...
+# Subtest: large integers remains distinct
+ok 33 - large integers remains distinct
+  ---
+  duration_ms: 3.187761
+  type: 'test'
+  ...
+# Subtest: near decimals remains distinct
+ok 34 - near decimals remains distinct
+  ---
+  duration_ms: 2.902248
+  type: 'test'
+  ...
+# Subtest: signed zero remains distinct
+ok 35 - signed zero remains distinct
+  ---
+  duration_ms: 3.285415
+  type: 'test'
+  ...
+# Subtest: exponents remains distinct
+ok 36 - exponents remains distinct
+  ---
+  duration_ms: 2.540634
+  type: 'test'
+  ...
+# Subtest: decimal spelling remains distinct
+ok 37 - decimal spelling remains distinct
+  ---
+  duration_ms: 2.391263
+  type: 'test'
+  ...
+# Subtest: human text whitespace and enum remain distinct
+ok 38 - human text whitespace and enum remain distinct
+  ---
+  duration_ms: 5.915451
+  type: 'test'
+  ...
+# Subtest: renamed field rejects
+ok 39 - renamed field rejects
+  ---
+  duration_ms: 1.993006
+  type: 'test'
+  ...
+# Subtest: unknown field rejects
+ok 40 - unknown field rejects
+  ---
+  duration_ms: 1.285219
+  type: 'test'
+  ...
+# Subtest: boolean as string rejects
+ok 41 - boolean as string rejects
+  ---
+  duration_ms: 1.310256
+  type: 'test'
+  ...
+# Subtest: number as string rejects
+ok 42 - number as string rejects
+  ---
+  duration_ms: 1.21163
+  type: 'test'
+  ...
+# Subtest: number as bool rejects
+ok 43 - number as bool rejects
+  ---
+  duration_ms: 1.15072
+  type: 'test'
+  ...
+# Subtest: duplicate keys rejects
+ok 44 - duplicate keys rejects
+  ---
+  duration_ms: 1.752589
+  type: 'test'
+  ...
+# Subtest: alias rejects
+ok 45 - alias rejects
+  ---
+  duration_ms: 1.753982
+  type: 'test'
+  ...
+# Subtest: tag rejects
+ok 46 - tag rejects
+  ---
+  duration_ms: 1.649788
+  type: 'test'
+  ...
+# Subtest: lossy form rejects
+ok 47 - lossy form rejects
+  ---
+  duration_ms: 1.396974
+  type: 'test'
+  ...
+# Subtest: hex rejects
+ok 48 - hex rejects
+  ---
+  duration_ms: 1.370996
+  type: 'test'
+  ...
+# Subtest: invalid enum rejects
+ok 49 - invalid enum rejects
+  ---
+  duration_ms: 1.399438
+  type: 'test'
+  ...
+# Subtest: merge key rejects
+ok 50 - merge key rejects
+  ---
+  duration_ms: 3.41096
+  type: 'test'
+  ...
+# Subtest: unknown schema, schema hash claim and invalid UTF8 reject
+ok 51 - unknown schema, schema hash claim and invalid UTF8 reject
+  ---
+  duration_ms: 1.520718
+  type: 'test'
+  ...
+# Subtest: identities cannot be mutated and repository binding changes semantics
+ok 52 - identities cannot be mutated and repository binding changes semantics
+  ---
+  duration_ms: 3.299526
+  type: 'test'
+  ...
+# Subtest: human comments and directives are unsupported instead of silently erased
+ok 53 - human comments and directives are unsupported instead of silently erased
+  ---
+  duration_ms: 5.032768
+  type: 'test'
+  ...
+# Subtest: a YAML mapping cannot impersonate the internal numeric domain representation
+ok 54 - a YAML mapping cannot impersonate the internal numeric domain representation
+  ---
+  duration_ms: 1.524482
+  type: 'test'
+  ...
+1..54
+# tests 54
+# suites 0
+# pass 54
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 236.780216

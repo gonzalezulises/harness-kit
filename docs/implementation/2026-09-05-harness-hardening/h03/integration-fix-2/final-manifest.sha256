@@ -1,0 +1,16 @@
+81906ecebb3cf0c02dc045d26c9497b1e4cd535e894004ce721a5ae30123265c  .agents/notes/implemented/testing/2026-09-06-local-load-fixtures-disable-usage-telemetry.md
+16dc1f9a3f6c69c93bb49f85bcba62a437cd6e84d2b3b57a759241beb5ea75ed  .superpowers/sdd/migration-plan/task-3-report.md
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  docs/implementation/2026-09-05-harness-hardening/h03/integration-fix-2/check-1.stderr.log
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  docs/implementation/2026-09-05-harness-hardening/h03/integration-fix-2/check-1.stdout.log
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  docs/implementation/2026-09-05-harness-hardening/h03/integration-fix-2/check-2.stderr.log
+92bc7320d04a34df2cc7f173940e47eb54ed6800e10e6392d7cc24da9db5c72f  docs/implementation/2026-09-05-harness-hardening/h03/integration-fix-2/check-2.stdout.log
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  docs/implementation/2026-09-05-harness-hardening/h03/integration-fix-2/check-3.stderr.log
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  docs/implementation/2026-09-05-harness-hardening/h03/integration-fix-2/check-3.stdout.log
+876f2f96408a3512b29f04f2000144ce0bb1976628c87c09d7cb22a41535a2cc  docs/implementation/2026-09-05-harness-hardening/h03/integration-fix-2/checks.json
+dcdba4649ea125a4ace9f919ec88d4ed5b04f89dd71d8b27fb73f223c9cbd4a3  docs/implementation/2026-09-05-harness-hardening/h03/integration-fix-2/h03-unchanged-hashes.json
+3e4a2ac8ea340946345f7b0676e0c08cc47f2bd958ac349180de39c17a6b77c6  docs/implementation/2026-09-05-harness-hardening/h03/integration-fix-2/pre-fix.json
+16dc1f9a3f6c69c93bb49f85bcba62a437cd6e84d2b3b57a759241beb5ea75ed  docs/implementation/2026-09-05-harness-hardening/h03/integration-fix-2/task-3-report.final.md
+4f89fc5a8bf9fae62805d2eda3757dca4cf8a62f163b95197d96973a3373a590  docs/implementation/2026-09-05-harness-hardening/h03/integration-fix-2/task-3-report.pre-fix.md
+93c4c55294c85553533438b34082996830fead64671652f0fb69c2717cbcf02a  docs/implementation/2026-09-05-harness-hardening/h03/integration-fix-2/verify-pack.final.sh
+1b907d01c222ed63a97a4a27a6f3562d264cf509b8f7c2832356af9087a581ce  docs/implementation/2026-09-05-harness-hardening/h03/integration-fix-2/verify-pack.pre-fix.sh
+93c4c55294c85553533438b34082996830fead64671652f0fb69c2717cbcf02a  packs/load-testing/verify-pack.sh

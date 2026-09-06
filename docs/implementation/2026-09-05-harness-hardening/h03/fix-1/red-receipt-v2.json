@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/authority.test.mjs",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/classify.test.mjs",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/identity.test.mjs"
+  ],
+  "exit_code": 1,
+  "tests": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/authority.test.mjs": "025d557717fd2c0301fe446295a0fcbf5ba9fc90f3028e70e963605291a78bb5",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/classify.test.mjs": "36ac68ee2097823442bf5dc0af74446b71af07c2bd24e8ae4cd48705a900ea40",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/helpers.mjs": "8eab979a11d050cc4f835a4824e42daa71e93bf4a18e0c2b45577ed589a48afc",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/identity.test.mjs": "c2da53a7a86c1434df6833c1823cd2a79aa1cf8112419fd943ab99e3b10820e2"
+  },
+  "source": {
+    "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/red-source/.gitignore": "4d56952b0fb13bf8f9b6c13a6d4c34a075bac3af447636a1df4335d7576e2f97",
+    "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/red-source/authority.mjs": "4b4fa1344e64095c4ff2b62ecaf85e0c4d8b3ad75e92d2c6cb5d62d89d738e55",
+    "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/red-source/classify.mjs": "690eecd786b72f8781831db06d51346b96a4bb4f083d88f34952312e561e135f",
+    "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/red-source/contracts-v1.md": "6eeabb447f45f48311331f4086e641ae078f93aed568cae4599749d10615d746",
+    "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/red-source/identity.mjs": "a610fc4cb5850b54e3b7c85545486f0c080f6dc7d3bc52ab96c663cd4ff5eaa0",
+    "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/red-source/index.mjs": "f432d8adce532354f4e2f13c3de0efbb48ab66c7850cf8be0b794c32cce419e3",
+    "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/red-source/package-lock.json": "19d4495481f1a940a52ab63684bc400b938cc7c6bc744be889fa453030ba622c",
+    "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/red-source/package.json": "6c8370fa233ab09d20b96330d90a9541d0b3f2c71aa19025988677b879262296",
+    "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/red-source/schemas/digest.v1.json": "3739807b2640848ddfcdf441eb72ca4801b77ebcfe22b5a2434bd9b2aac97972",
+    "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/red-source/schemas/record.v1.json": "6a9d79d9cc43b5a1f197e43f2915adc5e855fb902435fce1ee15532dccadbc4b",
+    "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/red-source/tests/authority.test.mjs": "025d557717fd2c0301fe446295a0fcbf5ba9fc90f3028e70e963605291a78bb5",
+    "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/red-source/tests/classify.test.mjs": "36ac68ee2097823442bf5dc0af74446b71af07c2bd24e8ae4cd48705a900ea40",
+    "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/red-source/tests/helpers.mjs": "8eab979a11d050cc4f835a4824e42daa71e93bf4a18e0c2b45577ed589a48afc",
+    "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/red-source/tests/identity.test.mjs": "c2da53a7a86c1434df6833c1823cd2a79aa1cf8112419fd943ab99e3b10820e2"
+  },
+  "logs": {
+    "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/red-01.stdout.log": "d40fd19eedfc113eb64bd28fc0d407a68db29cb1c245d014160bc0df9d040525",
+    "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/red-01.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

@@ -493,21 +493,30 @@
       "priority": 17,
       "area": "harness-hardening",
       "behavior": "Typed semantic identities classify only demonstrably equivalent changes",
-      "state": "not_started",
+      "state": "passing",
       "layers": [
         {
           "label": "static",
-          "cmd": "bash -n scripts/verify-feature.sh && bash -n scripts/verify-claims.sh && bash -n scripts/verify-decisions.sh && bash -n scripts/check-arch.sh && echo shell-syntax-ok",
-          "repair": "Fix source whitespace or conflict markers."
+          "cmd": "make lint && for runtime_source in packs/autonomy/repo-template/scripts/quality-orchestrator/*.mjs packs/autonomy/repo-template/scripts/quality-orchestrator/tests/*.mjs; do node --check \"$runtime_source\" || exit; done && echo autonomy-static-ok",
+          "repair": "Fix shell or module syntax without reducing the gate or supported trust boundary."
         },
         {
           "label": "runtime",
-          "cmd": "bash packs/autonomy/verify-pack.sh",
-          "repair": "Fix the first failing contract without weakening its expectation."
+          "cmd": "node --test --test-reporter=tap packs/autonomy/repo-template/scripts/quality-orchestrator/tests/identity.test.mjs packs/autonomy/repo-template/scripts/quality-orchestrator/tests/authority.test.mjs",
+          "repair": "Repair typed identity, authority or freshness behavior while preserving adverse cases."
+        },
+        {
+          "label": "e2e",
+          "cmd": "node --test --test-reporter=tap packs/autonomy/repo-template/scripts/quality-orchestrator/tests/classify.test.mjs",
+          "repair": "Repair the public authority-to-context-to-classification flow; assessments must never authorize execution."
         }
       ],
-      "evidence": [],
-      "notes": "Approved hardening milestone H03; owner mandate 2026-09-05."
+      "evidence": [
+        "all layers passed — commit 2944519, 2026-09-06T01:46:05Z",
+        "all layers passed — commit 2944519, 2026-09-06T01:56:16Z"
+      ],
+      "notes": "Approved hardening milestone H03; owner mandate 2026-09-05.",
+      "user_visible_behavior": "A consumer imports the public runtime, verifies scoped authority and accepted input bytes, and receives mechanical eligibility only for proven canonical or derived changes; unknown, stale or semantic inputs stop without execution authority."
     },
     {
       "id": "F18",

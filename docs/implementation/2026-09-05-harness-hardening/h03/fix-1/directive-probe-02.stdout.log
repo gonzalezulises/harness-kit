@@ -1,0 +1,3 @@
+{"name":"plain","tags":{"!!":"tag:yaml.org,2002:"},"tokens":[{"type":"document"}]}
+{"name":"explicit-default-tag","tags":{"!!":"tag:yaml.org,2002:"},"tokens":[{"type":"directive","source":"%TAG !! tag:yaml.org,2002:"},{"type":"newline"},{"type":"document"}]}
+{"name":"quoted-text","tags":{"!!":"tag:yaml.org,2002:"},"tokens":[{"type":"document"}]}

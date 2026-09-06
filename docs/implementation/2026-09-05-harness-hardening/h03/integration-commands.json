@@ -1,0 +1,51 @@
+[
+  {
+    "label": "missing-dependencies",
+    "command": [
+      "bash",
+      "/tmp/h03-canary-07zhbvdw/pack/verify-pack.sh"
+    ],
+    "exit_code": 69,
+    "expected_exit": 69
+  },
+  {
+    "label": "consumer-npm-ci",
+    "command": [
+      "npm",
+      "ci",
+      "--offline",
+      "--prefix",
+      "/tmp/h03-canary-07zhbvdw/consumer/scripts/quality-orchestrator",
+      "--ignore-scripts",
+      "--no-audit",
+      "--no-fund"
+    ],
+    "exit_code": 0,
+    "expected_exit": 0
+  },
+  {
+    "label": "consumer-tests",
+    "command": [
+      "npm",
+      "test",
+      "--prefix",
+      "/tmp/h03-canary-07zhbvdw/consumer/scripts/quality-orchestrator"
+    ],
+    "exit_code": 0,
+    "expected_exit": 0
+  },
+  {
+    "label": "consumer-root-package-preserved",
+    "sha256": "63038fd0b5a1110e5235ea7d3e09c5bef1a74cf3b0df6ae3e7ff23e3f8ccd16c",
+    "result": "PASS"
+  },
+  {
+    "label": "verify-pack",
+    "command": [
+      "bash",
+      "packs/autonomy/verify-pack.sh"
+    ],
+    "exit_code": 0,
+    "expected_exit": 0
+  }
+]

@@ -1,0 +1,66 @@
+
+> @harness-kit/autonomy-runtime@0.1.0 test
+> node --test tests/*.test.mjs
+
+✔ valid pinned adoption and accepted baseline yield opaque instance handles (44.460559ms)
+✔ receipt repo blocks even when signed (1.679772ms)
+✔ receipt subject blocks even when signed (1.32636ms)
+✔ receipt scope blocks even when signed (1.550912ms)
+✔ receipt kind blocks even when signed (1.632573ms)
+✔ receipt role blocks even when signed (1.318499ms)
+✔ receipt issuer blocks even when signed (1.335093ms)
+✔ receipt key blocks even when signed (1.569028ms)
+✔ receipt expired blocks even when signed (1.527217ms)
+✔ receipt future blocks even when signed (1.490212ms)
+✔ receipt epoch blocks even when signed (1.266672ms)
+✔ receipt decision blocks even when signed (1.471915ms)
+✔ altered receipt signature and unknown fields block (1.788042ms)
+✔ missing time/revocation authority stops and revocation invalidates existing handles (4.430858ms)
+✔ trusted inputs are copied and time/checkpoint freshness is checked repeatedly (2.754551ms)
+✔ authority bytes reject duplicate keys, unknown policy and noncanonical serialization (1.241364ms)
+✔ signature domain separation prevents signatures over ordinary JSON from authorizing (1.356584ms)
+✔ adoption rejects even host-pinned signed authority for a different runtime/schema contract (0.558015ms)
+✔ unavailable trusted clock is a structured stop on existing handles (2.713059ms)
+✔ recomputes canonical reorder and returns assessment without execution permission (17.6362ms)
+✔ closed derived content digest update is recomputed from accepted/canonical source (20.574542ms)
+✔ semantic change, docs extension and arbitrary proof names cannot become mechanical (3.93143ms)
+✔ before substitution and unsigned/substituted baseline cannot be accepted (3.671535ms)
+✔ forged, copied, foreign and stale contexts block (4.813323ms)
+✔ known normative changes require a human; mixed batches never partially authorize (4.847734ms)
+✔ empty batches, duplicate paths and missing before bindings are unknown (2.353057ms)
+✔ derived source substitution, recursive source and nonmechanical batch source block (4.467913ms)
+✔ candidate cannot replace schema, trust roots, policy or execution adapter (3.297302ms)
+✔ copied source bytes cannot mutate an already accepted context (2.699299ms)
+✔ baseline order is code-unit deterministic across case and locale (2.530089ms)
+✔ key reorder preserves canonical and semantic identity while content changes (16.945048ms)
+✔ lower threshold remains distinct (3.479122ms)
+✔ large integers remains distinct (3.202853ms)
+✔ near decimals remains distinct (2.907246ms)
+✔ signed zero remains distinct (3.606599ms)
+✔ exponents remains distinct (2.761641ms)
+✔ decimal spelling remains distinct (2.905824ms)
+✔ human text whitespace and enum remain distinct (6.494377ms)
+✔ renamed field rejects (2.093103ms)
+✔ unknown field rejects (1.444645ms)
+✔ boolean as string rejects (1.38706ms)
+✔ number as string rejects (1.303136ms)
+✔ number as bool rejects (1.423163ms)
+✔ duplicate keys rejects (1.821953ms)
+✔ alias rejects (1.565543ms)
+✔ tag rejects (1.821532ms)
+✔ lossy form rejects (1.623689ms)
+✔ hex rejects (1.528078ms)
+✔ invalid enum rejects (1.315504ms)
+✔ merge key rejects (2.438474ms)
+✔ unknown schema, schema hash claim and invalid UTF8 reject (1.443523ms)
+✔ identities cannot be mutated and repository binding changes semantics (2.83503ms)
+✔ human comments and directives are unsupported instead of silently erased (5.148989ms)
+✔ a YAML mapping cannot impersonate the internal numeric domain representation (1.6039ms)
+ℹ tests 54
+ℹ suites 0
+ℹ pass 54
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 257.926653

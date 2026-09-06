@@ -1,0 +1,11 @@
+{
+  "status": "FROZEN",
+  "round": 2,
+  "scope": "Unconditional fixture-only K6_NO_USAGE_REPORT=true; no k6 execution or denied-connection retry",
+  "runner_sha256": "93c4c55294c85553533438b34082996830fead64671652f0fb69c2717cbcf02a",
+  "report_sha256": "16dc1f9a3f6c69c93bb49f85bcba62a437cd6e84d2b3b57a759241beb5ea75ed",
+  "manifest_sha256": "739024463aa3ee3946ff72525a05f8e9c2036939bfef4e2f00d7256904f8d7d6",
+  "entries": 16,
+  "checks": "Bash syntax exit0; ShellCheck0.11.0 -S warning exit0; default info findings retained",
+  "integration": "Full make check incomplete; controller rerun pending"
+}

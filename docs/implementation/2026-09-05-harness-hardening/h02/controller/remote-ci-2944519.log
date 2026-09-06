@@ -1,0 +1,534 @@
+﻿2026-09-06T01:33:54.7131485Z Current runner version: '2.337.0'
+2026-09-06T01:33:54.7171822Z ##[group]Runner Image Provisioner
+2026-09-06T01:33:54.7173089Z Hosted Compute Agent
+2026-09-06T01:33:54.7174345Z Version: 20260828.587
+2026-09-06T01:33:54.7175385Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+2026-09-06T01:33:54.7176721Z Build Date: 2026-08-28T16:44:25Z
+2026-09-06T01:33:54.7177957Z Worker ID: {a062ae2d-ca5f-4e69-8fd9-1f015081dedb}
+2026-09-06T01:33:54.7179520Z Azure Region: eastus2
+2026-09-06T01:33:54.7180632Z ##[endgroup]
+2026-09-06T01:33:54.7183046Z ##[group]Operating System
+2026-09-06T01:33:54.7184112Z Ubuntu
+2026-09-06T01:33:54.7184949Z 24.04.4
+2026-09-06T01:33:54.7185816Z LTS
+2026-09-06T01:33:54.7186764Z ##[endgroup]
+2026-09-06T01:33:54.7187623Z ##[group]Runner Image
+2026-09-06T01:33:54.7188807Z Image: ubuntu-24.04
+2026-09-06T01:33:54.7189871Z Version: 20260831.293.1
+2026-09-06T01:33:54.7192038Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260831.293/images/ubuntu/Ubuntu2404-Readme.md
+2026-09-06T01:33:54.7194638Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260831.293
+2026-09-06T01:33:54.7196355Z ##[endgroup]
+2026-09-06T01:33:54.7198132Z ##[group]GITHUB_TOKEN Permissions
+2026-09-06T01:33:54.7201683Z Contents: read
+2026-09-06T01:33:54.7202616Z Metadata: read
+2026-09-06T01:33:54.7203553Z ##[endgroup]
+2026-09-06T01:33:54.7206729Z Secret source: Actions
+2026-09-06T01:33:54.7208721Z Prepare workflow directory
+2026-09-06T01:33:54.7685290Z Prepare all required actions
+2026-09-06T01:33:54.7755148Z Getting action download info
+2026-09-06T01:33:54.9738640Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-09-06T01:33:55.1992047Z Complete job name: Required quality
+2026-09-06T01:33:55.2778188Z ##[group]Run set -euo pipefail
+2026-09-06T01:33:55.2779141Z [36;1mset -euo pipefail[0m
+2026-09-06T01:33:55.2779692Z [36;1mcase "$EVENT_NAME" in[0m
+2026-09-06T01:33:55.2780398Z [36;1m  pull_request) head_sha=$PR_HEAD_SHA; base_sha=$PR_BASE_SHA ;;[0m
+2026-09-06T01:33:55.2781318Z [36;1m  merge_group)  head_sha=$MG_HEAD_SHA; base_sha=$MG_BASE_SHA ;;[0m
+2026-09-06T01:33:55.2782262Z [36;1m  *) printf 'UNKNOWN: unsupported event: %s\n' "$EVENT_NAME" >&2; exit 1 ;;[0m
+2026-09-06T01:33:55.2783034Z [36;1mesac[0m
+2026-09-06T01:33:55.2783533Z [36;1mif [[ ! "$head_sha" =~ ^[0-9a-f]{40}$ ]]; then[0m
+2026-09-06T01:33:55.2784303Z [36;1m  printf 'UNKNOWN: invalid head SHA: %s\n' "$head_sha" >&2; exit 1[0m
+2026-09-06T01:33:55.2785011Z [36;1mfi[0m
+2026-09-06T01:33:55.2785495Z [36;1mif [[ ! "$base_sha" =~ ^[0-9a-f]{40}$ ]]; then[0m
+2026-09-06T01:33:55.2786253Z [36;1m  printf 'UNKNOWN: invalid base SHA: %s\n' "$base_sha" >&2; exit 1[0m
+2026-09-06T01:33:55.2786950Z [36;1mfi[0m
+2026-09-06T01:33:55.2787418Z [36;1m{[0m
+2026-09-06T01:33:55.2787894Z [36;1m  printf 'head_sha=%s\n' "$head_sha"[0m
+2026-09-06T01:33:55.2788673Z [36;1m  printf 'base_sha=%s\n' "$base_sha"[0m
+2026-09-06T01:33:55.2789299Z [36;1m} >> "$GITHUB_OUTPUT"[0m
+2026-09-06T01:33:55.2835175Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-09-06T01:33:55.2836100Z env:
+2026-09-06T01:33:55.2836545Z   EVENT_NAME: pull_request
+2026-09-06T01:33:55.2837124Z   PR_HEAD_SHA: 29445190ae94fd85771d5b41223104f8e1d1c011
+2026-09-06T01:33:55.2837820Z   PR_BASE_SHA: 88ea1e6c45faf5b5db9e29935eef6e25e50f633b
+2026-09-06T01:33:55.2838631Z   MG_HEAD_SHA: 
+2026-09-06T01:33:55.2839078Z   MG_BASE_SHA: 
+2026-09-06T01:33:55.2839516Z ##[endgroup]
+2026-09-06T01:33:55.3219199Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-09-06T01:33:55.3219984Z with:
+2026-09-06T01:33:55.3220459Z   ref: 29445190ae94fd85771d5b41223104f8e1d1c011
+2026-09-06T01:33:55.3221052Z   path: head
+2026-09-06T01:33:55.3221487Z   fetch-depth: 0
+2026-09-06T01:33:55.3221959Z   persist-credentials: false
+2026-09-06T01:33:55.3222501Z   repository: gonzalezulises/harness-kit
+2026-09-06T01:33:55.3226555Z   token: ***
+2026-09-06T01:33:55.3227001Z   ssh-strict: true
+2026-09-06T01:33:55.3227723Z   ssh-user: git
+2026-09-06T01:33:55.3228154Z   clean: true
+2026-09-06T01:33:55.3228922Z   sparse-checkout-cone-mode: true
+2026-09-06T01:33:55.3229460Z   fetch-tags: false
+2026-09-06T01:33:55.3229918Z   show-progress: true
+2026-09-06T01:33:55.3230373Z   lfs: false
+2026-09-06T01:33:55.3230810Z   submodules: false
+2026-09-06T01:33:55.3231268Z   set-safe-directory: true
+2026-09-06T01:33:55.3231786Z   allow-unsafe-pr-checkout: false
+2026-09-06T01:33:55.3232310Z ##[endgroup]
+2026-09-06T01:33:55.4395833Z Syncing repository: gonzalezulises/harness-kit
+2026-09-06T01:33:55.4399824Z ##[group]Getting Git version info
+2026-09-06T01:33:55.4402246Z Working directory is '/home/runner/work/harness-kit/harness-kit/head'
+2026-09-06T01:33:55.4404946Z [command]/usr/bin/git version
+2026-09-06T01:33:55.4556957Z git version 2.55.0
+2026-09-06T01:33:55.4562312Z ##[endgroup]
+2026-09-06T01:33:55.4572929Z Temporarily overriding HOME='/home/runner/work/_temp/d598ecbd-1077-4ff6-b252-635d8f9fa45d' before making global git config changes
+2026-09-06T01:33:55.4575873Z Adding repository directory to the temporary git global config as a safe directory
+2026-09-06T01:33:55.4578723Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/harness-kit/harness-kit/head
+2026-09-06T01:33:55.4644012Z ##[group]Determining repository object format
+2026-09-06T01:33:55.4645788Z ##[endgroup]
+2026-09-06T01:33:55.4647505Z ##[group]Initializing the repository
+2026-09-06T01:33:55.4651076Z [command]/usr/bin/git init /home/runner/work/harness-kit/harness-kit/head
+2026-09-06T01:33:55.4776173Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-09-06T01:33:55.4778823Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-09-06T01:33:55.4781162Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-09-06T01:33:55.4782686Z hint: call:
+2026-09-06T01:33:55.4783878Z hint:
+2026-09-06T01:33:55.4785106Z hint: 	git config --global init.defaultBranch <name>
+2026-09-06T01:33:55.4786738Z hint:
+2026-09-06T01:33:55.4790032Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-09-06T01:33:55.4791471Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-09-06T01:33:55.4792601Z hint:
+2026-09-06T01:33:55.4793271Z hint: 	git branch -m <name>
+2026-09-06T01:33:55.4794074Z hint:
+2026-09-06T01:33:55.4795088Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-09-06T01:33:55.4796840Z Initialized empty Git repository in /home/runner/work/harness-kit/harness-kit/head/.git/
+2026-09-06T01:33:55.4800398Z [command]/usr/bin/git remote add origin https://github.com/gonzalezulises/harness-kit
+2026-09-06T01:33:55.4851163Z ##[endgroup]
+2026-09-06T01:33:55.4852788Z ##[group]Disabling automatic garbage collection
+2026-09-06T01:33:55.4854527Z [command]/usr/bin/git config --local gc.auto 0
+2026-09-06T01:33:55.4912905Z ##[endgroup]
+2026-09-06T01:33:55.4914637Z ##[group]Setting up auth
+2026-09-06T01:33:55.4916291Z Removing SSH command configuration
+2026-09-06T01:33:55.4917932Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-09-06T01:33:55.4969137Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-09-06T01:33:55.5488848Z Removing HTTP extra header
+2026-09-06T01:33:55.5545926Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-09-06T01:33:55.5815181Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-09-06T01:33:55.5856742Z Removing includeIf entries pointing to credentials config files
+2026-09-06T01:33:55.5862137Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-09-06T01:33:55.5906464Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-09-06T01:33:55.6400516Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-f66c56ac-5c4e-4aad-8570-2a373fb41270.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-09-06T01:33:55.6406378Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/harness-kit/harness-kit/head/.git.path /home/runner/work/_temp/git-credentials-f66c56ac-5c4e-4aad-8570-2a373fb41270.config
+2026-09-06T01:33:55.6412204Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/harness-kit/harness-kit/head/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-f66c56ac-5c4e-4aad-8570-2a373fb41270.config
+2026-09-06T01:33:55.6419666Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/head/.git.path /github/runner_temp/git-credentials-f66c56ac-5c4e-4aad-8570-2a373fb41270.config
+2026-09-06T01:33:55.6456482Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/head/.git/worktrees/*.path /github/runner_temp/git-credentials-f66c56ac-5c4e-4aad-8570-2a373fb41270.config
+2026-09-06T01:33:55.6496501Z ##[endgroup]
+2026-09-06T01:33:55.6499010Z ##[group]Fetching the repository
+2026-09-06T01:33:55.6503426Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2026-09-06T01:33:56.3269393Z From https://github.com/gonzalezulises/harness-kit
+2026-09-06T01:33:56.3309607Z  * [new branch]      chore/release-please   -> origin/chore/release-please
+2026-09-06T01:33:56.3348218Z  * [new branch]      chore/ship-env-example -> origin/chore/ship-env-example
+2026-09-06T01:33:56.3351771Z  * [new branch]      dependabot/github_actions/actions/checkout-7 -> origin/dependabot/github_actions/actions/checkout-7
+2026-09-06T01:33:56.3356426Z  * [new branch]      dependabot/github_actions/googleapis/release-please-action-5 -> origin/dependabot/github_actions/googleapis/release-please-action-5
+2026-09-06T01:33:56.3360403Z  * [new branch]      docs/release-please-blocker -> origin/docs/release-please-blocker
+2026-09-06T01:33:56.3363210Z  * [new branch]      feat/sentry-full-surface -> origin/feat/sentry-full-surface
+2026-09-06T01:33:56.3366390Z  * [new branch]      feat/sentry-observability-pack -> origin/feat/sentry-observability-pack
+2026-09-06T01:33:56.3369951Z  * [new branch]      feat/sentry-to-github-issues -> origin/feat/sentry-to-github-issues
+2026-09-06T01:33:56.3373085Z  * [new branch]      fix/secret-fixture-scanner-noise -> origin/fix/secret-fixture-scanner-noise
+2026-09-06T01:33:56.3376194Z  * [new branch]      fix/sentry-pack-security-hardening -> origin/fix/sentry-pack-security-hardening
+2026-09-06T01:33:56.3379127Z  * [new branch]      fix/status-version-stamp -> origin/fix/status-version-stamp
+2026-09-06T01:33:56.3381709Z  * [new branch]      main                   -> origin/main
+2026-09-06T01:33:56.3384778Z  * [new branch]      release-please--branches--main--components--harness-kit -> origin/release-please--branches--main--components--harness-kit
+2026-09-06T01:33:56.3388810Z  * [new branch]      review/harness-hardening-autonomy -> origin/review/harness-hardening-autonomy
+2026-09-06T01:33:56.4264869Z  * [new tag]         v2.2.0                 -> v2.2.0
+2026-09-06T01:33:56.4266980Z  * [new tag]         v2.2.1                 -> v2.2.1
+2026-09-06T01:33:56.4274974Z  * [new tag]         v2.2.2                 -> v2.2.2
+2026-09-06T01:33:56.4277816Z  * [new tag]         v2.2.3                 -> v2.2.3
+2026-09-06T01:33:56.4280662Z  * [new tag]         v2.2.4                 -> v2.2.4
+2026-09-06T01:33:56.4282535Z  * [new tag]         v2.2.5                 -> v2.2.5
+2026-09-06T01:33:56.4287467Z [command]/usr/bin/git rev-parse --verify --quiet 29445190ae94fd85771d5b41223104f8e1d1c011^{object}
+2026-09-06T01:33:56.4295210Z 29445190ae94fd85771d5b41223104f8e1d1c011
+2026-09-06T01:33:56.4302367Z ##[endgroup]
+2026-09-06T01:33:56.4309455Z ##[group]Determining the checkout info
+2026-09-06T01:33:56.4312057Z ##[endgroup]
+2026-09-06T01:33:56.4313928Z [command]/usr/bin/git sparse-checkout disable
+2026-09-06T01:33:56.4319430Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-09-06T01:33:56.4343386Z ##[group]Checking out the ref
+2026-09-06T01:33:56.4345511Z [command]/usr/bin/git checkout --progress --force 29445190ae94fd85771d5b41223104f8e1d1c011
+2026-09-06T01:33:56.4348141Z Note: switching to '29445190ae94fd85771d5b41223104f8e1d1c011'.
+2026-09-06T01:33:56.4349763Z 
+2026-09-06T01:33:56.4350794Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-09-06T01:33:56.4353263Z changes and commit them, and you can discard any commits you make in this
+2026-09-06T01:33:56.4355654Z state without impacting any branches by switching back to a branch.
+2026-09-06T01:33:56.4357127Z 
+2026-09-06T01:33:56.4358146Z If you want to create a new branch to retain commits you create, you may
+2026-09-06T01:33:56.4443981Z do so (now or later) by using -c with the switch command. Example:
+2026-09-06T01:33:56.4459290Z 
+2026-09-06T01:33:56.4486197Z   git switch -c <new-branch-name>
+2026-09-06T01:33:56.4498916Z 
+2026-09-06T01:33:56.4499905Z Or undo this operation with:
+2026-09-06T01:33:56.4500986Z 
+2026-09-06T01:33:56.4501672Z   git switch -
+2026-09-06T01:33:56.4502468Z 
+2026-09-06T01:33:56.4503600Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-09-06T01:33:56.4505059Z 
+2026-09-06T01:33:56.4506153Z HEAD is now at 2944519 fix: verify live gates and isolate evidence execution
+2026-09-06T01:33:56.4511295Z ##[endgroup]
+2026-09-06T01:33:56.4514871Z [command]/usr/bin/git log -1 --format=%H
+2026-09-06T01:33:56.4516575Z 29445190ae94fd85771d5b41223104f8e1d1c011
+2026-09-06T01:33:56.4537356Z ##[group]Removing auth
+2026-09-06T01:33:56.4539600Z Removing SSH command configuration
+2026-09-06T01:33:56.4541720Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-09-06T01:33:56.4547197Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-09-06T01:33:56.4731507Z Removing HTTP extra header
+2026-09-06T01:33:56.4733750Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-09-06T01:33:56.4757609Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-09-06T01:33:56.5091789Z Removing includeIf entries pointing to credentials config files
+2026-09-06T01:33:56.5094130Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-09-06T01:33:56.5140938Z includeif.gitdir:/home/runner/work/harness-kit/harness-kit/head/.git.path
+2026-09-06T01:33:56.5143560Z includeif.gitdir:/home/runner/work/harness-kit/harness-kit/head/.git/worktrees/*.path
+2026-09-06T01:33:56.5146009Z includeif.gitdir:/github/workspace/head/.git.path
+2026-09-06T01:33:56.5147958Z includeif.gitdir:/github/workspace/head/.git/worktrees/*.path
+2026-09-06T01:33:56.5156231Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/harness-kit/harness-kit/head/.git.path
+2026-09-06T01:33:56.5197687Z /home/runner/work/_temp/git-credentials-f66c56ac-5c4e-4aad-8570-2a373fb41270.config
+2026-09-06T01:33:56.5208839Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/harness-kit/harness-kit/head/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-f66c56ac\-5c4e\-4aad\-8570\-2a373fb41270\.config
+2026-09-06T01:33:56.5254455Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/harness-kit/harness-kit/head/.git/worktrees/*.path
+2026-09-06T01:33:56.5286765Z /home/runner/work/_temp/git-credentials-f66c56ac-5c4e-4aad-8570-2a373fb41270.config
+2026-09-06T01:33:56.5299831Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/harness-kit/harness-kit/head/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-f66c56ac\-5c4e\-4aad\-8570\-2a373fb41270\.config
+2026-09-06T01:33:56.5341899Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/head/.git.path
+2026-09-06T01:33:56.5433407Z /github/runner_temp/git-credentials-f66c56ac-5c4e-4aad-8570-2a373fb41270.config
+2026-09-06T01:33:56.5438586Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/head/.git.path \/github\/runner_temp\/git\-credentials\-f66c56ac\-5c4e\-4aad\-8570\-2a373fb41270\.config
+2026-09-06T01:33:56.5504207Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/head/.git/worktrees/*.path
+2026-09-06T01:33:56.5535496Z /github/runner_temp/git-credentials-f66c56ac-5c4e-4aad-8570-2a373fb41270.config
+2026-09-06T01:33:56.5547593Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/head/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-f66c56ac\-5c4e\-4aad\-8570\-2a373fb41270\.config
+2026-09-06T01:33:56.5591144Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-09-06T01:33:56.5872273Z Removing credentials config '/home/runner/work/_temp/git-credentials-f66c56ac-5c4e-4aad-8570-2a373fb41270.config'
+2026-09-06T01:33:56.5880659Z ##[endgroup]
+2026-09-06T01:33:56.6169601Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-09-06T01:33:56.6170736Z with:
+2026-09-06T01:33:56.6171541Z   ref: 88ea1e6c45faf5b5db9e29935eef6e25e50f633b
+2026-09-06T01:33:56.6172466Z   path: base
+2026-09-06T01:33:56.6173199Z   fetch-depth: 0
+2026-09-06T01:33:56.6173983Z   persist-credentials: false
+2026-09-06T01:33:56.6174848Z   repository: gonzalezulises/harness-kit
+2026-09-06T01:33:56.6179450Z   token: ***
+2026-09-06T01:33:56.6180204Z   ssh-strict: true
+2026-09-06T01:33:56.6180988Z   ssh-user: git
+2026-09-06T01:33:56.6181731Z   clean: true
+2026-09-06T01:33:56.6182501Z   sparse-checkout-cone-mode: true
+2026-09-06T01:33:56.6183355Z   fetch-tags: false
+2026-09-06T01:33:56.6184129Z   show-progress: true
+2026-09-06T01:33:56.6184915Z   lfs: false
+2026-09-06T01:33:56.6185654Z   submodules: false
+2026-09-06T01:33:56.6186457Z   set-safe-directory: true
+2026-09-06T01:33:56.6187297Z   allow-unsafe-pr-checkout: false
+2026-09-06T01:33:56.6188163Z ##[endgroup]
+2026-09-06T01:33:56.7153633Z Syncing repository: gonzalezulises/harness-kit
+2026-09-06T01:33:56.7167704Z ##[group]Getting Git version info
+2026-09-06T01:33:56.7180763Z Working directory is '/home/runner/work/harness-kit/harness-kit/base'
+2026-09-06T01:33:56.7229318Z [command]/usr/bin/git version
+2026-09-06T01:33:56.7296627Z git version 2.55.0
+2026-09-06T01:33:56.7380209Z ##[endgroup]
+2026-09-06T01:33:56.7432035Z Temporarily overriding HOME='/home/runner/work/_temp/f2f5d916-5489-4704-bf3f-e5a965e8de79' before making global git config changes
+2026-09-06T01:33:56.7444259Z Adding repository directory to the temporary git global config as a safe directory
+2026-09-06T01:33:56.7460252Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/harness-kit/harness-kit/base
+2026-09-06T01:33:56.7481740Z ##[group]Determining repository object format
+2026-09-06T01:33:56.7510161Z ##[endgroup]
+2026-09-06T01:33:56.7531399Z ##[group]Initializing the repository
+2026-09-06T01:33:56.7549817Z [command]/usr/bin/git init /home/runner/work/harness-kit/harness-kit/base
+2026-09-06T01:33:56.7559786Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-09-06T01:33:56.7579895Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-09-06T01:33:56.7589749Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-09-06T01:33:56.7609415Z hint: call:
+2026-09-06T01:33:56.7629416Z hint:
+2026-09-06T01:33:56.7634685Z hint: 	git config --global init.defaultBranch <name>
+2026-09-06T01:33:56.7636825Z hint:
+2026-09-06T01:33:56.7679981Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-09-06T01:33:56.7686885Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-09-06T01:33:56.7689485Z hint:
+2026-09-06T01:33:56.7690812Z hint: 	git branch -m <name>
+2026-09-06T01:33:56.7692137Z hint:
+2026-09-06T01:33:56.7693782Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-09-06T01:33:56.7696191Z Initialized empty Git repository in /home/runner/work/harness-kit/harness-kit/base/.git/
+2026-09-06T01:33:56.7700679Z [command]/usr/bin/git remote add origin https://github.com/gonzalezulises/harness-kit
+2026-09-06T01:33:56.7705237Z ##[endgroup]
+2026-09-06T01:33:56.7707230Z ##[group]Disabling automatic garbage collection
+2026-09-06T01:33:56.7709157Z [command]/usr/bin/git config --local gc.auto 0
+2026-09-06T01:33:56.7712960Z ##[endgroup]
+2026-09-06T01:33:56.7714944Z ##[group]Setting up auth
+2026-09-06T01:33:56.7716496Z Removing SSH command configuration
+2026-09-06T01:33:56.7718585Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-09-06T01:33:56.7723524Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-09-06T01:33:56.8081873Z Removing HTTP extra header
+2026-09-06T01:33:56.8085177Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-09-06T01:33:56.8161261Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-09-06T01:33:56.9017594Z Removing includeIf entries pointing to credentials config files
+2026-09-06T01:33:56.9019945Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-09-06T01:33:56.9168848Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-09-06T01:33:56.9545050Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-36455d08-a02a-4f58-a2ed-0892a7e6372e.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-09-06T01:33:56.9640633Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/harness-kit/harness-kit/base/.git.path /home/runner/work/_temp/git-credentials-36455d08-a02a-4f58-a2ed-0892a7e6372e.config
+2026-09-06T01:33:56.9682097Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/harness-kit/harness-kit/base/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-36455d08-a02a-4f58-a2ed-0892a7e6372e.config
+2026-09-06T01:33:56.9725433Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/base/.git.path /github/runner_temp/git-credentials-36455d08-a02a-4f58-a2ed-0892a7e6372e.config
+2026-09-06T01:33:56.9770417Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/base/.git/worktrees/*.path /github/runner_temp/git-credentials-36455d08-a02a-4f58-a2ed-0892a7e6372e.config
+2026-09-06T01:33:56.9817766Z ##[endgroup]
+2026-09-06T01:33:56.9820281Z ##[group]Fetching the repository
+2026-09-06T01:33:56.9823860Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2026-09-06T01:33:57.5199562Z From https://github.com/gonzalezulises/harness-kit
+2026-09-06T01:33:57.5203573Z  * [new branch]      chore/release-please   -> origin/chore/release-please
+2026-09-06T01:33:57.5205564Z  * [new branch]      chore/ship-env-example -> origin/chore/ship-env-example
+2026-09-06T01:33:57.5207883Z  * [new branch]      dependabot/github_actions/actions/checkout-7 -> origin/dependabot/github_actions/actions/checkout-7
+2026-09-06T01:33:57.5211747Z  * [new branch]      dependabot/github_actions/googleapis/release-please-action-5 -> origin/dependabot/github_actions/googleapis/release-please-action-5
+2026-09-06T01:33:57.5216511Z  * [new branch]      docs/release-please-blocker -> origin/docs/release-please-blocker
+2026-09-06T01:33:57.5219234Z  * [new branch]      feat/sentry-full-surface -> origin/feat/sentry-full-surface
+2026-09-06T01:33:57.5221713Z  * [new branch]      feat/sentry-observability-pack -> origin/feat/sentry-observability-pack
+2026-09-06T01:33:57.5224317Z  * [new branch]      feat/sentry-to-github-issues -> origin/feat/sentry-to-github-issues
+2026-09-06T01:33:57.5227230Z  * [new branch]      fix/secret-fixture-scanner-noise -> origin/fix/secret-fixture-scanner-noise
+2026-09-06T01:33:57.5231114Z  * [new branch]      fix/sentry-pack-security-hardening -> origin/fix/sentry-pack-security-hardening
+2026-09-06T01:33:57.5234085Z  * [new branch]      fix/status-version-stamp -> origin/fix/status-version-stamp
+2026-09-06T01:33:57.5236193Z  * [new branch]      main                   -> origin/main
+2026-09-06T01:33:57.5240499Z  * [new branch]      release-please--branches--main--components--harness-kit -> origin/release-please--branches--main--components--harness-kit
+2026-09-06T01:33:57.5245914Z  * [new branch]      review/harness-hardening-autonomy -> origin/review/harness-hardening-autonomy
+2026-09-06T01:33:57.5248872Z  * [new tag]         v2.2.0                 -> v2.2.0
+2026-09-06T01:33:57.5250468Z  * [new tag]         v2.2.1                 -> v2.2.1
+2026-09-06T01:33:57.5252303Z  * [new tag]         v2.2.2                 -> v2.2.2
+2026-09-06T01:33:57.5253872Z  * [new tag]         v2.2.3                 -> v2.2.3
+2026-09-06T01:33:57.5255383Z  * [new tag]         v2.2.4                 -> v2.2.4
+2026-09-06T01:33:57.5256905Z  * [new tag]         v2.2.5                 -> v2.2.5
+2026-09-06T01:33:57.5261760Z [command]/usr/bin/git rev-parse --verify --quiet 88ea1e6c45faf5b5db9e29935eef6e25e50f633b^{object}
+2026-09-06T01:33:57.5265788Z 88ea1e6c45faf5b5db9e29935eef6e25e50f633b
+2026-09-06T01:33:57.5271352Z ##[endgroup]
+2026-09-06T01:33:57.5273028Z ##[group]Determining the checkout info
+2026-09-06T01:33:57.5275647Z ##[endgroup]
+2026-09-06T01:33:57.5277422Z [command]/usr/bin/git sparse-checkout disable
+2026-09-06T01:33:57.5331494Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-09-06T01:33:57.5373279Z ##[group]Checking out the ref
+2026-09-06T01:33:57.5377002Z [command]/usr/bin/git checkout --progress --force 88ea1e6c45faf5b5db9e29935eef6e25e50f633b
+2026-09-06T01:33:57.5557813Z Note: switching to '88ea1e6c45faf5b5db9e29935eef6e25e50f633b'.
+2026-09-06T01:33:57.5559472Z 
+2026-09-06T01:33:57.5565121Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-09-06T01:33:57.5568061Z changes and commit them, and you can discard any commits you make in this
+2026-09-06T01:33:57.5571105Z state without impacting any branches by switching back to a branch.
+2026-09-06T01:33:57.5573062Z 
+2026-09-06T01:33:57.5574182Z If you want to create a new branch to retain commits you create, you may
+2026-09-06T01:33:57.5576732Z do so (now or later) by using -c with the switch command. Example:
+2026-09-06T01:33:57.5578885Z 
+2026-09-06T01:33:57.5579533Z   git switch -c <new-branch-name>
+2026-09-06T01:33:57.5580566Z 
+2026-09-06T01:33:57.5581127Z Or undo this operation with:
+2026-09-06T01:33:57.5582013Z 
+2026-09-06T01:33:57.5582495Z   git switch -
+2026-09-06T01:33:57.5583146Z 
+2026-09-06T01:33:57.5584310Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-09-06T01:33:57.5586157Z 
+2026-09-06T01:33:57.5587362Z HEAD is now at 88ea1e6 feat(gates): an oracle must carry proof it can fail (#32)
+2026-09-06T01:33:57.5592701Z ##[endgroup]
+2026-09-06T01:33:57.5634625Z [command]/usr/bin/git log -1 --format=%H
+2026-09-06T01:33:57.5673058Z 88ea1e6c45faf5b5db9e29935eef6e25e50f633b
+2026-09-06T01:33:57.5691239Z ##[group]Removing auth
+2026-09-06T01:33:57.5692956Z Removing SSH command configuration
+2026-09-06T01:33:57.5695185Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-09-06T01:33:57.5739600Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-09-06T01:33:57.6029928Z Removing HTTP extra header
+2026-09-06T01:33:57.6032499Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-09-06T01:33:57.6084596Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-09-06T01:33:57.6371386Z Removing includeIf entries pointing to credentials config files
+2026-09-06T01:33:57.6375407Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-09-06T01:33:57.6418095Z includeif.gitdir:/home/runner/work/harness-kit/harness-kit/base/.git.path
+2026-09-06T01:33:57.6421236Z includeif.gitdir:/home/runner/work/harness-kit/harness-kit/base/.git/worktrees/*.path
+2026-09-06T01:33:57.6423534Z includeif.gitdir:/github/workspace/base/.git.path
+2026-09-06T01:33:57.6424867Z includeif.gitdir:/github/workspace/base/.git/worktrees/*.path
+2026-09-06T01:33:57.6431778Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/harness-kit/harness-kit/base/.git.path
+2026-09-06T01:33:57.6462778Z /home/runner/work/_temp/git-credentials-36455d08-a02a-4f58-a2ed-0892a7e6372e.config
+2026-09-06T01:33:57.6478773Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/harness-kit/harness-kit/base/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-36455d08\-a02a\-4f58\-a2ed\-0892a7e6372e\.config
+2026-09-06T01:33:57.6526606Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/harness-kit/harness-kit/base/.git/worktrees/*.path
+2026-09-06T01:33:57.6562493Z /home/runner/work/_temp/git-credentials-36455d08-a02a-4f58-a2ed-0892a7e6372e.config
+2026-09-06T01:33:57.6584471Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/harness-kit/harness-kit/base/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-36455d08\-a02a\-4f58\-a2ed\-0892a7e6372e\.config
+2026-09-06T01:33:57.6618159Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/base/.git.path
+2026-09-06T01:33:57.6664477Z /github/runner_temp/git-credentials-36455d08-a02a-4f58-a2ed-0892a7e6372e.config
+2026-09-06T01:33:57.6690278Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/base/.git.path \/github\/runner_temp\/git\-credentials\-36455d08\-a02a\-4f58\-a2ed\-0892a7e6372e\.config
+2026-09-06T01:33:57.6768162Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/base/.git/worktrees/*.path
+2026-09-06T01:33:57.6879258Z /github/runner_temp/git-credentials-36455d08-a02a-4f58-a2ed-0892a7e6372e.config
+2026-09-06T01:33:57.6886139Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/base/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-36455d08\-a02a\-4f58\-a2ed\-0892a7e6372e\.config
+2026-09-06T01:33:57.6937185Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-09-06T01:33:57.7197438Z Removing credentials config '/home/runner/work/_temp/git-credentials-36455d08-a02a-4f58-a2ed-0892a7e6372e.config'
+2026-09-06T01:33:57.7211280Z ##[endgroup]
+2026-09-06T01:33:57.7365170Z ##[group]Run set -uo pipefail
+2026-09-06T01:33:57.7365925Z [36;1mset -uo pipefail[0m
+2026-09-06T01:33:57.7367006Z [36;1m# A project that is entirely shell without a shell linter is a project[0m
+2026-09-06T01:33:57.7369037Z [36;1m# without a compiler. -S warning is the level the repo is clean at.[0m
+2026-09-06T01:33:57.7370311Z [36;1m#[0m
+2026-09-06T01:33:57.7371223Z [36;1m# The version is pinned because the runner's preinstalled shellcheck is[0m
+2026-09-06T01:33:57.7373129Z [36;1m# older than the one developers have locally, and the two disagree: a[0m
+2026-09-06T01:33:57.7374762Z [36;1m# lint that passes on your machine and fails in CI teaches people to[0m
+2026-09-06T01:33:57.7375987Z [36;1m# stop reading lint output.[0m
+2026-09-06T01:33:57.7376726Z [36;1mSC_VERSION=v0.11.0[0m
+2026-09-06T01:33:57.7378942Z [36;1mcurl -fsSL "https://github.com/koalaman/shellcheck/releases/download/${SC_VERSION}/shellcheck-${SC_VERSION}.linux.x86_64.tar.xz" \[0m
+2026-09-06T01:33:57.7381137Z [36;1m  | tar -xJf - -C "$RUNNER_TEMP"[0m
+2026-09-06T01:33:57.7382280Z [36;1mSHELLCHECK="$RUNNER_TEMP/shellcheck-${SC_VERSION}/shellcheck"[0m
+2026-09-06T01:33:57.7383558Z [36;1m"$SHELLCHECK" --version | grep version:[0m
+2026-09-06T01:33:57.7384383Z [36;1mset +e[0m
+2026-09-06T01:33:57.7385177Z [36;1m"$SHELLCHECK" -S warning bin/*.sh scripts/*.sh tests/*.sh \[0m
+2026-09-06T01:33:57.7386500Z [36;1m  templates/full/scripts/*.sh packs/*/verify-pack.sh[0m
+2026-09-06T01:33:57.7387492Z [36;1mlint_exit=$?[0m
+2026-09-06T01:33:57.7388021Z [36;1mset -e[0m
+2026-09-06T01:33:57.7388984Z [36;1mprintf 'lint_exit=%s\n' "$lint_exit" >> "$GITHUB_OUTPUT"[0m
+2026-09-06T01:33:57.7390127Z [36;1m[ "$lint_exit" -eq 0 ] || exit "$lint_exit"[0m
+2026-09-06T01:33:57.7391052Z [36;1m: > "$RUNNER_TEMP/lint-observed-zero"[0m
+2026-09-06T01:33:57.7434581Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-09-06T01:33:57.7435547Z ##[endgroup]
+2026-09-06T01:33:58.0589438Z version: 0.11.0
+2026-09-06T01:34:02.6629214Z ##[group]Run set -uo pipefail
+2026-09-06T01:34:02.6629733Z [36;1mset -uo pipefail[0m
+2026-09-06T01:34:02.6630115Z [36;1mset +e[0m
+2026-09-06T01:34:02.6630513Z [36;1mbash packs/gherkin/verify-pack.sh[0m
+2026-09-06T01:34:02.6630998Z [36;1mgherkin_exit=$?[0m
+2026-09-06T01:34:02.6631373Z [36;1mset -e[0m
+2026-09-06T01:34:02.6631886Z [36;1mprintf 'gherkin_exit=%s\n' "$gherkin_exit" >> "$GITHUB_OUTPUT"[0m
+2026-09-06T01:34:02.6632560Z [36;1m[ "$gherkin_exit" -eq 0 ] || exit "$gherkin_exit"[0m
+2026-09-06T01:34:02.6633160Z [36;1m: > "$RUNNER_TEMP/gherkin-observed-zero"[0m
+2026-09-06T01:34:02.6672712Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-09-06T01:34:02.6673088Z ##[endgroup]
+2026-09-06T01:34:02.6782862Z Gherkin pack — failure matrix
+2026-09-06T01:34:02.6783387Z 
+2026-09-06T01:34:02.8049461Z   ok   valid run passes (exit 0)
+2026-09-06T01:34:02.8375437Z   ok   valid run passes with a matching --expect (exit 0)
+2026-09-06T01:34:02.8679155Z   ok   zero execution blocks (exit 2)
+2026-09-06T01:34:02.9006118Z   ok   executing fewer scenarios than declared blocks (exit 2)
+2026-09-06T01:34:02.9303822Z   ok   FAILED blocks (exit 1)
+2026-09-06T01:34:02.9649712Z   ok   UNDEFINED blocks (exit 1)
+2026-09-06T01:34:03.0066384Z   ok   AMBIGUOUS blocks (exit 1)
+2026-09-06T01:34:03.0532182Z   ok   PENDING blocks (exit 1)
+2026-09-06T01:34:03.0829632Z   ok   SKIPPED blocks (exit 1)
+2026-09-06T01:34:03.1144248Z   ok   duplicate scenario id blocks (exit 1)
+2026-09-06T01:34:03.1449867Z   ok   malformed report blocks (exit 3)
+2026-09-06T01:34:03.1774513Z   ok   truncated report blocks (exit 3)
+2026-09-06T01:34:03.2070246Z   ok   missing report blocks (exit 3)
+2026-09-06T01:34:03.2367525Z   ok   --expect rejects a non-numeric argument (exit 64)
+2026-09-06T01:34:03.2889474Z   ok   validator runs inside a "type": "module" repo
+2026-09-06T01:34:03.2890248Z 
+2026-09-06T01:34:03.2901010Z ────────────────────────────────────────
+2026-09-06T01:34:03.2907856Z 15 passed, 0 failed
+2026-09-06T01:34:03.2919136Z Every failure mode blocks.
+2026-09-06T01:34:03.2954647Z ##[group]Run set -euo pipefail
+2026-09-06T01:34:03.2954971Z [36;1mset -euo pipefail[0m
+2026-09-06T01:34:03.2955358Z [36;1m# Same version the pack's documented findings were measured against.[0m
+2026-09-06T01:34:03.2955759Z [36;1mK6_VERSION=v2.1.0[0m
+2026-09-06T01:34:03.2956322Z [36;1mcurl -fsSL "https://github.com/grafana/k6/releases/download/${K6_VERSION}/k6-${K6_VERSION}-linux-amd64.tar.gz" \[0m
+2026-09-06T01:34:03.2956908Z [36;1m  | tar -xzf - -C "$RUNNER_TEMP"[0m
+2026-09-06T01:34:03.2957515Z [36;1msudo install "$RUNNER_TEMP/k6-${K6_VERSION}-linux-amd64/k6" /usr/local/bin/k6[0m
+2026-09-06T01:34:03.2957931Z [36;1mk6 version[0m
+2026-09-06T01:34:03.2996697Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-09-06T01:34:03.2997069Z ##[endgroup]
+2026-09-06T01:34:04.1529027Z k6 v2.1.0 (commit/83a87a41e2, go1.26.4, linux/amd64)
+2026-09-06T01:34:04.1586643Z ##[group]Run set -euo pipefail
+2026-09-06T01:34:04.1587184Z [36;1mset -euo pipefail[0m
+2026-09-06T01:34:04.1587837Z [36;1m# An old protected judge cannot certify a new contract. Adoption is explicit.[0m
+2026-09-06T01:34:04.1589049Z [36;1mpython3 - "$GITHUB_WORKSPACE/base/.harness/judge-contract.json" <<'PYCONTRACT'[0m
+2026-09-06T01:34:04.1589787Z [36;1mimport json,sys[0m
+2026-09-06T01:34:04.1590569Z [36;1mexpected={"schema_version":1,"interfaces":["target-root-v1","installation-profile-v1","match-argv-v1"]}[0m
+2026-09-06T01:34:04.1591372Z [36;1mtry:[0m
+2026-09-06T01:34:04.1591869Z [36;1m    with open(sys.argv[1]) as stream: actual=json.load(stream)[0m
+2026-09-06T01:34:04.1592486Z [36;1m    assert actual == expected[0m
+2026-09-06T01:34:04.1593015Z [36;1mexcept (OSError,ValueError,AssertionError):[0m
+2026-09-06T01:34:04.1593934Z [36;1m    sys.exit("ADOPTION_REQUIRED: protected base lacks the required judge contract; no head fallback")[0m
+2026-09-06T01:34:04.1594802Z [36;1mPYCONTRACT[0m
+2026-09-06T01:34:04.1595281Z [36;1mbash "$GITHUB_WORKSPACE/base/scripts/setup-oracles.sh"[0m
+2026-09-06T01:34:04.1596078Z [36;1mecho "$GITHUB_WORKSPACE/base/.harness/tools/oracles-venv/bin" >> "$GITHUB_PATH"[0m
+2026-09-06T01:34:04.1596997Z [36;1mexport PATH="$GITHUB_WORKSPACE/base/.harness/tools/oracles-venv/bin:$PATH"[0m
+2026-09-06T01:34:04.1597975Z [36;1mbash "$GITHUB_WORKSPACE/base/scripts/run-gates.sh" quick --target "$GITHUB_WORKSPACE/head"[0m
+2026-09-06T01:34:04.1599157Z [36;1m: > "$RUNNER_TEMP/gates-observed-zero"[0m
+2026-09-06T01:34:04.1654620Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-09-06T01:34:04.1655212Z env:
+2026-09-06T01:34:04.1655639Z   ROUTES_BASE: 88ea1e6c45faf5b5db9e29935eef6e25e50f633b
+2026-09-06T01:34:04.1656276Z   DELIVERY_BASE: 88ea1e6c45faf5b5db9e29935eef6e25e50f633b
+2026-09-06T01:34:04.1656808Z ##[endgroup]
+2026-09-06T01:34:04.1949596Z ADOPTION_REQUIRED: protected base lacks the required judge contract; no head fallback
+2026-09-06T01:34:04.2001635Z ##[error]Process completed with exit code 1.
+2026-09-06T01:34:04.2089473Z ##[group]Run set -eu
+2026-09-06T01:34:04.2089814Z [36;1mset -eu[0m
+2026-09-06T01:34:04.2090035Z [36;1m[0m
+2026-09-06T01:34:04.2090375Z [36;1m# Fail-closed: success needs both observed zeros AND both sentinels.[0m
+2026-09-06T01:34:04.2090913Z [36;1m# Missing, skipped, cancelled and not-executed all land here as blocked.[0m
+2026-09-06T01:34:04.2091342Z [36;1mconclusion=blocked[0m
+2026-09-06T01:34:04.2091750Z [36;1mif [ "$GATES_OUTCOME" = success ] && [ -f "$RUNNER_TEMP/gates-observed-zero" ] &&[0m
+2026-09-06T01:34:04.2092294Z [36;1m   [ "$LINT_OUTCOME" = success ] && [ "$GHERKIN_OUTCOME" = success ] &&[0m
+2026-09-06T01:34:04.2092724Z [36;1m   [ -f "$RUNNER_TEMP/lint-observed-zero" ] &&[0m
+2026-09-06T01:34:04.2093095Z [36;1m   [ -f "$RUNNER_TEMP/gherkin-observed-zero" ] &&[0m
+2026-09-06T01:34:04.2093511Z [36;1m   [ "$CHECK_OUTCOME" = success ] && [ "${CHECK_EXIT:-}" = 0 ] &&[0m
+2026-09-06T01:34:04.2093997Z [36;1m   [ "$CLAIMS_OUTCOME" = success ] && [ "${CLAIMS_EXIT:-}" = 0 ] &&[0m
+2026-09-06T01:34:04.2094465Z [36;1m   [ "$DECISIONS_OUTCOME" = success ] && [ "${DECISIONS_EXIT:-}" = 0 ] &&[0m
+2026-09-06T01:34:04.2094899Z [36;1m   [ -f "$RUNNER_TEMP/check-observed-zero" ] &&[0m
+2026-09-06T01:34:04.2095258Z [36;1m   [ -f "$RUNNER_TEMP/claims-observed-zero" ] &&[0m
+2026-09-06T01:34:04.2095650Z [36;1m   [ -f "$RUNNER_TEMP/decisions-observed-zero" ]; then[0m
+2026-09-06T01:34:04.2095997Z [36;1m  conclusion=success[0m
+2026-09-06T01:34:04.2096252Z [36;1mfi[0m
+2026-09-06T01:34:04.2096456Z [36;1m[0m
+2026-09-06T01:34:04.2096862Z [36;1m{[0m
+2026-09-06T01:34:04.2097098Z [36;1m  printf '%s\n' '## Required quality'[0m
+2026-09-06T01:34:04.2097420Z [36;1m  printf '%s\n' '| field | value |'[0m
+2026-09-06T01:34:04.2097718Z [36;1m  printf '%s\n' '|---|---|'[0m
+2026-09-06T01:34:04.2098027Z [36;1m  printf '| head_sha | `%s` |\n' "$HEAD_SHA"[0m
+2026-09-06T01:34:04.2098511Z [36;1m  printf '| base_sha | `%s` |\n' "$BASE_SHA"[0m
+2026-09-06T01:34:04.2098904Z [36;1m  printf '| protected live gates | `%s` |\n' "$GATES_OUTCOME"[0m
+2026-09-06T01:34:04.2099310Z [36;1m  printf '| judge_sha | `%s` |\n' "$BASE_SHA"[0m
+2026-09-06T01:34:04.2099669Z [36;1m  printf '| workflow_sha | `%s` |\n' "$WORKFLOW_SHA"[0m
+2026-09-06T01:34:04.2100080Z [36;1m  printf '| run | `%s` (attempt %s) |\n' "$RUN_ID" "$RUN_ATTEMPT"[0m
+2026-09-06T01:34:04.2100482Z [36;1m  printf '| shellcheck | `%s` |\n' "$LINT_OUTCOME"[0m
+2026-09-06T01:34:04.2100870Z [36;1m  printf '| gherkin pack | `%s` |\n' "$GHERKIN_OUTCOME"[0m
+2026-09-06T01:34:04.2101335Z [36;1m  printf '| make check | `%s` (exit `%s`) |\n' "$CHECK_OUTCOME" "${CHECK_EXIT:-none}"[0m
+2026-09-06T01:34:04.2101897Z [36;1m  printf '| verify-claims | `%s` (exit `%s`) |\n' "$CLAIMS_OUTCOME" "${CLAIMS_EXIT:-none}"[0m
+2026-09-06T01:34:04.2102504Z [36;1m  printf '| verify-decisions | `%s` (exit `%s`) |\n' "$DECISIONS_OUTCOME" "${DECISIONS_EXIT:-none}"[0m
+2026-09-06T01:34:04.2103018Z [36;1m  printf '| conclusion | `%s` |\n' "$conclusion"[0m
+2026-09-06T01:34:04.2103358Z [36;1m} >> "$GITHUB_STEP_SUMMARY"[0m
+2026-09-06T01:34:04.2103621Z [36;1m[0m
+2026-09-06T01:34:04.2103853Z [36;1mif [ "$conclusion" != success ]; then[0m
+2026-09-06T01:34:04.2104284Z [36;1m  printf 'Required quality conclusion is non-success: %s\n' "$conclusion" >&2[0m
+2026-09-06T01:34:04.2104697Z [36;1m  exit 1[0m
+2026-09-06T01:34:04.2104905Z [36;1mfi[0m
+2026-09-06T01:34:04.2143785Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-09-06T01:34:04.2144153Z env:
+2026-09-06T01:34:04.2144409Z   BASE_SHA: 88ea1e6c45faf5b5db9e29935eef6e25e50f633b
+2026-09-06T01:34:04.2144761Z   HEAD_SHA: 29445190ae94fd85771d5b41223104f8e1d1c011
+2026-09-06T01:34:04.2145069Z   GATES_OUTCOME: failure
+2026-09-06T01:34:04.2145310Z   CHECK_OUTCOME: skipped
+2026-09-06T01:34:04.2145534Z   CHECK_EXIT: 
+2026-09-06T01:34:04.2145749Z   LINT_OUTCOME: success
+2026-09-06T01:34:04.2145983Z   GHERKIN_OUTCOME: success
+2026-09-06T01:34:04.2146228Z   CLAIMS_OUTCOME: skipped
+2026-09-06T01:34:04.2146675Z   CLAIMS_EXIT: 
+2026-09-06T01:34:04.2146908Z   DECISIONS_OUTCOME: skipped
+2026-09-06T01:34:04.2147156Z   DECISIONS_EXIT: 
+2026-09-06T01:34:04.2147374Z   RUN_ID: 34004221994
+2026-09-06T01:34:04.2147596Z   RUN_ATTEMPT: 1
+2026-09-06T01:34:04.2147868Z   WORKFLOW_SHA: 57f3222df69024ac079763edc6c2b74b66799251
+2026-09-06T01:34:04.2148191Z ##[endgroup]
+2026-09-06T01:34:04.2210331Z Required quality conclusion is non-success: blocked
+2026-09-06T01:34:04.2214326Z ##[error]Process completed with exit code 1.
+2026-09-06T01:34:04.2336643Z Post job cleanup.
+2026-09-06T01:34:04.3293227Z [command]/usr/bin/git version
+2026-09-06T01:34:04.3359007Z git version 2.55.0
+2026-09-06T01:34:04.3435991Z Temporarily overriding HOME='/home/runner/work/_temp/1dd9e15b-08f8-44f4-8f7c-6e6f1a235a58' before making global git config changes
+2026-09-06T01:34:04.3449808Z Adding repository directory to the temporary git global config as a safe directory
+2026-09-06T01:34:04.3472485Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/harness-kit/harness-kit/base
+2026-09-06T01:34:04.3515745Z Removing SSH command configuration
+2026-09-06T01:34:04.3531206Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-09-06T01:34:04.3629707Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-09-06T01:34:04.4005176Z Removing HTTP extra header
+2026-09-06T01:34:04.4006553Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-09-06T01:34:04.4074370Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-09-06T01:34:04.4802819Z Removing includeIf entries pointing to credentials config files
+2026-09-06T01:34:04.4819359Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-09-06T01:34:04.4875842Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-09-06T01:34:04.5566919Z Post job cleanup.
+2026-09-06T01:34:04.6535629Z [command]/usr/bin/git version
+2026-09-06T01:34:04.6609237Z git version 2.55.0
+2026-09-06T01:34:04.6689450Z Temporarily overriding HOME='/home/runner/work/_temp/e250cf9c-ee61-418a-a739-0aca75667d32' before making global git config changes
+2026-09-06T01:34:04.6709117Z Adding repository directory to the temporary git global config as a safe directory
+2026-09-06T01:34:04.6719499Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/harness-kit/harness-kit/head
+2026-09-06T01:34:04.6774307Z Removing SSH command configuration
+2026-09-06T01:34:04.6802551Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-09-06T01:34:04.6841111Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-09-06T01:34:04.7230317Z Removing HTTP extra header
+2026-09-06T01:34:04.7231475Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-09-06T01:34:04.7299764Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-09-06T01:34:04.7700102Z Removing includeIf entries pointing to credentials config files
+2026-09-06T01:34:04.7707138Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-09-06T01:34:04.7799845Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-09-06T01:34:04.8500703Z Cleaning up orphan processes

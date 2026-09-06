@@ -1,0 +1,7 @@
+{"source":"identity.mjs","sha256":"a610fc4cb5850b54e3b7c85545486f0c080f6dc7d3bc52ab96c663cd4ff5eaa0"}
+{"source":"authority.mjs","sha256":"4b4fa1344e64095c4ff2b62ecaf85e0c4d8b3ad75e92d2c6cb5d62d89d738e55"}
+{"source":"classify.mjs","sha256":"690eecd786b72f8781831db06d51346b96a4bb4f083d88f34952312e561e135f"}
+{"probe":"H03-R1","input":"%TAG !! tag:yaml.org,2002:\n---\ntitle: hello\nstatus: active\nenabled: true\nthreshold: 100\n","identity":"IDENTIFIED","sameCanonical":true,"sameSemantic":true,"disposition":"MECHANICAL_ELIGIBLE","proofKind":"canonical-reorder.v1","executionAuthorized":false}
+{"probe":"H03-R1","input":"%TAG !! tag:yaml.org,2002: # threshold must never decrease\n---\ntitle: hello\nstatus: active\nenabled: true\nthreshold: 100\n","identity":"UNKNOWN","sameCanonical":false,"sameSemantic":false,"disposition":"UNKNOWN","proofKind":null,"executionAuthorized":false}
+{"probe":"H03-R2","operation":"loadAuthority","receiptExpiry":1500,"checkpointExpiry":2000,"clockReadings":[1000,1600],"returnedStatus":null,"expectedHandleInspection":"UNKNOWN","approvalInspection":"BLOCKED_BY_STALE_AUTHORITY"}
+{"probe":"H03-R2","operation":"verifyContext","receiptExpiry":1500,"checkpointExpiry":2000,"clockReadings":[1000,1000,1600],"returnedStatus":null,"expectedHandleInspection":"UNKNOWN","approvalInspection":"BLOCKED_BY_STALE_AUTHORITY"}

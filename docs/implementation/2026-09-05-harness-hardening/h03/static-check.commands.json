@@ -1,0 +1,81 @@
+[
+  {
+    "command": [
+      "/workspace/scratch/adce1c53b293/tooling/shellcheck/shellcheck-v0.11.0/shellcheck",
+      "packs/autonomy/verify-pack.sh"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "bash",
+      "-n",
+      "packs/autonomy/verify-pack.sh"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "node",
+      "--check",
+      "packs/autonomy/repo-template/scripts/quality-orchestrator/authority.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "node",
+      "--check",
+      "packs/autonomy/repo-template/scripts/quality-orchestrator/classify.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "node",
+      "--check",
+      "packs/autonomy/repo-template/scripts/quality-orchestrator/identity.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "node",
+      "--check",
+      "packs/autonomy/repo-template/scripts/quality-orchestrator/index.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "node",
+      "--check",
+      "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/authority.test.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "node",
+      "--check",
+      "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/classify.test.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "node",
+      "--check",
+      "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/helpers.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "node",
+      "--check",
+      "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/identity.test.mjs"
+    ],
+    "exit_code": 0
+  }
+]

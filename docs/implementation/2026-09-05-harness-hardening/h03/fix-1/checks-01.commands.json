@@ -1,0 +1,116 @@
+[
+  {
+    "command": [
+      "node",
+      "--check",
+      "packs/autonomy/repo-template/scripts/quality-orchestrator/authority.mjs"
+    ],
+    "exit_code": 0,
+    "stdout": "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/check-01.stdout.log",
+    "stderr": "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/check-01.stderr.log"
+  },
+  {
+    "command": [
+      "node",
+      "--check",
+      "packs/autonomy/repo-template/scripts/quality-orchestrator/classify.mjs"
+    ],
+    "exit_code": 0,
+    "stdout": "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/check-02.stdout.log",
+    "stderr": "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/check-02.stderr.log"
+  },
+  {
+    "command": [
+      "node",
+      "--check",
+      "packs/autonomy/repo-template/scripts/quality-orchestrator/identity.mjs"
+    ],
+    "exit_code": 0,
+    "stdout": "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/check-03.stdout.log",
+    "stderr": "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/check-03.stderr.log"
+  },
+  {
+    "command": [
+      "node",
+      "--check",
+      "packs/autonomy/repo-template/scripts/quality-orchestrator/index.mjs"
+    ],
+    "exit_code": 0,
+    "stdout": "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/check-04.stdout.log",
+    "stderr": "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/check-04.stderr.log"
+  },
+  {
+    "command": [
+      "node",
+      "--check",
+      "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/authority.test.mjs"
+    ],
+    "exit_code": 0,
+    "stdout": "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/check-05.stdout.log",
+    "stderr": "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/check-05.stderr.log"
+  },
+  {
+    "command": [
+      "node",
+      "--check",
+      "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/classify.test.mjs"
+    ],
+    "exit_code": 0,
+    "stdout": "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/check-06.stdout.log",
+    "stderr": "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/check-06.stderr.log"
+  },
+  {
+    "command": [
+      "node",
+      "--check",
+      "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/helpers.mjs"
+    ],
+    "exit_code": 0,
+    "stdout": "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/check-07.stdout.log",
+    "stderr": "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/check-07.stderr.log"
+  },
+  {
+    "command": [
+      "node",
+      "--check",
+      "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/identity.test.mjs"
+    ],
+    "exit_code": 0,
+    "stdout": "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/check-08.stdout.log",
+    "stderr": "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/check-08.stderr.log"
+  },
+  {
+    "command": [
+      "bash",
+      "scripts/verify-oracles.sh"
+    ],
+    "exit_code": 0,
+    "stdout": "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/check-09.stdout.log",
+    "stderr": "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/check-09.stderr.log"
+  },
+  {
+    "command": [
+      "bash",
+      "scripts/verify-agent-notes.sh"
+    ],
+    "exit_code": 0,
+    "stdout": "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/check-10.stdout.log",
+    "stderr": "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/check-10.stderr.log"
+  },
+  {
+    "command": [
+      "git",
+      "diff",
+      "--check",
+      "--",
+      "packs/autonomy",
+      ".harness/oracles/AC-H03.yaml",
+      ".agents/notes/implemented/architecture/2026-09-06-h03-typed-authority-runtime.md",
+      "docs/harness-capabilities.md",
+      "docs/quality-document.md"
+    ],
+    "exit_code": 0,
+    "stdout": "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/check-11.stdout.log",
+    "stderr": "docs/implementation/2026-09-05-harness-hardening/h03/fix-1/check-11.stderr.log"
+  }
+]

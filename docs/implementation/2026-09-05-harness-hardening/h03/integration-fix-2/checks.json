@@ -1,0 +1,34 @@
+[
+  {
+    "command": [
+      "bash",
+      "-n",
+      "packs/load-testing/verify-pack.sh"
+    ],
+    "exit_code": 0,
+    "stdout": "check-1.stdout.log",
+    "stderr": "check-1.stderr.log"
+  },
+  {
+    "command": [
+      "/workspace/scratch/adce1c53b293/tooling/shellcheck/shellcheck-v0.11.0/shellcheck",
+      "packs/load-testing/verify-pack.sh"
+    ],
+    "exit_code": 1,
+    "stdout": "check-2.stdout.log",
+    "stderr": "check-2.stderr.log",
+    "limit": "Default severity includes existing SC2086/SC2016 info; no finding on the added export."
+  },
+  {
+    "command": [
+      "/workspace/scratch/adce1c53b293/tooling/shellcheck/shellcheck-v0.11.0/shellcheck",
+      "-S",
+      "warning",
+      "packs/load-testing/verify-pack.sh"
+    ],
+    "exit_code": 0,
+    "stdout": "check-3.stdout.log",
+    "stderr": "check-3.stderr.log",
+    "policy": "Existing Makefile lint uses -S warning; unchanged."
+  }
+]

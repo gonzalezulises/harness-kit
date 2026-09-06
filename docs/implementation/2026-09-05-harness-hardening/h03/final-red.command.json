@@ -1,0 +1,15 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "docs/implementation/2026-09-05-harness-hardening/h03/final-falsification-source/tests/authority.test.mjs",
+    "docs/implementation/2026-09-05-harness-hardening/h03/final-falsification-source/tests/classify.test.mjs",
+    "docs/implementation/2026-09-05-harness-hardening/h03/final-falsification-source/tests/identity.test.mjs"
+  ],
+  "exit_code": 1,
+  "logs": {
+    "docs/implementation/2026-09-05-harness-hardening/h03/final-red.stdout.log": "3ef427d0173af9c72fabd6293b0e750d3dcd038fc712a1359689dca7624c8b2a",
+    "docs/implementation/2026-09-05-harness-hardening/h03/final-red.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}
