@@ -1,0 +1,12 @@
+✔ e2e: C1 public continuation rejects a forged grant before registration (85.700532ms)
+✔ e2e: C1 replay rejects forged recorded grant even with recomputed journal hashes (18.330972ms)
+✔ e2e: one signed grant permits two mechanical runs and keeps original artifact acceptance (3404.269019ms)
+✔ e2e: H06 exhausted retry reconciles original intent without another unit (2364.980151ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6192.920448

@@ -1,0 +1,29 @@
+✔ C1 current verifier rejects fabricated signatures for every approval kind (15.871609ms)
+✔ C1 recorded verifier rejects fabricated signatures for every approval kind (11.879548ms)
+✔ C1 current and recorded verifiers accept genuine signatures and reject altered signed fields (11.695366ms)
+✔ C1 valid historical signatures preserve event-time semantics without current authority (2.308532ms)
+✔ M1 public evaluation rejects undefined observation before registration (59.110487ms)
+✔ M1 public evaluation rejects null observation before registration (19.640389ms)
+✔ durable regression bytes and signed gate bind actual accepted semantics (849.873184ms)
+✔ closed regressions refuse missing (339.230004ms)
+✔ closed regressions refuse false-expectation (296.501807ms)
+✔ closed regressions refuse lost-coverage (303.971838ms)
+✔ closed regressions refuse callback (292.619875ms)
+✔ signed unsupported product proof stops without simulated PASS (304.993909ms)
+✔ H06 expiry is rechecked at effect use (825.870202ms)
+✔ H06 revocation survives reopen and blocks an already prepared effect (897.541562ms)
+✔ H06 category exhaustion survives fresh run, retry and replacement grant (347.234927ms)
+✔ H06 all three categories share the signed total cap (320.513649ms)
+✔ H06 budget is rechecked between prepare and use without creating effect intent (819.732295ms)
+✔ older bounded approvals do not become reusable continuation and foreign handles fail (739.752878ms)
+✔ H06 changed accepted authority, file classes and workspace semantics block continuation (595.021885ms)
+✔ H06 legacy and generic reserves cannot bypass category accounting (315.116363ms)
+✔ H06-R1 counterexample coverage cannot be replaced by identical accepted bytes (294.375469ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7869.677864

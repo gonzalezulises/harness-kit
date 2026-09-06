@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "headSha": "589a4e3efe924264825c0f3de4b3820d83b196be",
+  "protectedBaseSha": "88ea1e6c45faf5b5db9e29935eef6e25e50f633b",
+  "runId": 34007233246,
+  "jobId": 101416583302,
+  "conclusion": "failure",
+  "reason": "ADOPTION_REQUIRED: protected base lacks the required judge contract; no head fallback",
+  "log": {
+    "path": "remote-ci-589a4e3.log",
+    "bytes": 47679,
+    "sha256": "efaf9721af34b1576a12db62ff4aa842d6a81c4427066842e4e3c6c5d57726eb",
+    "adoption_required": true
+  },
+  "steps": [
+    {
+      "name": "Set up job",
+      "conclusion": "success"
+    },
+    {
+      "name": "Resolve exact commit identities",
+      "conclusion": "success"
+    },
+    {
+      "name": "Check out proposed head",
+      "conclusion": "success"
+    },
+    {
+      "name": "Check out protected base judge and policy",
+      "conclusion": "success"
+    },
+    {
+      "name": "Lint every shell script",
+      "conclusion": "success"
+    },
+    {
+      "name": "Verify the Gherkin pack still blocks every failure mode",
+      "conclusion": "success"
+    },
+    {
+      "name": "Install k6 (three features declare it as their verification)",
+      "conclusion": "success"
+    },
+    {
+      "name": "Apply protected live policy to exact head",
+      "conclusion": "failure"
+    },
+    {
+      "name": "Run the repository verification pipeline",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Re-verify every claimed passing state with the protected checker",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Verify no earlier decision was rewritten",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Publish evidence and enforce the final conclusion",
+      "conclusion": "failure"
+    },
+    {
+      "name": "Post Check out protected base judge and policy",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Check out proposed head",
+      "conclusion": "success"
+    },
+    {
+      "name": "Complete job",
+      "conclusion": "success"
+    }
+  ]
+}

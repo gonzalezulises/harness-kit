@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "command": [
+    "bash",
+    "docs/implementation/2026-09-05-harness-hardening/h06/reproduce-red.sh"
+  ],
+  "exit_code": 1,
+  "tests": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs": "73748aef967814045b3961f3eae2e00675eca0f50d1530257a2418b520a14bf3"
+  },
+  "source": {
+    "docs/implementation/2026-09-05-harness-hardening/h06/source-before-regression/authority.mjs": "8051f25f8e03a75f7a74dad24983ce7b2b2c43a795fb1b5400784b33896d1989",
+    "docs/implementation/2026-09-05-harness-hardening/h06/source-before-regression/budget.mjs": "bcf6bacf43d1bee8dfc28f6951d17cd8391f89411609bde61b58cba8f8c8b24b",
+    "docs/implementation/2026-09-05-harness-hardening/h06/source-before-regression/capabilities.mjs": "2b7016533c24777e4b4ce8432f077faa9775e4b6d325cd7f0ff8a8e3492d3d39",
+    "docs/implementation/2026-09-05-harness-hardening/h06/source-before-regression/classify.mjs": "4bed07becff6f10502f35329164f65d1b70891ac035c9ce91f0416cfe346b48d",
+    "docs/implementation/2026-09-05-harness-hardening/h06/source-before-regression/continuation.mjs": "0ccb49c504907dadb62e1fa51b28387fa6cad07378eddb8996db7c5de7fa97c9",
+    "docs/implementation/2026-09-05-harness-hardening/h06/source-before-regression/identity.mjs": "f6bc4cf109851e22bece790619fe736808d7af52b06f79e9b00047e0106cfb21",
+    "docs/implementation/2026-09-05-harness-hardening/h06/source-before-regression/index.mjs": "c3f0290e5f5f05eeaf90bc7731d12838fba4b3cf68ba39b17a64296583974805",
+    "docs/implementation/2026-09-05-harness-hardening/h06/source-before-regression/journal.mjs": "6b53ad0b3ef8454907bfde344f5b942fa6abf28d4904608f1c7f309dad5de2ea",
+    "docs/implementation/2026-09-05-harness-hardening/h06/source-before-regression/package-lock.json": "19d4495481f1a940a52ab63684bc400b938cc7c6bc744be889fa453030ba622c",
+    "docs/implementation/2026-09-05-harness-hardening/h06/source-before-regression/package.json": "6c8370fa233ab09d20b96330d90a9541d0b3f2c71aa19025988677b879262296",
+    "docs/implementation/2026-09-05-harness-hardening/h06/source-before-regression/tests/continuation.test.mjs": "73748aef967814045b3961f3eae2e00675eca0f50d1530257a2418b520a14bf3",
+    "docs/implementation/2026-09-05-harness-hardening/h06/source-before-regression/tests/helpers.mjs": "8eab979a11d050cc4f835a4824e42daa71e93bf4a18e0c2b45577ed589a48afc"
+  },
+  "logs": {
+    "docs/implementation/2026-09-05-harness-hardening/h06/causal-red.log": "c55a0f04bbe0a6759cd843bed37d01b9e8b89b008bc5ea3a28daaaeddd6b46af"
+  }
+}

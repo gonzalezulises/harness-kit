@@ -1,0 +1,1489 @@
+bash scripts/run-gates.sh quick
+── gates · aggregate quick · profile v1/kit
+  decisions-append-only    PASS (0.4s, exit 0)
+  agent-notes-tree         PASS (0.1s, exit 0)
+  arch-boundaries          PASS (0.4s, exit 0)
+  makefile-gates           PASS (0.0s, exit 0)
+  version-sync             PASS (0.0s, exit 0)
+  delivery-doc             PASS (0.0s, exit 0)
+  context-routes           PASS (0.0s, exit 0)
+  oracles-falsifiable      PASS (0.1s, exit 0)
+── 8 pass · 0 blocking · 0 not applicable
+make check-core
+make[1]: Entering directory '/workspace/scratch/adce1c53b293/harness-kit'
+bash scripts/check-prerequisites.sh full
+Prerequisites verified for full scope; no verification tests ran in this step.
+bash tests/run-tests.sh
+harness-kit test suite
+  ok   H01 verifier hardening regressions
+
+1. Syntax
+  ok   syntax harness-activate.sh
+  ok   syntax harness-audit.sh
+  ok   syntax harness-init.sh
+  ok   syntax harness-protect.sh
+  ok   syntax harness-status.sh
+  ok   syntax check-arch.sh
+  ok   syntax clean-state-check.sh
+  ok   syntax install-githooks.sh
+  ok   syntax pre-commit-staged.sh
+  ok   syntax run-gates.sh
+  ok   syntax session-trace.sh
+  ok   syntax setup-oracles.sh
+  ok   syntax verify-agent-notes.sh
+  ok   syntax verify-claims.sh
+  ok   syntax verify-context-routes.sh
+  ok   syntax verify-decisions.sh
+  ok   syntax verify-delivery-doc.sh
+  ok   syntax verify-feature.sh
+  ok   syntax verify-makefile-gates.sh
+  ok   syntax verify-oracles.sh
+  ok   syntax run-tests.sh
+  ok   in sync: scripts/check-arch.sh
+  ok   in sync: scripts/clean-state-check.sh
+  ok   in sync: scripts/install-githooks.sh
+  ok   in sync: scripts/pre-commit-staged.sh
+  ok   in sync: scripts/run-gates.sh
+  ok   in sync: scripts/session-trace.sh
+  ok   in sync: scripts/setup-oracles.sh
+  ok   in sync: scripts/verify-agent-notes.sh
+  ok   in sync: scripts/verify-claims.sh
+  ok   in sync: scripts/verify-context-routes.sh
+  ok   in sync: scripts/verify-decisions.sh
+  ok   in sync: scripts/verify-delivery-doc.sh
+  ok   in sync: scripts/verify-feature.sh
+  ok   in sync: scripts/verify-makefile-gates.sh
+  ok   in sync: scripts/verify-oracles.sh
+  ok   valid json feature_list.json
+  ok   valid json arch-rules.json
+
+2. Audit on a bare repo
+  ok   bare repo fails critical checks (1/7)
+  ok   audit exits 1 when critical checks fail
+
+3. Stable denominator
+  ok   same total for empty and bare repo (comparable scores)
+
+4. init --dry-run writes nothing
+  ok   dry run left no AGENTS.md
+
+5. init --level minimal
+  ok   minimal wrote AGENTS.md
+  ok   minimal wrote CLAUDE.md
+  ok   minimal wrote init.sh
+  ok   minimal wrote PROGRESS.md
+  ok   minimal wrote feature_list.json
+  ok   minimal wrote clean-state-checklist.md
+  ok   minimal wrote DECISIONS.md
+  ok   minimal wrote docs/decisions/README.md
+  ok   init.sh is executable
+  ok   all placeholders substituted in AGENTS.md
+  ok   detected the real verify command
+  ok   minimal harness passes all 7 critical checks
+
+6. init --level full
+  ok   full wrote Makefile
+  ok   full wrote scripts/verify-feature.sh
+  ok   full wrote scripts/check-arch.sh
+  ok   full wrote scripts/clean-state-check.sh
+  ok   full wrote scripts/session-trace.sh
+  ok   full wrote .harness/arch-rules.json
+  ok   full wrote templates/sprint-contract.md
+  ok   full wrote templates/evaluator-rubric.md
+  ok   full wrote docs/quality-document.md
+  ok   full harness scores >= 70/84 (got 81)
+  ok   gitignored the trace artifact
+
+7. init never clobbers without --force
+  ok   existing AGENTS.md preserved
+  ok   --force does overwrite
+
+8. verify-feature gate
+  ok   passing layers promote the feature
+  ok   evidence recorded on promotion
+  ok   failing layer exits non-zero
+  ok   failure prints repair guidance
+  ok   failure names the layer
+  ok   budgeted failure is blocked pending recovery authority
+  ok   layer calling exit still prints repair
+  ok   unknown feature id exits 66
+  ok   multiline layer command passes
+  ok   multiline layer keeps both commands
+  ok   repair prose never enters the execution channel
+
+9. clean-state-check
+  ok   clean tree passes the clock-out gate
+  ok   stray .orig file fails the gate
+  ok   .DS_Store alone does not fail the gate
+  ok   .DS_Store is reported as a note
+  ok   verify command that cd's does not leak the working directory
+  ok   passing-without-evidence is caught
+  ok   WIP=1 violation is caught
+
+10. check-arch
+  ok   clean repo passes arch rules
+  ok   committed secret trips a rule
+  ok   violation reports WHAT
+  ok   env-var reference and function call are not flagged
+  ok   violation reports WHY
+  ok   violation reports FIX
+  ok   violation names the offending file
+  ok   conflict markers trip a rule
+
+11. session-trace
+  ok   trace file written
+  ok   three events recorded
+  ok   every trace line is valid JSON
+
+12. NO_COLOR and JSON hygiene
+  ok   NO_COLOR suppresses ANSI codes
+  ok   --json emits parseable JSON
+
+  ok   fixture has no budget_defaults (the case that used to break)
+  ok   complete budgets pass enf.stopcond without budget_defaults
+13. budgets — the anti-loop gate
+  ok   missing stop_condition exits 67
+  ok   first failure still exits 1
+  ok   first failure consumes one round
+  ok   first failure still prints repair
+  ok   first failure reports budget spent
+  ok   ungranted retry exits policy code 5
+  ok   recovery authority requirement is named
+  ok   remaining budget is not relabelled exhausted
+  ok   failed feature remains blocked
+  ok   state edit and raised maximum do not grant recovery
+  ok   ungranted recovery rejects before layer effects
+  ok   failed ledger restores blocked state
+  ok   rejected recovery preserves spent rounds
+  ok   repeated blocker exits 4
+  ok   repeated blocker is named
+  ok   ledger accumulated before attempted recovery
+  ok   edited command still needs recovery authority
+  ok   edited command reports recovery requirement
+  ok   edited command does not execute without recovery authority
+  ok   rejected recovery preserves prior review rounds
+  ok   no budgets means unchanged exit 1
+  ok   no budgets still prints repair
+
+14. verify-claims — re-check what the repo claims is passing
+  ok   honest passing claim exits 0
+  ok   reports how many claims were re-verified
+  ok   false claim exits 1
+  ok   false claim is named FALSE_CLAIM
+  ok   false claim names the feature
+  ok   unverifiable claim exits 2
+  ok   claim without evidence exits 2
+  ok   missing evidence is named
+  ok   unclaimed features do not block
+  ok   no claims still exits 0
+  ok   no claims is stated, not silent
+  ok   required-quality workflow is scaffolded
+  ok   weakened verification exits 5
+  ok   the weakening is named
+  ok   it names the feature
+  ok   it shows the command that was there before
+  ok   changing the command while going back to active is allowed
+  ok   unchanged layers pass against a base
+  ok   a new feature is not a weakening
+  ok   no base still falls back to FALSE_CLAIM
+
+15. workflow integrity — the gate must protect its own definition
+  ok   every action is pinned to a 40-hex SHA
+  ok   integrity ruleset payload is scaffolded
+  ok   integrity ruleset targets push
+  ok   integrity ruleset is active
+  ok   integrity ruleset has no bypass actors
+  ok   integrity ruleset restricts the workflow path
+  ok   required-check ruleset payload is scaffolded
+  ok   harness-protect.sh exists
+  ok   harness-protect.sh parses
+  ok   AGENTS.md documents the skipped-job bypass
+
+16. audit rubric v2 — the score measures what is now enforced
+  ok   json declares the rubric version
+  ok   text output names the rubric
+  ok   rubric adds enforcement checks (10)
+  ok   full scaffold passes every enforcement check
+  ok   missing verify-claims.sh is caught
+  ok   unpinned action is caught
+  ok   budgets without stop_condition is caught
+
+17. verify-decisions — the record of WHY cannot be rewritten
+  ok   unchanged ledger passes
+  ok   appending a decision is allowed
+  ok   rewriting an earlier decision exits 1
+  ok   the rewrite is named
+  ok   the altered decision is identified
+  ok   deleting an earlier decision exits 1
+  ok   the deleted decision is identified
+  ok   DECISIONS_BASE_FILE path catches the rewrite too
+  ok   DECISIONS_BASE_FILE path passes an intact ledger
+  ok   absent ledger in base is not an error
+
+18. activate / status — one command, and an honest answer
+  ok   status reports NOT_ACTIVATED before anything exists
+  ok   status exits non-zero when not activated
+  ok   activate --dry-run wrote nothing
+  ok   activate exits 0 on a local repo
+  ok   activate installed AGENTS.md
+  ok   activate installed feature_list.json
+  ok   activate installed Makefile
+  ok   activate installed scripts/verify-claims.sh
+  ok   activate installed scripts/verify-decisions.sh
+  ok   activate installed .github/workflows/required-quality.yml
+  ok   activate names the detected verify command
+  ok   activate reports READY_LOCAL without a remote
+  ok   status agrees after activation
+  ok   status exits 0 when activated
+  ok   activate is idempotent and never clobbers
+  ok   --with gherkin installs the runner
+  ok   --with gherkin installs the validator
+  ok   gherkin stays opt-in when not requested
+  ok   an unknown pack is a usage error (exit 64)
+  ok   the unknown pack is named in the error
+  ok   a rejected --with installs nothing
+
+19. version and fleet drift
+  ok   VERSION file exists
+  ok   VERSION is semver (2.2.5)
+  ok   audit reports the VERSION file
+  ok   target records the kit version
+  ok   recorded version matches the kit
+  ok   status shows the kit version
+  ok   an up-to-date repo is not reported as stale
+  ok   a stale repo is reported
+  ok   the stale report names both versions
+  ok   version-sync passes when every copy agrees
+  ok   version-sync rejects a stale .harness/kit-version
+  ok   version-sync rejects a manifest that disagrees with VERSION
+  ok   sync-version.sh repairs the drift its own error message points at
+
+20. Declared gates must do real work
+  ok   scaffolded e2e without a command fails closed
+  ok   the empty e2e explains itself
+  ok   a placeholder target is rejected
+  ok   the offending target is named
+  ok   a Makefile whose targets all work is accepted
+  ok   installed: scripts/check-arch.sh
+  ok   installed: scripts/verify-agent-notes.sh
+  ok   installed: scripts/verify-claims.sh
+  ok   installed: scripts/verify-context-routes.sh
+  ok   installed: scripts/verify-decisions.sh
+  ok   installed: scripts/verify-delivery-doc.sh
+  ok   installed: scripts/verify-makefile-gates.sh
+  ok   installed: scripts/verify-oracles.sh
+  ok   makefile-gates is a registered gate
+
+21. verify-claims observes every declared execution
+  ok   shared-layer claims still exit 0
+  ok   an identical command runs for every declaration
+  ok   every feature is still reported
+  ok   two distinct commands both run
+  ok   a shared failing command still fails
+  ok   it fails once per feature that declares it
+
+15 — verify-delivery-doc
+  ok   a runbook describing the previous release fails
+  ok   it names the stale deploy tag
+  ok   it names the unmentioned migration
+  ok   it flags the section about an older version
+  ok   it flags the dead relative link
+  ok   an unresolvable DELIVERY_BASE is NOT_CONFIGURED, not a pass
+  ok   the corrected runbook passes
+  ok   and says which release it describes
+  ok   a changelog's own tags are not flagged
+  ok   no runbook heading is a skip, not a failure
+  ok   and the skip says why
+  ok   a delivering repo cannot lose its runbook silently
+
+16 — run-gates state machine
+  ok   a passing gate exits 0
+  ok   and reports PASS
+  ok   FAIL blocks the run
+  ok   FAIL is reported by name
+  ok   NOT_CONFIGURED blocks the run
+  ok   NOT_CONFIGURED is reported by name
+  ok   TOOL_FAILURE blocks the run
+  ok   TOOL_FAILURE is reported by name
+  ok   INCOMPLETE blocks the run
+  ok   INCOMPLETE is reported by name
+  ok   POLICY blocks the run
+  ok   POLICY is reported by name
+  ok   UNKNOWN blocks the run
+  ok   UNKNOWN is reported by name
+  ok   an unknown state says nothing was verified
+  ok   a missing REQUIRED gate blocks
+  ok   and is named NOT_EXECUTED
+  ok   a declared inapplicable kit-only gate does not block
+  ok   and states explicit applicability
+  ok   a passing gate does not offset a blocking one
+
+17 — verify-context-routes
+  ok   a governed change citing nothing fails
+  ok   it names the documents that govern it
+  ok   and says why they govern
+  ok   the same change, citing its source, passes
+  ok   a citation inside an Agent Note counts
+  ok   an ungoverned change is not nagged
+  ok   --list advises without blocking
+  ok   and prints the reading list
+  ok   an unresolvable base never passes
+  ok   a missing route map is NOT_CONFIGURED
+  ok   a malformed route map is NOT_CONFIGURED
+
+18 — verify-oracles
+  ok   no oracles is a pass, stated out loud
+  ok   an unanswered question blocks TEST_READY
+  ok   and the message quotes the question
+  ok   «TBD» does not count as answered
+  ok   a critical criterion with no falsification blocks
+  ok   and says what a test only seen passing proves
+  ok   a proved criterion passes
+  ok   editing the test after the proof goes stale
+  ok   and names the test that moved
+  ok   and says the proof no longer covers it
+  ok   a SHA outside this history blocks
+  ok   and says so plainly
+  ok   a test that does not exist blocks
+  ok   a critical DRAFT blocks
+  ok   and says no code should rely on it yet
+  ok   a retired criterion is not enforced
+  ok   --list never blocks
+  ok   and shows the status
+  ok   H02 live gates, profile, hook, oracle and status regression matrix
+
+────────────────────────────────────────
+286 passed, 0 failed
+All tests passed.
+
+TAP version 13
+# Subtest: valid pinned adoption and accepted baseline yield opaque instance handles
+ok 1 - valid pinned adoption and accepted baseline yield opaque instance handles
+  ---
+  duration_ms: 36.862228
+  type: 'test'
+  ...
+# Subtest: receipt repo blocks even when signed
+ok 2 - receipt repo blocks even when signed
+  ---
+  duration_ms: 4.49388
+  type: 'test'
+  ...
+# Subtest: receipt subject blocks even when signed
+ok 3 - receipt subject blocks even when signed
+  ---
+  duration_ms: 3.999458
+  type: 'test'
+  ...
+# Subtest: receipt scope blocks even when signed
+ok 4 - receipt scope blocks even when signed
+  ---
+  duration_ms: 4.888833
+  type: 'test'
+  ...
+# Subtest: receipt kind blocks even when signed
+ok 5 - receipt kind blocks even when signed
+  ---
+  duration_ms: 2.25457
+  type: 'test'
+  ...
+# Subtest: receipt role blocks even when signed
+ok 6 - receipt role blocks even when signed
+  ---
+  duration_ms: 1.948289
+  type: 'test'
+  ...
+# Subtest: receipt issuer blocks even when signed
+ok 7 - receipt issuer blocks even when signed
+  ---
+  duration_ms: 2.003941
+  type: 'test'
+  ...
+# Subtest: receipt key blocks even when signed
+ok 8 - receipt key blocks even when signed
+  ---
+  duration_ms: 2.171458
+  type: 'test'
+  ...
+# Subtest: receipt expired blocks even when signed
+ok 9 - receipt expired blocks even when signed
+  ---
+  duration_ms: 2.357713
+  type: 'test'
+  ...
+# Subtest: receipt future blocks even when signed
+ok 10 - receipt future blocks even when signed
+  ---
+  duration_ms: 2.055737
+  type: 'test'
+  ...
+# Subtest: receipt epoch blocks even when signed
+ok 11 - receipt epoch blocks even when signed
+  ---
+  duration_ms: 3.144786
+  type: 'test'
+  ...
+# Subtest: receipt decision blocks even when signed
+ok 12 - receipt decision blocks even when signed
+  ---
+  duration_ms: 3.923576
+  type: 'test'
+  ...
+# Subtest: altered receipt signature and unknown fields block
+ok 13 - altered receipt signature and unknown fields block
+  ---
+  duration_ms: 5.452044
+  type: 'test'
+  ...
+# Subtest: missing time/revocation authority stops and revocation invalidates existing handles
+ok 14 - missing time/revocation authority stops and revocation invalidates existing handles
+  ---
+  duration_ms: 11.002906
+  type: 'test'
+  ...
+# Subtest: trusted inputs are copied and time/checkpoint freshness is checked repeatedly
+ok 15 - trusted inputs are copied and time/checkpoint freshness is checked repeatedly
+  ---
+  duration_ms: 9.683756
+  type: 'test'
+  ...
+# Subtest: authority bytes reject duplicate keys, unknown policy and noncanonical serialization
+ok 16 - authority bytes reject duplicate keys, unknown policy and noncanonical serialization
+  ---
+  duration_ms: 3.433272
+  type: 'test'
+  ...
+# Subtest: signature domain separation prevents signatures over ordinary JSON from authorizing
+ok 17 - signature domain separation prevents signatures over ordinary JSON from authorizing
+  ---
+  duration_ms: 4.362515
+  type: 'test'
+  ...
+# Subtest: adoption rejects even host-pinned signed authority for a different runtime/schema contract
+ok 18 - adoption rejects even host-pinned signed authority for a different runtime/schema contract
+  ---
+  duration_ms: 2.206169
+  type: 'test'
+  ...
+# Subtest: unavailable trusted clock is a structured stop on existing handles
+ok 19 - unavailable trusted clock is a structured stop on existing handles
+  ---
+  duration_ms: 6.12587
+  type: 'test'
+  ...
+# Subtest: loadAuthority preserves the expired stop at constructor reinspection
+ok 20 - loadAuthority preserves the expired stop at constructor reinspection
+  ---
+  duration_ms: 2.972561
+  type: 'test'
+  ...
+# Subtest: loadAuthority preserves the unavailable stop at constructor reinspection
+ok 21 - loadAuthority preserves the unavailable stop at constructor reinspection
+  ---
+  duration_ms: 2.07104
+  type: 'test'
+  ...
+# Subtest: loadAuthority preserves an original verifyApproval signature stop
+ok 22 - loadAuthority preserves an original verifyApproval signature stop
+  ---
+  duration_ms: 2.119841
+  type: 'test'
+  ...
+# Subtest: verifyContext preserves the expired stop at constructor reinspection
+ok 23 - verifyContext preserves the expired stop at constructor reinspection
+  ---
+  duration_ms: 3.680268
+  type: 'test'
+  ...
+# Subtest: verifyContext preserves the unavailable stop at constructor reinspection
+ok 24 - verifyContext preserves the unavailable stop at constructor reinspection
+  ---
+  duration_ms: 5.330665
+  type: 'test'
+  ...
+# Subtest: verifyContext preserves an original verifyApproval signature stop
+ok 25 - verifyContext preserves an original verifyApproval signature stop
+  ---
+  duration_ms: 3.077337
+  type: 'test'
+  ...
+# Subtest: H04 maximum accepted key reconciles without widening candidate keys
+ok 26 - H04 maximum accepted key reconciles without widening candidate keys
+  ---
+  duration_ms: 868.583847
+  type: 'test'
+  ...
+# Subtest: H04 publication retains verified intermediate B before successor C
+ok 27 - H04 publication retains verified intermediate B before successor C
+  ---
+  duration_ms: 445.588019
+  type: 'test'
+  ...
+# Subtest: e2e: public capability writes canonical source and derived digest with persistent exact receipt
+ok 28 - e2e: public capability writes canonical source and derived digest with persistent exact receipt
+  ---
+  duration_ms: 2718.935658
+  type: 'test'
+  ...
+# Subtest: canonical write uses exact numeric lexemes and preserves accepted semantics
+ok 29 - canonical write uses exact numeric lexemes and preserves accepted semantics
+  ---
+  duration_ms: 1468.627344
+  type: 'test'
+  ...
+# Subtest: capability rejects traversal before mutation
+ok 30 - capability rejects traversal before mutation
+  ---
+  duration_ms: 333.883357
+  type: 'test'
+  ...
+# Subtest: capability rejects deny before mutation
+ok 31 - capability rejects deny before mutation
+  ---
+  duration_ms: 456.238169
+  type: 'test'
+  ...
+# Subtest: capability rejects symlink before mutation
+ok 32 - capability rejects symlink before mutation
+  ---
+  duration_ms: 488.739691
+  type: 'test'
+  ...
+# Subtest: capability rejects hardlink before mutation
+ok 33 - capability rejects hardlink before mutation
+  ---
+  duration_ms: 453.770385
+  type: 'test'
+  ...
+# Subtest: capability rejects extra before mutation
+ok 34 - capability rejects extra before mutation
+  ---
+  duration_ms: 316.562239
+  type: 'test'
+  ...
+# Subtest: capability rejects callback before mutation
+ok 35 - capability rejects callback before mutation
+  ---
+  duration_ms: 309.632357
+  type: 'test'
+  ...
+# Subtest: deny wins even when host allowlist overlaps
+ok 36 - deny wins even when host allowlist overlaps
+  ---
+  duration_ms: 458.659617
+  type: 'test'
+  ...
+# Subtest: forged context, grant, permit and lease never confer execution authority
+ok 37 - forged context, grant, permit and lease never confer execution authority
+  ---
+  duration_ms: 942.799312
+  type: 'test'
+  ...
+# Subtest: execute rechecks source after prepare
+ok 38 - execute rechecks source after prepare
+  ---
+  duration_ms: 1039.62371
+  type: 'test'
+  ...
+# Subtest: execute rechecks frozen after prepare
+ok 39 - execute rechecks frozen after prepare
+  ---
+  duration_ms: 1138.546333
+  type: 'test'
+  ...
+# Subtest: execute rechecks commit after prepare
+ok 40 - execute rechecks commit after prepare
+  ---
+  duration_ms: 1089.756018
+  type: 'test'
+  ...
+# Subtest: execute rechecks alias after prepare
+ok 41 - execute rechecks alias after prepare
+  ---
+  duration_ms: 1047.217016
+  type: 'test'
+  ...
+# Subtest: execute rechecks mode after prepare
+ok 42 - execute rechecks mode after prepare
+  ---
+  duration_ms: 1144.34331
+  type: 'test'
+  ...
+# Subtest: exclusive leases reject second owner and stale handles after release
+ok 43 - exclusive leases reject second owner and stale handles after release
+  ---
+  duration_ms: 2160.312319
+  type: 'test'
+  ...
+# Subtest: untrusted subprocess capability refuses missing real containment before spawn
+ok 44 - untrusted subprocess capability refuses missing real containment before spawn
+  ---
+  duration_ms: 303.879457
+  type: 'test'
+  ...
+# Subtest: canonical preparation validates dependent frozen documents before any effect
+ok 45 - canonical preparation validates dependent frozen documents before any effect
+  ---
+  duration_ms: 455.471376
+  type: 'test'
+  ...
+# Subtest: e2e: actual postcondition mismatch retains pending intent and never repeats a partial write
+ok 46 - e2e: actual postcondition mismatch retains pending intent and never repeats a partial write
+  ---
+  duration_ms: 1767.825078
+  type: 'test'
+  ...
+# Subtest: e2e: crash after complete publication reconciles exact bytes without republishing
+ok 47 - e2e: crash after complete publication reconciles exact bytes without republishing
+  ---
+  duration_ms: 1938.637247
+  type: 'test'
+  ...
+# Subtest: expired grant stops a previously prepared effect before spend
+ok 48 - expired grant stops a previously prepared effect before spend
+  ---
+  duration_ms: 746.112337
+  type: 'test'
+  ...
+# Subtest: runtime and transitive dependency bundle changes block prepared effects
+ok 49 - runtime and transitive dependency bundle changes block prepared effects
+  ---
+  duration_ms: 887.327467
+  type: 'test'
+  ...
+# Subtest: host must pin installed implementation and claim only supported local mode
+ok 50 - host must pin installed implementation and claim only supported local mode
+  ---
+  duration_ms: 301.462507
+  type: 'test'
+  ...
+# Subtest: oversized source and symlink ancestors are refused before write
+ok 51 - oversized source and symlink ancestors are refused before write
+  ---
+  duration_ms: 459.800325
+  type: 'test'
+  ...
+# Subtest: supervisor rejects unexpected frozen delta after last output publication
+ok 52 - supervisor rejects unexpected frozen delta after last output publication
+  ---
+  duration_ms: 1477.885782
+  type: 'test'
+  ...
+# Subtest: generic target reconciliation cannot substitute a supervised capability receipt (reopen=false)
+ok 53 - generic target reconciliation cannot substitute a supervised capability receipt (reopen=false)
+  ---
+  duration_ms: 1687.787802
+  type: 'test'
+  ...
+# Subtest: generic target reconciliation cannot substitute a supervised capability receipt (reopen=true)
+ok 54 - generic target reconciliation cannot substitute a supervised capability receipt (reopen=true)
+  ---
+  duration_ms: 1650.395255
+  type: 'test'
+  ...
+# Subtest: H05-R1 rejects canonical output missing accepted-before identity before permit, spend or effects
+ok 55 - H05-R1 rejects canonical output missing accepted-before identity before permit, spend or effects
+  ---
+  duration_ms: 708.279679
+  type: 'test'
+  ...
+# Subtest: H05-R1 rejects canonical output outside adopted scope before permit, spend or effects
+ok 56 - H05-R1 rejects canonical output outside adopted scope before permit, spend or effects
+  ---
+  duration_ms: 621.215531
+  type: 'test'
+  ...
+# Subtest: H05-R1 rejects derived target omitted from accepted context before permit, spend or effects
+ok 57 - H05-R1 rejects derived target omitted from accepted context before permit, spend or effects
+  ---
+  duration_ms: 617.443168
+  type: 'test'
+  ...
+# Subtest: H05-R1 rejects derived source and target outside adopted context before permit, spend or effects
+ok 58 - H05-R1 rejects derived source and target outside adopted context before permit, spend or effects
+  ---
+  duration_ms: 625.801466
+  type: 'test'
+  ...
+# Subtest: recomputes canonical reorder and returns assessment without execution permission
+ok 59 - recomputes canonical reorder and returns assessment without execution permission
+  ---
+  duration_ms: 26.193477
+  type: 'test'
+  ...
+# Subtest: closed derived content digest update is recomputed from accepted/canonical source
+ok 60 - closed derived content digest update is recomputed from accepted/canonical source
+  ---
+  duration_ms: 15.660346
+  type: 'test'
+  ...
+# Subtest: semantic change, docs extension and arbitrary proof names cannot become mechanical
+ok 61 - semantic change, docs extension and arbitrary proof names cannot become mechanical
+  ---
+  duration_ms: 4.795765
+  type: 'test'
+  ...
+# Subtest: before substitution and unsigned/substituted baseline cannot be accepted
+ok 62 - before substitution and unsigned/substituted baseline cannot be accepted
+  ---
+  duration_ms: 4.658462
+  type: 'test'
+  ...
+# Subtest: forged, copied, foreign and stale contexts block
+ok 63 - forged, copied, foreign and stale contexts block
+  ---
+  duration_ms: 9.970981
+  type: 'test'
+  ...
+# Subtest: known normative changes require a human; mixed batches never partially authorize
+ok 64 - known normative changes require a human; mixed batches never partially authorize
+  ---
+  duration_ms: 9.120725
+  type: 'test'
+  ...
+# Subtest: empty batches, duplicate paths and missing before bindings are unknown
+ok 65 - empty batches, duplicate paths and missing before bindings are unknown
+  ---
+  duration_ms: 6.538369
+  type: 'test'
+  ...
+# Subtest: derived source substitution, recursive source and nonmechanical batch source block
+ok 66 - derived source substitution, recursive source and nonmechanical batch source block
+  ---
+  duration_ms: 12.19036
+  type: 'test'
+  ...
+# Subtest: candidate cannot replace schema, trust roots, policy or execution adapter
+ok 67 - candidate cannot replace schema, trust roots, policy or execution adapter
+  ---
+  duration_ms: 4.089852
+  type: 'test'
+  ...
+# Subtest: copied source bytes cannot mutate an already accepted context
+ok 68 - copied source bytes cannot mutate an already accepted context
+  ---
+  duration_ms: 2.773188
+  type: 'test'
+  ...
+# Subtest: baseline order is code-unit deterministic across case and locale
+ok 69 - baseline order is code-unit deterministic across case and locale
+  ---
+  duration_ms: 2.456279
+  type: 'test'
+  ...
+# Subtest: adding an explicit default TAG directive cannot earn canonical reorder eligibility
+ok 70 - adding an explicit default TAG directive cannot earn canonical reorder eligibility
+  ---
+  duration_ms: 3.412952
+  type: 'test'
+  ...
+# Subtest: C1 current verifier rejects fabricated signatures for every approval kind
+ok 71 - C1 current verifier rejects fabricated signatures for every approval kind
+  ---
+  duration_ms: 17.338295
+  type: 'test'
+  ...
+# Subtest: C1 recorded verifier rejects fabricated signatures for every approval kind
+ok 72 - C1 recorded verifier rejects fabricated signatures for every approval kind
+  ---
+  duration_ms: 6.839063
+  type: 'test'
+  ...
+# Subtest: C1 current and recorded verifiers accept genuine signatures and reject altered signed fields
+ok 73 - C1 current and recorded verifiers accept genuine signatures and reject altered signed fields
+  ---
+  duration_ms: 10.446563
+  type: 'test'
+  ...
+# Subtest: C1 valid historical signatures preserve event-time semantics without current authority
+ok 74 - C1 valid historical signatures preserve event-time semantics without current authority
+  ---
+  duration_ms: 2.289332
+  type: 'test'
+  ...
+# Subtest: M1 public evaluation rejects undefined observation before registration
+ok 75 - M1 public evaluation rejects undefined observation before registration
+  ---
+  duration_ms: 59.718635
+  type: 'test'
+  ...
+# Subtest: M1 public evaluation rejects null observation before registration
+ok 76 - M1 public evaluation rejects null observation before registration
+  ---
+  duration_ms: 22.403178
+  type: 'test'
+  ...
+# Subtest: e2e: C1 public continuation rejects a forged grant before registration
+ok 77 - e2e: C1 public continuation rejects a forged grant before registration
+  ---
+  duration_ms: 24.465864
+  type: 'test'
+  ...
+# Subtest: e2e: C1 replay rejects forged recorded grant even with recomputed journal hashes
+ok 78 - e2e: C1 replay rejects forged recorded grant even with recomputed journal hashes
+  ---
+  duration_ms: 14.916907
+  type: 'test'
+  ...
+# Subtest: e2e: one signed grant permits two mechanical runs and keeps original artifact acceptance
+ok 79 - e2e: one signed grant permits two mechanical runs and keeps original artifact acceptance
+  ---
+  duration_ms: 2887.217517
+  type: 'test'
+  ...
+# Subtest: durable regression bytes and signed gate bind actual accepted semantics
+ok 80 - durable regression bytes and signed gate bind actual accepted semantics
+  ---
+  duration_ms: 467.168942
+  type: 'test'
+  ...
+# Subtest: closed regressions refuse missing
+ok 81 - closed regressions refuse missing
+  ---
+  duration_ms: 291.699961
+  type: 'test'
+  ...
+# Subtest: closed regressions refuse false-expectation
+ok 82 - closed regressions refuse false-expectation
+  ---
+  duration_ms: 285.441707
+  type: 'test'
+  ...
+# Subtest: closed regressions refuse lost-coverage
+ok 83 - closed regressions refuse lost-coverage
+  ---
+  duration_ms: 290.988491
+  type: 'test'
+  ...
+# Subtest: closed regressions refuse callback
+ok 84 - closed regressions refuse callback
+  ---
+  duration_ms: 396.297377
+  type: 'test'
+  ...
+# Subtest: signed unsupported product proof stops without simulated PASS
+ok 85 - signed unsupported product proof stops without simulated PASS
+  ---
+  duration_ms: 304.20865
+  type: 'test'
+  ...
+# Subtest: H06 expiry is rechecked at effect use
+ok 86 - H06 expiry is rechecked at effect use
+  ---
+  duration_ms: 780.246323
+  type: 'test'
+  ...
+# Subtest: H06 revocation survives reopen and blocks an already prepared effect
+ok 87 - H06 revocation survives reopen and blocks an already prepared effect
+  ---
+  duration_ms: 954.547117
+  type: 'test'
+  ...
+# Subtest: H06 category exhaustion survives fresh run, retry and replacement grant
+ok 88 - H06 category exhaustion survives fresh run, retry and replacement grant
+  ---
+  duration_ms: 385.34643
+  type: 'test'
+  ...
+# Subtest: H06 all three categories share the signed total cap
+ok 89 - H06 all three categories share the signed total cap
+  ---
+  duration_ms: 351.094727
+  type: 'test'
+  ...
+# Subtest: H06 budget is rechecked between prepare and use without creating effect intent
+ok 90 - H06 budget is rechecked between prepare and use without creating effect intent
+  ---
+  duration_ms: 806.234715
+  type: 'test'
+  ...
+# Subtest: older bounded approvals do not become reusable continuation and foreign handles fail
+ok 91 - older bounded approvals do not become reusable continuation and foreign handles fail
+  ---
+  duration_ms: 811.315389
+  type: 'test'
+  ...
+# Subtest: H06 changed accepted authority, file classes and workspace semantics block continuation
+ok 92 - H06 changed accepted authority, file classes and workspace semantics block continuation
+  ---
+  duration_ms: 610.018125
+  type: 'test'
+  ...
+# Subtest: H06 legacy and generic reserves cannot bypass category accounting
+ok 93 - H06 legacy and generic reserves cannot bypass category accounting
+  ---
+  duration_ms: 299.415233
+  type: 'test'
+  ...
+# Subtest: H06-R1 counterexample coverage cannot be replaced by identical accepted bytes
+ok 94 - H06-R1 counterexample coverage cannot be replaced by identical accepted bytes
+  ---
+  duration_ms: 304.149827
+  type: 'test'
+  ...
+# Subtest: e2e: H06 exhausted retry reconciles original intent without another unit
+ok 95 - e2e: H06 exhausted retry reconciles original intent without another unit
+  ---
+  duration_ms: 2336.549321
+  type: 'test'
+  ...
+# Subtest: key reorder preserves canonical and semantic identity while content changes
+ok 96 - key reorder preserves canonical and semantic identity while content changes
+  ---
+  duration_ms: 28.518733
+  type: 'test'
+  ...
+# Subtest: lower threshold remains distinct
+ok 97 - lower threshold remains distinct
+  ---
+  duration_ms: 7.060972
+  type: 'test'
+  ...
+# Subtest: large integers remains distinct
+ok 98 - large integers remains distinct
+  ---
+  duration_ms: 6.52528
+  type: 'test'
+  ...
+# Subtest: near decimals remains distinct
+ok 99 - near decimals remains distinct
+  ---
+  duration_ms: 3.529034
+  type: 'test'
+  ...
+# Subtest: signed zero remains distinct
+ok 100 - signed zero remains distinct
+  ---
+  duration_ms: 4.643489
+  type: 'test'
+  ...
+# Subtest: exponents remains distinct
+ok 101 - exponents remains distinct
+  ---
+  duration_ms: 5.406207
+  type: 'test'
+  ...
+# Subtest: decimal spelling remains distinct
+ok 102 - decimal spelling remains distinct
+  ---
+  duration_ms: 5.297266
+  type: 'test'
+  ...
+# Subtest: human text whitespace and enum remain distinct
+ok 103 - human text whitespace and enum remain distinct
+  ---
+  duration_ms: 11.387664
+  type: 'test'
+  ...
+# Subtest: renamed field rejects
+ok 104 - renamed field rejects
+  ---
+  duration_ms: 4.218963
+  type: 'test'
+  ...
+# Subtest: unknown field rejects
+ok 105 - unknown field rejects
+  ---
+  duration_ms: 3.243833
+  type: 'test'
+  ...
+# Subtest: boolean as string rejects
+ok 106 - boolean as string rejects
+  ---
+  duration_ms: 3.063886
+  type: 'test'
+  ...
+# Subtest: number as string rejects
+ok 107 - number as string rejects
+  ---
+  duration_ms: 3.475925
+  type: 'test'
+  ...
+# Subtest: number as bool rejects
+ok 108 - number as bool rejects
+  ---
+  duration_ms: 1.291669
+  type: 'test'
+  ...
+# Subtest: duplicate keys rejects
+ok 109 - duplicate keys rejects
+  ---
+  duration_ms: 1.940027
+  type: 'test'
+  ...
+# Subtest: alias rejects
+ok 110 - alias rejects
+  ---
+  duration_ms: 2.045902
+  type: 'test'
+  ...
+# Subtest: tag rejects
+ok 111 - tag rejects
+  ---
+  duration_ms: 1.683427
+  type: 'test'
+  ...
+# Subtest: lossy form rejects
+ok 112 - lossy form rejects
+  ---
+  duration_ms: 1.284858
+  type: 'test'
+  ...
+# Subtest: hex rejects
+ok 113 - hex rejects
+  ---
+  duration_ms: 1.260773
+  type: 'test'
+  ...
+# Subtest: invalid enum rejects
+ok 114 - invalid enum rejects
+  ---
+  duration_ms: 1.426578
+  type: 'test'
+  ...
+# Subtest: merge key rejects
+ok 115 - merge key rejects
+  ---
+  duration_ms: 2.418794
+  type: 'test'
+  ...
+# Subtest: unknown schema, schema hash claim and invalid UTF8 reject
+ok 116 - unknown schema, schema hash claim and invalid UTF8 reject
+  ---
+  duration_ms: 1.376444
+  type: 'test'
+  ...
+# Subtest: identities cannot be mutated and repository binding changes semantics
+ok 117 - identities cannot be mutated and repository binding changes semantics
+  ---
+  duration_ms: 2.36221
+  type: 'test'
+  ...
+# Subtest: human comments and directives are unsupported instead of silently erased
+ok 118 - human comments and directives are unsupported instead of silently erased
+  ---
+  duration_ms: 3.618505
+  type: 'test'
+  ...
+# Subtest: a YAML mapping cannot impersonate the internal numeric domain representation
+ok 119 - a YAML mapping cannot impersonate the internal numeric domain representation
+  ---
+  duration_ms: 1.47587
+  type: 'test'
+  ...
+# Subtest: explicit default-handle TAG directives reject instead of inheriting implicit defaults
+ok 120 - explicit default-handle TAG directives reject instead of inheriting implicit defaults
+  ---
+  duration_ms: 5.27955
+  type: 'test'
+  ...
+# Subtest: journal appends exclusively and replay is deterministic local diagnostic
+ok 121 - journal appends exclusively and replay is deterministic local diagnostic
+  ---
+  duration_ms: 73.154416
+  type: 'test'
+  ...
+# Subtest: idempotency returns original event while changed inputs and stale CAS block
+ok 122 - idempotency returns original event while changed inputs and stale CAS block
+  ---
+  duration_ms: 28.811645
+  type: 'test'
+  ...
+# Subtest: replay rejects alter damage
+ok 123 - replay rejects alter damage
+  ---
+  duration_ms: 14.451641
+  type: 'test'
+  ...
+# Subtest: replay rejects omit damage
+ok 124 - replay rejects omit damage
+  ---
+  duration_ms: 13.780378
+  type: 'test'
+  ...
+# Subtest: replay rejects reorder damage
+ok 125 - replay rejects reorder damage
+  ---
+  duration_ms: 18.872241
+  type: 'test'
+  ...
+# Subtest: replay rejects partial damage
+ok 126 - replay rejects partial damage
+  ---
+  duration_ms: 11.769938
+  type: 'test'
+  ...
+# Subtest: replay rejects object damage
+ok 127 - replay rejects object damage
+  ---
+  duration_ms: 14.460558
+  type: 'test'
+  ...
+# Subtest: head index is reconstructed from complete log after interrupted publication
+ok 128 - head index is reconstructed from complete log after interrupted publication
+  ---
+  duration_ms: 21.193229
+  type: 'test'
+  ...
+# Subtest: exclusive existing object is verified before reuse
+ok 129 - exclusive existing object is verified before reuse
+  ---
+  duration_ms: 9.02916
+  type: 'test'
+  ...
+# Subtest: an existing ownership lock never expires into permission
+ok 130 - an existing ownership lock never expires into permission
+  ---
+  duration_ms: 9.925354
+  type: 'test'
+  ...
+# Subtest: signed latest checkpoint authenticates exact chain and stale signed prefix is rejected
+ok 131 - signed latest checkpoint authenticates exact chain and stale signed prefix is rejected
+  ---
+  duration_ms: 35.146674
+  type: 'test'
+  ...
+# Subtest: checkpoint rejects signature
+ok 132 - checkpoint rejects signature
+  ---
+  duration_ms: 9.067726
+  type: 'test'
+  ...
+# Subtest: checkpoint rejects repository
+ok 133 - checkpoint rejects repository
+  ---
+  duration_ms: 11.357529
+  type: 'test'
+  ...
+# Subtest: checkpoint rejects runtime
+ok 134 - checkpoint rejects runtime
+  ---
+  duration_ms: 9.667512
+  type: 'test'
+  ...
+# Subtest: checkpoint rejects kind
+ok 135 - checkpoint rejects kind
+  ---
+  duration_ms: 11.715368
+  type: 'test'
+  ...
+# Subtest: checkpoint rejects role
+ok 136 - checkpoint rejects role
+  ---
+  duration_ms: 9.906246
+  type: 'test'
+  ...
+# Subtest: checkpoint rejects head
+ok 137 - checkpoint rejects head
+  ---
+  duration_ms: 10.832393
+  type: 'test'
+  ...
+# Subtest: checkpoint rejects extra
+ok 138 - checkpoint rejects extra
+  ---
+  duration_ms: 9.498372
+  type: 'test'
+  ...
+# Subtest: witness is fetched on every strong replay; unavailable freshness does not fall back
+ok 139 - witness is fetched on every strong replay; unavailable freshness does not fall back
+  ---
+  duration_ms: 9.352036
+  type: 'test'
+  ...
+# Subtest: fresh mechanical run preserves terminal verdict, acceptance, lineage and objective budget
+ok 140 - fresh mechanical run preserves terminal verdict, acceptance, lineage and objective budget
+  ---
+  duration_ms: 53.361064
+  type: 'test'
+  ...
+# Subtest: fresh run rejects semantic
+ok 141 - fresh run rejects semantic
+  ---
+  duration_ms: 7.760074
+  type: 'test'
+  ...
+# Subtest: fresh run rejects missing
+ok 142 - fresh run rejects missing
+  ---
+  duration_ms: 7.211303
+  type: 'test'
+  ...
+# Subtest: fresh run rejects foreign
+ok 143 - fresh run rejects foreign
+  ---
+  duration_ms: 10.723362
+  type: 'test'
+  ...
+# Subtest: fresh run rejects stale-authority
+ok 144 - fresh run rejects stale-authority
+  ---
+  duration_ms: 7.257512
+  type: 'test'
+  ...
+# Subtest: fresh run rejects caller-summary
+ok 145 - fresh run rejects caller-summary
+  ---
+  duration_ms: 7.260056
+  type: 'test'
+  ...
+# Subtest: incomplete intent cannot be blindly repeated or resolved by candidate evidence
+ok 146 - incomplete intent cannot be blindly repeated or resolved by candidate evidence
+  ---
+  duration_ms: 31.94211
+  type: 'test'
+  ...
+# Subtest: closed event contract forbids caller actor, arbitrary PASS and budget configuration
+ok 147 - closed event contract forbids caller actor, arbitrary PASS and budget configuration
+  ---
+  duration_ms: 10.404642
+  type: 'test'
+  ...
+# Subtest: legacy bytes and receipts are retained without retroactive PASS and projection is read-only
+ok 148 - legacy bytes and receipts are retained without retroactive PASS and projection is read-only
+  ---
+  duration_ms: 81.967831
+  type: 'test'
+  ...
+# Subtest: adopted v2 marker blocks legacy direct writer before layer effects in source and scaffold
+ok 149 - adopted v2 marker blocks legacy direct writer before layer effects in source and scaffold
+  ---
+  duration_ms: 20.715674
+  type: 'test'
+  ...
+# Subtest: stale run cannot reserve against changed current workspace bytes
+ok 150 - stale run cannot reserve against changed current workspace bytes
+  ---
+  duration_ms: 20.864445
+  type: 'test'
+  ...
+# Subtest: witness publication uses host compare-and-append and verifies returned signed data
+ok 151 - witness publication uses host compare-and-append and verifies returned signed data
+  ---
+  duration_ms: 37.774897
+  type: 'test'
+  ...
+# Subtest: process crash after durable append retains intent and lock; scoped recovery repairs index
+ok 152 - process crash after durable append retains intent and lock; scoped recovery repairs index
+  ---
+  duration_ms: 396.198447
+  type: 'test'
+  ...
+# Subtest: recovery requires scoped approval and does not remove a live owner lock
+ok 153 - recovery requires scoped approval and does not remove a live owner lock
+  ---
+  duration_ms: 13.256663
+  type: 'test'
+  ...
+# Subtest: two real writers with one expected head publish at most one reservation
+ok 154 - two real writers with one expected head publish at most one reservation
+  ---
+  duration_ms: 390.466038
+  type: 'test'
+  ...
+# Subtest: terminal verdict cannot be rewritten and an earlier run cannot replace current lineage
+ok 155 - terminal verdict cannot be rewritten and an earlier run cannot replace current lineage
+  ---
+  duration_ms: 27.827077
+  type: 'test'
+  ...
+1..155
+# tests 155
+# suites 0
+# pass 155
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 31937.220892
+
+Gherkin pack — failure matrix
+
+  ok   valid run passes (exit 0)
+  ok   valid run passes with a matching --expect (exit 0)
+  ok   zero execution blocks (exit 2)
+  ok   executing fewer scenarios than declared blocks (exit 2)
+  ok   FAILED blocks (exit 1)
+  ok   UNDEFINED blocks (exit 1)
+  ok   AMBIGUOUS blocks (exit 1)
+  ok   PENDING blocks (exit 1)
+  ok   SKIPPED blocks (exit 1)
+  ok   duplicate scenario id blocks (exit 1)
+  ok   malformed report blocks (exit 3)
+  ok   truncated report blocks (exit 3)
+  ok   missing report blocks (exit 3)
+  ok   --expect rejects a non-numeric argument (exit 64)
+  ok   validator runs inside a "type": "module" repo
+
+────────────────────────────────────────
+15 passed, 0 failed
+Every failure mode blocks.
+
+verify-pack: k6 k6 v2.1.0 (commit/83a87a41e2, go1.26.4, linux/amd64)
+
+1. sintaxis
+  ok   bin/perf-check es bash válido
+  ok   bin/perf-check no anula códigos de salida
+  ok   los scripts de k6 son JS válido
+fixture-server healthy owned-pid=23034 port=45171 work=/tmp/tmp.T9bhveolzr
+fixture-server redirect-login owned-pid=23039 port=36467 work=/tmp/tmp.T9bhveolzr
+fixture-server login-200 owned-pid=23044 port=40945 work=/tmp/tmp.T9bhveolzr
+fixture-server slow owned-pid=23049 port=44551 work=/tmp/tmp.T9bhveolzr
+fixture-server unauthorized owned-pid=23054 port=43521 work=/tmp/tmp.T9bhveolzr
+fixture-server shell owned-pid=23059 port=42235 work=/tmp/tmp.T9bhveolzr
+
+2. la compuerta aprueba cuando debe
+  ok   app sana con marcador aprueba
+
+3. la compuerta bloquea el falso verde
+  ok   redirección a pantalla de autenticación
+  ok   200 sin el marcador de la aplicación
+  ok   objetivo autenticado sin marcador declarado
+  ok   credencial rechazada con 401
+  ok   credencial ausente para el modo declarado
+  ok   PERF_TARGET sin definir
+
+4. la compuerta bloquea por umbral y por deriva
+  ok   umbral de latencia incumplido
+  ok   degradación frente a la línea base
+
+5. la compuerta bloquea un script roto
+  ok   error de runtime en el script no aprueba
+
+6. la compuerta bloquea sin evidencia
+  ok   corrida sin resumen no aprueba
+
+7. el instalador instala y no pisa
+  ok   --dry-run no crea archivos
+  ok   --dry-run describe lo que haría
+  ok   instala los escenarios de k6
+  ok   instala el verificador ejecutable
+  ok   instala el resolvedor de objetivo
+  ok   instala el flujo de CI
+  ok   ignora .env.perf
+  ok   ignora el directorio de resultados
+  ok   no ignora la línea base
+  ok   segunda corrida no duplica .gitignore
+  ok   segunda corrida no pisa sin --force
+  ok   sin remoto, informa que omite CI
+  ok   detecta el stack Next.js
+  ok   las rutas no conservan page.tsx
+  ok   detecta una ruta anidada limpia
+  ok   excluye rutas con segmento dinámico
+  ok   sólo un id numérico cuenta como regla existente
+  ok   el límite de plan se reporta de forma específica
+  ok   el instalador sale 0 cuando no configura CI
+  ok   no usa set -e (un fallo de gh no debe matar la instalación)
+  ok   la rama del límite de plan no aborta
+
+8. el resolvedor distingue 'sin despliegue' de 'error'
+  ok   sin sha devuelve error de uso (2)
+  ok   sin repositorio devuelve error de uso (2)
+  omit commit sin despliegue: salida vacía — requiere gh autenticado
+  omit commit sin despliegue: no es un error de rendimiento — requiere gh autenticado
+
+9. el flujo de CI no puede bloquear un pull request para siempre
+  ok   el flujo se dispara con pull_request
+  ok   no depende de deployment_status
+  ok   hay una rama explícita para 'sin despliegue'
+  ok   el paso de medición sólo corre con objetivo
+  ok   no hay continue-on-error en el flujo
+  ok   el YAML es válido y declara los dos trabajos
+
+10. la sesión de usuario final (Supabase)
+  ok   sin credenciales no mide
+  ok   nombra cada variable que falta
+  ok   la cookie es base64url sin relleno y se decodifica a JSON
+  ok   el ejemplo advierte sobre entrecomillar valores con espacios
+  ok   el ejemplo documenta el modo supabase
+
+11. el sondeo distingue lo medible de lo que no lo es
+  ok   clasifica una página con contenido como medible
+  ok   una página mínima NO se confunde con un armazón
+  ok   detecta un armazón que hidrata en el cliente
+  ok   no propone medir el armazón
+  ok   detecta que una ruta exige sesión
+  ok   avisa cuántas rutas exigen sesión
+  ok   sin url devuelve error de uso (2)
+
+────────────────────────────────────────
+55 correctos, 0 fallidos, 2 omitidos
+  omitido: commit sin despliegue: salida vacía — requiere gh autenticado
+  omitido: commit sin despliegue: no es un error de rendimiento — requiere gh autenticado
+verify-pack: el pack se comporta como se documenta.
+
+Sentry pack — failure matrix
+
+  ok   a complete configuration passes preflight (exit 0)
+  ok   an absent DSN blocks (exit 1)
+  ok   a malformed DSN blocks (exit 1)
+  ok   a non-numeric project id blocks (exit 1)
+  ok   the placeholder DSN from the docs blocks (exit 1)
+  ok   a sample rate of 0 blocks (exit 1)
+  ok   a non-numeric sample rate blocks (exit 1)
+  ok   tracing left at the default 0 blocks (exit 1)
+  ok   tracing off passes once acknowledged out loud (exit 0)
+  ok   an unset environment blocks (exit 1)
+  ok   sendDefaultPii on without acknowledgement blocks (exit 1)
+  ok   sendDefaultPii on passes once acknowledged out loud (exit 0)
+  ok   instrumentation.ts without onRequestError blocks (exit 1)
+  ok   instrumentation.ts with onRequestError passes (exit 0)
+  ok   an ingest endpoint that refuses the event blocks (exit 1)
+  ok   an event accepted but never stored blocks as UNCONFIRMED (exit 2)
+  ok   an event that comes back with its own marker passes (exit 0)
+  ok   an issue list without this run's marker blocks (exit 2)
+  ok   a non-JSON response blocks (exit 3)
+  ok   a canary without SENTRY_ORG blocks instead of skipping (exit 3)
+  ok   a canary without an auth token blocks instead of skipping (exit 3)
+  ok   a release that does not exist blocks (exit 1)
+  ok   a release with no uploaded files blocks (exit 1)
+  ok   a release with files but no source map blocks (exit 1)
+  ok   a release with source maps but no commit data blocks (exit 1)
+  ok   a release with zero associated commits blocks (exit 1)
+  ok   a release with source maps and commits passes (exit 0)
+  ok   a release with no health data blocks (exit 1)
+  ok   a crash-free rate below the floor blocks (exit 1)
+  ok   a crash-free rate above the floor passes (exit 0)
+  ok   a response with no crash-free rate blocks as unreadable (exit 3)
+  ok   a monitor that does not exist blocks (exit 1)
+  ok   a missed cron check-in blocks (exit 1)
+  ok   a muted monitor blocks (exit 1)
+  ok   a healthy monitor passes (exit 0)
+  ok   an unreachable issues API blocks instead of reporting silence (exit 3)
+  ok   an empty issue list is a genuine pass (exit 0)
+  ok   unresolved issues are reported without failing the run (exit 0)
+  ok   an unknown command is a usage error (exit 64)
+  ok   release without a version is a usage error (exit 64)
+  ok   a job runs and its success survives the wrapper (exit 0)
+  ok   a failing job keeps its exit code (exit 1)
+  ok   an unusual exit code is preserved, not flattened (exit 42)
+  ok   a missing -- separator is a usage error (exit 64)
+  ok   the job still runs when there is no DSN to report to
+  ok   an unreachable API blocks instead of reporting nothing to do (exit 3)
+  ok   an empty project is a clean pass (exit 0)
+  ok   a dry run exits clean (exit 0)
+  ok   a dry run creates nothing (no 'issue create' reached gh)
+  ok   --apply exits clean (exit 0)
+  ok   --apply opens exactly one issue per unresolved Sentry issue
+  ok   a second run over tracked issues exits clean (exit 0)
+  ok   issues already tracked are never opened twice
+  ok   a GitHub failure is reported, not swallowed (exit 1)
+  ok   an unknown flag is a usage error (exit 64)
+  ok   a disabled monitor blocks even when a nested environment reads ok (exit 1)
+  ok   an active monitor passes even when a nested environment reads error (exit 0)
+  ok   a muted monitor blocks even when a nested flag reads false (exit 1)
+  ok   commits are counted once each, not once per nested author id
+  ok   a nested crash-free rate below the floor still blocks (exit 1)
+  ok   the gate exposes canary_event_id
+  ok   the event id is 32 characters
+  ok   the event id is hexadecimal
+  ok   two canaries never share an event id
+  ok   the ingest URL is recorded for inspection
+  ok   the ingest URL carries the DSN host
+  ok   the ingest URL carries the project id
+  ok   the ingest URL is not the empty-host shape
+
+────────────────────────────────────────
+68 passed, 0 failed
+Every failure mode blocks.
+make[1]: Leaving directory '/workspace/scratch/adce1c53b293/harness-kit'

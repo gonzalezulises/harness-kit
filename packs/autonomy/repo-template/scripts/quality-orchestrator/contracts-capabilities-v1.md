@@ -90,3 +90,9 @@ Existing H03/H04 test and archived evidence bytes remain unchanged. Event schema
 and runtime bindings advance with this implementation; old journal bindings are
 not silently rewritten or retroactively certified. Adoption/migration remains
 operator-controlled and H09-owned.
+
+H06 extends preparation to accept an opaque, reverified continuation handle as
+the fourth argument. Its signed scope and accepted invariants derive permission
+for each exact plan without auto-signing a new receipt. Reservations retain the
+continuation digest and mechanical budget category; all effects still satisfy
+the H05 boundaries above. See `contracts-continuation-v1.md`.

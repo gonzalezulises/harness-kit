@@ -1,0 +1,23 @@
+✔ durable regression bytes and signed gate bind actual accepted semantics (541.098657ms)
+✔ closed regressions refuse missing (300.298926ms)
+✔ closed regressions refuse false-expectation (290.979998ms)
+✔ closed regressions refuse lost-coverage (308.777216ms)
+✔ closed regressions refuse callback (299.260461ms)
+✔ signed unsupported product proof stops without simulated PASS (291.79949ms)
+✔ H06 expiry is rechecked at effect use (797.914025ms)
+✔ H06 revocation survives reopen and blocks an already prepared effect (907.5673ms)
+✔ H06 category exhaustion survives fresh run, retry and replacement grant (375.631951ms)
+✔ H06 all three categories share the signed total cap (339.228759ms)
+✔ H06 budget is rechecked between prepare and use without creating effect intent (862.26437ms)
+✔ older bounded approvals do not become reusable continuation and foreign handles fail (739.513707ms)
+✔ H06 changed accepted authority, file classes and workspace semantics block continuation (604.641792ms)
+✔ H06 legacy and generic reserves cannot bypass category accounting (298.323358ms)
+✔ H06-R1 counterexample coverage cannot be replaced by identical accepted bytes (289.468892ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7547.820826

@@ -62,5 +62,10 @@ ownership and actual postcondition receipts. Its independent review is approved,
 full integration passed554 assertions, and both H04 Medium findings are fixed.
 Every output requires accepted-before membership; exact grants cannot expand
 adopted authority. Unavailable real subprocess containment returns NOT_EXECUTED.
-H06–H09 continuation, review, release and canary remain pending. No runtime
+H06 adds reusable signed continuation, durable closed regressions and three
+separate objective-wide budgets plus a shared total. Its25 focused cases and
+full integration579/0 passed after the independently detected signature bypass
+and missing-observation defects were corrected. Old artifact acceptance never
+authorizes new bytes; new runs do not reset budget. H07–H09 review, release and
+canary remain pending. No runtime
 owner keys or product baseline acceptance are created by installation.

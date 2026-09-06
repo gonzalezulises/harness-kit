@@ -134,3 +134,9 @@ Unadopted v1 consumers retain their existing behavior and prerequisites.
 Rollback restores the separately preserved original v1 snapshot under operator
 control, disables adoption, and retains the journal for later inspection; editing
 a projection cannot certify any historical v2 verdict.
+
+H06 adds closed signed continuation registration, monotonic grant revocation and
+categorized attempt events. The versioned event schema/runtime binding advances
+explicitly. Replay derives three category counters and a total; old reservations
+count as mechanical attempts and fresh runs never reset them. See
+`contracts-continuation-v1.md` for signed limits and compatibility boundaries.

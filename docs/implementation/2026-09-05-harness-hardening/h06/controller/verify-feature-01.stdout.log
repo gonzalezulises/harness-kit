@@ -1,0 +1,54 @@
+Verifying F20
+
+── Layer: static
+$ make lint && bash docs/implementation/2026-09-05-harness-hardening/h06/verify-static.sh
+make[1]: Entering directory '/workspace/scratch/adce1c53b293/harness-kit'
+shellcheck -S warning bin/*.sh scripts/*.sh tests/*.sh \
+  templates/full/scripts/*.sh packs/*/verify-pack.sh
+make[1]: Leaving directory '/workspace/scratch/adce1c53b293/harness-kit'
+PASS: H06 runtime, integration and focal test syntax
+Layer 'static' passed.
+
+── Layer: runtime
+$ node --test --test-skip-pattern='e2e:' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs
+✔ durable regression bytes and signed gate bind actual accepted semantics (524.911892ms)
+✔ closed regressions refuse missing (328.463292ms)
+✔ closed regressions refuse false-expectation (298.818354ms)
+✔ closed regressions refuse lost-coverage (316.447185ms)
+✔ closed regressions refuse callback (299.661941ms)
+✔ signed unsupported product proof stops without simulated PASS (284.345566ms)
+✔ H06 expiry is rechecked at effect use (754.715974ms)
+✔ H06 revocation survives reopen and blocks an already prepared effect (960.84718ms)
+✔ H06 category exhaustion survives fresh run, retry and replacement grant (359.346125ms)
+✔ H06 all three categories share the signed total cap (364.047713ms)
+✔ H06 budget is rechecked between prepare and use without creating effect intent (757.803156ms)
+✔ older bounded approvals do not become reusable continuation and foreign handles fail (745.287932ms)
+✔ H06 changed accepted authority, file classes and workspace semantics block continuation (597.524926ms)
+✔ H06 legacy and generic reserves cannot bypass category accounting (302.82544ms)
+✔ H06-R1 counterexample coverage cannot be replaced by identical accepted bytes (293.923985ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7508.356672
+Layer 'runtime' passed.
+
+── Layer: e2e
+$ node --test --test-name-pattern='^e2e:' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs
+✔ e2e: one signed grant permits two mechanical runs and keeps original artifact acceptance (2189.676936ms)
+✔ e2e: H06 exhausted retry reconciles original intent without another unit (2321.900569ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4825.506817
+Layer 'e2e' passed.
+
+F20 -> passing (evidence recorded in feature_list.json)
+Next: update PROGRESS.md and commit.

@@ -1,0 +1,177 @@
+✖ C1 current verifier rejects fabricated signatures for every approval kind (10.553068ms)
+✖ C1 recorded verifier rejects fabricated signatures for every approval kind (2.476039ms)
+✖ C1 current and recorded verifiers accept genuine signatures and reject altered signed fields (2.236816ms)
+✔ C1 valid historical signatures preserve event-time semantics without current authority (3.082646ms)
+✖ M1 public evaluation rejects undefined observation before registration (34.0318ms)
+✖ M1 public evaluation rejects null observation before registration (15.266374ms)
+✖ e2e: C1 public continuation rejects a forged grant before registration (13.528726ms)
+✖ e2e: C1 replay rejects forged recorded grant even with recomputed journal hashes (14.232747ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 1
+ℹ fail 7
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 402.244666
+
+✖ failing tests:
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation-authority.test.mjs:15:42
+✖ C1 current verifier rejects fabricated signatures for every approval kind (10.553068ms)
+  AssertionError [ERR_ASSERTION]: policy-adoption
+  + actual - expected
+  
+  + undefined
+  - 'BLOCKED_BY_INVALID_SIGNATURE'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation-authority.test.mjs:19:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'BLOCKED_BY_INVALID_SIGNATURE',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation-authority.test.mjs:15:42
+✖ C1 recorded verifier rejects fabricated signatures for every approval kind (2.476039ms)
+  AssertionError [ERR_ASSERTION]: policy-adoption
+  + actual - expected
+  
+  + 'VERIFIED_RECORDED_APPROVAL'
+  - 'BLOCKED_BY_INVALID_SIGNATURE'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation-authority.test.mjs:19:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'VERIFIED_RECORDED_APPROVAL',
+    expected: 'BLOCKED_BY_INVALID_SIGNATURE',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation-authority.test.mjs:22:1
+✖ C1 current and recorded verifiers accept genuine signatures and reject altered signed fields (2.236816ms)
+  AssertionError [ERR_ASSERTION]: policy-adoption
+  + actual - expected
+  
+  + undefined
+  - 'BLOCKED_BY_INVALID_SIGNATURE'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation-authority.test.mjs:28:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'BLOCKED_BY_INVALID_SIGNATURE',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation-authority.test.mjs:51:40
+✖ M1 public evaluation rejects undefined observation before registration (34.0318ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'POLICY'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation-authority.test.mjs:53:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'POLICY',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation-authority.test.mjs:51:40
+✖ M1 public evaluation rejects null observation before registration (15.266374ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'POLICY'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation-authority.test.mjs:53:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'POLICY',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation-authority.test.mjs:57:1
+✖ e2e: C1 public continuation rejects a forged grant before registration (13.528726ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'BLOCKED_BY_INVALID_SIGNATURE'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation-authority.test.mjs:59:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'BLOCKED_BY_INVALID_SIGNATURE',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation-authority.test.mjs:64:1
+✖ e2e: C1 replay rejects forged recorded grant even with recomputed journal hashes (14.232747ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'REPLAYED'
+  - 'BLOCKED_BY_INVALID_SIGNATURE'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation-authority.test.mjs:70:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'REPLAYED',
+    expected: 'BLOCKED_BY_INVALID_SIGNATURE',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

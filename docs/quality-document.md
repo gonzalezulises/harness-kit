@@ -15,7 +15,7 @@ Last updated: 2026-09-06. Grades: **A** solid, **B** adequate, **C** needs work,
 | Oracle evidence and context routing | B | Strict standard YAML, current test-byte receipt bindings, committed/index/workspace/untracked routes; preserved H01 probes witnessed again | Local receipt consistency does not authenticate a malicious author or prove prose meaning |
 | Staged hooks and test infrastructure | B | Index snapshots preserve partial staging/modes; symlinks and formatter failures block; concurrent core286/0 twice and load55/0 twice | No malicious-formatter process sandbox; two authenticated-gh omissions per load suite remain explicit |
 | Delivery status and capability docs | B | Readiness requires observed bounded local check; rule contents inspected; API failure stays indeterminate; current module/prerequisite docs | Configuration inspection is not an adversarial merge canary or production acceptance |
-| Optional verified autonomy runtime | C | H03–H05:130 focused identity/authority/journal/effect tests; independent reviews approved; full integration554/0; earlier copied-package canary54/54 | H06–H09 continuation/review/release/canary pending; real subprocess containment and production acceptance remain unavailable |
+| Optional verified autonomy runtime | C | H03–H06:155 focused identity/authority/journal/effect/continuation tests; independent reviews approved; full integration579/0; earlier copied-package canary54/54 | H07–H09 review/release/canary pending; real subprocess containment and production acceptance remain unavailable |
 
 H01 evidence is in the implementation ledger and its `h01/` folders. GREEN
 fixtures establish their tested contracts; they do not certify authenticated

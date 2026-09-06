@@ -1,0 +1,216 @@
+✖ e2e: one signed grant permits two mechanical runs and keeps original artifact acceptance (306.017077ms)
+✖ durable regression bytes and signed gate bind actual accepted semantics (286.359664ms)
+✖ closed regressions refuse missing (284.514629ms)
+✖ closed regressions refuse false-expectation (291.780409ms)
+✖ closed regressions refuse lost-coverage (317.711776ms)
+✖ closed regressions refuse callback (320.363402ms)
+✖ signed unsupported product proof stops without simulated PASS (345.545886ms)
+✖ H06 expiry is rechecked at effect use (293.73234ms)
+✖ H06 revocation survives reopen and blocks an already prepared effect (286.858152ms)
+✖ H06 category exhaustion survives fresh run, retry and replacement grant (285.634334ms)
+✖ H06 all three categories share the signed total cap (286.611277ms)
+✖ H06 budget is rechecked between prepare and use without creating effect intent (338.170141ms)
+✖ older bounded approvals do not become reusable continuation and foreign handles fail (314.659511ms)
+✖ H06 changed accepted authority, file classes and workspace semantics block continuation (287.995272ms)
+✖ H06 legacy and generic reserves cannot bypass category accounting (290.252107ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 0
+ℹ fail 15
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4847.741378
+
+✖ failing tests:
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:28:1
+✖ e2e: one signed grant permits two mechanical runs and keeps original artifact acceptance (306.017077ms)
+  TypeError: r.describeContinuation is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:19:24)
+      at Object.wire (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:21:27)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:29:27)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:41:1
+✖ durable regression bytes and signed gate bind actual accepted semantics (286.359664ms)
+  TypeError: r.describeContinuation is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:19:24)
+      at Object.wire (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:21:27)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:42:27)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:49:82
+✖ closed regressions refuse missing (284.514629ms)
+  TypeError: r.describeContinuation is not a function
+      at Object.describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:19:24)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:51:21)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:49:82
+✖ closed regressions refuse false-expectation (291.780409ms)
+  TypeError: r.describeContinuation is not a function
+      at Object.describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:19:24)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:51:21)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:49:82
+✖ closed regressions refuse lost-coverage (317.711776ms)
+  TypeError: r.describeContinuation is not a function
+      at Object.describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:19:24)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:51:21)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:49:82
+✖ closed regressions refuse callback (320.363402ms)
+  TypeError: r.describeContinuation is not a function
+      at Object.describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:19:24)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:51:21)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:53:1
+✖ signed unsupported product proof stops without simulated PASS (345.545886ms)
+  TypeError: r.describeContinuation is not a function
+      at Object.describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:19:24)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:54:74)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:56:1
+✖ H06 expiry is rechecked at effect use (293.73234ms)
+  TypeError: r.describeContinuation is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:19:24)
+      at Object.wire (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:21:27)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:57:27)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:60:1
+✖ H06 revocation survives reopen and blocks an already prepared effect (286.858152ms)
+  TypeError: r.describeContinuation is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:19:24)
+      at Object.wire (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:21:27)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:61:27)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:66:1
+✖ H06 category exhaustion survives fresh run, retry and replacement grant (285.634334ms)
+  TypeError: r.describeContinuation is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:19:24)
+      at Object.wire (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:21:27)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:67:27)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:74:1
+✖ H06 all three categories share the signed total cap (286.611277ms)
+  TypeError: r.describeContinuation is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:19:24)
+      at wire (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:21:27)
+      at Object.evaluate (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:23:21)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:75:71)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:79:1
+✖ H06 budget is rechecked between prepare and use without creating effect intent (338.170141ms)
+  TypeError: r.describeContinuation is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:19:24)
+      at wire (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:21:27)
+      at Object.evaluate (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:23:21)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:80:77)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:83:1
+✖ older bounded approvals do not become reusable continuation and foreign handles fail (314.659511ms)
+  TypeError: r.describeContinuation is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:19:24)
+      at Object.wire (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:21:27)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:84:27)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:87:1
+✖ H06 changed accepted authority, file classes and workspace semantics block continuation (287.995272ms)
+  TypeError: r.describeContinuation is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:19:24)
+      at Object.wire (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:21:27)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:88:27)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:93:1
+✖ H06 legacy and generic reserves cannot bypass category accounting (290.252107ms)
+  TypeError: r.describeContinuation is not a function
+      at describe (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:19:24)
+      at wire (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:21:27)
+      at Object.evaluate (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:23:21)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:94:22)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

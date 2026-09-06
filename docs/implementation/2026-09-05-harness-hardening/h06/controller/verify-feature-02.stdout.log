@@ -1,0 +1,63 @@
+Verifying F20
+
+── Layer: static
+$ make lint && bash docs/implementation/2026-09-05-harness-hardening/h06/verify-static.sh && bash docs/implementation/2026-09-05-harness-hardening/h06/fix-1/verify-static.sh
+make[1]: Entering directory '/workspace/scratch/adce1c53b293/harness-kit'
+shellcheck -S warning bin/*.sh scripts/*.sh tests/*.sh \
+  templates/full/scripts/*.sh packs/*/verify-pack.sh
+make[1]: Leaving directory '/workspace/scratch/adce1c53b293/harness-kit'
+PASS: H06 runtime, integration and focal test syntax
+PASS: H06 fix-1 changed modules and focused regression syntax
+Layer 'static' passed.
+
+── Layer: runtime
+$ node --test --test-skip-pattern='e2e:' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation-authority.test.mjs packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs
+✔ C1 current verifier rejects fabricated signatures for every approval kind (17.542333ms)
+✔ C1 recorded verifier rejects fabricated signatures for every approval kind (7.130242ms)
+✔ C1 current and recorded verifiers accept genuine signatures and reject altered signed fields (10.336698ms)
+✔ C1 valid historical signatures preserve event-time semantics without current authority (2.383171ms)
+✔ M1 public evaluation rejects undefined observation before registration (57.075146ms)
+✔ M1 public evaluation rejects null observation before registration (18.971252ms)
+✔ durable regression bytes and signed gate bind actual accepted semantics (787.852451ms)
+✔ closed regressions refuse missing (301.072876ms)
+✔ closed regressions refuse false-expectation (293.470927ms)
+✔ closed regressions refuse lost-coverage (294.354522ms)
+✔ closed regressions refuse callback (295.90369ms)
+✔ signed unsupported product proof stops without simulated PASS (305.490866ms)
+✔ H06 expiry is rechecked at effect use (848.651097ms)
+✔ H06 revocation survives reopen and blocks an already prepared effect (935.241199ms)
+✔ H06 category exhaustion survives fresh run, retry and replacement grant (371.735092ms)
+✔ H06 all three categories share the signed total cap (325.539616ms)
+✔ H06 budget is rechecked between prepare and use without creating effect intent (834.804117ms)
+✔ older bounded approvals do not become reusable continuation and foreign handles fail (797.879831ms)
+✔ H06 changed accepted authority, file classes and workspace semantics block continuation (578.897559ms)
+✔ H06 legacy and generic reserves cannot bypass category accounting (294.378862ms)
+✔ H06-R1 counterexample coverage cannot be replaced by identical accepted bytes (284.300039ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8156.999919
+Layer 'runtime' passed.
+
+── Layer: e2e
+$ node --test --test-name-pattern='^e2e:' packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation-authority.test.mjs packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs
+✔ e2e: C1 public continuation rejects a forged grant before registration (60.294145ms)
+✔ e2e: C1 replay rejects forged recorded grant even with recomputed journal hashes (16.752504ms)
+✔ e2e: one signed grant permits two mechanical runs and keeps original artifact acceptance (2705.924359ms)
+✔ e2e: H06 exhausted retry reconciles original intent without another unit (2324.432383ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5404.291841
+Layer 'e2e' passed.
+
+F20 -> passing (evidence recorded in feature_list.json)
+Next: update PROGRESS.md and commit.

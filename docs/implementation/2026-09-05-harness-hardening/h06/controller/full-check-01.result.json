@@ -1,0 +1,43 @@
+{
+  "command": [
+    "make",
+    "check"
+  ],
+  "cwd": "/workspace/scratch/adce1c53b293/harness-kit",
+  "started_at": "2026-09-06T02:57:37.451412+00:00",
+  "parent_commit": "589a4e3efe924264825c0f3de4b3820d83b196be",
+  "source_hashes": {
+    ".agents/notes/implemented/architecture/2026-09-06-bounded-continuation-and-objective-budgets.md": "56afccceb8af36739584bdee740facd269d1efddb4cd306fecaa0d38c261bf57",
+    ".agents/notes/implemented/bug-fix/2026-09-06-approval-helper-must-not-shadow-crypto.md": "be7e31414dc6e090f33726cffeb8821f14c62a6640f92cd1dc131f385e97348c",
+    ".harness/oracles/AC-H06-authority.yaml": "b99f8288487a60e3c9adc7378fa9188f19e38a6cf300a4fbf632b1181de1e779",
+    ".harness/oracles/AC-H06.yaml": "e708f7695e4271398f9806d902d614ca9f69dbd37fedffa56f239f8767f25b08",
+    "packs/autonomy/index.md": "d1862143d5d651aac8c072efa15179e2cf6fb742f0fc181ef2854a2cc51437d8",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/authority.mjs": "7facc38c306d2f469de8a67cc48aaaf14c58d93bbb10b744a111716f10e078ed",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/budget.mjs": "bcf6bacf43d1bee8dfc28f6951d17cd8391f89411609bde61b58cba8f8c8b24b",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/capabilities.mjs": "0084e0f78e233c7dbd4ff751afe07faf839f62f475831d46fb35908960d3c6a6",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/classify.mjs": "4bed07becff6f10502f35329164f65d1b70891ac035c9ce91f0416cfe346b48d",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/continuation.mjs": "939c95db08dcb8235311ad3e621bc448618f1a50bd815b660e91c02d480eb8e2",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/contracts-capabilities-v1.md": "c1b80efc5c76b0c22090bbd532c1dcbfa7269c5d663b5c90e4fcb6c6adb5d4ad",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/contracts-continuation-v1.md": "3c32d5bf60add70d7084bf2e895f0d39bd3c5eb6011a9ced061a31edb0901bc7",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/contracts-journal-v1.md": "ae9e948d45595f2d5be8d61bc02c455ebe22d5467c6286a36c296aee10472755",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/index.mjs": "c3f0290e5f5f05eeaf90bc7731d12838fba4b3cf68ba39b17a64296583974805",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/journal.mjs": "6b53ad0b3ef8454907bfde344f5b942fa6abf28d4904608f1c7f309dad5de2ea",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation-authority.test.mjs": "c92ab95f4f48c537fc7f7b9b0f73352248bf7931527920658505f128ed157973",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs": "73748aef967814045b3961f3eae2e00675eca0f50d1530257a2418b520a14bf3"
+  },
+  "environment": {
+    "NO_COLOR": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "K6_NO_USAGE_REPORT": "true",
+    "tooling": [
+      "k6 2.1.0",
+      "ShellCheck 0.11.0"
+    ]
+  },
+  "exit_code": 0,
+  "elapsed_seconds": 90.18765167500533,
+  "finished_at": "2026-09-06T02:59:07.641096+00:00",
+  "source_unchanged": true,
+  "stdout_sha256": "6951e2db467d4cdfcd9226bf5c9af62a7ea0ca85a9017ea40ad4688d0f4bb120",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

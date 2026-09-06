@@ -1,0 +1,72 @@
+✖ H06-R1 counterexample coverage cannot be replaced by identical accepted bytes (313.373133ms)
+✖ e2e: H06 exhausted retry reconciles original intent without another unit (1314.650905ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1929.317628
+
+✖ failing tests:
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:98:1
+✖ H06-R1 counterexample coverage cannot be replaced by identical accepted bytes (313.373133ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'CONTINUATION_DESCRIBED'
+  - 'POLICY'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:100:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'CONTINUATION_DESCRIBED',
+    expected: 'POLICY',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:102:1
+✖ e2e: H06 exhausted retry reconciles original intent without another unit (1314.650905ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   reason: 'fresh current run required',
+  +   status: 'BLOCKED_BY_STALE_RUN'
+  -   assurance: 'TRUSTED_RUNTIME_EXCLUSIVE',
+  -   bundleDigest: '450d8e2d9c24255f1ffc4eed8a4cc7ada1e8196a1a7511b010ecb280a4365648',
+  -   capability: 'canonical-write.v1',
+  -   delta: [
+  -     'record.yaml'
+  -   ],
+  -   execution: 'EXECUTED',
+  -   inputDigest: 'f3e4fc228dcf53fcd99254baf10cd9bd85b7f4ab7a1bd6e4e4c7159520807ded',
+  -   operationKey: 'effect',
+  -   postManifestDigest: 'a144edea767dfdf2862d88c0a16d979675e606e38cf041ba235be77cdd9359a8',
+  -   postconditions: 'VERIFIED',
+  -   preManifestDigest: '4df0253068958486c091992f9e37b335958af31578fef1bfefa19cf1587fa50e',
+  -   runId: '442c53887b69e71b8bd5e079f0cbe944e7d7b7e0396e27b226acd6dfe89ac40a',
+  -   status: 'EFFECT_VERIFIED'
+    }
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs:104:105)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { status: 'BLOCKED_BY_STALE_RUN', reason: 'fresh current run required' },
+    expected: { status: 'EFFECT_VERIFIED', operationKey: 'effect', capability: 'canonical-write.v1', runId: '442c53887b69e71b8bd5e079f0cbe944e7d7b7e0396e27b226acd6dfe89ac40a', inputDigest: 'f3e4fc228dcf53fcd99254baf10cd9bd85b7f4ab7a1bd6e4e4c7159520807ded', bundleDigest: '450d8e2d9c24255f1ffc4eed8a4cc7ada1e8196a1a7511b010ecb280a4365648', preManifestDigest: '4df0253068958486c091992f9e37b335958af31578fef1bfefa19cf1587fa50e', postManifestDigest: 'a144edea767dfdf2862d88c0a16d979675e606e38cf041ba235be77cdd9359a8', delta: [ 'record.yaml' ], postconditions: 'VERIFIED', assurance: 'TRUSTED_RUNTIME_EXCLUSIVE', execution: 'EXECUTED' },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

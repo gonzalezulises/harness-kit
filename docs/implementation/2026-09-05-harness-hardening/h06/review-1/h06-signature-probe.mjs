@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import { generateKeyPairSync } from 'node:crypto';
+import { authorityBoundary } from './harness-kit/packs/autonomy/repo-template/scripts/quality-orchestrator/authority.mjs';
+const {publicKey}=generateKeyPairSync('ed25519');
+const digest='a'.repeat(64);
+const boundary=authorityBoundary({repositoryId:'probe',authorityDigest:digest,now:()=>1000,revocation:{epoch:0,asOf:0,expiresAt:2000,revokedReceiptIds:[]},issuers:[{issuer:'owner',keyId:'key',role:'owner',kinds:['bounded-grant'],publicKey}]});
+const expected={kind:'bounded-grant',subjectDigest:digest,scopeDigest:digest,authorityDigest:digest};
+const fabricated={version:1,issuer:'owner',issuerRole:'owner',keyId:'key',...expected,receiptId:'forged',repositoryId:'probe',issuedAt:0,expiresAt:2000,revocationEpoch:0,decision:'approve',signature:Buffer.alloc(64).toString('base64')};
+const handle=boundary.verifyApproval(fabricated,expected);
+console.log(JSON.stringify({current:handle.status?handle:boundary.inspectApproval(handle),recorded:boundary.verifyRecordedApproval(fabricated,expected,1000)}));
+assert.equal(handle.status,'BLOCKED_BY_INVALID_SIGNATURE','zero signature must be rejected');

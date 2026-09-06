@@ -1,0 +1,10 @@
+✔ e2e: one signed grant permits two mechanical runs and keeps original artifact acceptance (2392.361973ms)
+✔ e2e: H06 exhausted retry reconciles original intent without another unit (2326.050883ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5019.327992

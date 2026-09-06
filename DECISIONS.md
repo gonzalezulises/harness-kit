@@ -317,3 +317,15 @@ Fresh runs re-read the complete final workspace and re-prove mechanical equivale
 Durable intent precedes budget reservation and effects. Private local-capability provenance survives reopening; generic reconciliation cannot settle those intents. Only actual complete postconditions produce the effect receipt and journal outcome. Reconciliation never republishes uncertain writes. H06 will connect reusable approved continuation to these existing operations; no new per-plan approval mechanism is introduced as a substitute for that work.
 
 **Consequences.** The supported mode assumes trusted runtime-exclusive cooperating writers. Partial multi-file effects or interrupted ownership remain incomplete; no atomic batch or malicious same-UID containment is claimed. Unavailable subprocess containment blocks before spawn. The two H04 availability defects are corrected. No baseline, owner key or deployment authorization follows from an effect receipt.
+
+---
+
+## 2026-09-06 — H06: reusable continuation without renewed artifact acceptance
+
+**Context.** Previously approved mechanical correction should continue across changed commit/representation bindings without repeated human signatures or reset review budgets.
+
+**Decision.** Extend the same runtime with one closed signed continuation subject: human gate, AC/defect/rule, complete accepted identity/registry invariants, scoped capabilities, actual positive/negative identity regressions and explicit limits. Re-evaluate authority and scope at effect use; derive private per-plan permission while retaining H05 manifests, leases and actual postconditions. Current and recorded approvals share the real Ed25519 verifier; historical event-time verification never becomes current permission.
+
+Three named review/remediation categories and the shared total derive from journal reservations. The first signed configuration fixes objective limits; fresh runs, new grant IDs and unsuccessful effects never refund them. Monotonic revocation denies future permission without rewriting original approvals. Required public observed-defect data is validated before mutation.
+
+**Consequences.** This continuation proves only the supported record/digest identity contracts. Product regression execution and actual independent review require their own supported capabilities and evidence. A grant permits work, not acceptance of new baseline/golden bytes. Existing journals are not silently reinterpreted under the changed wire binding. The original verification receipts and causal Critical-fix evidence remain preserved; no baseline acceptance or deployment follows.

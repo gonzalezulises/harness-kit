@@ -42,7 +42,7 @@ export function authorityBoundary(host) {
     if(checkpoint.revokedReceiptIds.includes(receipt.receiptId)) return stop('BLOCKED_BY_REVOKED_AUTHORITY','receipt revoked');
     return freeze({status:'VERIFIED_APPROVAL',...receipt,signature:undefined});
   }
-  function verifyApproval(input,expected) {
+  function verifyEnvelope(input,expected,recordedAt) {
     try {
       const receipt=signed.parse(input);
       const binding=z.strictObject({kind:z.enum(kinds),subjectDigest:hash,scopeDigest:hash,authorityDigest:hash}).parse(expected);
@@ -51,10 +51,16 @@ export function authorityBoundary(host) {
       if(!issuer || receipt.revocationEpoch!==checkpoint.epoch) return stop('BLOCKED_BY_AUTHORITY_MISMATCH','issuer, role, kind or revocation epoch mismatch');
       const {signature,...body}=receipt;
       if(Buffer.from(signature,'base64').toString('base64')!==signature || !verify(null,approvalSigningBytes(body),issuer.publicKey,Buffer.from(signature,'base64'))) return stop('BLOCKED_BY_INVALID_SIGNATURE','signature verification failed');
+      if(recordedAt!==undefined) {
+        if(!time.safeParse(recordedAt).success || receipt.issuedAt>recordedAt || receipt.expiresAt<=recordedAt)return stop('BLOCKED_BY_STALE_AUTHORITY','recorded approval was not current at use');
+        return freeze({status:'VERIFIED_RECORDED_APPROVAL',...receipt});
+      }
       const handle=Object.freeze(Object.create(null));approvals.set(handle,freeze(receipt));
       const result=inspectApproval(handle);return result.status==='VERIFIED_APPROVAL'?handle:result;
     } catch {return stop('BLOCKED_BY_AUTHORITY_MISMATCH','invalid approval envelope or binding');}
   }
+  const verifyApproval=(input,expected)=>verifyEnvelope(input,expected);
+  const verifyRecordedApproval=(input,expected,at)=>verifyEnvelope(input,expected,at);
   function loadAuthority(bytes,receipt) {
     try {
       // JSON.parse does not reject duplicate keys. Authority bytes must be the one canonical encoding.
@@ -73,5 +79,5 @@ export function authorityBoundary(host) {
     const approval=inspectApproval(item.approval);if(approval.status!=='VERIFIED_APPROVAL')return approval;
     return freeze({status:'VERIFIED_AUTHORITY',authorityDigest,...item.value});
   }
-  return {repositoryId,authorityDigest,freshness,verifyApproval,inspectApproval,loadAuthority,inspectAuthority};
+  return {repositoryId,authorityDigest,freshness,verifyApproval,verifyRecordedApproval,inspectApproval,loadAuthority,inspectAuthority};
 }

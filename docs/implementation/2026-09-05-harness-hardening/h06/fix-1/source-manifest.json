@@ -1,0 +1,8 @@
+{
+  ".agents/notes/implemented/bug-fix/2026-09-06-approval-helper-must-not-shadow-crypto.md": "be7e31414dc6e090f33726cffeb8821f14c62a6640f92cd1dc131f385e97348c",
+  ".harness/oracles/AC-H06-authority.yaml": "b99f8288487a60e3c9adc7378fa9188f19e38a6cf300a4fbf632b1181de1e779",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/authority.mjs": "7facc38c306d2f469de8a67cc48aaaf14c58d93bbb10b744a111716f10e078ed",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/continuation.mjs": "939c95db08dcb8235311ad3e621bc448618f1a50bd815b660e91c02d480eb8e2",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation-authority.test.mjs": "c92ab95f4f48c537fc7f7b9b0f73352248bf7931527920658505f128ed157973",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs": "73748aef967814045b3961f3eae2e00675eca0f50d1530257a2418b520a14bf3"
+}

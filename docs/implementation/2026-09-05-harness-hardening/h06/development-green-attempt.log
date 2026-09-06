@@ -1,0 +1,23 @@
+✔ e2e: one signed grant permits two mechanical runs and keeps original artifact acceptance (2061.207495ms)
+✔ durable regression bytes and signed gate bind actual accepted semantics (458.708205ms)
+✔ closed regressions refuse missing (285.510957ms)
+✔ closed regressions refuse false-expectation (290.237259ms)
+✔ closed regressions refuse lost-coverage (286.538395ms)
+✔ closed regressions refuse callback (285.151116ms)
+✔ signed unsupported product proof stops without simulated PASS (288.043397ms)
+✔ H06 expiry is rechecked at effect use (739.661243ms)
+✔ H06 revocation survives reopen and blocks an already prepared effect (893.423165ms)
+✔ H06 category exhaustion survives fresh run, retry and replacement grant (366.755208ms)
+✔ H06 all three categories share the signed total cap (329.706833ms)
+✔ H06 budget is rechecked between prepare and use without creating effect intent (735.856689ms)
+✔ older bounded approvals do not become reusable continuation and foreign handles fail (727.604461ms)
+✔ H06 changed accepted authority, file classes and workspace semantics block continuation (594.103018ms)
+✔ H06 legacy and generic reserves cannot bypass category accounting (298.496711ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8947.262059
