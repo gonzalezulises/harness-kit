@@ -1,0 +1,31 @@
+id: AC-F24
+requirement: Approved remote executions retain one intent and require exact authenticated observations
+criticality: critical
+status: TEST_READY
+observable: A configured release obligation dispatches once after a signed budget reservation and reopens without losing pending intent or spending
+oracle:
+  expected: Only execution-specific signed observations matching the journal descriptor and exact pinned Actions run settle work and satisfy release obligations
+cases:
+  positive:
+  - A real local protocol fixture exercises dispatch acknowledgement, signed output retrieval and release continuation
+  negative:
+  - Wrong issuer, descriptor, run, attempt, workflow revision, target and raw success cannot become verified evidence
+  boundary:
+  - Lost acknowledgement or crash retains one charged intent; generic reconciliation cannot settle it and resumption never redispatches
+context: Operator-pinned workflow, ephemeral Ed25519 test issuer, accepted context and existing persistent journal; offline transport fixtures only
+side_effects:
+  must:
+  - Persist exact descriptor before reserve and reserve before HTTP dispatch; retain immutable outputs and original operation key
+  must_not:
+  - Execute network deployments during tests, send credentials on redirects, fabricate target readback or broaden remediation authority
+false_positive: Generic workflow success and signed unrelated output must leave obligations unsatisfied; an uncertain dispatch must retain exactly one charge after reopen
+owner: harness-kit maintainers under AGENTS.md and approved F24 brief
+evidence:
+  formats:
+  - Preserved causal before sources, exact current test hash and raw RED/GREEN logs; live acceptance remains NOT_EXECUTED
+tests:
+- packs/autonomy/repo-template/scripts/quality-orchestrator/tests/execution-backend.test.mjs
+falsification:
+  defect: 'Scoped fix-1 before sources return an unresumable synthetic deployment key after terminal FAIL or expiry, omit the supervisor-enrollment preflight, recheck catalog expiry after dispatch, and decode UTF8 chunks independently. Six exact current-byte covering assertions failed before correction: both deployment recoveries, zero-spend missing enrollment, catalog expiry after dispatch, split multibyte output and incomplete final UTF8.'
+  proved_sha: cca4b16dbe1e59d1057dfba54d9380766a207e89
+  receipt: docs/implementation/2026-09-06-execution-backend/fix-1/red-receipt.json

@@ -1,0 +1,31 @@
+id: AC-F24-protected-ci
+requirement: Required CI accepts a valid versioned protected-base judge and never falls back to candidate policy
+criticality: critical
+status: TEST_READY
+observable: The actual protected-policy workflow step reaches zero blocking quick gates and its sentinel only when the versioned judge exists in the base checkout
+oracle:
+  expected: Contract, parser, gate runner, claim contracts and decision ledger all resolve below base/.harness/protected-judge/v1
+cases:
+  positive:
+  - A valid relocated base bundle judges an isolated full candidate and records the gates observed-zero sentinel
+  negative:
+  - A byte-identical judge present only below candidate head stops ADOPTION_REQUIRED and cannot create the sentinel
+  boundary:
+  - Parser setup is isolated by its existing H02 tests; this case executes the remaining literal workflow run block and real quick gates
+context: Separate temporary base/head Git repositories scaffolded by the shipped installer, with no remote operations or credentials
+side_effects:
+  must:
+  - Execute the protected quick runner against candidate bytes and create the sentinel only after zero blocking gates
+  must_not:
+  - Read a candidate judge, mutate protected policy, dispatch remotely or treat local success as owner adoption
+false_positive: A path-string-only assertion is insufficient; the literal workflow script must run both the valid-base and candidate-only cases
+owner: harness-kit maintainers under AGENTS.md, DECISIONS.md and bin/ARCHITECTURE.md
+evidence:
+  formats:
+  - Exact standalone test and before-workflow hashes, nonzero RED exit and raw RED log hashes
+tests:
+- tests/protected-workflow-regression.py
+falsification:
+  defect: The prior workflow reads the unversioned base root, so it stops ADOPTION_REQUIRED even when a valid protected judge exists at the required versioned base path
+  proved_sha: cca4b16dbe1e59d1057dfba54d9380766a207e89
+  receipt: docs/implementation/2026-09-06-execution-backends/ci-integration/final-red-receipt.json

@@ -1,0 +1,36 @@
+id: AC-H04
+requirement: Journal replay preserves chain, immutable run lineage and objective budgets without promoting local or legacy claims
+criticality: critical
+status: TEST_READY
+observable: Altered or incomplete history blocks; equivalent fresh runs preserve authority and spent budget
+oracle:
+  expected: Strong latest replay requires a current host-fetched scoped signed checkpoint matching the complete chain
+cases:
+  positive:
+  - Exclusive append, deterministic replay, idempotent retry and repairable head index
+  - Recomputed final bytes preserve accepted baseline across mechanical representation changes
+  negative:
+  - Altered, omitted, reordered or partial events and conflicting operation keys block
+  - Old signed checkpoints, forged contexts, semantic changes and budget resets block
+  boundary:
+  - Crash after intent preserves uncertainty and cannot authorize blind repetition
+  - Legacy bytes remain exact and projected claims remain LEGACY_UNVERIFIED
+context: Operator-bound local runtime and ephemeral test issuer; simulated external witness transport
+side_effects:
+  must:
+  - Persist intent and reservation before any later effect; retain terminal records and original migration bytes
+  must_not:
+  - Execute effects, manufacture PASS, silently take an expired lock or infer current external state from local hashes
+false_positive: The preserved implementation that fails to re-read current workspace before reservation must fail exact current tests with executable assertions
+owner: harness-kit maintainers under AGENTS.md and MIGRATION-01 in DECISIONS.md
+evidence:
+  formats:
+  - Focused Node test output, preserved defective source, exact test hashes and local RED receipt
+  - Initial absent API is documented separately from causal RED
+tests:
+- packs/autonomy/repo-template/scripts/quality-orchestrator/tests/journal.test.mjs
+
+falsification:
+  defect: The preserved H04 journal reserves budget on an old run after the host workspace commit and content binding changed; it also accepts the runtime-reserved reconciliation operation-key prefix. Exact final test bytes observe APPENDED instead of BLOCKED_BY_STALE_RUN or POLICY in two assertions.
+  proved_sha: 96438e86b3d671027c8398b8c10edbb994e8ee59
+  receipt: docs/implementation/2026-09-05-harness-hardening/h04/red-receipt.json

@@ -1,0 +1,19 @@
+{
+  "cause": "capabilities.test.mjs temporarily mutates a shared installed dependency while other files run in parallel",
+  "observed": {
+    "command": "make check",
+    "exit": 2,
+    "runtime_tests": 253,
+    "pass": 250,
+    "fail": 3,
+    "failure": "BLOCKED_BY_RUNTIME_BINDING in global, execution-backend and review cases"
+  },
+  "correction": "Run unchanged capabilities.test.mjs to completion before unchanged remaining test files, exactly as already published in PR35",
+  "correction_source": "dd8a20c1465b3ccd7e9a4d86ed6a11860146e7f7:packs/autonomy/verify-pack.sh",
+  "test_bytes": "UNCHANGED",
+  "source": {
+    "docs/implementation/2026-09-07-closure/test-isolation/red-verify-pack.sh": "ee5a270804915d44a976bc1fcb62d482c7de4e6dd6aa76a687bf4221a24e9b03",
+    "packs/autonomy/verify-pack.sh": "51e6b0751c06420b2877086451827dfb4d4d70f894b98e9f7f3da10ce0dc2077"
+  },
+  "log_sha256": "456302b00aa5cbd0067d3f61063dc38f0493e24d9e83185832a83b190eb32338"
+}

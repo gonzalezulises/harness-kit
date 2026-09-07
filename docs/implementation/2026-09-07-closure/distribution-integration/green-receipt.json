@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "command": [
+    "python3",
+    "-I",
+    "tests/consumer-distribution.test.py"
+  ],
+  "exit_code": 0,
+  "passed": 33,
+  "failed": 0,
+  "source": {
+    "bin/harness-consumer.py": "c204ad219c3137157e8edf7721392cb2554c1bc17edd1623f42dbfb96089264c"
+  },
+  "tests": {
+    "tests/consumer-distribution.test.py": "3651818b4be511ac88f8c96aead84c962d8e3ff714004393d109613a5199c76a"
+  },
+  "log_sha256": "0996c85ed4765564f1d3603164440d220af87150c0878bb4508797101191b083",
+  "meaning": "Exact existing suite now loads integrated product runtime from an offline fresh clone; no current test edits",
+  "status": "CORRECTED_CAUSAL_GREEN_REVIEW_PENDING"
+}

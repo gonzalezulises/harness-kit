@@ -3,7 +3,33 @@
 The durable memory of this repository. Every session reads this first and writes to it
 last. If it disagrees with your recollection, this file wins.
 
-## Current state — 2026-09-06 consumer distribution
+## Current PR36 closure — 2026-09-07
+
+This resolution incorporates corrected PR33 `e5bfa5343d064e376086e2b13e45203b4ad4a481`
+through a normal merge, retaining the adopted judge and proof ancestry. GR03/GR05
+and real acceptance remain open; this is not integration to main.
+
+The owner authorized integration and technical/operational closure of PR33–37.
+The product/distribution integration exposed an offline bundle failure: the old
+fixed inventory omitted the new product schema modules. The manager now applies
+one exact production-module predicate to bundle construction and validation,
+with pinned source paths and exclusion of tests/fixtures/subdirectories. The
+unchanged integrated distribution suite passed33/33 and independent static
+review approved that correction; its causal failed full check is preserved.
+This branch incorporates corrected PR33. The current full `make check` passed
+with core286, distribution33, runtime253, installation5, Gherkin15, load55
+(two explicit authenticated-gh omissions), Sentry68 and the protected-workflow
+regression. Exact source/log bindings are in `docs/implementation/2026-09-07-closure/pr36-verification/receipt.json`. PR33 Required quality run34076543082
+also passed all steps at e5bfa534; this branch still requires its own remote CI.
+
+Historical F26-F1-M3 remains HISTORICAL_INPUT_UNAVAILABLE. Current two-stage
+reconstruction and13 retained bindings were validated separately, without
+inventing the old missing input or changing its historical verdict. A scoped
+independent test consumer has installed and loaded the original PR36 package;
+upgrade/rollback of the final candidate and real pilot remain pending.
+No live authority adoption or resulting Harness Kit release is claimed.
+
+## Previous verified state — 2026-09-06 consumer distribution
 
 F26 is complete on this independent branch over frozen PR33 continuation
 `a798c88`. Its plan, review and compact verification receipt are in

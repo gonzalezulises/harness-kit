@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "observation": "copy2 readback inside one tool call matched the corrected bytes, while the next call saw the prior tracked file bytes and prior mtime. Ordinary byte writes with current mtime and fsync persisted across separate read calls.",
+  "root_cause": "Metadata-based synchronization is suspected, not established. No security control or approval was changed.",
+  "remediation": "Use ordinary byte writes for existing files and independently read back hashes in a later tool call before staging or testing.",
+  "verified_readback": {
+    "closure-pr35-integrated/product.mjs": "5202e4994c008acb08739670a90bd43adb2e5275f8f29f310cd0961701e6e006",
+    "closure-pr35-integrated/contracts-product-v1.md": "dec94f24ee4d7793c133c9e604931e2553dd05f08fa87ecf3e3f00558ad59be1",
+    "closure-pr36-integrated/bin/harness-consumer.py": "c204ad219c3137157e8edf7721392cb2554c1bc17edd1623f42dbfb96089264c"
+  },
+  "test_status": "First incomplete source checks retained. Corrected integrated source still requires fresh full verification."
+}

@@ -3,3 +3,6 @@
 .DS_Store
 
 .harness/tools/
+
+# Python verification cache is generated locally.
+__pycache__/

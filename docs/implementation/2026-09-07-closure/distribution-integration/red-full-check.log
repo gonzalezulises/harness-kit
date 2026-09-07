@@ -1,0 +1,410 @@
+bash scripts/run-gates.sh quick
+── gates · aggregate quick · profile v1/kit
+  decisions-append-only    PASS (0.1s, exit 0)
+  agent-notes-tree         PASS (0.2s, exit 0)
+  arch-boundaries          PASS (0.8s, exit 0)
+  makefile-gates           PASS (0.1s, exit 0)
+  version-sync             PASS (0.1s, exit 0)
+  delivery-doc             PASS (0.0s, exit 0)
+  context-routes           PASS (0.1s, exit 0)
+  oracles-falsifiable      PASS (0.2s, exit 0)
+── 8 pass · 0 blocking · 0 not applicable
+make check-core
+make[1]: Entering directory '/workspace/scratch/adce1c53b293/harness-human-interruption'
+bash scripts/check-prerequisites.sh full
+Prerequisites verified for full scope; no verification tests ran in this step.
+bash tests/run-tests.sh
+harness-kit test suite
+  ok   H01 verifier hardening regressions
+
+1. Syntax
+  ok   syntax harness-activate.sh
+  ok   syntax harness-audit.sh
+  ok   syntax harness-init.sh
+  ok   syntax harness-protect.sh
+  ok   syntax harness-status.sh
+  ok   syntax check-arch.sh
+  ok   syntax clean-state-check.sh
+  ok   syntax install-githooks.sh
+  ok   syntax pre-commit-staged.sh
+  ok   syntax run-gates.sh
+  ok   syntax session-trace.sh
+  ok   syntax setup-oracles.sh
+  ok   syntax verify-agent-notes.sh
+  ok   syntax verify-claims.sh
+  ok   syntax verify-context-routes.sh
+  ok   syntax verify-decisions.sh
+  ok   syntax verify-delivery-doc.sh
+  ok   syntax verify-feature.sh
+  ok   syntax verify-makefile-gates.sh
+  ok   syntax verify-oracles.sh
+  ok   syntax run-tests.sh
+  ok   in sync: scripts/check-arch.sh
+  ok   in sync: scripts/clean-state-check.sh
+  ok   in sync: scripts/install-githooks.sh
+  ok   in sync: scripts/pre-commit-staged.sh
+  ok   in sync: scripts/run-gates.sh
+  ok   in sync: scripts/session-trace.sh
+  ok   in sync: scripts/setup-oracles.sh
+  ok   in sync: scripts/verify-agent-notes.sh
+  ok   in sync: scripts/verify-claims.sh
+  ok   in sync: scripts/verify-context-routes.sh
+  ok   in sync: scripts/verify-decisions.sh
+  ok   in sync: scripts/verify-delivery-doc.sh
+  ok   in sync: scripts/verify-feature.sh
+  ok   in sync: scripts/verify-makefile-gates.sh
+  ok   in sync: scripts/verify-oracles.sh
+  ok   valid json feature_list.json
+  ok   valid json arch-rules.json
+
+2. Audit on a bare repo
+  ok   bare repo fails critical checks (1/7)
+  ok   audit exits 1 when critical checks fail
+
+3. Stable denominator
+  ok   same total for empty and bare repo (comparable scores)
+
+4. init --dry-run writes nothing
+  ok   dry run left no AGENTS.md
+
+5. init --level minimal
+  ok   minimal wrote AGENTS.md
+  ok   minimal wrote CLAUDE.md
+  ok   minimal wrote init.sh
+  ok   minimal wrote PROGRESS.md
+  ok   minimal wrote feature_list.json
+  ok   minimal wrote clean-state-checklist.md
+  ok   minimal wrote DECISIONS.md
+  ok   minimal wrote docs/decisions/README.md
+  ok   init.sh is executable
+  ok   all placeholders substituted in AGENTS.md
+  ok   detected the real verify command
+  ok   minimal harness passes all 7 critical checks
+
+6. init --level full
+  ok   full wrote Makefile
+  ok   full wrote scripts/verify-feature.sh
+  ok   full wrote scripts/check-arch.sh
+  ok   full wrote scripts/clean-state-check.sh
+  ok   full wrote scripts/session-trace.sh
+  ok   full wrote .harness/arch-rules.json
+  ok   full wrote templates/sprint-contract.md
+  ok   full wrote templates/evaluator-rubric.md
+  ok   full wrote docs/quality-document.md
+  ok   full harness scores >= 70/84 (got 81)
+  ok   gitignored the trace artifact
+
+7. init never clobbers without --force
+  ok   existing AGENTS.md preserved
+  ok   --force does overwrite
+
+8. verify-feature gate
+  ok   passing layers promote the feature
+  ok   evidence recorded on promotion
+  ok   failing layer exits non-zero
+  ok   failure prints repair guidance
+  ok   failure names the layer
+  ok   budgeted failure is blocked pending recovery authority
+  ok   layer calling exit still prints repair
+  ok   unknown feature id exits 66
+  ok   multiline layer command passes
+  ok   multiline layer keeps both commands
+  ok   repair prose never enters the execution channel
+
+9. clean-state-check
+  ok   clean tree passes the clock-out gate
+  ok   stray .orig file fails the gate
+  ok   .DS_Store alone does not fail the gate
+  ok   .DS_Store is reported as a note
+  ok   verify command that cd's does not leak the working directory
+  ok   passing-without-evidence is caught
+  ok   WIP=1 violation is caught
+
+10. check-arch
+  ok   clean repo passes arch rules
+  ok   committed secret trips a rule
+  ok   violation reports WHAT
+  ok   env-var reference and function call are not flagged
+  ok   violation reports WHY
+  ok   violation reports FIX
+  ok   violation names the offending file
+  ok   conflict markers trip a rule
+
+11. session-trace
+  ok   trace file written
+  ok   three events recorded
+  ok   every trace line is valid JSON
+
+12. NO_COLOR and JSON hygiene
+  ok   NO_COLOR suppresses ANSI codes
+  ok   --json emits parseable JSON
+
+  ok   fixture has no budget_defaults (the case that used to break)
+  ok   complete budgets pass enf.stopcond without budget_defaults
+13. budgets — the anti-loop gate
+  ok   missing stop_condition exits 67
+  ok   first failure still exits 1
+  ok   first failure consumes one round
+  ok   first failure still prints repair
+  ok   first failure reports budget spent
+  ok   ungranted retry exits policy code 5
+  ok   recovery authority requirement is named
+  ok   remaining budget is not relabelled exhausted
+  ok   failed feature remains blocked
+  ok   state edit and raised maximum do not grant recovery
+  ok   ungranted recovery rejects before layer effects
+  ok   failed ledger restores blocked state
+  ok   rejected recovery preserves spent rounds
+  ok   repeated blocker exits 4
+  ok   repeated blocker is named
+  ok   ledger accumulated before attempted recovery
+  ok   edited command still needs recovery authority
+  ok   edited command reports recovery requirement
+  ok   edited command does not execute without recovery authority
+  ok   rejected recovery preserves prior review rounds
+  ok   no budgets means unchanged exit 1
+  ok   no budgets still prints repair
+
+14. verify-claims — re-check what the repo claims is passing
+  ok   honest passing claim exits 0
+  ok   reports how many claims were re-verified
+  ok   false claim exits 1
+  ok   false claim is named FALSE_CLAIM
+  ok   false claim names the feature
+  ok   unverifiable claim exits 2
+  ok   claim without evidence exits 2
+  ok   missing evidence is named
+  ok   unclaimed features do not block
+  ok   no claims still exits 0
+  ok   no claims is stated, not silent
+  ok   required-quality workflow is scaffolded
+  ok   weakened verification exits 5
+  ok   the weakening is named
+  ok   it names the feature
+  ok   it shows the command that was there before
+  ok   changing the command while going back to active is allowed
+  ok   unchanged layers pass against a base
+  ok   a new feature is not a weakening
+  ok   no base still falls back to FALSE_CLAIM
+
+15. workflow integrity — the gate must protect its own definition
+  ok   every action is pinned to a 40-hex SHA
+  ok   integrity ruleset payload is scaffolded
+  ok   integrity ruleset targets push
+  ok   integrity ruleset is active
+  ok   integrity ruleset has no bypass actors
+  ok   integrity ruleset restricts the workflow path
+  ok   required-check ruleset payload is scaffolded
+  ok   harness-protect.sh exists
+  ok   harness-protect.sh parses
+  ok   AGENTS.md documents the skipped-job bypass
+
+16. audit rubric v2 — the score measures what is now enforced
+  ok   json declares the rubric version
+  ok   text output names the rubric
+  ok   rubric adds enforcement checks (10)
+  ok   full scaffold passes every enforcement check
+  ok   missing verify-claims.sh is caught
+  ok   unpinned action is caught
+  ok   budgets without stop_condition is caught
+
+17. verify-decisions — the record of WHY cannot be rewritten
+  ok   unchanged ledger passes
+  ok   appending a decision is allowed
+  ok   rewriting an earlier decision exits 1
+  ok   the rewrite is named
+  ok   the altered decision is identified
+  ok   deleting an earlier decision exits 1
+  ok   the deleted decision is identified
+  ok   DECISIONS_BASE_FILE path catches the rewrite too
+  ok   DECISIONS_BASE_FILE path passes an intact ledger
+  ok   absent ledger in base is not an error
+
+18. activate / status — one command, and an honest answer
+  ok   status reports NOT_ACTIVATED before anything exists
+  ok   status exits non-zero when not activated
+  ok   activate --dry-run wrote nothing
+  ok   activate exits 0 on a local repo
+  ok   activate installed AGENTS.md
+  ok   activate installed feature_list.json
+  ok   activate installed Makefile
+  ok   activate installed scripts/verify-claims.sh
+  ok   activate installed scripts/verify-decisions.sh
+  ok   activate installed .github/workflows/required-quality.yml
+  ok   activate names the detected verify command
+  ok   activate reports READY_LOCAL without a remote
+  ok   status agrees after activation
+  ok   status exits 0 when activated
+  ok   activate is idempotent and never clobbers
+  ok   --with gherkin installs the runner
+  ok   --with gherkin installs the validator
+  ok   gherkin stays opt-in when not requested
+  ok   an unknown pack is a usage error (exit 64)
+  ok   the unknown pack is named in the error
+  ok   a rejected --with installs nothing
+
+19. version and fleet drift
+  ok   VERSION file exists
+  ok   VERSION is semver (2.2.5)
+  ok   audit reports the VERSION file
+  ok   target records the kit version
+  ok   recorded version matches the kit
+  ok   status shows the kit version
+  ok   an up-to-date repo is not reported as stale
+  ok   a stale repo is reported
+  ok   the stale report names both versions
+  ok   version-sync passes when every copy agrees
+  ok   version-sync rejects a stale .harness/kit-version
+  ok   version-sync rejects a manifest that disagrees with VERSION
+  ok   sync-version.sh repairs the drift its own error message points at
+
+20. Declared gates must do real work
+  ok   scaffolded e2e without a command fails closed
+  ok   the empty e2e explains itself
+  ok   a placeholder target is rejected
+  ok   the offending target is named
+  ok   a Makefile whose targets all work is accepted
+  ok   installed: scripts/check-arch.sh
+  ok   installed: scripts/verify-agent-notes.sh
+  ok   installed: scripts/verify-claims.sh
+  ok   installed: scripts/verify-context-routes.sh
+  ok   installed: scripts/verify-decisions.sh
+  ok   installed: scripts/verify-delivery-doc.sh
+  ok   installed: scripts/verify-makefile-gates.sh
+  ok   installed: scripts/verify-oracles.sh
+  ok   makefile-gates is a registered gate
+
+21. verify-claims observes every declared execution
+  ok   shared-layer claims still exit 0
+  ok   an identical command runs for every declaration
+  ok   every feature is still reported
+  ok   two distinct commands both run
+  ok   a shared failing command still fails
+  ok   it fails once per feature that declares it
+
+15 — verify-delivery-doc
+  ok   a runbook describing the previous release fails
+  ok   it names the stale deploy tag
+  ok   it names the unmentioned migration
+  ok   it flags the section about an older version
+  ok   it flags the dead relative link
+  ok   an unresolvable DELIVERY_BASE is NOT_CONFIGURED, not a pass
+  ok   the corrected runbook passes
+  ok   and says which release it describes
+  ok   a changelog's own tags are not flagged
+  ok   no runbook heading is a skip, not a failure
+  ok   and the skip says why
+  ok   a delivering repo cannot lose its runbook silently
+
+16 — run-gates state machine
+  ok   a passing gate exits 0
+  ok   and reports PASS
+  ok   FAIL blocks the run
+  ok   FAIL is reported by name
+  ok   NOT_CONFIGURED blocks the run
+  ok   NOT_CONFIGURED is reported by name
+  ok   TOOL_FAILURE blocks the run
+  ok   TOOL_FAILURE is reported by name
+  ok   INCOMPLETE blocks the run
+  ok   INCOMPLETE is reported by name
+  ok   POLICY blocks the run
+  ok   POLICY is reported by name
+  ok   UNKNOWN blocks the run
+  ok   UNKNOWN is reported by name
+  ok   an unknown state says nothing was verified
+  ok   a missing REQUIRED gate blocks
+  ok   and is named NOT_EXECUTED
+  ok   a declared inapplicable kit-only gate does not block
+  ok   and states explicit applicability
+  ok   a passing gate does not offset a blocking one
+
+17 — verify-context-routes
+  ok   a governed change citing nothing fails
+  ok   it names the documents that govern it
+  ok   and says why they govern
+  ok   the same change, citing its source, passes
+  ok   a citation inside an Agent Note counts
+  ok   an ungoverned change is not nagged
+  ok   --list advises without blocking
+  ok   and prints the reading list
+  ok   an unresolvable base never passes
+  ok   a missing route map is NOT_CONFIGURED
+  ok   a malformed route map is NOT_CONFIGURED
+
+18 — verify-oracles
+  ok   no oracles is a pass, stated out loud
+  ok   an unanswered question blocks TEST_READY
+  ok   and the message quotes the question
+  ok   «TBD» does not count as answered
+  ok   a critical criterion with no falsification blocks
+  ok   and says what a test only seen passing proves
+  ok   a proved criterion passes
+  ok   editing the test after the proof goes stale
+  ok   and names the test that moved
+  ok   and says the proof no longer covers it
+  ok   a SHA outside this history blocks
+  ok   and says so plainly
+  ok   a test that does not exist blocks
+  ok   a critical DRAFT blocks
+  ok   and says no code should rely on it yet
+  ok   a retired criterion is not enforced
+  ok   --list never blocks
+  ok   and shows the status
+  ok   H02 live gates, profile, hook, oracle and status regression matrix
+
+────────────────────────────────────────
+286 passed, 0 failed
+All tests passed.
+python3 tests/protected-workflow-regression.py
+PASS: protected workflow uses only the relocated base judge bundle
+python3 tests/consumer-distribution.test.py
+test_fresh_clone_executes_real_runtime_offline_with_vendored_yaml_and_zod (__main__.ConsumerEndToEnd.test_fresh_clone_executes_real_runtime_offline_with_vendored_yaml_and_zod) ... FAIL
+test_verify_and_plan_accept_fresh_git_modes_without_writing (__main__.ConsumerEndToEnd.test_verify_and_plan_accept_fresh_git_modes_without_writing) ... ok
+test_archive_traversal_symlink_hardlink_and_bundle_hardlink_are_rejected (__main__.ConsumerRuntime.test_archive_traversal_symlink_hardlink_and_bundle_hardlink_are_rejected) ... ok
+test_candidate_and_exact_local_tag_have_distinct_nonpublished_status (__main__.ConsumerRuntime.test_candidate_and_exact_local_tag_have_distinct_nonpublished_status) ... ok
+test_changed_plan_and_adulterated_bundle_block_before_writes (__main__.ConsumerRuntime.test_changed_plan_and_adulterated_bundle_block_before_writes) ... ok
+test_ci_documentation_uses_an_external_protected_checker (__main__.ConsumerRuntime.test_ci_documentation_uses_an_external_protected_checker) ... ok
+test_clean_install_plan_is_read_only_and_repeat_is_idempotent (__main__.ConsumerRuntime.test_clean_install_plan_is_read_only_and_repeat_is_idempotent) ... ok
+test_cli_and_schema_contract (__main__.ConsumerRuntime.test_cli_and_schema_contract) ... ok
+test_concurrent_apply_cannot_execute_plan_twice (__main__.ConsumerRuntime.test_concurrent_apply_cannot_execute_plan_twice) ... ok
+test_consumer_lock_rejects_links_without_changing_sentinel (__main__.ConsumerRuntime.test_consumer_lock_rejects_links_without_changing_sentinel) ... ok
+test_consumer_managed_ancestors_cannot_escape_through_symlinks (__main__.ConsumerRuntime.test_consumer_managed_ancestors_cannot_escape_through_symlinks) ... ok
+test_consumer_managed_descriptor_rejects_symlink_and_hardlink_leaves (__main__.ConsumerRuntime.test_consumer_managed_descriptor_rejects_symlink_and_hardlink_leaves) ... ok
+test_head_change_after_prepare_blocks_selector_effect (__main__.ConsumerRuntime.test_head_change_after_prepare_blocks_selector_effect) ... ok
+test_interrupted_apply_resumes_same_plan_and_incomplete_bootstrap_fails (__main__.ConsumerRuntime.test_interrupted_apply_resumes_same_plan_and_incomplete_bootstrap_fails) ... ok
+test_legacy_runtime_and_custom_consumer_state_are_preserved (__main__.ConsumerRuntime.test_legacy_runtime_and_custom_consumer_state_are_preserved) ... ok
+test_linked_worktree_plan_declares_and_uses_real_git_lock (__main__.ConsumerRuntime.test_linked_worktree_plan_declares_and_uses_real_git_lock) ... ok
+test_live_drift_blocks_idempotent_apply_and_approved_upgrade (__main__.ConsumerRuntime.test_live_drift_blocks_idempotent_apply_and_approved_upgrade) ... ok
+test_managed_file_drift_blocks_verify_and_upgrade (__main__.ConsumerRuntime.test_managed_file_drift_blocks_verify_and_upgrade) ... ok
+test_manifest_requires_unique_complete_stable_inventory (__main__.ConsumerRuntime.test_manifest_requires_unique_complete_stable_inventory) ... ok
+test_missing_approval_cannot_create_managed_effects (__main__.ConsumerRuntime.test_missing_approval_cannot_create_managed_effects) ... ok
+test_plan_and_descriptor_schemas_reject_unknown_fields (__main__.ConsumerRuntime.test_plan_and_descriptor_schemas_reject_unknown_fields) ... ok
+test_plan_git_queries_do_not_refresh_index_metadata (__main__.ConsumerRuntime.test_plan_git_queries_do_not_refresh_index_metadata) ... ok
+test_plan_is_bound_to_exact_target_root (__main__.ConsumerRuntime.test_plan_is_bound_to_exact_target_root) ... ok
+test_postverify_failure_restores_prior_selection_and_records_failure (__main__.ConsumerRuntime.test_postverify_failure_restores_prior_selection_and_records_failure) ... ok
+test_sigkill_after_manifest_reconciles_own_attempt_and_rejects_drift (__main__.ConsumerRuntime.test_sigkill_after_manifest_reconciles_own_attempt_and_rejects_drift) ... ok
+test_sigkill_after_selection_resumes_without_repeating_generation (__main__.ConsumerRuntime.test_sigkill_after_selection_resumes_without_repeating_generation) ... ok
+test_sigkill_before_selection_releases_lock_and_resumes (__main__.ConsumerRuntime.test_sigkill_before_selection_releases_lock_and_resumes) ... ok
+test_sigkill_during_started_copy_recovers_only_safe_partial_staging (__main__.ConsumerRuntime.test_sigkill_during_started_copy_recovers_only_safe_partial_staging) ... ok
+test_unknown_schema_missing_bindings_and_unsuitable_tree_fail_closed (__main__.ConsumerRuntime.test_unknown_schema_missing_bindings_and_unsuitable_tree_fail_closed) ... ok
+test_upgrade_and_rollback_preserve_newer_journal_and_configuration (__main__.ConsumerRuntime.test_upgrade_and_rollback_preserve_newer_journal_and_configuration) ... ok
+test_upgrade_cannot_target_product_or_unsafe_bundle_paths (__main__.ConsumerRuntime.test_upgrade_cannot_target_product_or_unsafe_bundle_paths) ... ok
+test_upgrade_plan_rejects_changed_nonbootstrap_stable_payload (__main__.ConsumerRuntime.test_upgrade_plan_rejects_changed_nonbootstrap_stable_payload) ... ok
+test_verify_distinguishes_local_integrity_from_external_authority (__main__.ConsumerRuntime.test_verify_distinguishes_local_integrity_from_external_authority) ... ok
+
+======================================================================
+FAIL: test_fresh_clone_executes_real_runtime_offline_with_vendored_yaml_and_zod (__main__.ConsumerEndToEnd.test_fresh_clone_executes_real_runtime_offline_with_vendored_yaml_and_zod)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-human-interruption/tests/consumer-distribution.test.py", line 935, in test_fresh_clone_executes_real_runtime_offline_with_vendored_yaml_and_zod
+    self.assertEqual(operation.returncode, 0, operation.stdout+operation.stderr)
+AssertionError: 1 != 0 : {"status":"RUNTIME_OPERATION_FAILED","reason":"Cannot find module '/tmp/consumer-e2e-civ6kry_/fresh-clone/.harness/distribution/generations/d50cb6b89f47e2a381885a70533512cb15af1484e53e8859064956bb582d7448/runtime/product.schema.mjs' imported from /tmp/consumer-e2e-civ6kry_/fresh-clone/.harness/distribution/generations/d50cb6b89f47e2a381885a70533512cb15af1484e53e8859064956bb582d7448/runtime/journal.mjs"}
+
+
+----------------------------------------------------------------------
+Ran 33 tests in 52.875s
+
+FAILED (failures=1)
+make[1]: *** [Makefile:33: check-core] Error 1
+make[1]: Leaving directory '/workspace/scratch/adce1c53b293/harness-human-interruption'
+make: *** [Makefile:26: check] Error 2

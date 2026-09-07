@@ -761,6 +761,20 @@
         "all layers passed — commit a798c88, 2026-09-06T17:52:40Z"
       ],
       "notes": "Owner-authorized independent increment based on frozen local PR33 a798c88; no consumer adoption or publication is authorized by a fixture result."
+    },
+    {
+      "id": "F28",
+      "priority": 28,
+      "area": "closure-runtime",
+      "behavior": "Remaining supervisor defects and bounded remote product publication are closed without changing historical authority, signed budgets or readiness claims.",
+      "state": "active",
+      "verification": [
+        "Linked worktree local PR preparation preserves parent, frozen files, source index and refs.",
+        "Malformed verifier UTF-8 produces controlled failure with no duplicate effects.",
+        "Remote publication binds current authority and exact source; ambiguous effects reconcile without duplicate POST."
+      ],
+      "evidence": [],
+      "notes": "Owner-authorized 2026-09-07 closure increment. Real pilot and overall acceptance remain separate requirements."
     }
   ]
 }

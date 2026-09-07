@@ -227,6 +227,20 @@ def archive_integrity(path):
     return 'sha512-'+base64.b64encode(hashlib.sha512(path.read_bytes()).digest()).decode()
 
 
+def production_runtime_path(relative):
+    """Include the exact source's production modules, never its test subtree.
+
+    REQUIRED_RUNTIME remains the minimum v1 contract. New top-level modules
+    and contracts must travel with the source that imports them; every byte
+    still belongs to the exact Git source and explicitly approved bundle.
+    """
+    if relative in REQUIRED_RUNTIME:
+        return True
+    module = re.fullmatch(r'[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*\.mjs', relative)
+    contract = re.fullmatch(r'contracts-[a-z0-9][a-z0-9.-]*\.md', relative)
+    return bool(contract or (module and not relative.endswith(('.test.mjs', '.fixture.mjs'))))
+
+
 def build_bundle(args):
     source = pathlib.Path(args.source_repo).resolve()
     reject(not source.is_dir(), 'SOURCE_GIT_ERROR', 'source repository is not a directory')
@@ -260,7 +274,7 @@ def build_bundle(args):
             mode, kind, _ = metadata.decode().split(' ')
             name = raw_name.decode()
             relative = name[len(RUNTIME_SOURCE)+1:]
-            if kind != 'blob' or relative not in REQUIRED_RUNTIME:
+            if kind != 'blob' or not production_runtime_path(relative):
                 continue
             selected.add(relative)
             source_mode = int(mode[-3:], 8)
@@ -416,7 +430,7 @@ def validate_manifest(manifest):
                 reject(not item['sourcePath'].startswith('npm:'), status,
                        'dependency file lacks npm source')
             else:
-                reject(relative not in REQUIRED_RUNTIME or
+                reject(not production_runtime_path(relative) or
                        item['sourcePath'] != RUNTIME_SOURCE+'/'+relative,
                        status, 'generation file is outside production inventory')
         else:

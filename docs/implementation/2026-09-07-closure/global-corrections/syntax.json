@@ -1,0 +1,42 @@
+[
+  {
+    "command": [
+      "node",
+      "--check",
+      "packs/autonomy/repo-template/scripts/quality-orchestrator/journal.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "node",
+      "--check",
+      "packs/autonomy/repo-template/scripts/quality-orchestrator/execution.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "node",
+      "--check",
+      "packs/autonomy/repo-template/scripts/quality-orchestrator/release.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "node",
+      "--check",
+      "packs/autonomy/repo-template/scripts/quality-orchestrator/review.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "node",
+      "--check",
+      "packs/autonomy/repo-template/scripts/quality-orchestrator/capabilities.mjs"
+    ],
+    "exit_code": 0
+  }
+]

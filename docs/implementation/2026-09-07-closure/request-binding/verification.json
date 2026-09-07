@@ -1,0 +1,18 @@
+{
+  "finding": "GR02 follow-up H1",
+  "status": "LOCAL_CAUSAL_GREEN_REVIEW_PENDING",
+  "red": {
+    "exit": 1,
+    "pass": 1,
+    "fail": 1,
+    "receipt": "red-receipt.json"
+  },
+  "green": {
+    "exit": 0,
+    "pass": 2,
+    "fail": 0,
+    "receipt": "green-receipt.json"
+  },
+  "preserved": "red-source is the first GR01/GR02/GR04 correction state, before this immutable-wire follow-up; it is not represented as the original PR33 commit. The test snapshots are identical across RED and GREEN.",
+  "scope": "Local journal and HTTPS fixtures, no live supervisor or acceptance claim."
+}

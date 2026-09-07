@@ -1,0 +1,216 @@
+✖ GR01 separate controllers that both saw absence may issue exactly one dispatch (3711.99107ms)
+✔ GR01 owner death after durable intent before POST stays uncertain on original-key resume (4173.205936ms)
+✖ GR02 deploy approval expiring in asynchronous preflight blocks reservation (26297.962501ms)
+✖ GR02 rollback approval expiring in asynchronous preflight blocks reservation (32097.011752ms)
+✖ GR02 accept-artifact approval expiring in asynchronous preflight blocks reservation (22826.743228ms)
+✖ GR02 readback approval expiring in asynchronous preflight blocks reservation (35148.539458ms)
+✖ GR02 release objective expiry alone during preflight blocks reservation (2670.612347ms)
+✖ GR02 standalone review policy expiry alone during preflight blocks reservation (6715.117407ms)
+✖ GR02 release review policy expiry alone during preflight blocks reservation (15885.531127ms)
+✖ GR02 prerequisite slice evidence expires in preflight while objective and budgets remain current (5984.692392ms)
+✖ GR04 canonical-write.v1 preserves literal output keys and verifies changed bytes, exact scope and one debit (2343.632496ms)
+✖ GR04 derived-write.v1 preserves literal output keys and verifies changed bytes, exact scope and one debit (1031.279636ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 1
+ℹ fail 11
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 159425.718255
+
+✖ failing tests:
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:27:1
+✖ GR01 separate controllers that both saw absence may issue exactly one dispatch (3711.99107ms)
+  AssertionError [ERR_ASSERTION]: one durable debit must never authorize two external starts
+  
+  2 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-judge-target/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:34:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:50:72
+✖ GR02 deploy approval expiring in asynchronous preflight blocks reservation (26297.962501ms)
+  AssertionError [ERR_ASSERTION]: expired operation authority must not start work
+      at noStart (file:///workspace/scratch/adce1c53b293/harness-judge-target/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:45:10)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-judge-target/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:68:3)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'EXECUTION_PENDING',
+    expected: 'EXECUTION_PENDING',
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:50:72
+✖ GR02 rollback approval expiring in asynchronous preflight blocks reservation (32097.011752ms)
+  AssertionError [ERR_ASSERTION]: expired operation authority must not start work
+      at noStart (file:///workspace/scratch/adce1c53b293/harness-judge-target/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:45:10)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-judge-target/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:68:3)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'EXECUTION_PENDING',
+    expected: 'EXECUTION_PENDING',
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:50:72
+✖ GR02 accept-artifact approval expiring in asynchronous preflight blocks reservation (22826.743228ms)
+  AssertionError [ERR_ASSERTION]: expired operation authority must not start work
+      at noStart (file:///workspace/scratch/adce1c53b293/harness-judge-target/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:45:10)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-judge-target/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:68:3)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'EXECUTION_PENDING',
+    expected: 'EXECUTION_PENDING',
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:50:72
+✖ GR02 readback approval expiring in asynchronous preflight blocks reservation (35148.539458ms)
+  AssertionError [ERR_ASSERTION]: expired operation authority must not start work
+      at noStart (file:///workspace/scratch/adce1c53b293/harness-judge-target/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:45:10)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-judge-target/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:68:3)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'EXECUTION_PENDING',
+    expected: 'EXECUTION_PENDING',
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:70:1
+✖ GR02 release objective expiry alone during preflight blocks reservation (2670.612347ms)
+  AssertionError [ERR_ASSERTION]: expired operation authority must not start work
+      at noStart (file:///workspace/scratch/adce1c53b293/harness-judge-target/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:45:10)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-judge-target/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:75:3)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'EXECUTION_PENDING',
+    expected: 'EXECUTION_PENDING',
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:77:35
+✖ GR02 standalone review policy expiry alone during preflight blocks reservation (6715.117407ms)
+  AssertionError [ERR_ASSERTION]: expired operation authority must not start work
+      at noStart (file:///workspace/scratch/adce1c53b293/harness-judge-target/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:45:10)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-judge-target/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:83:3)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'EXECUTION_PENDING',
+    expected: 'EXECUTION_PENDING',
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:77:35
+✖ GR02 release review policy expiry alone during preflight blocks reservation (15885.531127ms)
+  AssertionError [ERR_ASSERTION]: expired operation authority must not start work
+      at noStart (file:///workspace/scratch/adce1c53b293/harness-judge-target/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:45:10)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-judge-target/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:83:3)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'EXECUTION_PENDING',
+    expected: 'EXECUTION_PENDING',
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:85:1
+✖ GR02 prerequisite slice evidence expires in preflight while objective and budgets remain current (5984.692392ms)
+  AssertionError [ERR_ASSERTION]: expired operation authority must not start work
+      at noStart (file:///workspace/scratch/adce1c53b293/harness-judge-target/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:45:10)
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-judge-target/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:88:47)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'EXECUTION_PENDING',
+    expected: 'EXECUTION_PENDING',
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:91:59
+✖ GR04 canonical-write.v1 preserves literal output keys and verifies changed bytes, exact scope and one debit (2343.632496ms)
+  AssertionError [ERR_ASSERTION]: literal output must actually be canonicalized
+  + actual - expected
+  
+  + 'title: hello\nstatus: active\nenabled: true\nthreshold: 100\n'
+  - 'enabled: true\nstatus: "active"\nthreshold: 100\ntitle: "hello"\n'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-judge-target/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:103:39)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'title: hello\nstatus: active\nenabled: true\nthreshold: 100\n',
+    expected: 'enabled: true\nstatus: "active"\nthreshold: 100\ntitle: "hello"\n',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:91:59
+✖ GR04 derived-write.v1 preserves literal output keys and verifies changed bytes, exact scope and one debit (1031.279636ms)
+  AssertionError [ERR_ASSERTION]: outputs do not preserve accepted equivalence
+  + actual - expected
+  
+  + 'POLICY'
+  - 'CAPABILITY_DESCRIBED'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-judge-target/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs:99:154)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'POLICY',
+    expected: 'CAPABILITY_DESCRIBED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

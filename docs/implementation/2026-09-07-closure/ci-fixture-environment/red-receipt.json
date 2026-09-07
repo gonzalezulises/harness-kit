@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "claim": "LOCAL_REPRODUCTION_AND_REMOTE_FAILURE",
+  "base_head": "65c6e5f7aecd107188f4f164e849d7c8aed91cc3",
+  "remote_run": 34074937651,
+  "remote_job": 101599089897,
+  "command": [
+    "env",
+    "ROUTES_BASE=2fb86f02d4de83eeb7496c32f01070fd547da8bb",
+    "DELIVERY_BASE=2fb86f02d4de83eeb7496c32f01070fd547da8bb",
+    "bash",
+    "tests/run-tests.sh"
+  ],
+  "exit_code": 1,
+  "files": {
+    "local-red.log": "137921bba0a130cf3055667a7f88511bf045ce39c66fcb60e120aa64bcc36b5a",
+    "github-required-quality-failure.log": "70cef4e483996d18b9db3c24e26e9b67833aa9186be399acc289f2c68a35966c",
+    "red-run-tests.sh": "bdd265416564568eed513eeb95dcaec9242df74dca38b7da2f1d84200d2728f6"
+  },
+  "cause": "The fixture suite inherits source-repository comparison SHAs that do not exist in its independent temporary Git repositories. No production judge policy or protected SHA selection is changed."
+}

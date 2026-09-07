@@ -1,7 +1,7 @@
 # Quality Document — harness-kit
 
 Current module health, based on the hardening review and executed verification.
-Last updated: 2026-09-06. Grades: **A** solid, **B** adequate, **C** needs work,
+Last updated: 2026-09-07. Grades: **A** solid, **B** adequate, **C** needs work,
 **D** a known false-success path remains. Historical audit evidence stays in
 `docs/reviews/2026-09-05-harness-hardening/`; current work and limits are in
 `docs/implementation/2026-09-05-harness-hardening/ledger.md`.
@@ -10,13 +10,13 @@ Last updated: 2026-09-06. Grades: **A** solid, **B** adequate, **C** needs work,
 |---|---|---|---|
 | Legacy contract, claims, state and decision verifiers | B | 31 focal tests; independent H01 review approved after three fix rounds | Mutable local history is not strong authority; recorded budgeted failures require verified recovery, unavailable in v1 |
 | Architecture checks | B | Whole-document validation and typed matcher exit/filter contracts fail before effects | Legacy shell commands remain legacy; no process confinement claim |
-| Live gate registry and required CI | B | H02 real-scaffold/live-policy and separate-base judge fixtures pass; quick gates are part of integrated check | Proposed CI requires protected-policy adoption; remote required execution is not yet certified |
+| Live gate registry and required CI | D | Exact PR34 judge adopted through normal controls; PR33 Required quality run34074937651 applied protected gates successfully, then exposed18 fixture-environment failures reproduced locally | Fixture-only correction passed the full local CI environment, scoped review and remote Required quality34076543082 at e5bfa534. GR03 candidate/judge isolation and GR05 history-preserving integration remain open; no bypass is authorized |
 | Installation profiles and prerequisites | B | Versioned profiles, required universal gates and isolated pinned parser; H09 explicit optional install preserves existing runtime/root package and adds four boundary tests | Consumers must explicitly migrate old installations, install prerequisites and adopt authority separately |
 | Oracle evidence and context routing | B | Strict standard YAML, current test-byte receipt bindings, committed/index/workspace/untracked routes; preserved H01 probes witnessed again | Local receipt consistency does not authenticate a malicious author or prove prose meaning |
 | Staged hooks and test infrastructure | B | Index snapshots preserve partial staging/modes; symlinks and formatter failures block; concurrent core286/0 twice and load55/0 twice | No malicious-formatter process sandbox; two authenticated-gh omissions per load suite remain explicit |
 | Delivery status and capability docs | B | Readiness requires observed bounded local check; rule contents inspected; API failure stays indeterminate; current module/prerequisite docs | Configuration inspection is not an adversarial merge canary or production acceptance |
-| Optional verified autonomy runtime | C | 239 runtime/local-contract tests plus H09 installation4/canary1 and one protected-workflow regression; full integration669/0, startup286/0, selected69-source manifest unchanged; F24 backend and CI independently approved after four causal fixes | Current F24 layers pass24 runtime/4 e2e plus the protected workflow case, and F19/F23 original35/5 cases are revalidated. Broad final review remains INCOMPLETE; actual containment/consumer target integration and live acceptance remain outstanding; the new selected-asset candidate is unsigned and unaccepted |
-| Versioned consumer distribution | B | F26 static PASS, runtime31/31 and E2E2/2; required make check exit0, startup286/0, selected85-source manifest unchanged; actual unauthorized activation and SIGKILL recovery have causal RED/GREEN; all scoped Critical/High independently closed | Single autonomy-runtime.v1 Linux fixture profile; installation NOT_ADOPTED, source owner identity declared, release unpublished; unsupported migrations fail closed. Historical RED-input loss remains Medium backlog; three engineering corrections are disclosed |
+| Optional verified autonomy runtime | C | Current global review completed. GR01 cross-process creator ownership, GR02 fresh immutable authority/request binding and GR04 literal output names have causal GREEN and scoped independent approval | Required integrated CI, real host containment and acceptance remain pending; the two broader High findings remain open |
+| Versioned consumer distribution | B | Original33 tests retained; expanded exact-source production inventory fixes the offline fresh-clone failure, with33/33 GREEN and scoped independent approval | The omitted correction was restored, separately read back and reviewed; current PR36 full check passed distribution33 and every required local suite. Same-manager consumer upgrade/rollback remains pending; old-manager transitions require migration. Historical F26-F1-M3 input loss remains disclosed, not recertified; installation is NOT_ADOPTED |
 
 H01 evidence is in the implementation ledger and its `h01/` folders. GREEN
 fixtures establish their tested contracts; they do not certify authenticated
@@ -25,10 +25,12 @@ F09's historical two-attempt claim is blocked under the approved recovery rule;
 its original contract and receipts remain intact.
 
 Final review's one confirmed High (FR-01) is corrected and independently closed
-within that corrective scope. The automatic interruption of the whole-branch
-review is preserved in the H09 controller handoff; no broad approval is claimed.
-The workflow now installs the existing locked optional dependencies, but real
-CI remains subject to protected-policy adoption before those steps execute.
+within that corrective scope. The automatic interruption of the previous whole-branch
+review is preserved in the H09 controller handoff. A new permitted independent
+static review completed on 2026-09-07 and requires the recorded corrections; no
+whole-branch approval is claimed. PR34 exact policy adoption is complete. GR03
+and GR05 require the separately recorded protected execution and integration
+capabilities before overall closure.
 
 Update this document when a module changes materially, before comparing
 benchmarks, and after removing or simplifying a harness component. Grades must

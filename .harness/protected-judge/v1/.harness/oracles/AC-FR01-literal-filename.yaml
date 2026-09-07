@@ -1,0 +1,31 @@
+id: AC-FR01-literal-filename
+requirement: Every literal filename participates in the prepared workspace inventory
+criticality: high
+status: TEST_READY
+observable: A changed frozen file after capability preparation is rejected before effects or spending
+oracle:
+  expected: POLICY with prepared binding changed, original output bytes, zero spend and no effect records
+cases:
+  positive:
+  - An ordinary frozen.txt file remains protected by the existing binding check
+  negative:
+  - A changed literal __proto__ file must receive the same refusal
+  boundary:
+  - Both filenames are root entries outside the accepted output document set
+context: Disposable local workspace using the existing signed fixture helper and public runtime preparation and lease APIs
+side_effects:
+  must:
+  - Retain the externally changed frozen bytes for inspection
+  must_not:
+  - Publish canonical output, reserve budget, or create effect intent or receipt records
+false_positive: The unchanged defective plain-object inventory produces EFFECT_VERIFIED and spends one for __proto__ while the ordinary control passes
+owner: harness-kit maintainers under AGENTS.md and MIGRATION-01 in DECISIONS.md
+evidence:
+  formats:
+  - Exact before-source and current-test hashes with assertion-based nonzero TAP logs and local receipt
+tests:
+- packs/autonomy/repo-template/scripts/quality-orchestrator/tests/literal-filename.test.mjs
+falsification:
+  defect: The plain-object workspace inventory omits the literal __proto__ filename and misses its change after preparation
+  proved_sha: 65c0c6976520ca53b878224e081d042a62853db4
+  receipt: docs/implementation/2026-09-05-harness-hardening/final-fix-1/red-receipt.json
