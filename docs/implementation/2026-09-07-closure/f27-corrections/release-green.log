@@ -1,0 +1,11 @@
+✔ F27 M5 reverse exact slice wires execute in obligation order under their original keys (11596.240239ms)
+✔ F27 M5 readback-shaped candidate before exact deploy is skipped without an effect (47219.402939ms)
+✔ F27 M5 fresh deploy candidate before exact authorized readback preserves original deployment identity (50111.27695ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 109417.286104

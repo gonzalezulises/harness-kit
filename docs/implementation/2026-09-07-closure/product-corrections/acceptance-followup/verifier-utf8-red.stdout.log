@@ -1,0 +1,22 @@
+✖ malformed verifier UTF-8 returns a controlled tool failure (3027.600906ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3435.281649
+
+✖ failing tests:
+
+test at tests/product-verifier-utf8.test.mjs:6:1
+✖ malformed verifier UTF-8 returns a controlled tool failure (3027.600906ms)
+  TypeError: The encoded data was not valid for encoding utf-8
+      at TextDecoder.decode (node:internal/encoding:494:28)
+      at ChildProcess.<anonymous> (file:///tmp/closure-product-red-net2qa9l/runtime/product.mjs:209:266)
+      at ChildProcess.emit (node:events:509:28)
+      at maybeClose (node:internal/child_process:1141:16)
+      at ChildProcess._handle.onexit (node:internal/child_process:306:5) {
+    code: 'ERR_ENCODING_INVALID_ENCODED_DATA'
+  }

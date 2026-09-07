@@ -1,0 +1,52 @@
+✖ F27 M3 late retained original acknowledgement after operational checkpoint and process reopen via resume (6167.060294ms)
+✖ F27 M3 late retained original acknowledgement after operational checkpoint and process reopen via run (6774.438269ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13298.062212
+
+✖ failing tests:
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/f27-corrections.test.mjs:23:36
+✖ F27 M3 late retained original acknowledgement after operational checkpoint and process reopen via resume (6167.060294ms)
+  AssertionError [ERR_ASSERTION]: {"status":"POLICY","reason":"foreign or forged objective"}
+  + actual - expected
+  
+  + 'POLICY'
+  - 'PRODUCT_REPLAYED'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-human-interruption/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/f27-corrections.test.mjs:33:9)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'POLICY',
+    expected: 'PRODUCT_REPLAYED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/f27-corrections.test.mjs:23:36
+✖ F27 M3 late retained original acknowledgement after operational checkpoint and process reopen via run (6774.438269ms)
+  AssertionError [ERR_ASSERTION]: {"status":"POLICY","reason":"foreign or forged objective"}
+  + actual - expected
+  
+  + 'POLICY'
+  - 'PRODUCT_REPLAYED'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-human-interruption/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/f27-corrections.test.mjs:33:9)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'POLICY',
+    expected: 'PRODUCT_REPLAYED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

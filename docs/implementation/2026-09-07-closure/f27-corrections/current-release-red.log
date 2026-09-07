@@ -1,0 +1,68 @@
+✖ F27 M5 reverse exact slice wires execute in obligation order under their original keys (1401.059822ms)
+✖ F27 M5 readback-shaped candidate before exact deploy is skipped without an effect (30540.720164ms)
+✖ F27 M5 fresh deploy candidate before exact authorized readback preserves original deployment identity (36027.18002ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 0
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 68348.894484
+
+✖ failing tests:
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/f27-corrections.test.mjs:44:1
+✖ F27 M5 reverse exact slice wires execute in obligation order under their original keys (1401.059822ms)
+  AssertionError [ERR_ASSERTION]: {"status":"POLICY","reason":"supplied release authorization differs from next exact obligation"}
+  
+  0 !== 3
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-human-interruption/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/f27-corrections.test.mjs:46:156)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 3,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/f27-corrections.test.mjs:48:1
+✖ F27 M5 readback-shaped candidate before exact deploy is skipped without an effect (30540.720164ms)
+  AssertionError [ERR_ASSERTION]: {"status":"POLICY","reason":"supplied release authorization differs from next exact obligation"}
+  + actual - expected
+  
+  + 'POLICY'
+  - 'PRODUCTION_PASS'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-human-interruption/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/f27-corrections.test.mjs:57:389)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'POLICY',
+    expected: 'PRODUCTION_PASS',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/f27-corrections.test.mjs:59:1
+✖ F27 M5 fresh deploy candidate before exact authorized readback preserves original deployment identity (36027.18002ms)
+  AssertionError [ERR_ASSERTION]: {"status":"OPERATIONAL_BLOCKED","reason":"required release obligations remain","certification":"NOT_EXECUTED","productionPass":false,"execution":"NOT_EXECUTED","nextObligation":{"kind":"revalidate-deployment","operationKey":"deploy"},"unsatisfied":["revalidate-deployment","smoke","observability"],"historyLength":7,"journalAssurance":"LOCAL_UNWITNESSED","headDigest":"ef85d83a9cc819d6dbe0000afc4420ba201b565f15456abfa93963172341877b","interruption":{"classification":"OPERATIONAL_DIAGNOSIS","cause":"EXACT_AUTHORIZED_INPUT_UNAVAILABLE","evidenceDigest":"bee5b5bba01f12b582d4a54d2d740f581cd8cf48d43f015daeebb947184db05c"}}
+  
+  7 !== 8
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-human-interruption/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/f27-corrections.test.mjs:69:290)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 7,
+    expected: 8,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

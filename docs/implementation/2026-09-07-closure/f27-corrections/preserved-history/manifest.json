@@ -1,0 +1,5 @@
+{
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/human-interruption.test.mjs": "1165badb6a2ddd4e9d9c0cf6c521aa850ac22ebc68e7757270e85b89253726ea",
+  ".harness/oracles/AC-HUMAN-INTERRUPTION.yaml": "f7063be1df079cf8cd3df07791ca41ef579e8eac110e3d1f8a65921ab9987895",
+  "docs/implementation/2026-09-06-human-interruption/evidence/publication-recovery/red-receipt.json": "94bf1cff97ac928e439d443edbf04144891d62f97a5b7612e5909b599364d50d"
+}

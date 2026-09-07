@@ -1,0 +1,28 @@
+{
+  "status": "ISOLATED_INSTALL_PREFLIGHT_GREEN",
+  "scope": "scope.json",
+  "sourceCommit": "43e32833945a1fbb0cdd9dca2d582a428209d4fc",
+  "consumerInitialCommit": "a1d99bb566a7153b31194d9a37d24dff8f304120",
+  "install": "INSTALLED_NOT_ADOPTED",
+  "externalExpectation": "AUTHORITY_EXPECTATION_MATCHED",
+  "runtimeIdentity": "IDENTIFIED",
+  "runtimeAuthority": "EPHEMERAL_NOT_ADOPTED",
+  "preservation": "Initial files and initial HEAD unchanged by installation and installed-runtime identification. No client repository or remote was used.",
+  "pending": [
+    "Update/rollback on stable manager baseline and final candidate",
+    "Real authenticated independent workers",
+    "Actual OS isolation and current enrolled authority"
+  ],
+  "files": {
+    "initial.json": "6fd6f4383e37e8606d2882ad09d3692b91f6ca00dc5375504009ff9be890c6e8",
+    "install-plan.json": "7ea6c1ef7df202876308f4c23754df69fac93bdf1ec8a3b001520ce539e08c1e",
+    "install-runtime.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "install-runtime-command.json": "b4a37cca78daf59b9232713a95ac66ce2faac9c88259cc5d2046b0aad6c2ccfd",
+    "install-verification.json": "471009810f014151a73e275b771f7d7e6de0b8aa6cedafc93cf09f7bc10b8cd1",
+    "scope.json": "a5396a8bcdcfe3c61b7c11e0abf8fe7e58c026de88d4965513d3114e71630bc4",
+    "identify-input.yaml": "7a2fa256ec7ddf7dfc20cbe30bc8dd5dbb0440ccd2bccc96f3971178c6cfd4c8",
+    "install-result.json": "321d6ab3e58539ff46e9ddc8b334deb90a6f7800e9a3222ba5824dd43e8d0cc4",
+    "bundle-a-result.json": "57e162982f4ef8d384790afd1dcf28df539e0481fbd33acb0c936d70c01fd0d9",
+    "install-runtime.stdout.json": "9f7fc7f3c953cbe7a4a2c1e4875ea9325a34b3241b789ba6971262083abef57a"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "command": [
+    "python3",
+    "tests/consumer-distribution.test.py",
+    "ConsumerRuntime.test_cli_and_schema_contract"
+  ],
+  "exit_code": 1,
+  "tests": {
+    "tests/consumer-distribution.test.py": "cdeae1af616e85b35140a351a40f49e2dda578a738e32a01ab76acf2caf8a0d2"
+  },
+  "source": {
+    "docs/implementation/2026-09-06-consumer-distribution/evidence/red-source-state.json": "a58ba63d3fd4e1be75aeebece0b9a48c93ec91b6c2ecad074b3c30a5419a34f9"
+  },
+  "logs": {
+    "docs/implementation/2026-09-06-consumer-distribution/evidence/red.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/implementation/2026-09-06-consumer-distribution/evidence/red.stderr.log": "873815f956fd5904c399971c0b397579e89edcf1a7127b0f0e239c75ed2537cb",
+    "docs/implementation/2026-09-06-consumer-distribution/evidence/red.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+  }
+}

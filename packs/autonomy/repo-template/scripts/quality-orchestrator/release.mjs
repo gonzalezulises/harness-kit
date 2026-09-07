@@ -198,12 +198,16 @@ export function releaseBoundary(runtime,auth,journal,execution,review={}){
         const item=owned(handle),result=decision(handle,replayRelease(handle));if(result.status==='PRODUCTION_PASS')return result;if(!execution)return blocked(result,'REQUIRED_CAPABILITY_UNAVAILABLE');
         if(item.state.pending.length){const resumed=await runtime.resumeReleaseExecution(handle,item.state.pending[0]);if(resumed.status!=='EXECUTION_VERIFIED')return blocked(result,'ORIGINAL_OPERATION_RECONCILIATION_PENDING');continue;}
         const operation=result.nextObligation.kind==='accept-artifact'?'artifact-acceptance':result.nextObligation.kind==='revalidate-deployment'?'deployment':kinds[result.nextObligation.kind];
-        const entry=options.authorizedExecutions.find(e=>e.wire?.request?.operation===operation&&canonical(e.wire.request.binding)===canonical(releaseBinding(item.objective))&&!journal.read(item.ctx).intents.has(e.wire.budget?.scope?.operationKey));
-        if(!entry)return blocked(result,'EXACT_AUTHORIZED_INPUT_UNAVAILABLE');
-        const requestInput={...entry.input};if(!requestInput.actionApproval&&['artifact-acceptance','deployment'].includes(operation)){
-          const action=operation==='artifact-acceptance'?'accept-artifact':result.nextObligation.kind==='revalidate-deployment'?'readback':'deploy',expected=actionExpectation(item,action,action==='readback'?{operationKey:result.nextObligation.operationKey}:undefined);requestInput.actionApproval=options.authorizedActions.find(a=>a?.kind===expected.kind&&a?.subjectDigest===expected.subjectDigest&&a?.scopeDigest===expected.scopeDigest);
+        let entry;
+        for(const candidate of options.authorizedExecutions){
+          if(candidate.wire?.request?.operation!==operation||canonical(candidate.wire.request.binding)!==canonical(releaseBinding(item.objective))||journal.read(item.ctx).intents.has(candidate.wire.budget?.scope?.operationKey))continue;
+          const requestInput={...candidate.input};if(!requestInput.actionApproval&&['artifact-acceptance','deployment'].includes(operation)){
+            const action=operation==='artifact-acceptance'?'accept-artifact':result.nextObligation.kind==='revalidate-deployment'?'readback':'deploy',expected=actionExpectation(item,action,action==='readback'?{operationKey:result.nextObligation.operationKey}:undefined);requestInput.actionApproval=options.authorizedActions.find(a=>a?.kind===expected.kind&&a?.subjectDigest===expected.subjectDigest&&a?.scopeDigest===expected.scopeDigest);
+          }
+          const described=runtime.describeReleaseExecution(handle,requestInput);
+          if(described.status==='EXECUTION_DESCRIBED'&&canonical(described.request)===canonical(candidate.wire.request)&&canonical(described.budget)===canonical(candidate.wire.budget)){entry=candidate;break;}
         }
-        const described=runtime.describeReleaseExecution(handle,requestInput);if(described.status!=='EXECUTION_DESCRIBED')return blocked(result,'EXACT_AUTHORIZED_INPUT_UNAVAILABLE');must(canonical(described.request)===canonical(entry.wire.request)&&canonical(described.budget)===canonical(entry.wire.budget),'supplied release authorization differs from next exact obligation');
+        if(!entry)return blocked(result,'EXACT_AUTHORIZED_INPUT_UNAVAILABLE');
         const started=await runtime.executeReleaseObligation(handle,entry.wire);if(!['EXECUTION_PENDING','EXECUTION_VERIFIED'].includes(started.status))return blocked(decision(handle,replayRelease(handle)),'EXECUTION_NOT_SETTLED');
         const resumed=await runtime.resumeReleaseExecution(handle,entry.wire.budget.scope.operationKey);if(resumed.status!=='EXECUTION_VERIFIED')return blocked(decision(handle,replayRelease(handle)),'ORIGINAL_OPERATION_RECONCILIATION_PENDING');
       }
@@ -216,10 +220,12 @@ export function releaseBoundary(runtime,auth,journal,execution,review={}){
       const result=execution.describe(request,{...clean,budgetKind:request.review?request.review.policy.budgetKind:mechanicalBudget},item.ctx);prepared.set(digestData(request),{handle,options:clean});return result;
     }),
     executeReleaseObligation:(handle,wire)=>executionAsync(async()=>{
+      wire=freeze(structuredClone(wire));
       const item=owned(handle);must(execution,'Actions backend is not configured','BLOCKED_BY_REQUIRED_CAPABILITY');
       const prior=journal.read(item.ctx).intents.get(wire?.budget?.scope?.operationKey);
-      if(!prior){const preparation=prepared.get(digestData(wire.request));must(preparation?.handle===handle,'describe the exact release execution before dispatch');must(canonical(wire.request)===canonical(requestFor(item,preparation.options)),'release execution request changed');}
-      return execution.execute(wire,item.ctx);
+      const validateStart=()=>{const preparation=prepared.get(digestData(wire.request));must(preparation?.handle===handle,'describe the exact release execution before dispatch');must(canonical(wire.request)===canonical(requestFor(owned(handle),preparation.options)),'release execution request changed');};
+      if(!prior)validateStart();
+      return execution.execute(wire,item.ctx,validateStart);
     }),
     resumeReleaseExecution:(handle,key)=>executionAsync(async()=>{const item=owned(handle);must(execution,'Actions backend is not configured','BLOCKED_BY_REQUIRED_CAPABILITY');const result=await execution.resume(key,item.ctx);releaseEvents(owned(handle));return result;}),
     describeReleaseObjective:(input,ctx)=>safe(()=>{

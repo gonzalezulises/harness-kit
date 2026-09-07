@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "status": "PROPOSAL_NOT_ADOPTED",
+  "sourceCommit": "a798c88ad625be2478d24df52c0dc45c51e2d4e4",
+  "proposalBaseCommit": "88ea1e6c45faf5b5db9e29935eef6e25e50f633b",
+  "sourceManifestSha256": "81099c812e9c094ed6210b877f44b4317aadf0f8ec2c98cf26163285b5026143",
+  "sourceFiles": 30,
+  "sourceBytesAndModesVerified": true,
+  "results": [
+    {
+      "command": [
+        "make",
+        "check"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 40.21897015700233,
+      "stdout_sha256": "10a2cc9be878e010889dd1a61a86b3e70cda6a78ca4fefaef96469c722b5d09d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "bash",
+        ".harness/protected-judge/v1/scripts/run-gates.sh",
+        "quick",
+        "--target",
+        "/workspace/scratch/adce1c53b293/harness-judge-target"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.8981750730017666,
+      "stdout_sha256": "9903b895ef09c9e57560f51b2d13b7cf2a3b638702c47dc4dc1bb0f2509a4045",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": [
+        "./init.sh"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 26.947661104000872,
+      "stdout_sha256": "4f87cb11a1d47d8806676a919fecd170ed9beb103160752627073d35f8fc65f3",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "fullAssertions": 411,
+  "startupAssertions": 273,
+  "quickGatesPass": 8,
+  "authenticatedGhOmissions": 2,
+  "remoteCI": "NOT_EXECUTED",
+  "publication": "BLOCKED_BY_AUTOMATIC_APPROVAL_REVIEW",
+  "rawStreams": "Local only; not distributed"
+}

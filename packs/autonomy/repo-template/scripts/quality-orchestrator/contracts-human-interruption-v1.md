@@ -36,16 +36,25 @@ then reread; it does not repeat the worker operation.
 
 Every attempt reserves signed resources before execution. FULL and FIX counters
 count valid independent FULL/FOCAL judgments after durable ingest; author fix
-proposals have a separate counter bounded at two. A reviewer turn explicitly reported failed with matching IDs, unchanged source
-and clean process termination yields a retained transport-failure acknowledgement.
-Only this v2 reviewer result permits a new durable attempt. Premature exit,
-timeout, ambiguous protocol, source mutation and author failures stay uncertain.
-Known completed malformed
-review output uses durable per-step retry counts and failure fingerprints. It
-cannot consume a judgment, reset the signed total resource limit or reuse a
-session as independent review. Retry exhaustion produces OPERATIONAL_BLOCKED,
-with evidence and counters retained. An uncertain effect retains its original
-key and pending intent; missing acknowledgement does not authorize redispatch.
+proposals have a separate counter bounded at two. A reviewer turn explicitly
+reported failed with matching IDs, unchanged source and clean process termination
+yields a retained acknowledgement. The additive SETTLED_REVIEW_FAILURE payload
+records a versioned bounded failure code, source/session binding and misalignment
+presence; raw messages and error details are not copied into that payload.
+Only explicit serverOverloaded or internalServerError with no misalignment
+qualify for the already signed tooling retry limits. Unknown failures, missing
+error classification, authentication/authorization errors, safety or policy
+refusals, budget/usage exhaustion and unsupported codes remain
+OPERATIONAL_DIAGNOSIS with no new reviewer attempt. Historical TOOL_FAILURE and
+REVIEW_TRANSPORT_REJECTED events retain their original replay meaning.
+
+Premature exit, timeout, ambiguous protocol, source mutation and author failures
+stay uncertain. Known completed malformed review output uses durable per-step
+retry counts and failure fingerprints. It cannot consume a judgment, reset the
+signed total resource limit or reuse a session as independent review. Retry
+exhaustion produces OPERATIONAL_BLOCKED, with evidence and counters retained.
+An uncertain effect retains its original key and pending intent; missing
+acknowledgement does not authorize redispatch.
 
 ## Remediation and decisions
 
@@ -54,8 +63,11 @@ paths. At description time it signs the original typed record semantic digest,
 before hashes and exact canonical source/golden/corpus outputs. Application
 recomputes that transformation, checks all other source bytes and current
 unexpired authority, then reserves an intent under journal custody before
-writing only those bytes. Both description and the intent transition require
-the current OPEN run. No boolean equivalence claim, new rule added later or
+writing only those bytes. Before spending or writes, description and application
+require the signed base HEAD, exact full path/mode inventory and unchanged
+non-output bytes. An unresolved correction owns its original proof; a different
+proof cannot write under that intent. Both description and the intent transition
+require the current OPEN run. No boolean equivalence claim, new rule added later or
 signature renewal authorizes a delta. A mechanically equivalent normative run
 can be replaced through the existing append-only replacement API, retaining
 objective authority and all counters.
@@ -74,7 +86,9 @@ all ten human-decision categories.
 
 `runRelease(handle, {authorizedExecutions, authorizedActions, maxSteps})` drives
 existing release APIs only. Supplied exact signed wires are matched to the next
-obligation, re-described and verified. Pending operations reconcile their
+obligation, including slice/gate ID, review evidence, deployment/readback and
+rollback identity, then re-described and verified. A valid later wire does not
+displace a valid wire for the exact current obligation. Pending operations reconcile their
 original keys. Missing/invalid inputs stop as OPERATIONAL_BLOCKED with
 OPERATIONAL_DIAGNOSIS; they never become execution authority. Exact later
 inputs may be supplied on a subsequent call without restarting the objective.
@@ -83,14 +97,15 @@ advance by this driver. It neither creates signatures nor publishes/deploys by
 itself. The local signed fixture reaches production evidence with nine distinct
 effects across supplied batches and repeats without additional effects.
 
-Ten Aurobalance-style cases use synthetic protocol subprocesses and local
-repositories; Aurobalance itself is not executed or modified. A03 first reports a synthetic adapter rejection of a credential-shaped
-infrastructure ID, cleanly terminates that reviewer attempt, then observes a
-valid independent attempt and deterministic ID replacement. No real credential
-detector is exercised; this test does not certify secret detection or permit
-sensitive judgment/evidence. Missing real authentication, containment and production
-observations remain explicit NOT_EXECUTED limitations. Historical blocked F09
-and P0 evidence is not recertified.
+The Aurobalance-style cases use synthetic protocol subprocesses and local
+repositories; Aurobalance itself is not executed or modified. A03 retains its
+original unqualified adapter-rejection payload involving a credential-shaped
+infrastructure ID. Its current expectation is OPERATIONAL_DIAGNOSIS and zero
+retry. The previous test and oracle bytes are preserved as historical inputs;
+a separate explicit transient-code fixture proves permitted retry. No real
+credential detector or refusal-bypass flow is exercised. Missing real
+authentication, containment and production observations remain explicit
+NOT_EXECUTED limitations. Historical blocked F09 and P0 evidence is not recertified.
 
 ## Retained observation publication
 
@@ -102,3 +117,8 @@ checks the current source and OPEN run, and publishes the retained result only
 if the original intent still owns that key. Another completed publication is
 reused. Persistent contention returns BLOCKED_BY_OWNERSHIP with the ack and
 pending intent preserved; only the existing owner may release its lock.
+
+A late acknowledgement for the original pending key can be published after an
+OPERATIONAL_BLOCKED checkpoint, including after controller reopen. Resume first
+revalidates authority, source and ownership, then publishes the retained result
+once without another effect or charge. Absent acknowledgement remains blocked.

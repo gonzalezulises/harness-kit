@@ -7,9 +7,9 @@ oracle:
   expected: Deterministic normalization preserves reviewer judgment and persisted canonical bytes equal both the ledger digest input and bytes ingested
 cases:
   positive:
-  - Ten mechanical and tooling fixture causes are AUTO_REMEDIABLE and exercise verified continuation
+  - Supported mechanical causes exercise verified continuation; the unqualified A03 settled failure remains OPERATIONAL_DIAGNOSIS with no retry
   negative:
-  - A semantic delta, invalid authority or uncertain effect never receives execution permission from a mechanical label
+  - A semantic delta, invalid authority, unknown failure, refusal or uncertain effect never receives execution permission from a mechanical label
   boundary:
   - An interruption before ingest rereads durable output; corrupt or absent bytes never receive a successful ingest receipt
 context: Synthetic harness-kit fixtures; product.v2 explicit opt-in; no Casabat, Aurobalance, merge, baseline acceptance or real deployment
@@ -31,4 +31,4 @@ tests:
 falsification:
   defect: Replacing both durable object reads with ephemeral reconstruction admits PRODUCT_REPLAYED after the normalized object was removed before ingest; the exact current A06 case observes ERR_ASSERTION and exit1 for that false admission
   proved_sha: dd8a20c1465b3ccd7e9a4d86ed6a11860146e7f7
-  receipt: docs/implementation/2026-09-06-human-interruption/evidence/publication-recovery/red-receipt.json
+  receipt: docs/implementation/2026-09-07-closure/f27-corrections/late-failure/current-oracle-red-receipt.json

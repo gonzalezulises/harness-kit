@@ -1,0 +1,19 @@
+✔ F27 M4 settled unknown remains diagnostic with original charged key and no automatic retry (20911.870714ms)
+✔ F27 M4 settled unauthorized remains diagnostic with original charged key and no automatic retry (20484.899919ms)
+✔ F27 M4 settled cyberPolicy remains diagnostic with original charged key and no automatic retry (20403.804805ms)
+✔ F27 M4 settled misalignmentPolicyViolation remains diagnostic with original charged key and no automatic retry (21292.634396ms)
+✔ F27 M4 settled sandboxError remains diagnostic with original charged key and no automatic retry (24380.030001ms)
+✔ F27 M4 settled sessionBudgetExceeded remains diagnostic with original charged key and no automatic retry (19758.823356ms)
+✔ F27 M4 settled usageLimitExceeded remains diagnostic with original charged key and no automatic retry (21816.00401ms)
+✔ F27 M4 settled rateLimitExceeded remains diagnostic with original charged key and no automatic retry (21552.261203ms)
+✔ F27 M4 settled other remains diagnostic with original charged key and no automatic retry (21832.414617ms)
+✔ F27 M4 explicit settled serverOverloaded uses only existing bounded retry authorization (21024.995236ms)
+✔ F27 M4 explicit settled internalServerError uses only existing bounded retry authorization (22423.27611ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 236297.847757

@@ -1,0 +1,59 @@
+--- first-correction-source/product.mjs
++++ final-product.mjs
+@@ -266,10 +266,25 @@
+   // already-published TOOL_FAILURE events below retain their original meaning.
+   return productReviewFailureV1Schema.parse(retained.version===1?retained:{version:1,code:'unknown',sourceDigest:retained.sourceDigest,sessionId:retained.sessionId,misalignment:false});
+  }
++ function recoverableReviewCheckpoint(state,s,ack){
++  if(s.stage!=='OPERATIONAL_BLOCKED'||s.interruption?.cause!=='UNCERTAIN_EFFECT_REQUIRES_ORIGINAL_OBSERVATION'||!['REVIEW','FOCAL'].includes(s.pending?.kind)||ack?.kind!==s.pending.kind||ack.binding!==s.pending.binding)return false;
++  const key=logicalKey(s.pending.key);let fingerprint;
++  if(ack.transportFailure){const failure=settledReviewFailure(s,ack);if(failure.misalignment||!['serverOverloaded','internalServerError'].includes(failure.code))return false;fingerprint=digestData({code:failure.code,logicalKey:key,source:s.manifestDigest});}
++  else if(ack.rawReview){try{normalized(s,ack);return false;}catch{fingerprint=digestData({cause:'INVALID_REVIEW_OUTPUT',logicalKey:key,source:s.manifestDigest});}}
++  else return false;
++  const input=s.wire.objective.input;
++  return (s.tooling.retries[key]||0)+1<=input.operations.toolingRetries&&(s.tooling.fingerprints[fingerprint]||0)+1<input.operations.noProgressLimit&&s.counters.starts<input.maxSteps&&state.budget.spent<state.budget.limit;
++ }
+  function transitionV2(state,s,p,ctx){
+   const o=s.wire.objective;
+   if(p.type==='NORMALIZED'){
+    must(s.pending?.key===p.key,'normalization has no owned attempt');const ack=journal.readAcknowledgement(ackDigest(s,p.key));must(ack?.rawReview&&sha256(ack.rawReview.output)===p.rawDigest&&digestData(normalized(s,ack))===p.digest,'normalized payload does not match observed judgment');s.normalized[p.key]={digest:p.digest,rawDigest:p.rawDigest};s.interruption=auto('INFRASTRUCTURE_NORMALIZATION',{digest:p.digest,rawDigest:p.rawDigest});
++  }
++  if(p.type==='REVIEW_CHECKPOINT_RECOVERY'){
++   const ack=journal.readAcknowledgement(ackDigest(s,p.key));must(s.pending?.key===p.key&&ack&&digestData(ack)===p.acknowledgementDigest&&recoverableReviewCheckpoint(state,s,ack),'checkpoint recovery lacks exact original evidence and retry authority');
++   // Keep the original intent pending. No effect, spend, judgment or historical
++   // failure is changed; its authoritative kind supplies the exact prior stage.
++   s.stage=s.pending.kind==='REVIEW'?'INDEPENDENT_REVIEW':'FOCAL';
+   }
+   if(p.type==='SETTLED_REVIEW_FAILURE'){
+    must(s.pending?.key===p.key,'settled failure has no original owned attempt');const ack=journal.readAcknowledgement(ackDigest(s,p.key));must(ack&&canonical(settledReviewFailure(s,ack))===canonical(p.failure),'settled failure differs from retained causal evidence');
+@@ -341,7 +356,10 @@
+     loaded(h);const s=read(item);fresh(item,s);if(s.steps.some(step=>step.key===key))return true;
+     must(s.pending?.key===key,'retained evidence has no current owned intent','INCOMPLETE');
+     const ack=journal.readAcknowledgement(ackDigest(s,key));must(ack,'retained evidence is absent; never repeat the effect','INCOMPLETE');
+-    if(v2)return completeV2(item,key,ack,append);
++    if(v2){
++     if(recoverableReviewCheckpoint(journal.read(item.ctx).state,s,ack))persist(item,{type:'REVIEW_CHECKPOINT_RECOVERY',version:1,key,acknowledgementDigest:digestData(ack)},append);
++     return completeV2(item,key,ack,append);
++    }
+     persist(item,{type:'OBSERVATION',key,result:ack},append);return true;
+    });}catch(error){if(error.journalStatus!=='BLOCKED_BY_OWNERSHIP'||attempt===2)throw error;await new Promise(resolve=>setTimeout(resolve,attempt===0?250:1000));}
+   }
+@@ -349,7 +367,7 @@
+  async function executeV2(h,key,extra){
+   must(extra===undefined,'candidate cannot replace nonce request');const item=loaded(h);recoverV2(item);let s=read(item);if(s.stage==='OPERATIONAL_BLOCKED'&&!s.pending)return projection(item);if(s.steps.some(p=>p.key===key))return projection(item);
+   const step=next(s);must(step.key===key,'operation key is not the next bounded step');
+-  if(step.resume){const ack=journal.readAcknowledgement(ackDigest(s,key));if(!ack){if(s.stage!=='OPERATIONAL_BLOCKED')persist(item,{type:'OPERATIONAL_BLOCK',cause:'UNCERTAIN_EFFECT_REQUIRES_ORIGINAL_OBSERVATION'});return projection(item);}if(await publishAcknowledged(h,key))return projection(item);s=read(item);return s.stage==='OPERATIONAL_BLOCKED'?projection(item):executeV2(h,next(s).key);}
++  if(step.resume){const ack=journal.readAcknowledgement(ackDigest(s,key));if(!ack){if(s.stage!=='OPERATIONAL_BLOCKED')persist(item,{type:'OPERATIONAL_BLOCK',cause:'UNCERTAIN_EFFECT_REQUIRES_ORIGINAL_OBSERVATION'});return projection(item);}await publishAcknowledged(h,key);return projection(item);}
+   if(s.counters.starts>=item.objective.input.maxSteps){persist(item,{type:'OPERATIONAL_BLOCK',cause:'SIGNED_OPERATIONAL_RESOURCES_EXHAUSTED'});return projection(item);}
+   const request={kind:step.kind,key,manifestDigest:s.manifestDigest},bind=binding(item,s,request);
+   if(step.kind==='PATCH'){
+--- first-correction-source/product.schema.mjs
++++ final-product.schema.mjs
+@@ -38,6 +38,7 @@
+  z.strictObject({type:z.literal('TOOL_FAILURE'),key:id,cause:id,fingerprint:productHash}),
+  z.strictObject({type:z.literal('OPERATIONAL_BLOCK'),cause:id}),
+  z.strictObject({type:z.literal('SETTLED_REVIEW_FAILURE'),version:z.literal(1),key:id,failure:productReviewFailureV1Schema}),
++ z.strictObject({type:z.literal('REVIEW_CHECKPOINT_RECOVERY'),version:z.literal(1),key:id,acknowledgementDigest:productHash}),
+  z.strictObject({type:z.literal('REBIND_RUN'),oldRunId:productHash,newRunId:productHash}),
+  z.strictObject({type:z.literal('REMEDIATION_INTENT'),proofIndex:z.number().int().nonnegative(),beforeManifestDigest:productHash}),
+  z.strictObject({type:z.literal('REMEDIATION_OBSERVATION'),proofIndex:z.number().int().nonnegative(),afterManifestDigest:productHash,approvalDigest:productHash})

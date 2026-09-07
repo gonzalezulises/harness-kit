@@ -1,0 +1,5 @@
+packs/autonomy/repo-template/scripts/quality-orchestrator/journal.mjs: exit 0
+packs/autonomy/repo-template/scripts/quality-orchestrator/execution.mjs: exit 0
+packs/autonomy/repo-template/scripts/quality-orchestrator/release.mjs: exit 0
+packs/autonomy/repo-template/scripts/quality-orchestrator/review.mjs: exit 0
+packs/autonomy/repo-template/scripts/quality-orchestrator/capabilities.mjs: exit 0

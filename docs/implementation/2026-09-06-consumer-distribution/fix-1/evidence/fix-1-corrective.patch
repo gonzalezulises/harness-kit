@@ -1,0 +1,1263 @@
+--- a/bin/harness-consumer.py
++++ b/bin/harness-consumer.py
+@@ -3,6 +3,7 @@
+ import argparse
+ import base64
+ import datetime
++import fcntl
+ import hashlib
+ import json
+ import os
+@@ -15,6 +16,7 @@
+ import tarfile
+ import tempfile
+ import time
++import urllib.parse
+ 
+ PROFILE = 'autonomy-runtime.v1'
+ CONFIG_SCHEMA = 'autonomy-config.v1'
+@@ -88,6 +90,16 @@
+         raise Failure(status, f'{path}: {error}')
+ 
+ 
++def load_regular_json(path, status):
++    try:
++        info = path.lstat()
++    except OSError as error:
++        raise Failure(status, f'{path}: {error}')
++    reject(stat.S_ISLNK(info.st_mode) or not stat.S_ISREG(info.st_mode) or info.st_nlink != 1,
++           'BUNDLE_PATH_UNSAFE', 'JSON input is not a private regular file: '+str(path))
++    return load_json(path, status)
++
++
+ def safe_relative(value):
+     if not isinstance(value, str) or not value or '\0' in value or '\\' in value:
+         return False
+@@ -95,9 +107,32 @@
+     return not pure.is_absolute() and all(part not in ('', '.', '..') for part in pure.parts)
+ 
+ 
++def portable_source_identity(value):
++    if not isinstance(value, str) or not value or any(char.isspace() for char in value):
++        return False
++    if re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._-]*/[A-Za-z0-9][A-Za-z0-9._-]*', value):
++        return True
++    parsed = urllib.parse.urlsplit(value)
++    return (parsed.scheme in {'https', 'ssh'} and bool(parsed.hostname) and
++            parsed.username is None and parsed.password is None and
++            not parsed.query and not parsed.fragment)
++
++
+ def git(root, *args, binary=False):
++    environment = os.environ.copy()
++    for key in list(environment):
++        if key in {'GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE', 'GIT_OBJECT_DIRECTORY',
++                   'GIT_ALTERNATE_OBJECT_DIRECTORIES'} or key.startswith('GIT_CONFIG_'):
++            environment.pop(key, None)
++    environment.update({'GIT_OPTIONAL_LOCKS': '0', 'GIT_CONFIG_NOSYSTEM': '1',
++                        'GIT_CONFIG_GLOBAL': os.devnull, 'GIT_TERMINAL_PROMPT': '0',
++                        'LC_ALL': 'C'})
+     try:
+-        result = subprocess.run(['git', *args], cwd=root, capture_output=True,
++        result = subprocess.run(['git', '--no-optional-locks',
++                                 '-c', 'core.fsmonitor=false',
++                                 '-c', 'core.untrackedCache=false',
++                                 '-c', 'core.preloadindex=false', *args],
++                                cwd=root, env=environment, capture_output=True,
+                                 text=not binary, timeout=30)
+     except (OSError, subprocess.TimeoutExpired) as error:
+         raise Failure('TOOL_FAILURE', str(error))
+@@ -196,6 +231,8 @@
+     source = pathlib.Path(args.source_repo).resolve()
+     reject(not source.is_dir(), 'SOURCE_GIT_ERROR', 'source repository is not a directory')
+     reject(not GIT_HASH.fullmatch(args.source_sha or ''), 'SOURCE_GIT_ERROR', 'exact source SHA required')
++    reject(not portable_source_identity(args.source_identity), 'SOURCE_GIT_ERROR',
++           'portable declared source identity required')
+     resolved = git(source, 'rev-parse', '--verify', args.source_sha+'^{commit}').strip()
+     reject(resolved != args.source_sha, 'SOURCE_GIT_ERROR', 'source SHA did not resolve exactly')
+     release = {'status': 'RELEASE_CANDIDATE', 'tag': None, 'published': False}
+@@ -223,7 +260,7 @@
+             mode, kind, _ = metadata.decode().split(' ')
+             name = raw_name.decode()
+             relative = name[len(RUNTIME_SOURCE)+1:]
+-            if kind != 'blob' or not (relative.endswith('.mjs') or relative.startswith('contracts-') and relative.endswith('.md') or relative in {'package.json', 'package-lock.json'} or relative.startswith('schemas/') and relative.endswith('.json')):
++            if kind != 'blob' or relative not in REQUIRED_RUNTIME:
+                 continue
+             selected.add(relative)
+             source_mode = int(mode[-3:], 8)
+@@ -273,7 +310,8 @@
+         first = git(source, 'rev-list', '--max-parents=0', args.source_sha).splitlines()[-1]
+         subject = {
+             'schemaVersion': MANIFEST_SCHEMA, 'profile': PROFILE,
+-            'source': {'repository': 'local-git:'+first, 'sha': args.source_sha,
++            'source': {'repository': args.source_identity, 'lineageRoot': first,
++                       'identityClaim': 'DECLARED_NOT_REMOTE_VERIFIED', 'sha': args.source_sha,
+                        'version': version, 'release': release},
+             'dependencies': dependencies,
+             'files': sorted(entries, key=lambda item: item['path']),
+@@ -304,10 +342,49 @@
+            'BUNDLE_DIGEST_MISMATCH', item['path'])
+ 
+ 
++def exact_object(value, keys, status, label):
++    reject(not isinstance(value, dict) or set(value) != set(keys), status,
++           f'{label} requires exactly: '+','.join(sorted(keys)))
++
++
+ def validate_manifest(manifest):
+-    reject(not isinstance(manifest, dict), 'BUNDLE_DIGEST_MISMATCH', 'manifest object required')
++    status = 'BUNDLE_SCHEMA_INVALID'
++    exact_object(manifest,
++                 {'schemaVersion', 'profile', 'source', 'dependencies', 'files', 'bundleDigest'},
++                 status, 'manifest')
+     reject(manifest.get('schemaVersion') != 1 or manifest.get('profile') != PROFILE,
+            'MIGRATION_REQUIRED', 'unsupported bundle schema/profile')
++    source = manifest['source']
++    exact_object(source,
++                 {'repository', 'lineageRoot', 'identityClaim', 'sha', 'version', 'release'},
++                 status, 'manifest source')
++    reject(not portable_source_identity(source['repository']) or
++           source['identityClaim'] != 'DECLARED_NOT_REMOTE_VERIFIED' or
++           not GIT_HASH.fullmatch(str(source['lineageRoot'])) or
++           not GIT_HASH.fullmatch(str(source['sha'])) or
++           not SEMVER.fullmatch(str(source['version'])), status, 'invalid manifest source')
++    release = source['release']
++    exact_object(release, {'status', 'tag', 'published'}, status, 'release')
++    reject(release['status'] not in {'RELEASE_CANDIDATE', 'TAGGED_SOURCE'} or
++           release['published'] is not False or
++           (release['status'] == 'RELEASE_CANDIDATE' and release['tag'] is not None) or
++           (release['status'] == 'TAGGED_SOURCE' and
++            (not isinstance(release['tag'], str) or not release['tag'])),
++           status, 'invalid nonpublished release declaration')
++    dependencies = manifest['dependencies']
++    reject(not isinstance(dependencies, list) or len(dependencies) != 2, status,
++           'exact yaml/zod dependency records required')
++    dependency_names = set()
++    for dependency in dependencies:
++        exact_object(dependency, {'package', 'version', 'integrity', 'archiveBytes'},
++                     status, 'dependency')
++        reject(dependency['package'] not in {'yaml', 'zod'} or
++               dependency['package'] in dependency_names or
++               not isinstance(dependency['version'], str) or
++               not re.fullmatch(r'sha512-[A-Za-z0-9+/]+={0,2}', str(dependency['integrity'])) or
++               type(dependency['archiveBytes']) is not int or dependency['archiveBytes'] <= 0,
++               status, 'invalid dependency record')
++        dependency_names.add(dependency['package'])
+     bundle_digest = manifest.get('bundleDigest')
+     reject(not isinstance(bundle_digest, str) or not HASH.fullmatch(bundle_digest),
+            'BUNDLE_DIGEST_MISMATCH', 'invalid bundle digest')
+@@ -315,29 +392,59 @@
+     subject.pop('bundleDigest', None)
+     reject(digest(subject) != bundle_digest, 'BUNDLE_DIGEST_MISMATCH', 'manifest subject changed')
+     files = manifest.get('files')
+-    reject(not isinstance(files, list) or not files, 'BUNDLE_DIGEST_MISMATCH', 'file inventory required')
++    reject(not isinstance(files, list) or not files, status, 'file inventory required')
+     names = set()
++    stable = {}
+     for item in files:
+         path = item.get('path') if isinstance(item, dict) else None
+         reject(not safe_relative(path) or path in names, 'BUNDLE_PATH_UNSAFE', str(path))
+         names.add(path)
+-        reject(item.get('target') not in {'generation', 'stable'} or not HASH.fullmatch(str(item.get('sha256', ''))) or type(item.get('mode')) is not int,
+-               'BUNDLE_DIGEST_MISMATCH', path)
++        target = item.get('target')
++        keys = {'path', 'target', 'sha256', 'mode', 'sourcePath', 'sourceMode'}
++        if target == 'stable':
++            keys.add('installPath')
++        exact_object(item, keys, status, 'manifest file')
++        reject(target not in {'generation', 'stable'} or
++               not HASH.fullmatch(str(item.get('sha256', ''))) or
++               item.get('mode') not in {0o444, 0o555} or
++               type(item.get('sourceMode')) is not int or not 0 <= item['sourceMode'] <= 0o777 or
++               not isinstance(item.get('sourcePath'), str), status, 'invalid file record')
+         if item['target'] == 'generation':
+             reject(not path.startswith('runtime/'), 'BUNDLE_PATH_UNSAFE', path)
++            relative = path.removeprefix('runtime/')
++            if relative.startswith('node_modules/'):
++                reject(not item['sourcePath'].startswith('npm:'), status,
++                       'dependency file lacks npm source')
++            else:
++                reject(relative not in REQUIRED_RUNTIME or
++                       item['sourcePath'] != RUNTIME_SOURCE+'/'+relative,
++                       status, 'generation file is outside production inventory')
+         else:
+-            reject(item.get('installPath') not in {value[0] for value in STABLE_SOURCES.values()},
+-                   'BUNDLE_PATH_UNSAFE', path)
++            install = item['installPath']
++            reject(install in stable, status, 'duplicate stable destination')
++            stable[install] = item
++            expected_source = next((name for name, value in STABLE_SOURCES.items()
++                                    if value[0] == install), None)
++            reject(expected_source is None or path != install or
++                   item['sourcePath'] != expected_source or
++                   item['mode'] != STABLE_SOURCES[expected_source][1],
++                   status, 'invalid stable inventory entry')
++    reject([item['path'] for item in files] != sorted(names), status,
++           'file inventory must be sorted')
+     required = {'runtime/'+name for name in REQUIRED_RUNTIME}
+     required |= {'runtime/node_modules/yaml/package.json', 'runtime/node_modules/zod/package.json'}
+     reject(not required <= names, 'MISSING_REQUIRED_BINDING', 'bundle lacks required runtime/dependency files')
++    reject(set(stable) != {value[0] for value in STABLE_SOURCES.values()},
++           'MISSING_REQUIRED_BINDING', 'bundle lacks the complete stable entrypoint inventory')
+     return manifest
+ 
+ 
+ def validate_bundle(directory):
+-    root = pathlib.Path(directory).resolve()
+-    reject(not root.is_dir() or root.is_symlink(), 'BUNDLE_DIGEST_MISMATCH', 'bundle directory missing')
+-    manifest = validate_manifest(load_json(root/'manifest.json', 'BUNDLE_DIGEST_MISMATCH'))
++    requested = pathlib.Path(os.path.abspath(directory))
++    reject(not requested.is_dir() or requested.is_symlink() or requested.resolve() != requested,
++           'BUNDLE_PATH_UNSAFE', 'bundle and its ancestors must be plain directories')
++    root = requested
++    manifest = validate_manifest(load_regular_json(root/'manifest.json', 'BUNDLE_DIGEST_MISMATCH'))
+     payload = root/'payload'
+     reject(not payload.is_dir() or payload.is_symlink(), 'BUNDLE_PATH_UNSAFE', 'payload missing')
+     expected = set()
+@@ -356,14 +463,30 @@
+ 
+ 
+ def target_git(target):
+-    root = pathlib.Path(target).resolve()
+-    reject(not root.is_dir() or root.is_symlink(), 'UNSUITABLE_WORKTREE', 'target must be a plain directory')
++    requested = pathlib.Path(os.path.abspath(target))
++    reject(not requested.is_dir() or requested.is_symlink() or requested.resolve() != requested,
++           'UNSUITABLE_WORKTREE', 'target and its ancestors must be plain directories')
++    root = requested
+     top = pathlib.Path(git(root, 'rev-parse', '--show-toplevel').strip()).resolve()
+     reject(top != root, 'UNSUITABLE_WORKTREE', 'target must be the Git worktree root')
+     git_dir = pathlib.Path(git(root, 'rev-parse', '--absolute-git-dir').strip()).resolve()
+     head = git(root, 'rev-parse', 'HEAD').strip()
+     reject(not GIT_HASH.fullmatch(head), 'UNSUITABLE_WORKTREE', 'target HEAD unavailable')
+     return root, git_dir, head
++
++
++def validate_managed_ancestors(root):
++    candidates = [root/'.harness', distribution(root)]
++    candidates += [distribution(root)/name for name in
++                   ['generations', 'manifests', 'transactions', 'receipts', 'failures']]
++    for path in candidates:
++        if not os.path.lexists(path):
++            continue
++        info = path.lstat()
++        reject(stat.S_ISLNK(info.st_mode) or not stat.S_ISDIR(info.st_mode),
++               'BUNDLE_PATH_UNSAFE', 'managed ancestor is not a plain directory: '+str(path))
++        reject(path.resolve() != path, 'BUNDLE_PATH_UNSAFE',
++               'managed ancestor escapes target: '+str(path))
+ 
+ 
+ def preserved_path(name):
+@@ -406,13 +529,25 @@
+ 
+ def load_active(root, required=False):
+     file = distribution(root)/'active.json'
+-    if not file.exists():
++    if not os.path.lexists(file):
+         if required:
+             raise Failure('NOT_INSTALLED', 'no active autonomy runtime generation')
+         return None
+-    active = load_json(file, 'MANAGED_FILE_DRIFT')
++    active = load_regular_json(file, 'DESCRIPTOR_SCHEMA_INVALID')
++    exact_object(active, {'schemaVersion', 'profile', 'bundleDigest', 'sourceSha',
++                          'planDigest', 'generation', 'adoptionStatus', 'adoptionDate',
++                          'receipt', 'installationDigest'},
++                 'DESCRIPTOR_SCHEMA_INVALID', 'active descriptor')
+     reject(active.get('schemaVersion') != 1 or active.get('profile') != PROFILE,
+            'MIGRATION_REQUIRED', 'active descriptor schema/profile unsupported')
++    reject(not HASH.fullmatch(str(active.get('bundleDigest'))) or
++           not GIT_HASH.fullmatch(str(active.get('sourceSha'))) or
++           not HASH.fullmatch(str(active.get('planDigest'))) or
++           active.get('generation') != 'generations/'+str(active.get('bundleDigest')) or
++           active.get('adoptionStatus') != 'NOT_ADOPTED' or
++           active.get('adoptionDate') is not None or
++           active.get('receipt') != 'receipts/'+str(active.get('planDigest'))+'.json',
++           'DESCRIPTOR_SCHEMA_INVALID', 'invalid active descriptor fields')
+     subject = dict(active); installed = subject.pop('installationDigest', None)
+     reject(not HASH.fullmatch(str(installed or '')) or digest(subject) != installed,
+            'MANAGED_FILE_DRIFT', 'active descriptor digest differs')
+@@ -420,7 +555,22 @@
+ 
+ 
+ def stored_manifest(root, bundle_digest):
+-    return validate_manifest(load_json(distribution(root)/'manifests'/(bundle_digest+'.json'), 'MANAGED_FILE_DRIFT'))
++    return validate_manifest(load_regular_json(
++        distribution(root)/'manifests'/(bundle_digest+'.json'), 'MANAGED_FILE_DRIFT'))
++
++
++def tracked_checkout_mode(root, file, expected_mode):
++    actual_mode = stat.S_IMODE(file.lstat().st_mode)
++    if actual_mode == expected_mode:
++        return True
++    if actual_mode != expected_mode | 0o200:
++        return False
++    relative = file.relative_to(root).as_posix()
++    record = git(root, 'ls-files', '--stage', '--', relative).strip()
++    if not record or '\n' in record:
++        return False
++    mode, _, stage_and_path = record.split(' ', 2)
++    return stage_and_path.startswith('0\t') and mode == ('100755' if expected_mode & 0o111 else '100644')
+ 
+ 
+ def verify_generation(root, manifest):
+@@ -435,10 +585,18 @@
+             info = file.lstat()
+         except OSError as error:
+             raise Failure('MANAGED_FILE_DRIFT', str(error))
+-        reject(stat.S_ISLNK(info.st_mode) or not stat.S_ISREG(info.st_mode) or info.st_nlink != 1 or stat.S_IMODE(info.st_mode) != item['mode'] or file_hash(file) != item['sha256'],
++        reject(stat.S_ISLNK(info.st_mode) or not stat.S_ISREG(info.st_mode) or
++               info.st_nlink != 1 or not tracked_checkout_mode(root, file, item['mode']) or
++               file_hash(file) != item['sha256'],
+                'MANAGED_FILE_DRIFT', item['path'])
+         expected.add(item['path'])
+-    actual = {file.relative_to(base).as_posix() for file in base.rglob('*') if file.is_file()}
++    actual = set()
++    for file in base.rglob('*'):
++        info = file.lstat()
++        reject(stat.S_ISLNK(info.st_mode) or not (stat.S_ISDIR(info.st_mode) or
++               stat.S_ISREG(info.st_mode)), 'MANAGED_FILE_DRIFT', str(file))
++        if stat.S_ISREG(info.st_mode):
++            actual.add(file.relative_to(base).as_posix())
+     reject(actual != expected, 'MANAGED_FILE_DRIFT', 'generation inventory differs')
+ 
+ 
+@@ -453,7 +611,9 @@
+                 info = file.lstat()
+             except OSError as error:
+                 raise Failure('MANAGED_FILE_DRIFT', str(error))
+-            reject(stat.S_ISLNK(info.st_mode) or not stat.S_ISREG(info.st_mode) or info.st_nlink != 1 or stat.S_IMODE(info.st_mode) != item['mode'] or file_hash(file) != item['sha256'],
++            reject(stat.S_ISLNK(info.st_mode) or not stat.S_ISREG(info.st_mode) or
++                   info.st_nlink != 1 or not tracked_checkout_mode(root, file, item['mode']) or
++                   file_hash(file) != item['sha256'],
+                    'MANAGED_FILE_DRIFT', item['installPath'])
+     return active, manifest
+ 
+@@ -475,6 +635,7 @@
+ def create_plan(args, kind):
+     bindings(args)
+     root, _, head = target_git(args.target)
++    validate_managed_ancestors(root)
+     suitable(root)
+     current = load_active(root)
+     before_manifest = None
+@@ -523,16 +684,73 @@
+     return {**subject, 'planDigest': digest(subject)}
+ 
+ 
++PLAN_FIELDS = {
++    'schemaVersion', 'kind', 'profile', 'configSchema', 'stateSchema', 'targetRoot',
++    'targetHead', 'beforeBundleDigest', 'bundleDigest', 'sourceSha', 'installedVersion',
++    'targetVersion', 'preserved', 'create', 'change', 'managedDrift', 'migrations',
++    'incompatibilities', 'allowedWrites', 'availableRollback', 'planDigest',
++}
++
++
++def validate_plan(plan):
++    status = 'PLAN_SCHEMA_INVALID'
++    exact_object(plan, PLAN_FIELDS, status, 'plan')
++    reject(plan['schemaVersion'] != 1 or plan['kind'] not in {'install', 'upgrade', 'rollback'} or
++           plan['profile'] != PROFILE or plan['configSchema'] != CONFIG_SCHEMA or
++           plan['stateSchema'] != STATE_SCHEMA or not isinstance(plan['targetRoot'], str) or
++           not pathlib.Path(plan['targetRoot']).is_absolute() or
++           not GIT_HASH.fullmatch(str(plan['targetHead'])) or
++           (plan['beforeBundleDigest'] is not None and
++            not HASH.fullmatch(str(plan['beforeBundleDigest']))) or
++           not HASH.fullmatch(str(plan['bundleDigest'])) or
++           not GIT_HASH.fullmatch(str(plan['sourceSha'])) or
++           (plan['installedVersion'] is not None and
++            not SEMVER.fullmatch(str(plan['installedVersion']))) or
++           not SEMVER.fullmatch(str(plan['targetVersion'])), status, 'invalid plan binding')
++    preserved = plan['preserved']
++    reject(not isinstance(preserved, dict) or any(not safe_relative(path) or
++           not HASH.fullmatch(str(value)) for path, value in preserved.items()),
++           status, 'invalid preserved inventory')
++    for name in ['create', 'change', 'managedDrift', 'migrations', 'incompatibilities',
++                 'allowedWrites', 'availableRollback']:
++        value = plan[name]
++        reject(not isinstance(value, list) or any(not isinstance(item, str) for item in value) or
++               len(value) != len(set(value)), status, 'invalid plan list: '+name)
++    expected_create_prefix = '.harness/distribution/generations/'+plan['bundleDigest']+'/'
++    reject(any(not item.startswith(expected_create_prefix) or
++               not safe_relative(item) for item in plan['create']) or
++           plan['change'] != ['.harness/distribution/active.json'] or
++           plan['managedDrift'] or plan['migrations'] or plan['incompatibilities'] or
++           plan['allowedWrites'] != ['.git/harness-consumer.lock', '.harness/distribution/'] or
++           any(not HASH.fullmatch(item) for item in plan['availableRollback']),
++           status, 'invalid plan operations')
++    supplied = plan['planDigest']
++    subject = dict(plan); subject.pop('planDigest')
++    reject(not HASH.fullmatch(str(supplied)) or digest(subject) != supplied,
++           'PLAN_DIGEST_MISMATCH', 'plan bytes or digest changed')
++    return plan
++
++
+ def acquire_lock(git_dir):
+     file = git_dir/'harness-consumer.lock'
+     try:
+-        descriptor = os.open(file, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+-    except FileExistsError:
++        descriptor = os.open(file, os.O_RDWR | os.O_CREAT, 0o600)
++    except OSError as error:
++        raise Failure('TOOL_FAILURE', str(error))
++    try:
++        fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
++    except BlockingIOError:
++        os.close(descriptor)
+         raise Failure('CONCURRENT_APPLY', 'another consumer transaction owns the lock')
++    os.ftruncate(descriptor, 0)
+     os.write(descriptor, (str(os.getpid())+'\n').encode())
+     os.fsync(descriptor)
++    return file, descriptor
++
++
++def release_lock(descriptor):
++    fcntl.flock(descriptor, fcntl.LOCK_UN)
+     os.close(descriptor)
+-    return file
+ 
+ 
+ def copy_generation(bundle_root, manifest, staging):
+@@ -558,7 +776,7 @@
+             continue
+         destination = dist/item['installPath']
+         source = bundle_root/'payload'/item['path']
+-        if destination.exists():
++        if os.path.lexists(destination):
+             try:
+                 info = destination.lstat()
+             except OSError as error:
+@@ -571,85 +789,195 @@
+ 
+ def read_plan(args, expected_kind):
+     reject(not args.approve_plan, 'MISSING_PLAN_APPROVAL', 'exact --approve-plan digest required')
+-    plan = load_json(pathlib.Path(args.plan).resolve(), 'PLAN_DIGEST_MISMATCH')
+-    supplied = plan.get('planDigest')
+-    subject = dict(plan); subject.pop('planDigest', None)
+-    reject(not HASH.fullmatch(str(supplied or '')) or digest(subject) != supplied,
+-           'PLAN_DIGEST_MISMATCH', 'plan bytes or digest changed')
++    plan_path = pathlib.Path(os.path.abspath(args.plan))
++    reject(plan_path.resolve() != plan_path, 'BUNDLE_PATH_UNSAFE',
++           'plan path and ancestors must be plain')
++    plan = validate_plan(load_regular_json(plan_path, 'PLAN_SCHEMA_INVALID'))
++    supplied = plan['planDigest']
+     reject(args.approve_plan != supplied, 'PLAN_APPROVAL_MISMATCH', 'approval does not match exact plan')
+     reject(plan.get('kind') != expected_kind, 'PLAN_BINDING_CHANGED', 'plan kind differs from command')
+     return plan
+ 
+ 
++def plan_before_manifest(root, plan):
++    if plan['beforeBundleDigest'] is None:
++        return None
++    manifest = stored_manifest(root, plan['beforeBundleDigest'])
++    verify_generation(root, manifest)
++    return manifest
++
++
++def validate_plan_live(root, head, plan, manifest, before_manifest, check_available):
++    expected_create = [f'.harness/distribution/generations/{plan["bundleDigest"]}/{item["path"]}'
++                       for item in manifest['files'] if item['target'] == 'generation']
++    reject(plan['targetRoot'] != str(root) or plan['targetHead'] != head or
++           plan['preserved'] != preserved_snapshot(root) or
++           plan['bundleDigest'] != manifest['bundleDigest'] or
++           plan['sourceSha'] != manifest['source']['sha'] or
++           plan['targetVersion'] != manifest['source']['version'] or
++           plan['installedVersion'] != (before_manifest['source']['version']
++                                        if before_manifest else None) or
++           plan['create'] != expected_create,
++           'PLAN_BINDING_CHANGED', 'approved plan differs from live target or bundle')
++    if check_available:
++        manifests = distribution(root)/'manifests'
++        available = []
++        if manifests.is_dir():
++            available = sorted(path.stem for path in manifests.glob('*.json')
++                               if HASH.fullmatch(path.stem) and
++                               path.stem != plan['beforeBundleDigest'])
++        reject(plan['availableRollback'] != available, 'PLAN_BINDING_CHANGED',
++               'available rollback inventory changed after plan')
++    if plan['kind'] == 'install':
++        reject(plan['beforeBundleDigest'] is not None, 'PLAN_BINDING_CHANGED',
++               'install plan has an existing generation')
++    else:
++        reject(before_manifest is None, 'PLAN_BINDING_CHANGED',
++               'upgrade/rollback plan lacks prior generation')
++        reject(version_major(before_manifest['source']['version']) !=
++               version_major(manifest['source']['version']),
++               'MIGRATION_REQUIRED', 'major runtime migration is unsupported')
++        if plan['kind'] == 'upgrade':
++            old_bootstrap = next(item for item in before_manifest['files']
++                                 if item.get('installPath') == 'bootstrap.mjs')
++            new_bootstrap = next(item for item in manifest['files']
++                                 if item.get('installPath') == 'bootstrap.mjs')
++            reject(old_bootstrap['sha256'] != new_bootstrap['sha256'],
++                   'MIGRATION_REQUIRED', 'bootstrap migration unsupported')
++
++
++def validate_transaction(value, plan_digest):
++    keys = {'schemaVersion', 'planDigest', 'stage', 'bundleDigest', 'priorActive'}
++    if isinstance(value, dict) and value.get('stage') == 'ACTIVATED':
++        keys.add('installationDigest')
++    exact_object(value, keys, 'INCOMPLETE', 'transaction')
++    reject(value['schemaVersion'] != 1 or value['planDigest'] != plan_digest or
++           value['stage'] not in {'PREPARED', 'ACTIVATED'} or
++           not HASH.fullmatch(str(value['bundleDigest'])),
++           'INCOMPLETE', 'transaction cannot be reconciled')
++    reject(value['priorActive'] is not None and not isinstance(value['priorActive'], dict),
++           'INCOMPLETE', 'transaction prior selector is invalid')
++    if value['stage'] == 'ACTIVATED':
++        reject(not HASH.fullmatch(str(value['installationDigest'])), 'INCOMPLETE',
++               'activated transaction digest is invalid')
++    return value
++
++
++def validate_receipt(receipt, plan, active):
++    required = {'schemaVersion', 'status', 'profile', 'bundleDigest', 'sourceSha',
++                'planDigest', 'installationDigest', 'adoptionStatus', 'adoptionDate',
++                'observedAt', 'preserved', 'receipt'}
++    exact_object(receipt, required, 'MANAGED_FILE_DRIFT', 'receipt')
++    reject(receipt['schemaVersion'] != 1 or receipt['status'] != 'INSTALLED_NOT_ADOPTED' or
++           receipt['profile'] != PROFILE or receipt['bundleDigest'] != plan['bundleDigest'] or
++           receipt['sourceSha'] != plan['sourceSha'] or
++           receipt['planDigest'] != plan['planDigest'] or
++           receipt['installationDigest'] != active['installationDigest'] or
++           receipt['adoptionStatus'] != 'NOT_ADOPTED' or receipt['adoptionDate'] is not None or
++           receipt['preserved'] != sorted(plan['preserved']) or
++           receipt['receipt'] != active['receipt'],
++           'MANAGED_FILE_DRIFT', 'receipt differs from approved installation')
++    return receipt
++
++
+ def execute(args, kind):
+     plan = read_plan(args, kind)
+-    root, git_dir, head = target_git(args.target)
+-    lock = acquire_lock(git_dir)
++    root, git_dir, _ = target_git(args.target)
++    _, lock_descriptor = acquire_lock(git_dir)
+     try:
+         hold = float(os.environ.get('HARNESS_CONSUMER_HOLD_LOCK', '0'))
+         if hold > 0:
+-            time.sleep(min(hold, 2))
++            time.sleep(min(hold, 10))
++        root, locked_git_dir, head = target_git(args.target)
++        reject(locked_git_dir != git_dir, 'PLAN_BINDING_CHANGED',
++               'target Git directory changed while acquiring lock')
++        validate_managed_ancestors(root)
+         suitable(root)
+         if kind in {'install', 'upgrade'}:
+             bundle_root, manifest = validate_bundle(args.bundle)
+-            reject(manifest['bundleDigest'] != plan['bundleDigest'] or manifest['source']['sha'] != plan['sourceSha'],
+-                   'PLAN_BINDING_CHANGED', 'bundle/source differs from approved plan')
+         else:
+             bundle_root = None
+             manifest = stored_manifest(root, plan['bundleDigest'])
+             verify_generation(root, manifest)
+         active = load_active(root)
++        if active:
++            active, _ = verify_current(root)
++        before_manifest = plan_before_manifest(root, plan)
++        dist = distribution(root)
+         receipt_file = distribution(root)/'receipts'/(plan['planDigest']+'.json')
+-        if active and active['bundleDigest'] == plan['bundleDigest'] and receipt_file.is_file():
+-            receipt = load_json(receipt_file, 'MANAGED_FILE_DRIFT')
++        transaction_file = dist/'transactions'/(plan['planDigest']+'.json')
++        transaction = (validate_transaction(load_regular_json(transaction_file, 'INCOMPLETE'),
++                                            plan['planDigest'])
++                       if os.path.lexists(transaction_file) else None)
++        validate_plan_live(root, head, plan, manifest, before_manifest,
++                           check_available=transaction is None)
++        completed = bool(active and active['bundleDigest'] == plan['bundleDigest'] and
++                         active['planDigest'] == plan['planDigest'] and
++                         os.path.lexists(receipt_file))
++        pending = bool(active and active['bundleDigest'] == plan['bundleDigest'] and
++                       active['planDigest'] == plan['planDigest'] and
++                       not os.path.lexists(receipt_file) and
++                       transaction and transaction['stage'] == 'PREPARED' and
++                       transaction['bundleDigest'] == plan['bundleDigest'])
++        if completed:
++            receipt = validate_receipt(load_regular_json(receipt_file, 'MANAGED_FILE_DRIFT'),
++                                       plan, active)
+             return {**receipt, 'status': 'IDEMPOTENT'}
+-        reject(head != plan['targetHead'], 'PLAN_BINDING_CHANGED', 'target HEAD changed after plan')
+-        reject(preserved_snapshot(root) != plan['preserved'], 'PLAN_BINDING_CHANGED', 'preserved config/state changed after plan')
+-        reject((active or {}).get('bundleDigest') != plan['beforeBundleDigest'],
+-               'PLAN_BINDING_CHANGED', 'active generation changed after plan')
+-
+-        dist = distribution(root)
++        if not pending:
++            reject((active or {}).get('bundleDigest') != plan['beforeBundleDigest'],
++                   'PLAN_BINDING_CHANGED', 'active generation changed after plan')
++
+         for name in ['generations', 'manifests', 'transactions', 'receipts', 'failures']:
+             (dist/name).mkdir(parents=True, exist_ok=True)
+-        transaction_file = dist/'transactions'/(plan['planDigest']+'.json')
+-        transaction = load_json(transaction_file, 'INCOMPLETE') if transaction_file.exists() else {'schemaVersion': 1, 'planDigest': plan['planDigest'], 'stage': 'AUTHORIZED'}
+-        reject(transaction.get('planDigest') != plan['planDigest'] or transaction.get('stage') not in {'AUTHORIZED', 'PREPARED'},
+-               'INCOMPLETE', 'transaction cannot be resumed consistently')
+-        prior_bytes = (dist/'active.json').read_bytes() if (dist/'active.json').exists() else None
+-        if kind in {'install', 'upgrade'}:
++        validate_managed_ancestors(root)
++        prior_bytes = ((canonical(transaction['priorActive'])+'\n').encode()
++                       if pending and transaction['priorActive'] is not None else
++                       ((dist/'active.json').read_bytes()
++                        if not pending and os.path.lexists(dist/'active.json') else None))
++        if not pending and kind in {'install', 'upgrade'}:
+             install_stable(root, bundle_root, manifest)
+             staging = dist/('.staging-'+plan['bundleDigest'])
+             generation = dist/'generations'/plan['bundleDigest']
+-            if not generation.exists():
+-                if transaction['stage'] != 'PREPARED' or not staging.exists():
++            if not os.path.lexists(generation):
++                if (not transaction or transaction['stage'] != 'PREPARED' or
++                        not os.path.lexists(staging)):
+                     copy_generation(bundle_root, manifest, staging)
+                 verify_generation_at(staging, manifest)
+             manifest_file = dist/'manifests'/(plan['bundleDigest']+'.json')
+-            if manifest_file.exists():
+-                reject(load_json(manifest_file, 'MANAGED_FILE_DRIFT') != manifest,
++            if os.path.lexists(manifest_file):
++                reject(load_regular_json(manifest_file, 'MANAGED_FILE_DRIFT') != manifest,
+                        'MANAGED_FILE_DRIFT', 'stored manifest differs')
+             else:
+                 atomic_json(manifest_file, manifest, 0o444)
+-            transaction = {**transaction, 'stage': 'PREPARED', 'bundleDigest': plan['bundleDigest']}
+-            atomic_json(transaction_file, transaction)
+-            if os.environ.get('HARNESS_CONSUMER_INTERRUPT_AFTER_PREPARE') == '1':
+-                raise Failure('INTERRUPTED_RESUMABLE', 'prepared transaction can resume with the same approved plan', 75)
+-            if not generation.exists():
++            if not os.path.lexists(generation):
+                 os.replace(staging, generation)
+                 os.chmod(generation, 0o555)
+                 sync_dir(generation.parent)
+             verify_generation(root, manifest)
+ 
+-        descriptor = {
+-            'schemaVersion': 1, 'profile': PROFILE,
+-            'bundleDigest': plan['bundleDigest'], 'sourceSha': plan['sourceSha'],
+-            'planDigest': plan['planDigest'],
+-            'generation': 'generations/'+plan['bundleDigest'],
+-            'adoptionStatus': 'NOT_ADOPTED', 'adoptionDate': None,
+-            'receipt': 'receipts/'+plan['planDigest']+'.json',
+-        }
+-        descriptor['installationDigest'] = digest(descriptor)
+-        atomic_json(dist/'active.json', descriptor)
++        if not pending:
++            transaction = {'schemaVersion': 1, 'planDigest': plan['planDigest'],
++                           'stage': 'PREPARED', 'bundleDigest': plan['bundleDigest'],
++                           'priorActive': active}
++            atomic_json(transaction_file, transaction)
++            if os.environ.get('HARNESS_CONSUMER_INTERRUPT_AFTER_PREPARE') == '1':
++                raise Failure('INTERRUPTED_RESUMABLE',
++                              'prepared transaction can resume with the same approved plan', 75)
++            descriptor = {
++                'schemaVersion': 1, 'profile': PROFILE,
++                'bundleDigest': plan['bundleDigest'], 'sourceSha': plan['sourceSha'],
++                'planDigest': plan['planDigest'],
++                'generation': 'generations/'+plan['bundleDigest'],
++                'adoptionStatus': 'NOT_ADOPTED', 'adoptionDate': None,
++                'receipt': 'receipts/'+plan['planDigest']+'.json',
++            }
++            descriptor['installationDigest'] = digest(descriptor)
++            atomic_json(dist/'active.json', descriptor)
++            hold_after = float(os.environ.get('HARNESS_CONSUMER_HOLD_AFTER_SELECTOR', '0'))
++            if hold_after > 0:
++                time.sleep(min(hold_after, 10))
++        else:
++            descriptor = active
+         try:
+             verify_current(root)
+             if os.environ.get('HARNESS_CONSUMER_FAIL_POSTVERIFY') == '1':
+@@ -677,7 +1005,7 @@
+                                        'installationDigest': descriptor['installationDigest']})
+         return receipt
+     finally:
+-        lock.unlink(missing_ok=True)
++        release_lock(lock_descriptor)
+ 
+ 
+ def verify_generation_at(base, manifest):
+@@ -723,6 +1051,7 @@
+     commands = value.add_subparsers(dest='command', required=True)
+     bundle = commands.add_parser('bundle', help='build a reproducible offline bundle from an exact Git SHA')
+     bundle.add_argument('--source-repo', required=True); bundle.add_argument('--source-sha', required=True)
++    bundle.add_argument('--source-identity', required=True)
+     bundle.add_argument('--source-tag'); bundle.add_argument('--package-archives', required=True)
+     bundle.add_argument('--output', required=True); bundle.add_argument('--profile', required=True, choices=[PROFILE])
+     inv = commands.add_parser('inventory', help='list every bundle file and dependency hash')
+--- a/tests/consumer-distribution.test.py
++++ b/tests/consumer-distribution.test.py
+@@ -24,6 +24,7 @@
+     '.harness/receipts/old.json',
+     'feature_list.json', 'PROGRESS.md', 'DECISIONS.md',
+ ]
++SOURCE_IDENTITY = 'gonzalezulises/harness-kit'
+ 
+ 
+ def run(argv, cwd=None, env=None):
+@@ -72,6 +73,9 @@
+         destination = source/name
+         destination.parent.mkdir(parents=True, exist_ok=True)
+         shutil.copy2(KIT/name, destination)
++    source_test = source/(RUNTIME.relative_to(KIT))/'tests/not-production.mjs'
++    source_test.parent.mkdir(parents=True, exist_ok=True)
++    source_test.write_text("throw new Error('production bundle executed a test fixture');\n")
+     (source/'VERSION').write_text('0.1.0\n')
+     git(source, 'init', '-q', '-b', 'main')
+     git(source, 'config', 'user.email', 'fixture@example.test')
+@@ -108,7 +112,8 @@
+     for index, sha in enumerate([first, second, third], 1):
+         bundle = root/f'bundle-{index}'
+         result = run([sys.executable, str(CLI), 'bundle', '--source-repo', str(source),
+-                      '--source-sha', sha, '--package-archives', str(metadata),
++                      '--source-sha', sha, '--source-identity', SOURCE_IDENTITY,
++                      '--package-archives', str(metadata),
+                       '--output', str(bundle), '--profile', 'autonomy-runtime.v1'])
+         if result.returncode:
+             raise AssertionError(result.stdout+result.stderr)
+@@ -193,9 +198,10 @@
+         self.temp.cleanup()
+ 
+     def assertStatus(self, result, status):
+-        self.assertNotEqual(result.returncode, 0, result.stdout+result.stderr)
++        diagnostic = (result.stdout+result.stderr)[:1000]
++        self.assertNotEqual(result.returncode, 0, diagnostic)
+         self.assertEqual(json.loads(result.stderr)['status'], status,
+-                         result.stdout+result.stderr)
++                         diagnostic)
+ 
+     def bundle(self, number=0):
+         return artifacts()[4][number]
+@@ -216,7 +222,9 @@
+             self.assertIn(command, result.stdout)
+         schema = json.loads(SCHEMA.read_text())
+         self.assertEqual(schema['$id'], 'harness.consumer-installation.v1')
+-        self.assertEqual(schema['properties']['profile']['const'], 'autonomy-runtime.v1')
++        self.assertEqual(schema['$defs']['descriptor']['properties']['profile']['const'],
++                         'autonomy-runtime.v1')
++        self.assertEqual(set(schema['$defs']) >= {'manifest', 'plan', 'descriptor'}, True)
+ 
+     def test_clean_install_plan_is_read_only_and_repeat_is_idempotent(self):
+         target = consumer(self.root)
+@@ -232,6 +240,69 @@
+         self.assertEqual(json.loads((target/'.harness/distribution/active.json').read_text())['bundleDigest'], value['bundleDigest'])
+         repeat = apply('apply', target, bundle, value, path)
+         self.assertEqual(json.loads(repeat.stdout)['status'], 'IDEMPOTENT')
++
++    def test_plan_is_bound_to_exact_target_root(self):
++        origin = consumer(self.root/'origin')
++        other = self.root/'other'
++        git(self.root, 'clone', '-q', str(origin), str(other))
++        bundle, _ = self.bundle()
++        value, path = make_plan(self.root, 'plan', origin, bundle)
++        rejected = apply('apply', other, bundle, value, path)
++        self.assertStatus(rejected, 'PLAN_BINDING_CHANGED')
++        self.assertFalse((other/'.harness/distribution/active.json').exists())
++
++    def test_live_drift_blocks_idempotent_apply_and_approved_upgrade(self):
++        origin = consumer(self.root/'origin')
++        bundle, _ = self.bundle()
++        value, path = make_plan(self.root, 'plan', origin, bundle)
++        installed_path = self.root/'installed-plan.json'
++        installed_path.write_bytes(path.read_bytes())
++        self.assertEqual(apply('apply', origin, bundle, value, installed_path).returncode, 0)
++        next_bundle, _ = self.bundle(1)
++        upgrade, upgrade_path = make_plan(self.root, 'upgrade-plan', origin, next_bundle)
++        managed = origin/'.harness/distribution/generations'/value['bundleDigest']/'runtime/index.mjs'
++        managed.chmod(0o644); managed.write_bytes(managed.read_bytes()+b'\n// late drift\n')
++        self.assertStatus(apply('apply', origin, bundle, value, installed_path),
++                          'MANAGED_FILE_DRIFT')
++        self.assertStatus(apply('upgrade', origin, next_bundle, upgrade, upgrade_path),
++                          'MANAGED_FILE_DRIFT')
++        active = json.loads((origin/'.harness/distribution/active.json').read_text())
++        self.assertEqual(active['bundleDigest'], value['bundleDigest'])
++
++    def test_consumer_managed_ancestors_cannot_escape_through_symlinks(self):
++        target = consumer(self.root/'target')
++        outside = self.root/'outside'; outside.mkdir()
++        (target/'.harness/distribution').symlink_to(outside, target_is_directory=True)
++        bundle, _ = self.bundle()
++        rejected = run(plan_args('plan', target, bundle))
++        self.assertStatus(rejected, 'BUNDLE_PATH_UNSAFE')
++        self.assertEqual(list(outside.iterdir()), [])
++
++    def test_consumer_managed_descriptor_rejects_symlink_and_hardlink_leaves(self):
++        for kind in ['symlink', 'hardlink']:
++            with self.subTest(kind=kind):
++                target = consumer(self.root/kind)
++                self.install(target)
++                active = target/'.harness/distribution/active.json'
++                outside = self.root/(kind+'-active.json')
++                outside.write_bytes(active.read_bytes())
++                active.unlink()
++                if kind == 'symlink':
++                    active.symlink_to(outside)
++                else:
++                    os.link(outside, active)
++                result = run([sys.executable, str(CLI), 'verify', '--target', str(target)])
++                self.assertStatus(result, 'BUNDLE_PATH_UNSAFE')
++
++    def test_plan_git_queries_do_not_refresh_index_metadata(self):
++        target = consumer(self.root)
++        bundle, _ = self.bundle()
++        os.utime(target/'product.txt', (1234567890, 1234567890))
++        before = (target/'.git/index').read_bytes()
++        result = run(plan_args('plan', target, bundle))
++        self.assertEqual(result.returncode, 0, result.stdout+result.stderr)
++        self.assertEqual(hashlib.sha256((target/'.git/index').read_bytes()).hexdigest(),
++                         hashlib.sha256(before).hexdigest())
+ 
+     def test_legacy_runtime_and_custom_consumer_state_are_preserved(self):
+         target = consumer(self.root, legacy=True)
+@@ -273,6 +344,18 @@
+         path.write_text(json.dumps(changed))
+         self.assertStatus(apply('apply', target, bundle, value, path), 'PLAN_DIGEST_MISMATCH')
+         self.assertEqual(tree(target), before)
++
++    def test_missing_approval_cannot_create_managed_effects(self):
++        target = consumer(self.root)
++        bundle, _ = self.bundle()
++        value, path = make_plan(self.root, 'plan', target, bundle)
++        before = tree(target)
++        missing = run([sys.executable, str(CLI), 'apply', '--target', str(target),
++                       '--plan', str(path), '--bundle', str(bundle)])
++        self.assertFalse((target/'.harness/distribution/active.json').exists(),
++                         'missing approval created an active selection')
++        self.assertEqual(tree(target), before, 'missing approval changed consumer bytes')
++        self.assertStatus(missing, 'MISSING_PLAN_APPROVAL')
+         bad = self.root/'bad-bundle'
+         shutil.copytree(bundle, bad)
+         payload = next((bad/'payload').rglob('*.mjs'))
+@@ -310,7 +393,6 @@
+         interrupted = apply('apply', target, bundle, value, path,
+                             {'HARNESS_CONSUMER_INTERRUPT_AFTER_PREPARE': '1'})
+         self.assertStatus(interrupted, 'INTERRUPTED_RESUMABLE')
+-        self.assertFalse((target/'.git/harness-consumer.lock').exists())
+         self.assertFalse((target/'.harness/distribution/active.json').exists())
+         bootstrap = run(['node', str(target/'.harness/distribution/bootstrap.mjs'),
+                          'identify', '--repository', 'fixture', '--schema', 'record.v1',
+@@ -338,7 +420,54 @@
+         self.assertStatus(apply('apply', target, bundle, value, path), 'CONCURRENT_APPLY')
+         stdout, stderr = first.communicate(timeout=10)
+         self.assertEqual(first.returncode, 0, stdout+stderr)
+-        self.assertFalse(lock.exists(), 'successful process did not release its lock')
++        released = apply('apply', target, bundle, value, path)
++        self.assertEqual(released.returncode, 0, released.stdout+released.stderr)
++        self.assertEqual(json.loads(released.stdout)['status'], 'IDEMPOTENT')
++
++    def test_sigkill_before_selection_releases_lock_and_resumes(self):
++        bundle, _ = self.bundle()
++        before_target = consumer(self.root/'before-selector')
++        value, path = make_plan(self.root, 'plan', before_target, bundle)
++        argv = [sys.executable, str(CLI), 'apply', '--target', str(before_target),
++                '--plan', str(path), '--approve-plan', value['planDigest'],
++                '--bundle', str(bundle)]
++        env = os.environ.copy(); env['HARNESS_CONSUMER_HOLD_LOCK'] = '5'
++        process = subprocess.Popen(argv, env=env, stdout=subprocess.PIPE,
++                                   stderr=subprocess.PIPE, text=True)
++        lock = before_target/'.git/harness-consumer.lock'
++        for _ in range(300):
++            if lock.exists(): break
++            import time; time.sleep(0.01)
++        self.assertTrue(lock.exists())
++        process.kill(); process.communicate(timeout=5)
++        resumed = apply('apply', before_target, bundle, value, path)
++        self.assertEqual(resumed.returncode, 0, resumed.stdout+resumed.stderr)
++
++    def test_sigkill_after_selection_resumes_without_repeating_generation(self):
++        bundle, _ = self.bundle()
++        after_target = consumer(self.root/'after-selector')
++        after_value, after_path = make_plan(self.root, 'plan', after_target, bundle)
++        after_argv = [sys.executable, str(CLI), 'apply', '--target', str(after_target),
++                      '--plan', str(after_path), '--approve-plan', after_value['planDigest'],
++                      '--bundle', str(bundle)]
++        after_env = os.environ.copy(); after_env['HARNESS_CONSUMER_HOLD_AFTER_SELECTOR'] = '5'
++        process = subprocess.Popen(after_argv, env=after_env, stdout=subprocess.PIPE,
++                                   stderr=subprocess.PIPE, text=True)
++        active = after_target/'.harness/distribution/active.json'
++        receipt = after_target/'.harness/distribution/receipts'/(after_value['planDigest']+'.json')
++        for _ in range(500):
++            if active.exists() and not receipt.exists(): break
++            import time; time.sleep(0.01)
++        self.assertTrue(active.exists() and not receipt.exists(),
++                        'process did not reach selector-to-receipt recovery window')
++        generation = after_target/'.harness/distribution/generations'/after_value['bundleDigest']
++        inode = generation.stat().st_ino
++        process.kill(); process.communicate(timeout=5)
++        resumed = apply('apply', after_target, bundle, after_value, after_path)
++        self.assertEqual(resumed.returncode, 0, resumed.stdout+resumed.stderr)
++        self.assertTrue(receipt.is_file())
++        self.assertEqual(generation.stat().st_ino, inode,
++                         'resume replaced the already verified generation')
+ 
+     def test_postverify_failure_restores_prior_selection_and_records_failure(self):
+         target = consumer(self.root)
+@@ -419,7 +548,8 @@
+                 records[0]['integrity'] = 'sha512-'+base64.b64encode(hashlib.sha512(archive.read_bytes()).digest()).decode()
+                 metadata.write_text(json.dumps(records))
+                 result = run([sys.executable, str(CLI), 'bundle', '--source-repo', str(source),
+-                              '--source-sha', sha, '--package-archives', str(metadata),
++                              '--source-sha', sha, '--source-identity', SOURCE_IDENTITY,
++                              '--package-archives', str(metadata),
+                               '--output', str(self.root/('bundle-'+kind)),
+                               '--profile', 'autonomy-runtime.v1'])
+                 self.assertStatus(result, 'UNSAFE_ARCHIVE_ENTRY')
+@@ -433,6 +563,79 @@
+         os.link(copy, victim)
+         target = consumer(self.root/'hardlink-consumer')
+         self.assertStatus(run(plan_args('plan', target, bad)), 'BUNDLE_PATH_UNSAFE')
++
++    def test_manifest_requires_unique_complete_stable_inventory(self):
++        bundle, _ = self.bundle()
++        missing = self.root/'missing-stable'; shutil.copytree(bundle, missing)
++        manifest_file = missing/'manifest.json'; manifest = json.loads(manifest_file.read_text())
++        for item in manifest['files']:
++            if item['target'] == 'stable': (missing/'payload'/item['path']).unlink()
++        manifest['files'] = [item for item in manifest['files'] if item['target'] != 'stable']
++        subject = dict(manifest); subject.pop('bundleDigest')
++        manifest['bundleDigest'] = hashlib.sha256(
++            json.dumps(subject, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
++        manifest_file.chmod(0o644); manifest_file.write_text(json.dumps(manifest))
++        target = consumer(self.root/'missing-target')
++        self.assertStatus(run(plan_args('plan', target, missing)), 'MISSING_REQUIRED_BINDING')
++
++        malformed = self.root/'duplicate-stable'; shutil.copytree(bundle, malformed)
++        manifest_file = malformed/'manifest.json'
++        manifest = json.loads(manifest_file.read_text())
++        stable = [item for item in manifest['files'] if item['target'] == 'stable']
++        stable[-1]['installPath'] = stable[0]['installPath']
++        subject = dict(manifest); subject.pop('bundleDigest')
++        manifest['bundleDigest'] = hashlib.sha256(
++            json.dumps(subject, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
++        manifest_file.chmod(0o644); manifest_file.write_text(json.dumps(manifest))
++        target = consumer(self.root/'duplicate-target')
++        self.assertStatus(run(plan_args('plan', target, malformed)), 'BUNDLE_SCHEMA_INVALID')
++
++    def test_plan_and_descriptor_schemas_reject_unknown_fields(self):
++        bundle, _ = self.bundle()
++        target = consumer(self.root/'plan-target')
++        value, path = make_plan(self.root, 'plan', target, bundle)
++        value['unexpected'] = True
++        subject = dict(value); subject.pop('planDigest')
++        value['planDigest'] = hashlib.sha256(
++            json.dumps(subject, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
++        path.write_text(json.dumps(value))
++        self.assertStatus(run([sys.executable, str(CLI), 'apply', '--target', str(target),
++                               '--bundle', str(bundle), '--plan', str(path),
++                               '--approve-plan', value['planDigest']]), 'PLAN_SCHEMA_INVALID')
++
++        mutations = [
++            ('profile', 'another-profile', 'PLAN_SCHEMA_INVALID'),
++            ('configSchema', 'future-config.v9', 'PLAN_SCHEMA_INVALID'),
++            ('allowedWrites', ['.harness/distribution/', 'product.txt'],
++             'PLAN_SCHEMA_INVALID'),
++            ('availableRollback', ['0'*64], 'PLAN_BINDING_CHANGED'),
++        ]
++        for field, replacement, status in mutations:
++            with self.subTest(plan_field=field):
++                candidate, candidate_path = make_plan(
++                    self.root, 'plan', target, bundle)
++                candidate[field] = replacement
++                subject = dict(candidate); subject.pop('planDigest')
++                candidate['planDigest'] = hashlib.sha256(
++                    json.dumps(subject, sort_keys=True,
++                               separators=(',', ':')).encode()).hexdigest()
++                candidate_path.write_text(json.dumps(candidate))
++                result = run([sys.executable, str(CLI), 'apply', '--target', str(target),
++                              '--bundle', str(bundle), '--plan', str(candidate_path),
++                              '--approve-plan', candidate['planDigest']])
++                self.assertStatus(result, status)
++                self.assertFalse((target/'.harness/distribution/active.json').exists())
++
++        target = consumer(self.root/'descriptor-target')
++        self.install(target)
++        active_file = target/'.harness/distribution/active.json'
++        active = json.loads(active_file.read_text()); active['unexpected'] = True
++        subject = dict(active); subject.pop('installationDigest')
++        active['installationDigest'] = hashlib.sha256(
++            json.dumps(subject, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
++        active_file.chmod(0o644); active_file.write_text(json.dumps(active))
++        self.assertStatus(run([sys.executable, str(CLI), 'verify', '--target', str(target)]),
++                          'DESCRIPTOR_SCHEMA_INVALID')
+ 
+     def test_candidate_and_exact_local_tag_have_distinct_nonpublished_status(self):
+         bundle, built = self.bundle()
+@@ -450,7 +653,8 @@
+         relocated_metadata.write_text(json.dumps(records))
+         reproduced = self.root/'reproduced'
+         result = run([sys.executable, str(CLI), 'bundle', '--source-repo', str(source),
+-                      '--source-sha', sha, '--package-archives', str(relocated_metadata),
++                      '--source-sha', sha, '--source-identity', SOURCE_IDENTITY,
++                      '--package-archives', str(relocated_metadata),
+                       '--output', str(reproduced), '--profile', 'autonomy-runtime.v1'])
+         self.assertEqual(result.returncode, 0, result.stdout+result.stderr)
+         self.assertEqual(json.loads((bundle/'manifest.json').read_text())['bundleDigest'],
+@@ -458,13 +662,30 @@
+         git(source, 'tag', 'runtime-v0.1.0', sha)
+         published = self.root/'published'
+         result = run([sys.executable, str(CLI), 'bundle', '--source-repo', str(source),
+-                      '--source-sha', sha, '--source-tag', 'runtime-v0.1.0',
++                      '--source-sha', sha, '--source-identity', SOURCE_IDENTITY,
++                      '--source-tag', 'runtime-v0.1.0',
+                       '--package-archives', str(archives_metadata()), '--output', str(published),
+                       '--profile', 'autonomy-runtime.v1'])
+         self.assertEqual(result.returncode, 0, result.stdout+result.stderr)
+         self.assertEqual(json.loads(result.stdout)['releaseStatus'], 'TAGGED_SOURCE')
+         self.assertNotEqual(json.loads((bundle/'manifest.json').read_text())['bundleDigest'],
+                             json.loads((published/'manifest.json').read_text())['bundleDigest'])
++        inventory = json.loads(run([sys.executable, str(CLI), 'inventory',
++                                    '--bundle', str(bundle)]).stdout)
++        self.assertEqual(inventory['source']['repository'], SOURCE_IDENTITY)
++        self.assertEqual(inventory['source']['identityClaim'],
++                         'DECLARED_NOT_REMOTE_VERIFIED')
++        self.assertRegex(inventory['source']['lineageRoot'], r'^[a-f0-9]{40}$')
++        paths = {item['path'] for item in inventory['files']}
++        self.assertTrue('runtime/tests/not-production.mjs' not in paths,
++                        'production inventory included source test fixture')
++
++    def test_ci_documentation_uses_an_external_protected_checker(self):
++        guide = (KIT/'docs/consumer-distribution.md').read_text()
++        self.assertTrue('$PROTECTED_HARNESS_ROOT/bin/harness-consumer.py' in guide,
++                        'CI example lacks external protected checker')
++        self.assertTrue('"$CONSUMER/.harness/distribution/harness-consumer.py" verify'
++                        not in guide, 'CI example trusts candidate checker')
+ 
+ 
+ class ConsumerEndToEnd(unittest.TestCase):
+@@ -507,6 +728,28 @@
+             self.assertEqual(observed['dependencies'], {'yaml': '2.9.0', 'zod': '4.5.4'})
+             self.assertEqual(observed['network'], 'NOT_USED')
+ 
++    def test_verify_and_plan_accept_fresh_git_modes_without_writing(self):
++        with tempfile.TemporaryDirectory(prefix='consumer-clone-modes-') as temporary:
++            root = pathlib.Path(temporary)
++            target = consumer(root)
++            first, second = artifacts()[4][0][0], artifacts()[4][1][0]
++            value, plan = make_plan(root, 'plan', target, first)
++            self.assertEqual(apply('apply', target, first, value, plan).returncode, 0)
++            git(target, 'add', '.harness/distribution')
++            git(target, 'commit', '-qm', 'installed runtime')
++            clone = root/'clone'; git(root, 'clone', '-q', str(target), str(clone))
++            def state():
++                files = [path for path in clone.rglob('*') if path.is_file() and '.git' not in path.parts]
++                return ({str(path.relative_to(clone)): (path.stat().st_mode & 0o777,
++                         hashlib.sha256(path.read_bytes()).hexdigest()) for path in files},
++                        (clone/'.git/index').read_bytes())
++            before = state()
++            verified = run([sys.executable, str(CLI), 'verify', '--target', str(clone)])
++            planned = run(plan_args('upgrade-plan', clone, second))
++            self.assertEqual((verified.returncode, planned.returncode), (0, 0),
++                             verified.stdout+verified.stderr+planned.stdout+planned.stderr)
++            self.assertEqual(state(), before)
++
+ 
+ if __name__ == '__main__':
+     unittest.main(verbosity=2)
+--- a/schemas/consumer-installation.v1.json
++++ b/schemas/consumer-installation.v1.json
+@@ -1,24 +1,134 @@
+ {
+   "$schema": "https://json-schema.org/draft/2020-12/schema",
+   "$id": "harness.consumer-installation.v1",
+-  "title": "Harness consumer installation descriptor",
+-  "type": "object",
+-  "additionalProperties": false,
+-  "required": ["schemaVersion", "profile", "bundleDigest", "sourceSha", "planDigest", "generation", "adoptionStatus", "adoptionDate", "receipt", "installationDigest"],
+-  "properties": {
+-    "schemaVersion": { "const": 1 },
+-    "profile": { "const": "autonomy-runtime.v1" },
+-    "bundleDigest": { "$ref": "#/$defs/sha256" },
+-    "sourceSha": { "$ref": "#/$defs/gitSha" },
+-    "planDigest": { "$ref": "#/$defs/sha256" },
+-    "generation": { "type": "string", "pattern": "^generations/[a-f0-9]{64}$" },
+-    "adoptionStatus": { "const": "NOT_ADOPTED" },
+-    "adoptionDate": { "type": "null" },
+-    "receipt": { "type": "string", "pattern": "^receipts/[a-f0-9]{64}\\.json$" },
+-    "installationDigest": { "$ref": "#/$defs/sha256" }
+-  },
++  "title": "Harness consumer distribution contracts",
++  "oneOf": [
++    { "$ref": "#/$defs/descriptor" },
++    { "$ref": "#/$defs/manifest" },
++    { "$ref": "#/$defs/plan" }
++  ],
+   "$defs": {
+     "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+-    "gitSha": { "type": "string", "pattern": "^[a-f0-9]{40}$" }
++    "gitSha": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
++    "semver": { "type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:[-+][0-9A-Za-z.-]+)?$" },
++    "descriptor": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": ["schemaVersion", "profile", "bundleDigest", "sourceSha", "planDigest", "generation", "adoptionStatus", "adoptionDate", "receipt", "installationDigest"],
++      "properties": {
++        "schemaVersion": { "const": 1 },
++        "profile": { "const": "autonomy-runtime.v1" },
++        "bundleDigest": { "$ref": "#/$defs/sha256" },
++        "sourceSha": { "$ref": "#/$defs/gitSha" },
++        "planDigest": { "$ref": "#/$defs/sha256" },
++        "generation": { "type": "string", "pattern": "^generations/[a-f0-9]{64}$" },
++        "adoptionStatus": { "const": "NOT_ADOPTED" },
++        "adoptionDate": { "type": "null" },
++        "receipt": { "type": "string", "pattern": "^receipts/[a-f0-9]{64}\\.json$" },
++        "installationDigest": { "$ref": "#/$defs/sha256" }
++      }
++    },
++    "release": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": ["status", "tag", "published"],
++      "properties": {
++        "status": { "enum": ["RELEASE_CANDIDATE", "TAGGED_SOURCE"] },
++        "tag": { "type": ["string", "null"] },
++        "published": { "const": false }
++      }
++    },
++    "source": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": ["repository", "lineageRoot", "identityClaim", "sha", "version", "release"],
++      "properties": {
++        "repository": { "type": "string", "minLength": 3 },
++        "lineageRoot": { "$ref": "#/$defs/gitSha" },
++        "identityClaim": { "const": "DECLARED_NOT_REMOTE_VERIFIED" },
++        "sha": { "$ref": "#/$defs/gitSha" },
++        "version": { "$ref": "#/$defs/semver" },
++        "release": { "$ref": "#/$defs/release" }
++      }
++    },
++    "dependency": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": ["package", "version", "integrity", "archiveBytes"],
++      "properties": {
++        "package": { "enum": ["yaml", "zod"] },
++        "version": { "type": "string", "minLength": 1 },
++        "integrity": { "type": "string", "pattern": "^sha512-[A-Za-z0-9+/]+={0,2}$" },
++        "archiveBytes": { "type": "integer", "minimum": 1 }
++      }
++    },
++    "generationFile": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": ["path", "target", "sha256", "mode", "sourcePath", "sourceMode"],
++      "properties": {
++        "path": { "type": "string", "pattern": "^runtime/" },
++        "target": { "const": "generation" },
++        "sha256": { "$ref": "#/$defs/sha256" },
++        "mode": { "enum": [292, 365] },
++        "sourcePath": { "type": "string", "minLength": 1 },
++        "sourceMode": { "type": "integer", "minimum": 0, "maximum": 511 }
++      }
++    },
++    "stableFile": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": ["path", "target", "sha256", "mode", "sourcePath", "sourceMode", "installPath"],
++      "properties": {
++        "path": { "enum": ["bootstrap.mjs", "harness-consumer.py", "consumer-installation.v1.json", ".gitignore"] },
++        "target": { "const": "stable" },
++        "sha256": { "$ref": "#/$defs/sha256" },
++        "mode": { "enum": [292, 365] },
++        "sourcePath": { "type": "string", "minLength": 1 },
++        "sourceMode": { "type": "integer", "minimum": 0, "maximum": 511 },
++        "installPath": { "enum": ["bootstrap.mjs", "harness-consumer.py", "consumer-installation.v1.json", ".gitignore"] }
++      }
++    },
++    "manifest": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": ["schemaVersion", "profile", "source", "dependencies", "files", "bundleDigest"],
++      "properties": {
++        "schemaVersion": { "const": 1 },
++        "profile": { "const": "autonomy-runtime.v1" },
++        "source": { "$ref": "#/$defs/source" },
++        "dependencies": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "$ref": "#/$defs/dependency" } },
++        "files": { "type": "array", "minItems": 1, "items": { "oneOf": [{ "$ref": "#/$defs/generationFile" }, { "$ref": "#/$defs/stableFile" }] } },
++        "bundleDigest": { "$ref": "#/$defs/sha256" }
++      }
++    },
++    "plan": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": ["schemaVersion", "kind", "profile", "configSchema", "stateSchema", "targetRoot", "targetHead", "beforeBundleDigest", "bundleDigest", "sourceSha", "installedVersion", "targetVersion", "preserved", "create", "change", "managedDrift", "migrations", "incompatibilities", "allowedWrites", "availableRollback", "planDigest"],
++      "properties": {
++        "schemaVersion": { "const": 1 },
++        "kind": { "enum": ["install", "upgrade", "rollback"] },
++        "profile": { "const": "autonomy-runtime.v1" },
++        "configSchema": { "const": "autonomy-config.v1" },
++        "stateSchema": { "const": "autonomy-state.v1" },
++        "targetRoot": { "type": "string", "minLength": 1 },
++        "targetHead": { "$ref": "#/$defs/gitSha" },
++        "beforeBundleDigest": { "oneOf": [{ "$ref": "#/$defs/sha256" }, { "type": "null" }] },
++        "bundleDigest": { "$ref": "#/$defs/sha256" },
++        "sourceSha": { "$ref": "#/$defs/gitSha" },
++        "installedVersion": { "oneOf": [{ "$ref": "#/$defs/semver" }, { "type": "null" }] },
++        "targetVersion": { "$ref": "#/$defs/semver" },
++        "preserved": { "type": "object", "additionalProperties": { "$ref": "#/$defs/sha256" } },
++        "create": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
++        "change": { "const": [".harness/distribution/active.json"] },
++        "managedDrift": { "const": [] },
++        "migrations": { "const": [] },
++        "incompatibilities": { "const": [] },
++        "allowedWrites": { "const": [".git/harness-consumer.lock", ".harness/distribution/"] },
++        "availableRollback": { "type": "array", "items": { "$ref": "#/$defs/sha256" }, "uniqueItems": true },
++        "planDigest": { "$ref": "#/$defs/sha256" }
++      }
++    }
+   }
+ }
+--- a/docs/consumer-distribution.md
++++ b/docs/consumer-distribution.md
+@@ -9,12 +9,13 @@
+ ```bash
+ python3 bin/harness-consumer.py bundle \
+   --source-repo "$SOURCE_REPO" --source-sha "$SOURCE_SHA" \
++  --source-identity gonzalezulises/harness-kit \
+   --package-archives "$ARCHIVES_JSON" --output "$BUNDLE" \
+   --profile autonomy-runtime.v1
+ python3 bin/harness-consumer.py inventory --bundle "$BUNDLE" > "$INVENTORY_JSON"
+ ```
+ 
+-`inventory` es la lista exhaustiva y verificable: devuelve cada archivo con path, SHA256, modo, origen y modo de origen, además de versión, integrity SHA512 y tamaño de cada archive de dependencia.
++`source-identity` es una declaración portable del productor, no una verificación remota de owner, tag o publicación. El manifest la marca `DECLARED_NOT_REMOTE_VERIFIED` y registra por separado el root commit del linaje observado y el SHA exacto. `inventory` es la lista exhaustiva y verificable: devuelve cada archivo con path, SHA256, modo, origen y modo de origen, además de versión, integrity SHA512 y tamaño de cada archive de dependencia.
+ 
+ Los archivos estables administrados son `bootstrap.mjs`, `harness-consumer.py`, `consumer-installation.v1.json` y `.gitignore`. Cada generación contiene estos módulos de producción: `authority`, `budget`, `capabilities`, `classify`, `codex-worker`, `continuation`, `execution`, `execution.schema`, `github-actions`, `identity`, `index`, `journal`, `release`, `release.schema`, `review-shadow`, `review` y `review.schema`; también los siete contratos `contracts-*.md`, `schemas/digest.v1.json`, `schemas/record.v1.json`, `package.json`, `package-lock.json` y el contenido exacto de `node_modules/yaml` y `node_modules/zod`. La excepción `.gitignore` vive dentro del namespace administrado para que un consumidor con `node_modules/` ignorado pueda versionar el cierre offline en su PR y recuperarlo en un checkout nuevo.
+ 
+@@ -31,13 +32,13 @@
+   --target "$CONSUMER" --bundle "$BUNDLE" --plan "$INSTALL_PLAN" \
+   --approve-plan "$PLAN_DIGEST"
+ 
+-python3 "$CONSUMER/.harness/distribution/harness-consumer.py" verify \
++python3 "$PROTECTED_HARNESS_ROOT/bin/harness-consumer.py" verify \
+   --target "$CONSUMER" \
+   --expected-installation-digest "$EXPECTED_INSTALLATION_DIGEST" \
+   --expected-plan-digest "$EXPECTED_PLAN_DIGEST"
+ ```
+ 
+-Sin los dos digests externos, `verify` sólo informa integridad local; no certifica adopción. Para CI con autoridad use siempre ambos valores desde una fuente protegida.
++`PROTECTED_HARNESS_ROOT` debe ser un checkout o artifact read-only controlado fuera del candidato y fijado por la política de la base. Sin los dos digests externos, `verify` sólo informa integridad local; no certifica adopción. Para CI con autoridad use el checker externo protegido y ambos valores desde una fuente protegida. El manager instalado en el candidato sirve para operación local, pero no puede certificar su propia adopción.
+ 
+ ```bash
+ python3 "$CONSUMER/.harness/distribution/harness-consumer.py" upgrade-plan \
+--- a/.agents/notes/implemented/process/2026-09-06-reproducible-offline-consumer-distribution.md
++++ b/.agents/notes/implemented/process/2026-09-06-reproducible-offline-consumer-distribution.md
+@@ -1,9 +1,9 @@
+ # Distribuir el runtime como generación gobernada y reproducible
+ 
+-AGENTS.md, MIGRATION-01 y el plan de distribución autorizan un único perfil `autonomy-runtime.v1`. El manager usa sólo Python estándar y obtiene del mismo SHA Git los módulos QO de producción, sus contratos y schemas, el manager, bootstrap y schema de instalación. Verifica los archives locales de `yaml` y `zod` contra el lockfile y genera un manifest canónico sin fechas ni paths locales. Un bundle candidato o un tag local siguen sin ser prueba de publicación.
++AGENTS.md, MIGRATION-01, `bin/ARCHITECTURE.md` y el plan de distribución autorizan un único perfil `autonomy-runtime.v1`. El manager usa sólo Python estándar y obtiene del mismo SHA Git los módulos QO de producción, sus contratos y schemas, el manager, bootstrap y schema de instalación. Verifica los archives locales de `yaml` y `zod` contra el lockfile y genera un manifest canónico sin fechas ni paths locales. Un bundle candidato o un tag local siguen sin ser prueba de publicación.
+ 
+ La instalación mantiene todo bajo `.harness/distribution/`. Prepara una generación por digest, verifica path, tipo, link count, modo y hash, y conmuta sólo `active.json` mediante reemplazo y fsync. Plan y upgrade-plan no escriben; apply, upgrade y rollback requieren el digest exacto aprobado, revalidan bajo lock exclusivo y dejan transacción/receipt. Un postverify fallido restaura el selector anterior y conserva evidencia. Cambios incompatibles de major, bootstrap o schema fallan con `MIGRATION_REQUIRED`; no hay migraciones ejecutables arbitrarias.
+ 
+-Las generaciones se sellan read-only. Como Git sólo transporta el bit ejecutable, el bootstrap de un checkout nuevo acepta exclusivamente la normalización 0444→0644 o 0555→0755 cuando el SHA256 coincide, vuelve a sellar el modo declarado y después carga el runtime. La `.gitignore` interna exceptúa únicamente `generations/*/runtime/node_modules/**`, haciendo versionable el cierre offline aunque el consumidor ignore `node_modules/` globalmente.
++Las generaciones se sellan read-only. Como Git sólo transporta el bit ejecutable, `verify` y los comandos de plan aceptan en modo lectura exclusivamente la normalización versionada 0444→0644 o 0555→0755 cuando el SHA256 y la entrada del índice coinciden; el bootstrap vuelve a sellar el modo declarado antes de cargar el runtime. La `.gitignore` interna exceptúa únicamente `generations/*/runtime/node_modules/**`, haciendo versionable el cierre offline aunque el consumidor ignore `node_modules/` globalmente.
+ 
+ Todo fuera del namespace continúa consumer-owned. Se preservan la configuración, estado, journals, oracles, receipts, feature/progress/decisions y un runtime legacy paralelo; no se crea baseline, autoridad ni `ACTIVE`. La prueba E2E versiona sólo el namespace instalado, clona de nuevo, vuelve inaccesibles source y bundle, deja cache npm vacío y ejecuta `identify` con el runtime real y `yaml`/`zod` reales bajo autoridad efímera explícita. Reconsiderar este diseño al introducir otro perfil o una migración compatible de bootstrap/schema; ambos quedan fuera del alcance actual.
+--- a/.harness/oracles/AC-CONSUMER-DISTRIBUTION.yaml
++++ b/.harness/oracles/AC-CONSUMER-DISTRIBUTION.yaml
+@@ -27,6 +27,6 @@
+ - tests/consumer-distribution.test.py
+ 
+ falsification:
+-  defect: Removing the explicit approval-presence check changes a missing approval from MISSING_PLAN_APPROVAL to PLAN_APPROVAL_MISMATCH under the unchanged final boundary test
++  defect: Removing both exact approval guards allows apply without --approve-plan to create the active selector; the final boundary test observes that unauthorized managed effect
+   proved_sha: a798c88ad625be2478d24df52c0dc45c51e2d4e4
+-  receipt: docs/implementation/2026-09-06-consumer-distribution/evidence/causal-red-receipt.json
++  receipt: docs/implementation/2026-09-06-consumer-distribution/fix-1/evidence/unauthorized-red-receipt.json

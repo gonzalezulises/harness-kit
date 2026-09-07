@@ -1,0 +1,7 @@
+test_fresh_clone_executes_real_runtime_offline_with_vendored_yaml_and_zod (__main__.ConsumerEndToEnd.test_fresh_clone_executes_real_runtime_offline_with_vendored_yaml_and_zod) ... ok
+test_verify_and_plan_accept_fresh_git_modes_without_writing (__main__.ConsumerEndToEnd.test_verify_and_plan_accept_fresh_git_modes_without_writing) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 10.914s
+
+OK

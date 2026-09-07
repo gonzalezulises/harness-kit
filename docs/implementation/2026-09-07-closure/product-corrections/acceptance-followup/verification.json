@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "command": [
+    "node",
+    "--test",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-linked-worktree.test.mjs",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-verifier-utf8.test.mjs"
+  ],
+  "exit_code": 0,
+  "passed": 2,
+  "failed": 0,
+  "source": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/product.mjs": "3a6497d7f81e9a10a53d5b20108ab190e2aa04de55f43cd5e7db9c3f9115ad2a"
+  },
+  "tests": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-corrections-fixture.mjs": "e57fa5d6b9b8d24148c9a0df83247ba89fcd819d96521a2a1aa118a65de0ce41",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-linked-worktree.test.mjs": "b254805a85b53076553f77cc115228f70e71a21faa46ba3955b83506ed805682",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-verifier-utf8.test.mjs": "b700c75b47c465222ae8c30f6e99ef6db7d5baf2a158dcf7f8a963e03677571b"
+  },
+  "log_sha256": "f5da14026ef08a6d233b993ca9615ae7593cd0c5adbbdc83880b346b391791f0",
+  "coverage": [
+    "Actual prepared commit parent equals signed base",
+    "Frozen bytes and Git tree mode/blob retained",
+    "Source index bytes, refs and HEAD unchanged",
+    "Real resumeProductStep call after malformed UTF8",
+    "One verifier invocation and unchanged spend/pending key after resume"
+  ],
+  "historical_report_erratum": "Initial report omitted one 6c in UTF8 test SHA. Actual first-round SHA: 8c73c93f6f6c6c4fc86c30e11650c77d95ff9848b2744bced357c182c7d04715",
+  "first_round_receipts": "Preserved; their test bytes are retained under first-round-tests with the same basenames"
+}

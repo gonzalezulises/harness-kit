@@ -3,7 +3,47 @@
 The durable memory of this repository. Every session reads this first and writes to it
 last. If it disagrees with your recollection, this file wins.
 
-## Current state — human interruption reduction, 2026-09-06
+## Current corrective baseline — 2026-09-07
+
+The integrated correction tree passed `make check` with exit0: eight quick gates,
+core286, distribution33, runtime329, autonomy pack5 and all remaining packs.
+The exact source and log are recorded in
+`docs/implementation/2026-09-07-closure/corrective-baseline/receipt.json`.
+F27's six Medium corrections and its late-review recovery follow-up have
+independent scoped approval. Historical signed budgets, original review failure
+events, A03 input, unavailable historical F26 input and blocked F09 are retained.
+
+This is the verified local baseline for the missing autonomous remote product-PR
+capability. Overall closure remains INCOMPLETE: real pilot authority/authentication/
+isolation, protected execution GR03, history-preserving merge GR05, current remote
+checks, consumer upgrade/rollback, integration and release remain outstanding.
+A separate PR33 CI fixture-environment defect was reproduced as18 failures and its
+narrow correction is undergoing full verification; it is not in this checkpoint.
+The unique current inventory is `docs/implementation/2026-09-07-closure/inventory.json`.
+
+## Prior closure checkpoint — 2026-09-07
+
+PR33 corrective head `65c6e5f7aecd107188f4f164e849d7c8aed91cc3` is published
+and read back with the adopted main as its merge parent. Its full local check
+and clean-check passed. The current integration retains the same immutable
+request correction alongside the reviewed product.v2 journal adaptation.
+F27's six Medium findings and late-ack intersection have causal corrections
+and independent static approval; original histories and signed budgets remain.
+Current integrated full verification is running before remote publication work.
+
+Overall INCOMPLETE. Owner mandate and the unique current backlog are in
+`docs/implementation/2026-09-07-closure/mandate.md` and `inventory.json`.
+PR34 was ordinarily merged at `2fb86f02d4de83eeb7496c32f01070fd547da8bb`;
+the exact policy and prior histories remain preserved. The complete static
+PR33 review found four High/one Medium, and PR37 review found six Medium.
+New causal correction evidence is separate from the previously interrupted
+reviews. The local closure branch combines PR37 and PR36 for integrated
+verification; that merge is not a remote integration or accepted release.
+Real authentication, enrolled authority, proved isolation, preserved proof
+ancestry through ordinary merge, and protected execution isolation remain
+acceptance requirements. Casabat and Aurobalance remain evidence only.
+
+## Previous branch state — human interruption reduction, 2026-09-06
 
 F27 is implemented on feat/human-interruption-reduction, based on published P0
 `dd8a20c` (#35). Final `make check` exited0 in591.41s: core286, autonomy runtime289
@@ -74,6 +114,46 @@ NOT_EXECUTED / NOT_P0_READY: accepted product authority, authenticated model
 sessions, actual containment and a published PR have not been demonstrated.
 No prior authentication, broad-review or publication block is retried here.
 Casabat is untouched. Distribution has its own branch and is not part of F25.
+## Previous branch state — 2026-09-06 consumer distribution
+
+F26 is complete on this independent branch over frozen PR33 continuation
+`a798c88`. Its plan, review and compact verification receipt are in
+`docs/implementation/2026-09-06-consumer-distribution/`. The supported
+`autonomy-runtime.v1` profile provides reproducible exact-SHA bundles, read-only
+plans, explicit digest approval, atomic generation selection, drift refusal,
+SIGKILL resume and rollback preserving newer consumer configuration and journal.
+A fresh Git consumer clone runs the real QO with locked vendored yaml/zod after
+source, bundle and npm cache become unavailable. Casabat is untouched.
+
+The harness issued F26 passing receipts: static PASS, runtime31/31 and E2E2/2.
+Final `make check` exits0 in360.776s; current `./init.sh` exits0 with286/0.
+Both preserve the exact85-source manifest. All24 earlier feature records are
+unchanged and no feature is active. The first full gate correctly refused a
+missing local runtime dependency; a locked offline install repaired only the
+environment before the successful retry. No green claim relies on that failure.
+
+Independent scoped review closed all F26 Critical/High. One additional recovery
+correction exceeded the local plan's two-correction work budget; all three
+engineering corrections are disclosed. P0's runtime limit stays two. The
+unavailable original RED test variant remains Medium backlog, while current
+unauthorized-activation and recovery counterexamples retain reconstructible
+patches and exact source/test bindings. See `evidence/review.json` and
+`evidence/verification.json` for the reviewed scope and causal limits.
+
+Status is FIXTURE_PROFILE_VALIDATED, with installation NOT_ADOPTED. No published
+release, remote source-owner authentication, baseline acceptance, merge or
+production adoption is claimed. Unsupported major/schema/stable-manager changes
+require a migration and fail closed. Two authenticated-gh load cases remain
+outside local acceptance. The separate P0 commit `6400e65` has a passing local
+gate, but its real authenticated pilot and automatic remote PR creation remain
+incomplete; P0_PRODUCT_LOOP_READY is not established.
+
+Next action is publication of the prepared separate commits after resolution of
+the prior automatic approval block. No remote ref was updated and no alternate
+publication route was attempted. The interrupted whole-branch review remains
+INCOMPLETE; this bounded distribution approval does not replace it. Consumer
+adoption instructions are in `docs/consumer-distribution.md`; do not run them on
+Casabat without a separate adoption task.
 
 ## Previous verified state — 2026-09-06 execution backend continuation
 

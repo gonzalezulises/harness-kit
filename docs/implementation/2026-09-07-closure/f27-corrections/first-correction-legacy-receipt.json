@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "command": [
+    "node",
+    "--test",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/human-interruption.test.mjs",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-loop.test.mjs",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs"
+  ],
+  "exit_code": 0,
+  "tests": 104,
+  "pass": 104,
+  "fail": 0,
+  "duration_ms": 503749.003421,
+  "test_hashes": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/human-interruption.test.mjs": "8573cf58825e60da5b85abb017b7283e533f73f24ebdf303e49c8545fe58b8e3",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-loop.test.mjs": "47b4a3f207c45e71cb1040c499b1dd23db869b31a7eb641d8ad79b503e3df2a4",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs": "bebe2481b6d12d9b5f0c70cd15b3cd96c16183ebb7d493983d1a77a5697fb741",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs": "a5bd6cc0b4a1c6987398365b9c95dd4fa58d9a4af6ab1b7b16c5ed942b29152a"
+  },
+  "source": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/release.schema.mjs": "9c719f1be018e38bfe8c95baa77281940211c2b4651a69e9835e88bffef98122",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/release.mjs": "0341925547850d952bd96df3f5e0110bcabe4afd85c57366c4b34cce2ec90377",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/budget.mjs": "bcf6bacf43d1bee8dfc28f6951d17cd8391f89411609bde61b58cba8f8c8b24b",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/review.mjs": "939e0695fff5895202bfdd63e3390274f1a8cdd47620e0a609e08561db8ddfca",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/product.mjs": "874ab1c50540c4ec592283ad5bb577f4e8f12204cc43c29db0ce31e8fa53de75",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/product.schema.mjs": "7566f536152014f412da0080ccddd3b5109b426180d6a9d179cc37e81cd635fa",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/execution.mjs": "0b4d4089e64172f722c10a807b67c255c934534179ae6e03c32321ca6af8b3cf",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/continuation.mjs": "a388a4a8af12a316ea3bc4c9f63085ffd5fa69c56d4fcd393f9e16c104fb9401",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/authority.mjs": "c835ae848b7a6ad4dfc024b5eb2495fa6c6dc68f6cafa89dd7c3a0b12f8cfe26",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/capabilities.mjs": "a34077e46a1e38e65e3dda989d26d14e8822c14b3a1a388ebfad141ab7b44aa7",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/identity.mjs": "f6bc4cf109851e22bece790619fe736808d7af52b06f79e9b00047e0106cfb21",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/codex-worker.mjs": "836883f95330f0a38aefa6f31de44a004622dac825fa59748591eea9bbf7e18f",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/index.mjs": "706b908393a05f6fcd8c00e22aedee38c8ad58dedde826feb7373bef8c71b09e",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/review.schema.mjs": "f51ace62072b29ce8984414e4ee97b022768eea23bd26b49193b428aabb3396a",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/review-shadow.mjs": "84221bac483c39e517b288b11910a25e33e8c665e5a3d59faba657e97fef71dd",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/execution.schema.mjs": "014c78202f297a3918c13e672412dcb8a83a50b79fc025adceb08b667b86fdbe",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/github-actions.mjs": "db760d896e42f14e88f06165021c11ac146b3c4ad84fc929a486fc5245003bb1",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/journal.mjs": "b736a6ae3163c85387cbc7c32648c1e33449218b9d54e8ef8567758d64f4e26a",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/classify.mjs": "497fb60b930dc8a3ac00062d297d865ccbfa6f713f31ed1ad050ff315fe90e49"
+  },
+  "source_unchanged": true,
+  "log": {
+    "docs/implementation/2026-09-07-closure/f27-corrections/affected-legacy-green.log": "8ed0ad5c10c99977fa3f8f3b88b78181c25c62afe340347f9bf5f3f3b0c0b6ce"
+  }
+}

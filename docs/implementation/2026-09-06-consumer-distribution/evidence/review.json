@@ -1,0 +1,161 @@
+{
+  "scope": "Only F26 delta over a798c88; not a replacement for the interrupted global review",
+  "reviewer": "/root/review_product_increment",
+  "initialReportSha256": "2f630e05368564bcf8233b102b16aa2231483e3c3f84b573dd18cc1b11ac0654",
+  "initialSourceManifestSha256": "ac74f76732cdae48a5cbf2dd3f26df29364ccd5af6da94bf4643d1ea8fba6885",
+  "initialVerdict": {
+    "spec": "ISSUES_FOUND",
+    "quality": "NEEDS_FIXES"
+  },
+  "findings": [
+    {
+      "id": "F26-R1-H1",
+      "severity": "High",
+      "claim": "OBSERVED",
+      "problem": "Approved target and live plan/state bindings are not revalidated; stale drift passes idempotency/upgrade.",
+      "status": "ADDRESSED_FIX2"
+    },
+    {
+      "id": "F26-R1-H2",
+      "severity": "High",
+      "claim": "OBSERVED",
+      "problem": "Consumer namespace ancestor symlink redirects installation outside the approved root.",
+      "status": "ADDRESSED_FIX2"
+    },
+    {
+      "id": "F26-R1-H3",
+      "severity": "High",
+      "claim": "OBSERVED",
+      "problem": "SIGKILL leaves a lock with no same-plan recovery; post-selector/pre-receipt interruption also needs reconciliation.",
+      "status": "ADDRESSED_RECOVERY_CORRECTION"
+    },
+    {
+      "id": "F26-R1-H4",
+      "severity": "High",
+      "claim": "OBSERVED",
+      "problem": "A self-consistent bundle missing all stable entrypoints receives successful installation.",
+      "status": "ADDRESSED_FIX1"
+    },
+    {
+      "id": "F26-R1-H5",
+      "severity": "High",
+      "claim": "INFERRED",
+      "problem": "CI recipe executes candidate checker code to interpret protected expected digests.",
+      "status": "ADDRESSED_FIX1"
+    },
+    {
+      "id": "F26-R1-H6",
+      "severity": "High",
+      "claim": "OBSERVED",
+      "problem": "Initial critical mutant changes an error label while the remaining approval check still blocks effects.",
+      "status": "ADDRESSED_FIX1"
+    },
+    {
+      "id": "F26-R1-H7",
+      "severity": "High",
+      "claim": "OBSERVED",
+      "problem": "Read-only verification rejects a fresh Git checkout before bootstrap reseals file modes.",
+      "status": "ADDRESSED_FIX1"
+    },
+    {
+      "id": "F26-R1-M1",
+      "severity": "Medium",
+      "claim": "OBSERVED",
+      "problem": "Plan refreshes Git index metadata despite unchanged product bytes.",
+      "status": "ADDRESSED_FIX1"
+    },
+    {
+      "id": "F26-R1-M2",
+      "severity": "Medium",
+      "claim": "INFERRED",
+      "problem": "Recursive builder includes repository tests outside the declared production profile.",
+      "status": "ADDRESSED_FIX1"
+    },
+    {
+      "id": "F26-F1-M3",
+      "severity": "Medium",
+      "claim": "OBSERVED_INFERRED",
+      "problem": "Compact handoff does not reconstruct the original RED test variant f1f080; current tests require a newer builder argument.",
+      "status": "BACKLOG_HISTORICAL_INPUT_UNAVAILABLE"
+    }
+  ],
+  "focusedProbe": {
+    "argv": [
+      "python3",
+      "-I",
+      "-"
+    ],
+    "exit": 1,
+    "observedPropertiesViolated": 7,
+    "elapsedSecondsApprox": 7,
+    "reproduction": "Sequences preserved in the independent report; fix regressions will provide durable reproduction under the exact code/test bindings."
+  },
+  "rulings": {
+    "M1": "Read-only plan is a mandatory AC; resolve despite Medium severity.",
+    "M2": "Production-only inventory is the declared profile; resolve the small selector gap in the same fix."
+  },
+  "fixRoundsLimit": 2,
+  "currentFixRound": 3,
+  "readiness": "FIXTURE_PROFILE_VALIDATED",
+  "consumerAdoption": "NOT_PERFORMED",
+  "casabat": "UNTOUCHED",
+  "globalReview": "INCOMPLETE_SEPARATE_BOUNDARY",
+  "fix1Review": {
+    "reportSha256": "b8e2c2158072a4b6a9c87a76572fec075c7df411facfaecc93b6e4589a79efa3",
+    "spec": "ISSUES_FOUND",
+    "quality": "NEEDS_FIXES",
+    "sourceSha256": "3aee24ef49a6427efa54eaee7ccb727db3685e5dc8622820889d9c92059a539a",
+    "testsSha256": "cd61ac98c686b7ef75efb7038e0a231fceb0e56a42936ae0c7dd8ae3ce14c091",
+    "observedFailures": [
+      {
+        "finding": "F26-R1-H1",
+        "result": "Linked worktree writes its actual Git lock outside the declared allowedWrites path."
+      },
+      {
+        "finding": "F26-R1-H2",
+        "result": "Symlink and hardlink lock targets are truncated; full CLI still creates active.json."
+      },
+      {
+        "finding": "F26-R1-H3",
+        "result": "SIGKILL after manifest fsync leaves no PREPARED transaction; the same plan cannot resume."
+      }
+    ],
+    "causalApprovalOracle": "CURRENT_ACTUAL_UNAUTHORIZED_EFFECT_RED_THEN_GREEN"
+  },
+  "fix2Review": {
+    "reportSha256": "0846e7961375bfc0c6c9e61b34f8d17b29be9859ade9098d2c7532b5470ef71e",
+    "spec": "ISSUES_FOUND",
+    "quality": "NEEDS_FIXES",
+    "sourceSha256": "051f880bed8b7788c77ae3265a9b3378c537a2e8ff58cb3078f26dac9e600d4e",
+    "testsSha256": "697a4d35215c42da2a78f0de0c1fa66c7d0025704b561fe3532d501ba950e85c",
+    "observedRemainingFailure": "SIGKILL after first staging file leaves STARTED and an incomplete own copy. FIX1 resumes successfully; FIX2 returns MANAGED_FILE_DRIFT.",
+    "otherFocalChanges": "ADDRESSED"
+  },
+  "engineeringBudgetDeviation": {
+    "originalPlanLimit": 2,
+    "actualCorrections": 3,
+    "reason": "One additional reversible correction of the expressly requested resume behavior; scope unchanged. The P0 runtime remediation budget remains two. This is recorded as a deviation, not hidden as part of FIX2 or a new authority decision."
+  },
+  "recoveryReview": {
+    "reportSha256": "24813b21da3029fd441824b4205d9171b942fa687828a3bc305a4dbbf96704e2",
+    "spec": "PASS_H3",
+    "quality": "APPROVED_FOCAL",
+    "managerSha256": "35d4e2ca41c3a3585ee4edb13def46596a6336dc1d61451ffd5363ae16c56b73",
+    "testsSha256": "3651818b4be511ac88f8c96aead84c962d8e3ff714004393d109613a5199c76a",
+    "independentCommand": [
+      "python3",
+      "-I",
+      "tests/consumer-distribution.test.py",
+      "ConsumerRuntime.test_sigkill_during_started_copy_recovers_only_safe_partial_staging"
+    ],
+    "exit": 0,
+    "tests": 1,
+    "elapsedSeconds": 3.172,
+    "observed": [
+      "Valid private partial copy resumes after SIGKILL.",
+      "Changed byte refuses with MANAGED_FILE_DRIFT and no active selector."
+    ],
+    "limits": "One tested interruption position; not a proof of every possible filesystem interruption."
+  },
+  "openCriticalHigh": 0
+}

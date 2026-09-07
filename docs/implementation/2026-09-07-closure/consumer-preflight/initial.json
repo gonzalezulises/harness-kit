@@ -1,0 +1,12 @@
+{
+  "commit": "a1d99bb566a7153b31194d9a37d24dff8f304120",
+  "files": {
+    "product.json": "ea03faea526efd8b9de92de46361849e968a8b72ccab5ff1f8e6b77008602c1d",
+    "README.md": "870a1d700c4bc984db6e84a47d357fd77f489f1798003d5f1dd9ef3bb31b0cf7",
+    ".harness/autonomy/operator.json": "7d488d0c590efe9d66f1b6496f4d8a57ee176ebd0577a18467eec5551a86434c",
+    ".harness/autonomy/journal.log": "014d58e47442da05c30266631a33e8aeb866dc73d13dd44e574f456feff1c57f",
+    "feature_list.json": "29b15411eadbd22755ba9a1a74c155333f2ff15723e852ff98c24e59e12bad70"
+  },
+  "independent_git_dir": "/workspace/scratch/0be017df5260/closure-consumer-work/consumer/.git",
+  "remote_count": 0
+}

@@ -1,0 +1,28 @@
+✖ e2e A06 output lost before ingest recovers durable bytes from retained output on resume (19389.241265ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 20083.25531
+
+✖ failing tests:
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/human-interruption.test.mjs:39:1
+✖ e2e A06 output lost before ingest recovers durable bytes from retained output on resume (19389.241265ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to:
+  
+  'PRODUCT_REPLAYED'
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-human-interruption/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/human-interruption.test.mjs:40:816)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'PRODUCT_REPLAYED',
+    expected: 'PRODUCT_REPLAYED',
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }

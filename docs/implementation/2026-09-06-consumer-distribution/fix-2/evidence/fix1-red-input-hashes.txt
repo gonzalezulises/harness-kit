@@ -1,0 +1,2 @@
+3aee24ef49a6427efa54eaee7ccb727db3685e5dc8622820889d9c92059a539a  bin/harness-consumer.py
+800d11824832150abbf25a4c3bb73c7fd68dd10b8e5ca74219e310a82b919738  tests/consumer-distribution.test.py

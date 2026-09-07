@@ -1,0 +1,34 @@
+id: AC-H05
+requirement: Closed runtime capabilities publish only recomputed scoped bytes under exclusive fenced ownership
+criticality: high
+status: TEST_READY
+observable: Exact canonical and derived writes have verified manifests and durable intent/outcome; unsafe execution blocks
+oracle:
+  expected: Host-bound runtime computes output, verifies authority, scope, lease, current bindings and exact final delta itself
+cases:
+  positive:
+  - Canonical source and derived digest writes persist supervised receipts and objective spend
+  negative:
+  - Deny paths, traversal, symlink and hardlink aliases, forged handles and stale bindings refuse writes
+  - Missing subprocess containment remains BLOCKED_BY_REQUIRED_CAPABILITY and NOT_EXECUTED
+  boundary:
+  - Interrupted effects retain intent; retries reconcile original key without repeating the write
+context: Trusted runtime-exclusive local filesystem with fixture signing authority; no malicious subprocess containment claim
+side_effects:
+  must:
+  - Reserve budget and durable exact intent before publication and independently check complete postmanifest
+  must_not:
+  - Accept caller output receipts, verifier callbacks, shell commands or lease expiry takeover
+false_positive: Removing an actual mandatory runtime enforcement check must cause the unchanged adversarial test to fail
+owner: harness-kit maintainers under AGENTS.md and MIGRATION-01 in DECISIONS.md
+evidence:
+  formats:
+  - Exact source and test digests with raw focused test output and causal RED receipt
+  - Missing API development failures are separate from security falsification
+tests:
+- packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs
+
+falsification:
+  defect: The preserved reviewed H05 implementation accepts registered writable outputs absent from the accepted binding, bypassing the projected classifier and adopted authority scope. Four exact current assertions observe actual EFFECT_VERIFIED rather than POLICY through real signed-grant and lease execution for omitted canonical and derived output paths.
+  proved_sha: 772f47da8a96335346a126481fd11590126d75cb
+  receipt: docs/implementation/2026-09-05-harness-hardening/h05/fix-1/red-receipt.json

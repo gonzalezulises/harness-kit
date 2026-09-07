@@ -1,0 +1,9 @@
+✔ local PR preparation reads base objects from a linked worktree common Git directory (19468.496138ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 19835.095883

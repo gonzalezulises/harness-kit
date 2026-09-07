@@ -1,0 +1,17 @@
+✔ F27 M3 late retained original acknowledgement after operational checkpoint and process reopen via resume (12934.592217ms)
+✔ F27 M3 late retained original acknowledgement after operational checkpoint and process reopen via run (10427.981844ms)
+✔ A03 unqualified credential-shaped infrastructure rejection stays diagnostic without retry (22419.759244ms)
+✔ e2e A06 output lost before ingest recovers durable bytes from retained output on resume (21588.965544ms)
+✔ negative pending effect without retained acknowledgement is never redispatched (4031.081604ms)
+✔ publication contention reconciles retained v1 verifier evidence once (6116.188444ms)
+✔ publication contention reconciles retained v2 review evidence once (20545.731644ms)
+✔ negative persistent publication lock keeps retained effect pending without redispatch (8296.93834ms)
+✔ negative publication retry rechecks authority after the owner releases its lock (5617.862569ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 89299.209135

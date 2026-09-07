@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "fix1_reconstruction": {
+    "reviewed_manager": ".superpowers/sdd/consumer-distribution/frozen-review-1/bin/harness-consumer.py",
+    "reviewed_manager_sha256": "1643ef9b406086922e322d1435ea80b665cdad4a9814df50e56a66098f61a691",
+    "corrective_patch": "docs/implementation/2026-09-06-consumer-distribution/fix-1/evidence/fix-1-corrective.patch",
+    "corrective_patch_sha256": "01e8b98575713cd4d99e94e06d82ecc31b1002289961c818be5467bd557a4343",
+    "include": "bin/harness-consumer.py",
+    "reconstructed_manager_sha256": "3aee24ef49a6427efa54eaee7ccb727db3685e5dc8622820889d9c92059a539a",
+    "role": "Historical construction observed during implementation; portable recipe below needs no ignored files."
+  },
+  "tests": {
+    "tests/consumer-distribution.test.py": "697a4d35215c42da2a78f0de0c1fa66c7d0025704b561fe3532d501ba950e85c"
+  },
+  "cases": 6,
+  "failures_including_subtests": 7,
+  "exit_code": 1,
+  "observations": {
+    "H1": "effective Git lock write absent from allowedWrites; changed HEAD still selected",
+    "H2": "symlink and hardlink sentinels overwritten",
+    "H3": "manifest durable without attempt transaction",
+    "plan_inventory": "four stable creates absent",
+    "stable_compatibility": "changed non-bootstrap stable payload advertised as applicable"
+  },
+  "logs": {
+    "docs/implementation/2026-09-06-consumer-distribution/fix-2/evidence/fix1-final-red.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/implementation/2026-09-06-consumer-distribution/fix-2/evidence/fix1-final-red.stderr.log": "2365e5e80fb47628bfc8c7264117c9ac8dafdd0f1c024d01c518f6a31629aa54",
+    "docs/implementation/2026-09-06-consumer-distribution/fix-2/evidence/fix1-final-red.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+  },
+  "portable_reproduction": {
+    "cwd": "repository root",
+    "argv": [
+      "python3",
+      "-I",
+      "-c",
+      "import pathlib,tempfile,subprocess,hashlib,runpy,unittest,sys\nrepo=pathlib.Path.cwd()\nassert hashlib.sha256((repo/'bin/harness-consumer.py').read_bytes()).hexdigest()=='051f880bed8b7788c77ae3265a9b3378c537a2e8ff58cb3078f26dac9e600d4e'\nassert hashlib.sha256((repo/'tests/consumer-distribution.test.py').read_bytes()).hexdigest()=='697a4d35215c42da2a78f0de0c1fa66c7d0025704b561fe3532d501ba950e85c'\nwith tempfile.TemporaryDirectory(prefix='f26-fix1-red-') as td:\n    target=pathlib.Path(td)/'bin/harness-consumer.py'\n    target.parent.mkdir()\n    target.write_bytes((repo/'bin/harness-consumer.py').read_bytes())\n    subprocess.run(['git','apply','--reverse','--include=bin/harness-consumer.py',str(repo/'docs/implementation/2026-09-06-consumer-distribution/fix-2/evidence/fix-1-to-fix-2.patch')],cwd=td,check=True)\n    assert hashlib.sha256(target.read_bytes()).hexdigest()=='3aee24ef49a6427efa54eaee7ccb727db3685e5dc8622820889d9c92059a539a'\n    fixture=runpy.run_path(str(repo/'tests/consumer-distribution.test.py'),run_name='f26_reproduction')\n    fixture['call'].__globals__['CLI']=target\n    cases=['test_clean_install_plan_is_read_only_and_repeat_is_idempotent', 'test_linked_worktree_plan_declares_and_uses_real_git_lock', 'test_consumer_lock_rejects_links_without_changing_sentinel', 'test_sigkill_after_manifest_reconciles_own_attempt_and_rejects_drift', 'test_head_change_after_prepare_blocks_selector_effect', 'test_upgrade_plan_rejects_changed_nonbootstrap_stable_payload']\n    result=unittest.TextTestRunner(verbosity=2).run(unittest.TestSuite(fixture['ConsumerRuntime'](name) for name in cases))\n    sys.exit(0 if result.wasSuccessful() else 1)\n"
+    ],
+    "expected_exit": 1,
+    "expected_failures_including_subtests": 7,
+    "current_tests_sha256": "697a4d35215c42da2a78f0de0c1fa66c7d0025704b561fe3532d501ba950e85c",
+    "reverse_patch_sha256": "c8242fb49981d89e6037eacf49e05db9b75c124db87f79ab75a7ad011ea99987",
+    "reconstruction_observed": {
+      "command": [
+        "git",
+        "apply",
+        "--reverse",
+        "--include=bin/harness-consumer.py",
+        "docs/implementation/2026-09-06-consumer-distribution/fix-2/evidence/fix-1-to-fix-2.patch"
+      ],
+      "exit": 0,
+      "reconstructed_sha256": "3aee24ef49a6427efa54eaee7ccb727db3685e5dc8622820889d9c92059a539a"
+    },
+    "suite_rerun_by_coordinator": false,
+    "preparation_from_final_source": {
+      "location": "A disposable full checkout of the final delivered source; leave the active worktree untouched.",
+      "argv": [
+        "git",
+        "apply",
+        "--reverse",
+        "docs/implementation/2026-09-06-consumer-distribution/recovery-fix/evidence/fix-2-to-recovery-fix.patch"
+      ],
+      "expected_manager_sha256": "051f880bed8b7788c77ae3265a9b3378c537a2e8ff58cb3078f26dac9e600d4e",
+      "expected_test_sha256": "697a4d35215c42da2a78f0de0c1fa66c7d0025704b561fe3532d501ba950e85c",
+      "next": "Run portable_reproduction.argv in that disposable checkout to reconstruct FIX1 and replay its six-case RED."
+    }
+  }
+}

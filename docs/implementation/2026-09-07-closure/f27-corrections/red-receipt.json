@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "head": "dfd717b934667b1d6153a8934a657a70b8b0c9e1",
+  "commands": [
+    {
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern=F27 M[1236]",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/f27-corrections.test.mjs"
+      ],
+      "exit_code": 1,
+      "tests": 5,
+      "fail": 5,
+      "pass": 0
+    },
+    {
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern=F27 M4",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/f27-corrections.test.mjs"
+      ],
+      "exit_code": 1,
+      "tests": 11,
+      "fail": 9,
+      "pass": 2
+    },
+    {
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern=F27 M5",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/f27-corrections.test.mjs"
+      ],
+      "exit_code": 1,
+      "tests": 3,
+      "fail": 3,
+      "pass": 0
+    }
+  ],
+  "tests": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/f27-corrections.test.mjs": "a1d87fbaea4deba6ca215432047ba2a6d937a9916e1d90e054564ac485d84685",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/f27-corrections-fixture.mjs": "c67d830dda497b47ae54bad1fd2dca70a070b324e551cb22e72834fc6e784aa9"
+  },
+  "source_manifest_sha256": "70758e7ea1739a041fb6c2145a7c1540bfd8f6cf2c0c4435b245119ee8f64f7e",
+  "source_unchanged": true,
+  "logs": {
+    "docs/implementation/2026-09-07-closure/f27-corrections/current-core-red.log": "3741c75b7e5d5987f5478b6fdd6fb1bd573e4491311052a36a248178b7192e97",
+    "docs/implementation/2026-09-07-closure/f27-corrections/current-review-red.log": "94775b881642e1b6b65e1c356badb078bcbe440505314c4b24025ea0922af76d",
+    "docs/implementation/2026-09-07-closure/f27-corrections/current-release-red.log": "dca443a9576391dc249cc3087b091f72788c535a34d62dca8d4dd265064acdba"
+  },
+  "limits": "Local synthetic protocol/effect fixtures. Initial setup failures are historical and excluded from this current causal witness."
+}

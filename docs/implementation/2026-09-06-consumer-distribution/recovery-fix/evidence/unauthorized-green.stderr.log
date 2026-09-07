@@ -1,0 +1,6 @@
+test_missing_approval_cannot_create_managed_effects (__main__.ConsumerRuntime.test_missing_approval_cannot_create_managed_effects) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.835s
+
+OK

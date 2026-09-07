@@ -1,0 +1,9 @@
+{
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "--test",
+    "tests/product-linked-worktree.test.mjs"
+  ],
+  "exit": 1,
+  "environment": "Disposable exact runtime copy; only production difference is retained pre-fix product.mjs"
+}

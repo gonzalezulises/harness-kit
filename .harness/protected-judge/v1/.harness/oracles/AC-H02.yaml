@@ -1,0 +1,47 @@
+id: AC-H02
+requirement: Apply live governed gates and preserve evidence, staged intent, and indeterminate
+  outcomes
+criticality: critical
+status: TEST_READY
+observable: Real full scaffolds verify applicable quick gates; broken live policies,
+  incomplete queries, stale oracle bytes and failed formatting block
+oracle:
+  expected: Protected policy judges target bytes separately; partial staging and independent
+    fixture processes retain their boundaries
+cases:
+  positive:
+  - Configured full scaffold and bounded full aggregate pass
+  - Successful staged formatting preserves index modes and working-tree bytes
+  negative:
+  - Missing profile, candidate downgrade, broken live policy, duplicate YAML, stale
+    proof, failed formatter and API query block
+  - Setup module shadowing, timed-out verification descendants, and explicit missing
+    delivery sources cannot produce success or later effects
+  boundary:
+  - Only the kit requires version-sync
+  - Minimal installation states its limited capabilities; missing protected adoption
+    is a stop
+context: Isolated Git fixtures with pinned PyYAML6.0.3; load tests use k6 and OS-assigned
+  loopback ports
+side_effects:
+  must:
+  - Store unique command/exit/log and hash evidence
+  must_not:
+  - Never stage unrelated edits, overwrite candidate judge source, mutate remote protection
+    or claim production acceptance
+false_positive: A gate fixture is insufficient unless a real scaffold/live candidate
+  and index bytes are exercised
+owner: harness-kit maintainers under AGENTS.md and MIGRATION-01 in DECISIONS.md
+evidence:
+  formats:
+  - Complete RED/GREEN unittest streams, commands, source/test hashes, owned PID/port
+    and timing records
+tests:
+- tests/h02-hardening-regressions.py
+falsification:
+  defect: Initial H02 review tree45d528d6, reconstructed over history anchor fff527b,
+    imports project setup modules, leaves timed-out recipe children running and accepts
+    explicit missing delivery sources; preserved source snapshots and full30-test
+    RED record these failures
+  proved_sha: fff527b2c7a64fb6d70d60d633a0261e68315169
+  receipt: docs/implementation/2026-09-05-harness-hardening/h02/fix-1/h02-red-receipt-v2.json

@@ -1,0 +1,14 @@
+test_missing_approval_cannot_create_managed_effects (__main__.ConsumerRuntime.test_missing_approval_cannot_create_managed_effects) ... FAIL
+
+======================================================================
+FAIL: test_missing_approval_cannot_create_managed_effects (__main__.ConsumerRuntime.test_missing_approval_cannot_create_managed_effects)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-consumer-distribution/tests/consumer-distribution.test.py", line 406, in test_missing_approval_cannot_create_managed_effects
+    self.assertFalse((target/'.harness/distribution/active.json').exists(),
+AssertionError: True is not false : missing approval created an active selection
+
+----------------------------------------------------------------------
+Ran 1 test in 2.316s
+
+FAILED (failures=1)

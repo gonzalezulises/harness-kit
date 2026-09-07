@@ -1,0 +1,13 @@
+✔ F27 M1 denies remediation before intent or writes after HEAD (4124.312314ms)
+✔ F27 M2 denies remediation before intent or writes after deleted-frozen (4083.541296ms)
+✔ F27 M6 pending first correction rejects a second rule then reconciles only the original intent (6724.357414ms)
+✔ F27 M3 late retained original acknowledgement after operational checkpoint and process reopen via resume (10532.975958ms)
+✔ F27 M3 late retained original acknowledgement after operational checkpoint and process reopen via run (10026.353967ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 35953.629191

@@ -1,0 +1,20 @@
+--- current-product.mjs
++++ ephemeral-read-mutant.mjs
+@@ -88,7 +88,7 @@
+    if(p.type==='OBSERVATION'){
+     must(s.pending?.key===p.key,'observation has no matching owned intent');const intent=s.pending,r=p.result;
+     must(r.binding===intent.binding&&r.kind===intent.kind,'observation binding mismatch');
+-    if(v2&&['REVIEW','FOCAL'].includes(r.kind)){const n=s.normalized[p.key];must(n&&n.digest===r.normalizedOutputDigest,'review has no durable normalization');const payload=journal.getObject(n.digest);must(sha256(canonical(payload))===n.digest&&r.ingestedBytesDigest===n.digest&&canonical(payload.review)===canonical(r.review),'ingest bytes differ from durable review');s.ingestions.push({key:p.key,normalizedOutputDigest:n.digest,ingestedBytesDigest:r.ingestedBytesDigest,sessionId:r.sessionId});if(r.kind==='REVIEW'){must(s.counters.fullReview===0,'full judgment already consumed');s.counters.fullReview++;}else{must(s.counters.fixAttempts<2,'fix judgment exhausted');s.counters.fixAttempts++;}}
++    if(v2&&['REVIEW','FOCAL'].includes(r.kind)){const n=s.normalized[p.key];must(n&&n.digest===r.normalizedOutputDigest,'review has no durable normalization');const payload=normalized(s,journal.readAcknowledgement(ackDigest(s,p.key)));must(sha256(canonical(payload))===n.digest&&r.ingestedBytesDigest===n.digest&&canonical(payload.review)===canonical(r.review),'ingest bytes differ from durable review');s.ingestions.push({key:p.key,normalizedOutputDigest:n.digest,ingestedBytesDigest:r.ingestedBytesDigest,sessionId:r.sessionId});if(r.kind==='REVIEW'){must(s.counters.fullReview===0,'full judgment already consumed');s.counters.fullReview++;}else{must(s.counters.fixAttempts<2,'fix judgment exhausted');s.counters.fixAttempts++;}}
+     if(v2&&r.kind==='FIX'){must(s.fixProposals<2,'fix proposals exhausted');s.fixProposals++;}
+     const evidenceDigest=digestData(r);s.steps.push({key:p.key,kind:r.kind,evidenceDigest,binding:r.binding});s.pending=null;
+     if(r.kind==='RED'||r.kind==='VERIFY'||r.kind==='COUNTEREXAMPLE'){
+@@ -327,7 +327,7 @@
+    let payload;try{payload=normalized(s,r);}catch(error){persist(item,{type:'TOOL_FAILURE',key,cause:'INVALID_REVIEW_OUTPUT',fingerprint:digestData({cause:'INVALID_REVIEW_OUTPUT',logicalKey:logicalKey(key),source:s.manifestDigest})},append);return false;}
+    const digest=journal.putObject(payload);if(!s.normalized[key])persist(item,{type:'NORMALIZED',key,digest,rawDigest:sha256(r.rawReview.output)},append);s=read(item);must(s.normalized[key].digest===digest,'normalization changed across resume');
+    // No ephemeral fallback: these verified durable bytes are the ingest input.
+-   const persisted=journal.getObject(s.normalized[key].digest),ingestedBytesDigest=sha256(canonical(persisted));must(ingestedBytesDigest===digest,'normalized output differs at ingest');
++   const persisted=payload,ingestedBytesDigest=sha256(canonical(persisted));must(ingestedBytesDigest===digest,'normalized output differs at ingest');
+    r={...r,review:persisted.review,normalizedOutputDigest:digest,ingestedBytesDigest};delete r.rawReview;
+   }
+   persist(item,{type:'OBSERVATION',key,result:r},append);return true;

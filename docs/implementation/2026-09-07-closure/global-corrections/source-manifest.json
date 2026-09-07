@@ -1,0 +1,7 @@
+{
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/journal.mjs": "af720c59d2afc6bcfd3dd78752729b99b9a532aa4fa539c88541c9373076614b",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/execution.mjs": "0b4d4089e64172f722c10a807b67c255c934534179ae6e03c32321ca6af8b3cf",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/release.mjs": "769c9f37d6d0dba9cda61e8094bd062eb2426c4e58ef5b82926c18e974c13ad8",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/review.mjs": "f284c9ab006fd0cde18bbd541e724922135dad75cef36d89e8bb06ee21663389",
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/capabilities.mjs": "a34077e46a1e38e65e3dda989d26d14e8822c14b3a1a388ebfad141ab7b44aa7"
+}

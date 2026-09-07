@@ -1,0 +1,13 @@
+# Close increments with current evidence and preserved authority
+
+The owner-authorized 2026-09-07 closure continues PR33–37 and permits strictly necessary fixes in the previously frozen PR33. The current decision and backlog are recorded in docs/implementation/2026-09-07-closure/mandate.md and inventory.json. AGENTS.md, DECISIONS.md, bin/ARCHITECTURE.md and docs/quality-document.md continue to govern the changes.
+
+Linked Git worktrees must resolve their common object store before local PR preparation. Malformed verifier UTF-8 must reject the supervisor promise with a typed tool failure. These changes preserve the original nonce, budget and history contracts. Retained causal RED/GREEN records identify the exact tested bytes; subsequent review evidence remains a separate acceptance requirement.
+
+The closure branch integrates the distribution delta locally while retaining F25, F26, F27 and original review receipts. Current distribution inventory is authoritative for module membership; an enumerated historical module list was stale after product integration. Local fixture execution cannot stand in for an authenticated real pilot or consumer adoption.
+
+The exact PR34 policy was adopted through ordinary GitHub controls. The new global review found that history-preserving integration and a separately adopted isolated protected execution boundary are still required. This note does not authorize changes to that policy. Squashing away required proof ancestors, sharing judge write authority with candidate programs, or promoting historical blocked F09 would invalidate the intended closure. Revisit this note only with the corresponding concrete correction and accepted evidence; record a different policy decision separately.
+
+The integrated controller also takes the reviewed immutable request snapshots at release, standalone review, catalog and execution entrypoints. F27 preserves original pending ownership through a versioned checkpoint-recovery event; evidence-only resume cannot spend or redispatch. Only explicit supported transient or completed malformed review evidence with remaining original limits can restore the original FULL/FOCAL stage. Historical failure events and A03 input remain unchanged. The current A06 oracle links its final-source causal re-witness.
+
+The exact PR33 CI environment reproduced 18 failures in independent fixture repositories. The fixture suite now clears only inherited ROUTES_BASE and DELIVERY_BASE in its child shell. The caller and all protected/base-selected production gates keep their original environment and policy; explicit invalid-base regression cases still set and test their own values. This follows AGENTS.md and docs/quality-document.md.

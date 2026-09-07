@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "status": "RETAINED_INPUTS_VALIDATED",
+  "source_pr36": "43e32833945a1fbb0cdd9dca2d582a428209d4fc",
+  "checks": [
+    {
+      "path": "tests/consumer-distribution.test.py",
+      "sha256": "3651818b4be511ac88f8c96aead84c962d8e3ff714004393d109613a5199c76a",
+      "group": "tests"
+    },
+    {
+      "path": "docs/implementation/2026-09-06-consumer-distribution/recovery-fix/evidence/unauthorized-activation.patch",
+      "sha256": "f8718e5e0ba58b25a7f4f2c627a9ec68403bf66e0638fbe804e0fbead8d95f51",
+      "group": "source"
+    },
+    {
+      "path": "docs/implementation/2026-09-06-consumer-distribution/recovery-fix/evidence/unauthorized-red.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "group": "logs"
+    },
+    {
+      "path": "docs/implementation/2026-09-06-consumer-distribution/recovery-fix/evidence/unauthorized-red.stderr.log",
+      "sha256": "3b1304425d219051812bf8d736321dc7a548b74387ce9dc2fe1388b3ac044727",
+      "group": "logs"
+    },
+    {
+      "path": "docs/implementation/2026-09-06-consumer-distribution/recovery-fix/evidence/unauthorized-red.exit",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "group": "logs"
+    },
+    {
+      "path": "tests/consumer-distribution.test.py",
+      "sha256": "3651818b4be511ac88f8c96aead84c962d8e3ff714004393d109613a5199c76a",
+      "group": "tests"
+    },
+    {
+      "path": "docs/implementation/2026-09-06-consumer-distribution/recovery-fix/evidence/fix-2-to-recovery-fix.patch",
+      "sha256": "71c903926d1da6cbba965e97c559c456b9a8be28c9f4bf88896fe249c33168a7",
+      "group": "source"
+    },
+    {
+      "path": "docs/implementation/2026-09-06-consumer-distribution/recovery-fix/evidence/fix2-partial-copy-red.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "group": "logs"
+    },
+    {
+      "path": "docs/implementation/2026-09-06-consumer-distribution/recovery-fix/evidence/fix2-partial-copy-red.stderr.log",
+      "sha256": "36f4910774c614e7b30539210e1e0a0fb08cb5fcac96e3d388a763b60d496373",
+      "group": "logs"
+    },
+    {
+      "path": "docs/implementation/2026-09-06-consumer-distribution/recovery-fix/evidence/fix2-partial-copy-red.exit",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "group": "logs"
+    },
+    {
+      "path": "docs/implementation/2026-09-06-consumer-distribution/fix-2/evidence/fix1-final-red.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "group": "fix1 historical logs"
+    },
+    {
+      "path": "docs/implementation/2026-09-06-consumer-distribution/fix-2/evidence/fix1-final-red.stderr.log",
+      "sha256": "2365e5e80fb47628bfc8c7264117c9ac8dafdd0f1c024d01c518f6a31629aa54",
+      "group": "fix1 historical logs"
+    },
+    {
+      "path": "docs/implementation/2026-09-06-consumer-distribution/fix-2/evidence/fix1-final-red.exit",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "group": "fix1 historical logs"
+    }
+  ],
+  "reconstruction": {
+    "fix2_manager": "051f880bed8b7788c77ae3265a9b3378c537a2e8ff58cb3078f26dac9e600d4e",
+    "fix2_tests": "697a4d35215c42da2a78f0de0c1fa66c7d0025704b561fe3532d501ba950e85c",
+    "fix1_manager": "3aee24ef49a6427efa54eaee7ccb727db3685e5dc8622820889d9c92059a539a",
+    "commands_executed": "git apply --reverse restricted to disposable manager/test files; no historical test execution"
+  },
+  "original_f1f080_red": "HISTORICAL_INPUT_UNAVAILABLE_NOT_RECERTIFIED",
+  "limits": "Validates retained bytes and portable source reconstruction, not fresh causal execution, original missing run or consumer adoption."
+}

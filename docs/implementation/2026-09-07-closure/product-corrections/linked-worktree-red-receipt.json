@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "command": [
+    "node",
+    "--test",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-linked-worktree.test.mjs"
+  ],
+  "exit_code": 1,
+  "tests": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-linked-worktree.test.mjs": "a42b5ead811973be942468c70f98349068879c5fb34128c134dad3afd6e72347",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-corrections-fixture.mjs": "3af5f39a3943f388676437da2bf2255de96d1c739bde6622801f9cc58fad4978"
+  },
+  "source": {
+    "docs/implementation/2026-09-07-closure/product-corrections/defective-product.mjs": "4e7213881c760a7283db74d1d8126efd4308b0fb0ef2ca50ffd4b9a67e8f8a9d"
+  },
+  "logs": {
+    "docs/implementation/2026-09-07-closure/product-corrections/product-linked-worktree-red.log": "43bb58b2e50f48f85afc19792c9a3bf7e8a4726a74828700786cac2b55df0cc9"
+  },
+  "witness_source_commit": "dfd717b934667b1d6153a8934a657a70b8b0c9e1",
+  "assurance": "LOCAL_IMPLEMENTER_OBSERVATION"
+}

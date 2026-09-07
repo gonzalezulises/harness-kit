@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+    "/workspace/scratch/0be017df5260/closure-consumer-work/consumer/.harness/distribution/bootstrap.mjs",
+    "identify",
+    "--repository",
+    "closure-consumer",
+    "--schema",
+    "record.v1",
+    "--file",
+    "/workspace/scratch/0be017df5260/closure-consumer-work/identify-input.yaml"
+  ],
+  "exit": 0,
+  "environment": "LANG and empty npm cache only; no inherited credentials",
+  "assurance": "local installed runtime operation with explicitly ephemeral non-adopted fixture authority"
+}

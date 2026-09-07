@@ -1,0 +1,36 @@
+[
+  {
+    "layer": "static",
+    "argv": [
+      "bash",
+      "-c",
+      "python3 -I bin/harness-consumer.py --help >/dev/null && python3 -I -m json.tool schemas/consumer-installation.v1.json >/dev/null && node --check assets/harness-consumer-bootstrap.mjs && echo consumer-static-contract-ok"
+    ],
+    "exit_code": 0,
+    "seconds": 0.193
+  },
+  {
+    "layer": "runtime",
+    "argv": [
+      "python3",
+      "-I",
+      "tests/consumer-distribution.test.py",
+      "-k",
+      "ConsumerRuntime"
+    ],
+    "exit_code": 0,
+    "seconds": 28.757
+  },
+  {
+    "layer": "e2e",
+    "argv": [
+      "python3",
+      "-I",
+      "tests/consumer-distribution.test.py",
+      "-k",
+      "ConsumerEndToEnd"
+    ],
+    "exit_code": 0,
+    "seconds": 11.043
+  }
+]

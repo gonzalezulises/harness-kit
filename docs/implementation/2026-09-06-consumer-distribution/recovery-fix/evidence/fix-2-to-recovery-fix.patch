@@ -1,0 +1,125 @@
+--- a/bin/harness-consumer.py
++++ b/bin/harness-consumer.py
+@@ -802,6 +802,42 @@
+         os.chmod(directory, 0o555)
+ 
+ 
++def recover_started_staging(bundle_root, manifest, staging):
++    try:
++        base_info = staging.lstat()
++    except OSError as error:
++        raise Failure('MANAGED_FILE_DRIFT', str(error))
++    reject(stat.S_ISLNK(base_info.st_mode) or not stat.S_ISDIR(base_info.st_mode),
++           'MANAGED_FILE_DRIFT', 'STARTED staging is not a plain directory')
++    expected = {item['path']: item for item in manifest['files']
++                if item['target'] == 'generation'}
++    allowed_directories = set()
++    for name in expected:
++        for parent in pathlib.PurePosixPath(name).parents:
++            if parent != pathlib.PurePosixPath('.'):
++                allowed_directories.add(parent.as_posix())
++    for path in staging.rglob('*'):
++        relative = path.relative_to(staging).as_posix()
++        info = path.lstat()
++        if stat.S_ISDIR(info.st_mode) and not stat.S_ISLNK(info.st_mode):
++            reject(relative not in allowed_directories, 'MANAGED_FILE_DRIFT',
++                   'STARTED staging contains an undeclared directory: '+relative)
++            continue
++        reject(relative not in expected or stat.S_ISLNK(info.st_mode) or
++               not stat.S_ISREG(info.st_mode) or info.st_nlink != 1,
++               'MANAGED_FILE_DRIFT',
++               'STARTED staging contains an unsafe or undeclared path: '+relative)
++        item = expected[relative]
++        reject(stat.S_IMODE(info.st_mode) not in {item['mode'], 0o644},
++               'MANAGED_FILE_DRIFT', 'STARTED staging mode differs: '+relative)
++        intended = (bundle_root/'payload'/relative).read_bytes()
++        observed = path.read_bytes()
++        reject(observed != intended and
++               not (len(observed) < len(intended) and intended.startswith(observed)),
++               'MANAGED_FILE_DRIFT', 'STARTED staging bytes differ: '+relative)
++    copy_generation(bundle_root, manifest, staging)
++
++
+ def install_stable(root, bundle_root, manifest):
+     dist = distribution(root)
+     for item in manifest['files']:
+@@ -985,6 +1021,11 @@
+             if not os.path.lexists(generation):
+                 if not os.path.lexists(staging):
+                     copy_generation(bundle_root, manifest, staging)
++                elif transaction['stage'] == 'STARTED':
++                    try:
++                        verify_generation_at(staging, manifest)
++                    except Failure:
++                        recover_started_staging(bundle_root, manifest, staging)
+                 verify_generation_at(staging, manifest)
+             manifest_file = dist/'manifests'/(plan['bundleDigest']+'.json')
+             if os.path.lexists(manifest_file):
+--- a/tests/consumer-distribution.test.py
++++ b/tests/consumer-distribution.test.py
+@@ -574,6 +574,57 @@
+         generations = [item for item in (dist/'generations').iterdir()
+                        if item.is_dir()]
+         self.assertEqual([item.name for item in generations], [value['bundleDigest']])
++
++    def test_sigkill_during_started_copy_recovers_only_safe_partial_staging(self):
++        bundle, _ = self.bundle()
++        injection = r'''import importlib.util,sys,pathlib,os,signal
++cli=sys.argv.pop(1)
++spec=importlib.util.spec_from_file_location('f26_partial_staging',cli)
++m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
++original=m.os.chmod
++def stop_after_first_staged_file(path,mode,*args,**kwargs):
++    result=original(path,mode,*args,**kwargs)
++    p=pathlib.Path(path)
++    if p.is_file() and any(part.startswith('.staging-') for part in p.parts):
++        os.kill(os.getpid(),signal.SIGKILL)
++    return result
++m.os.chmod=stop_after_first_staged_file
++m.main()
++'''
++
++        def interrupted(name):
++            target = consumer(self.root/name)
++            value, path = make_plan(self.root, 'plan', target, bundle)
++            killed = subprocess.run(
++                [sys.executable, '-I', '-c', injection, str(CLI), 'apply',
++                 '--target', str(target), '--bundle', str(bundle), '--plan', str(path),
++                 '--approve-plan', value['planDigest']],
++                capture_output=True, text=True, timeout=60)
++            self.assertEqual(killed.returncode, -9)
++            dist = target/'.harness/distribution'
++            staging = dist/('.staging-'+value['bundleDigest'])
++            staged = [item for item in staging.rglob('*') if item.is_file()]
++            transaction = dist/'transactions'/(value['planDigest']+'.json')
++            self.assertEqual(len(staged), 1)
++            self.assertEqual(json.loads(transaction.read_text())['stage'], 'STARTED')
++            self.assertFalse((dist/'active.json').exists())
++            return target, value, path, staging, staged[0]
++
++        target, value, path, staging, _ = interrupted('safe-partial')
++        resumed = apply('apply', target, bundle, value, path)
++        self.assertEqual(resumed.returncode, 0, resumed.stdout+resumed.stderr)
++        self.assertFalse(staging.exists())
++        self.assertTrue((target/'.harness/distribution/active.json').is_file())
++
++        target, value, path, _, staged = interrupted('changed-partial')
++        original = staged.read_bytes()
++        mode = staged.stat().st_mode & 0o777
++        staged.chmod(0o644)
++        staged.write_bytes(bytes([original[0] ^ 1])+original[1:])
++        staged.chmod(mode)
++        rejected = apply('apply', target, bundle, value, path)
++        self.assertStatus(rejected, 'MANAGED_FILE_DRIFT')
++        self.assertFalse((target/'.harness/distribution/active.json').exists())
+ 
+     def test_head_change_after_prepare_blocks_selector_effect(self):
+         target = consumer(self.root/'prepare-drift')
+--- a/.harness/oracles/AC-CONSUMER-DISTRIBUTION.yaml
++++ b/.harness/oracles/AC-CONSUMER-DISTRIBUTION.yaml
+@@ -29,4 +29,4 @@
+ falsification:
+   defect: Removing both exact approval guards allows apply without --approve-plan to create the active selector; the final boundary test observes that unauthorized managed effect
+   proved_sha: a798c88ad625be2478d24df52c0dc45c51e2d4e4
+-  receipt: docs/implementation/2026-09-06-consumer-distribution/fix-2/evidence/unauthorized-red-receipt.json
++  receipt: docs/implementation/2026-09-06-consumer-distribution/recovery-fix/evidence/unauthorized-red-receipt.json

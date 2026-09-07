@@ -1,0 +1,33 @@
+✔ pilot unavailable runtime produces honest parseable offline JSON and nonzero (54.864588ms)
+✔ pilot loaded runtime remains installation observation with identity and no false READY (811.142397ms)
+✔ journal v1 binding remains exact while product journals opt into a distinct contract (2552.220604ms)
+✔ no product operation is available without authentic authority and capability (3261.477888ms)
+✔ known differences block slice approval PASS next slice and baseline promotion (41560.220845ms)
+✔ two control cycles without product value block a third before spending (4483.906124ms)
+✔ direct mutation bypass invalidates authority before effect (3075.685709ms)
+✔ SHA change invalidates bound authority and review before effect (2700.306991ms)
+✔ health or loaded zero exit without version and schema identity is UNKNOWN (5191.691619ms)
+✔ valid nonce cannot authorize frozen path patch (10800.019397ms)
+✔ text checker green and open authenticated High block PASS despite required gates green (18969.441361ms)
+✔ two unsuccessful fixes retain original finding and stop without third full review (55451.058465ms)
+✔ gate reuse requires exact bindings and resume performs zero duplicate dispatch (7037.484354ms)
+✔ e2e objective moves RED patch GREEN independent full review causal fix focal review and handoff automatically (36799.96543ms)
+✔ e2e two actual processes competing for one step nonce create one verifier effect (7172.880006ms)
+✔ e2e actual CLI source passes through product RED author patch High remediation and local PR preparation (40817.201076ms)
+✔ a mechanically fresh journal run cannot inherit the previous product grant (3613.675693ms)
+✔ fix1 H1 terminal FAILED STALE INCOMPLETE runs reject effects and promotions (12799.830154ms)
+✔ fix1 H2 difference arriving during review cannot restore canonical PASS (18812.068015ms)
+✔ fix1 H3 a known functional VERIFY RED settles and enters bounded correction (32933.983245ms)
+✔ fix1 H4 a GREEN case cannot borrow another findings RED (20928.887218ms)
+✔ e2e fix1 H4 two findings close in separate rounds without losing causal chains or backlog (58888.901711ms)
+✔ fix1 M2 pilot coverage enumerates every surface and binds applicable observed cases (48450.008522ms)
+✔ fix1 H4 conflicting finding identities cannot hide a High behind a Low (19443.02259ms)
+✔ fix2 M2 coverage binds an observed nested regression GREEN to its containing VERIFY receipt (36828.772766ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 493995.031109

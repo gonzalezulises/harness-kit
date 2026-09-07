@@ -1,0 +1,82 @@
+{
+  "purpose": "Preserve exact final F27 tested source after the separate GR02 integration and future publication extension. Original receipts remain unchanged; their source paths name the logical runtime files at execution time.",
+  "receipt": "green-receipt.json",
+  "files": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/release.schema.mjs": {
+      "path": "docs/implementation/2026-09-07-closure/f27-corrections/late-failure/first-correction-source/release.schema.mjs",
+      "sha256": "9c719f1be018e38bfe8c95baa77281940211c2b4651a69e9835e88bffef98122"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/release.mjs": {
+      "path": "docs/implementation/2026-09-07-closure/f27-corrections/late-failure/first-correction-source/release.mjs",
+      "sha256": "0341925547850d952bd96df3f5e0110bcabe4afd85c57366c4b34cce2ec90377"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/budget.mjs": {
+      "path": "docs/implementation/2026-09-07-closure/f27-corrections/late-failure/first-correction-source/budget.mjs",
+      "sha256": "bcf6bacf43d1bee8dfc28f6951d17cd8391f89411609bde61b58cba8f8c8b24b"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/review.mjs": {
+      "path": "docs/implementation/2026-09-07-closure/f27-corrections/late-failure/first-correction-source/review.mjs",
+      "sha256": "939e0695fff5895202bfdd63e3390274f1a8cdd47620e0a609e08561db8ddfca"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/product.mjs": {
+      "path": "docs/implementation/2026-09-07-closure/f27-corrections/late-failure/final-source/product.mjs",
+      "sha256": "acc0e4c8402dde24e9c7d88cf168be7744c0b9a4ccc435ef1282bb087ac0b51a"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/product.schema.mjs": {
+      "path": "docs/implementation/2026-09-07-closure/f27-corrections/late-failure/final-source/product.schema.mjs",
+      "sha256": "89ae1728629ef5f24a60ff553180d63fdc45a47951aabc9fe5d1d5a8557eebe2"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/execution.mjs": {
+      "path": "docs/implementation/2026-09-07-closure/f27-corrections/late-failure/first-correction-source/execution.mjs",
+      "sha256": "0b4d4089e64172f722c10a807b67c255c934534179ae6e03c32321ca6af8b3cf"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/continuation.mjs": {
+      "path": "docs/implementation/2026-09-07-closure/f27-corrections/late-failure/first-correction-source/continuation.mjs",
+      "sha256": "a388a4a8af12a316ea3bc4c9f63085ffd5fa69c56d4fcd393f9e16c104fb9401"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/authority.mjs": {
+      "path": "docs/implementation/2026-09-07-closure/f27-corrections/late-failure/first-correction-source/authority.mjs",
+      "sha256": "c835ae848b7a6ad4dfc024b5eb2495fa6c6dc68f6cafa89dd7c3a0b12f8cfe26"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/capabilities.mjs": {
+      "path": "docs/implementation/2026-09-07-closure/f27-corrections/late-failure/first-correction-source/capabilities.mjs",
+      "sha256": "a34077e46a1e38e65e3dda989d26d14e8822c14b3a1a388ebfad141ab7b44aa7"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/identity.mjs": {
+      "path": "docs/implementation/2026-09-07-closure/f27-corrections/late-failure/first-correction-source/identity.mjs",
+      "sha256": "f6bc4cf109851e22bece790619fe736808d7af52b06f79e9b00047e0106cfb21"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/codex-worker.mjs": {
+      "path": "docs/implementation/2026-09-07-closure/f27-corrections/late-failure/first-correction-source/codex-worker.mjs",
+      "sha256": "836883f95330f0a38aefa6f31de44a004622dac825fa59748591eea9bbf7e18f"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/index.mjs": {
+      "path": "docs/implementation/2026-09-07-closure/f27-corrections/late-failure/first-correction-source/index.mjs",
+      "sha256": "706b908393a05f6fcd8c00e22aedee38c8ad58dedde826feb7373bef8c71b09e"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/review.schema.mjs": {
+      "path": "docs/implementation/2026-09-07-closure/f27-corrections/late-failure/first-correction-source/review.schema.mjs",
+      "sha256": "f51ace62072b29ce8984414e4ee97b022768eea23bd26b49193b428aabb3396a"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/review-shadow.mjs": {
+      "path": "docs/implementation/2026-09-07-closure/f27-corrections/late-failure/first-correction-source/review-shadow.mjs",
+      "sha256": "84221bac483c39e517b288b11910a25e33e8c665e5a3d59faba657e97fef71dd"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/execution.schema.mjs": {
+      "path": "docs/implementation/2026-09-07-closure/f27-corrections/late-failure/first-correction-source/execution.schema.mjs",
+      "sha256": "014c78202f297a3918c13e672412dcb8a83a50b79fc025adceb08b667b86fdbe"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/github-actions.mjs": {
+      "path": "docs/implementation/2026-09-07-closure/f27-corrections/late-failure/first-correction-source/github-actions.mjs",
+      "sha256": "db760d896e42f14e88f06165021c11ac146b3c4ad84fc929a486fc5245003bb1"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/journal.mjs": {
+      "path": "docs/implementation/2026-09-07-closure/f27-corrections/late-failure/first-correction-source/journal.mjs",
+      "sha256": "b736a6ae3163c85387cbc7c32648c1e33449218b9d54e8ef8567758d64f4e26a"
+    },
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/classify.mjs": {
+      "path": "docs/implementation/2026-09-07-closure/f27-corrections/late-failure/first-correction-source/classify.mjs",
+      "sha256": "497fb60b930dc8a3ac00062d297d865ccbfa6f713f31ed1ad050ff315fe90e49"
+    }
+  }
+}

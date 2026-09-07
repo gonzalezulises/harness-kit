@@ -1,0 +1,33 @@
+id: AC-H06
+requirement: Reusable continuation preserves signed semantics and objective budgets across runs
+criticality: high
+status: TEST_READY
+observable: Only a fresh scoped continuation permits existing closed effects; attempts and revocations survive replay
+oracle:
+  expected: Recompute accepted invariant bindings and closed regression expectations, authenticate grants and reserve signed budgets before work
+cases:
+  positive:
+  - One signed continuation supports mechanical fresh runs without another artifact acceptance
+  negative:
+  - Changed authority, scope, threat, architecture, defect or regression expectations block
+  - Expiry, revocation, forged handles and exhausted category or total budgets block effects
+  boundary:
+  - Idempotent keys and fresh runs never refund attempts; old acceptance cannot approve new golden bytes
+context: Operator-bound runtime and journal with ephemeral fixture issuer; local exclusive writes only
+side_effects:
+  must:
+  - Record original signed grant, durable regressions, attempts and revocations in replay
+  must_not:
+  - Auto-sign approval, accept candidate booleans or callbacks, or fabricate unsupported product proof
+false_positive: Removing a mandatory continuation enforcement check must make exact current adversarial tests fail
+owner: harness-kit maintainers under AGENTS.md and MIGRATION-01 in DECISIONS.md
+evidence:
+  formats:
+  - Exact preserved source and current tests, witnessed causal RED and distinct static runtime e2e logs
+tests:
+- packs/autonomy/repo-template/scripts/quality-orchestrator/tests/continuation.test.mjs
+
+falsification:
+  defect: Preserved initial H06 treats identical accepted bytes as adequate representation regression coverage, and blocks exhausted effect retry as stale. Exact current tests observe CONTINUATION_DESCRIBED instead of POLICY and a false retry refusal; two assertions fail before the fixes.
+  proved_sha: 589a4e3efe924264825c0f3de4b3820d83b196be
+  receipt: docs/implementation/2026-09-05-harness-hardening/h06/red-receipt.json

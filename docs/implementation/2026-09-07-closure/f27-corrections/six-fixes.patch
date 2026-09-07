@@ -1,0 +1,156 @@
+--- red-source/product.mjs
++++ quality-orchestrator/product.mjs
+@@ -12,7 +12,7 @@
+ import {productReviewV2SchemaDigest,reviewSchema,reviewSchemaDigest} from './review.schema.mjs';
+ import {normalizeProductReview} from './review.mjs';
+ import {describeProductCorrection,verifyProductCorrection} from './continuation.mjs';
+-import {productInputV2Schema,productObjectiveV2Schema,productPayloadV2Schema,humanInterruptionSchema,productHash as hash,productInputSchema,productObjectiveSchema,productPatchSchema,productPatchSchemaDigest,productPayloadSchema,functionalObservationSchema,productCoverageSurfaces} from './product.schema.mjs';
++import {productReviewFailureV1Schema,productInputV2Schema,productObjectiveV2Schema,productPayloadV2Schema,humanInterruptionSchema,productHash as hash,productInputSchema,productObjectiveSchema,productPatchSchema,productPatchSchemaDigest,productPayloadSchema,functionalObservationSchema,productCoverageSurfaces} from './product.schema.mjs';
+ const absolute=z.string().refine(path.isAbsolute),artifact=z.strictObject({path:absolute,digest:hash});
+ const hostSchema=z.strictObject({root:absolute,sessions:absolute,gitPath:absolute,gitDigest:hash,nodePath:absolute,nodeDigest:hash,verifier:artifact.extend({timeoutMs:z.number().int().positive().max(600000),outputLimit:z.number().int().positive().max(1024*1024)}),worker:z.strictObject({binary:absolute,binaryDigest:hash,protocolPath:absolute,protocolDigest:hash}),containment:z.discriminatedUnion('status',[z.strictObject({status:z.literal('UNAVAILABLE')}),z.strictObject({status:z.literal('FIXTURE'),digest:hash}),z.strictObject({status:z.literal('OPERATOR_ATTESTED'),digest:hash,approval:z.unknown()})]),model:z.string().min(1),effort:z.string().min(1),authMode:z.enum(['chatgpt','apiKey'])});
+ const must=(value,reason,status='POLICY')=>{if(!value)throw Object.assign(Error(reason),{productStatus:status});};
+@@ -259,11 +259,27 @@
+  function normalized(s,r){return normalizeProductReview(r.rawReview.output,{objectiveDigest:s.objectiveDigest,files:r.files,cases:s.wire.objective.input.regressions});}
+  function ackDigest(s,key){return digestData({domain:'product.step.v1',objective:s.objectiveDigest,key});}
+  function logicalKey(key){return key.replace(/:tool:[0-9]+$/,'');}
++ function settledReviewFailure(s,result){
++  must(['REVIEW','FOCAL'].includes(result.kind)&&result.kind===s.pending?.kind&&result.binding===s.pending.binding,'settled failure differs from original reviewer intent');
++  const retained=result.transportFailure;must(retained?.sourceDigest===s.manifestDigest,'rejected review source changed');
++  // An old unqualified acknowledgement supplies no new retry authority. Old
++  // already-published TOOL_FAILURE events below retain their original meaning.
++  return productReviewFailureV1Schema.parse(retained.version===1?retained:{version:1,code:'unknown',sourceDigest:retained.sourceDigest,sessionId:retained.sessionId,misalignment:false});
++ }
+  function transitionV2(state,s,p,ctx){
+   const o=s.wire.objective;
+   if(p.type==='NORMALIZED'){
+    must(s.pending?.key===p.key,'normalization has no owned attempt');const ack=journal.readAcknowledgement(ackDigest(s,p.key));must(ack?.rawReview&&sha256(ack.rawReview.output)===p.rawDigest&&digestData(normalized(s,ack))===p.digest,'normalized payload does not match observed judgment');s.normalized[p.key]={digest:p.digest,rawDigest:p.rawDigest};s.interruption=auto('INFRASTRUCTURE_NORMALIZATION',{digest:p.digest,rawDigest:p.rawDigest});
+   }
++  if(p.type==='SETTLED_REVIEW_FAILURE'){
++   must(s.pending?.key===p.key,'settled failure has no original owned attempt');const ack=journal.readAcknowledgement(ackDigest(s,p.key));must(ack&&canonical(settledReviewFailure(s,ack))===canonical(p.failure),'settled failure differs from retained causal evidence');
++   const key=logicalKey(p.key),mechanical=!p.failure.misalignment&&['serverOverloaded','internalServerError'].includes(p.failure.code),fingerprint=digestData({code:p.failure.code,logicalKey:key,source:s.manifestDigest});
++   s.pending=null;
++   if(mechanical){
++    s.tooling.failures++;s.tooling.retries[key]=(s.tooling.retries[key]||0)+1;s.tooling.fingerprints[fingerprint]=(s.tooling.fingerprints[fingerprint]||0)+1;s.interruption=auto('SETTLED_REVIEW_'+p.failure.code,p);
++    if(s.tooling.retries[key]>o.input.operations.toolingRetries||s.tooling.fingerprints[fingerprint]>=o.input.operations.noProgressLimit){s.stage='OPERATIONAL_BLOCKED';s.verified_state='UNKNOWN';}
++   }else{s.stage='OPERATIONAL_BLOCKED';s.verified_state='UNKNOWN';s.interruption={classification:'OPERATIONAL_DIAGNOSIS',cause:'SETTLED_REVIEW_'+p.failure.code,evidenceDigest:digestData(p)};}
++  }
+   if(p.type==='TOOL_FAILURE'){
+    must(s.pending?.key===p.key,'tool failure has no owned attempt');const key=logicalKey(p.key);s.tooling.failures++;s.tooling.retries[key]=(s.tooling.retries[key]||0)+1;s.tooling.fingerprints[p.fingerprint]=(s.tooling.fingerprints[p.fingerprint]||0)+1;s.pending=null;s.interruption=auto(p.cause,{key,fingerprint:p.fingerprint});
+    if(s.tooling.retries[key]>o.input.operations.toolingRetries||s.tooling.fingerprints[p.fingerprint]>=o.input.operations.noProgressLimit){s.stage='OPERATIONAL_BLOCKED';s.verified_state='UNKNOWN';}
+@@ -282,15 +298,15 @@
+   }
+  }
+  function describeRemediation(item,input){
+-  const {path:name}=z.strictObject({path:z.string()}).parse(input),s=read(item),index=item.objective.remediationProofs.findIndex(p=>p.rule.path===name);must(index>=0,'no original authorization for remediation path');const proof=item.objective.remediationProofs[index];const run=journal.read(item.ctx).state.runs.at(-1);must(run?.runId===s.activeRunId&&run?.verdict==='OPEN','remediation requires current OPEN run','BLOCKED_BY_TERMINAL_RUN');
++  const {path:name}=z.strictObject({path:z.string()}).parse(input),s=read(item),index=item.objective.remediationProofs.findIndex(p=>p.rule.path===name);must(index>=0,'no original authorization for remediation path');const proof=item.objective.remediationProofs[index];must(commit()===item.objective.baseCommit,'HEAD changed since bounded grant','BLOCKED_BY_STALE_PRODUCT');must(!s.pending&&(!s.remediationPending||s.remediationPending.proofIndex===index),'another unresolved intent owns remediation','OPERATIONAL_BLOCKED');const run=journal.read(item.ctx).state.runs.at(-1);must(run?.runId===s.activeRunId&&run?.verdict==='OPEN','remediation requires current OPEN run','BLOCKED_BY_TERMINAL_RUN');
+   try{verifyProductCorrection(proof,item.objective.scope,runtime,config.root);}catch(error){if(error.continuationStatus==='SEMANTIC_DELTA'){
+    const actual=sha256(fs.readFileSync(path.join(config.root,name))),interruption=humanInterruptionSchema.parse({classification:'HUMAN_DECISION_REQUIRED',category:'SEMANTIC_RULE_CHANGE',decision:'Keep the approved record meaning or authorize the changed record?',authorityGap:'The original grant permits representation and derived outputs only; its semantic digest does not match this record.',alternatives:['Restore the originally approved record semantics','Request explicit authority for the changed record semantics'],consequences:['Original domain values and threshold remain in effect','The domain values or threshold change and need a different authority'],evidenceDigest:digestData({approved:proof.semanticDigest,actual,path:name})});throw Object.assign(Error(error.message),{interruption});}throw error;}
+-  const now=manifest();for(const [name,meta] of Object.entries(now.files))if(!Object.hasOwn(proof.after,name))must(canonical(meta)===canonical(s.files[name]),'other source changed outside approved remediation');
++  const now=manifest();must(canonical(Object.keys(now.files).sort())===canonical(Object.keys(s.files).sort()),'source inventory changed outside approved remediation','BLOCKED_BY_STALE_PRODUCT');for(const [name,meta] of Object.entries(now.files)){must(meta.mode===s.files[name].mode,'source mode changed outside approved remediation','BLOCKED_BY_STALE_PRODUCT');if(!Object.hasOwn(proof.after,name))must(canonical(meta)===canonical(s.files[name]),'other source changed outside approved remediation');}
+   return freeze({status:'PRODUCT_REMEDIATION_DESCRIBED',objectiveDigest:s.objectiveDigest,proofIndex:index,beforeManifestDigest:s.manifestDigest,observedManifestDigest:now.digest});
+  }
+  function applyRemediation(item,described){
+   const clean=z.strictObject({status:z.literal('PRODUCT_REMEDIATION_DESCRIBED'),objectiveDigest:hash,proofIndex:z.number().int().nonnegative(),beforeManifestDigest:hash,observedManifestDigest:hash}).parse(described);let s=read(item);const proof=item.objective.remediationProofs[clean.proofIndex];must(proof&&clean.objectiveDigest===s.objectiveDigest,'foreign correction');must(canonical(describeRemediation(item,{path:proof.rule.path}))===canonical(clean),'correction/source changed');
+-  journal.productCustody(append=>{s=read(item);must(manifest().digest===clean.observedManifestDigest,'source raced correction');if(!s.remediationPending)persist(item,{type:'REMEDIATION_INTENT',proofIndex:clean.proofIndex,beforeManifestDigest:s.manifestDigest},append);
++  journal.productCustody(append=>{s=read(item);must(canonical(describeRemediation(item,{path:proof.rule.path}))===canonical(clean),'source raced correction');must(!s.remediationPending||s.remediationPending.proofIndex===clean.proofIndex,'another unresolved correction owns this intent','OPERATIONAL_BLOCKED');if(!s.remediationPending)persist(item,{type:'REMEDIATION_INTENT',proofIndex:clean.proofIndex,beforeManifestDigest:s.manifestDigest},append);
+    for(const [name,data] of Object.entries(proof.after)){const file=path.join(config.root,name),fd=fs.openSync(file,fs.constants.O_WRONLY|fs.constants.O_TRUNC|fs.constants.O_NOFOLLOW);try{fs.writeFileSync(fd,Buffer.from(data,'base64'));fs.fsyncSync(fd);}finally{fs.closeSync(fd);}}
+    persist(item,{type:'REMEDIATION_OBSERVATION',proofIndex:clean.proofIndex,afterManifestDigest:manifest().digest,approvalDigest:digestData(s.wire.approval)},append);
+   });return projection(item);
+@@ -306,7 +322,7 @@
+  }
+  function completeV2(item,key,result,append=journal.append){
+   let s=read(item),r=result;
+-  if(['REVIEW','FOCAL'].includes(r.kind)&&r.transportFailure){must(r.transportFailure.sourceDigest===s.manifestDigest,'rejected review source changed');persist(item,{type:'TOOL_FAILURE',key,cause:'REVIEW_TRANSPORT_REJECTED',fingerprint:digestData({cause:'REVIEW_TRANSPORT_REJECTED',logicalKey:logicalKey(key),source:s.manifestDigest})},append);return false;}
++  if(['REVIEW','FOCAL'].includes(r.kind)&&r.transportFailure){persist(item,{type:'SETTLED_REVIEW_FAILURE',version:1,key,failure:settledReviewFailure(s,r)},append);return false;}
+   if(['REVIEW','FOCAL'].includes(r.kind)){
+    let payload;try{payload=normalized(s,r);}catch(error){persist(item,{type:'TOOL_FAILURE',key,cause:'INVALID_REVIEW_OUTPUT',fingerprint:digestData({cause:'INVALID_REVIEW_OUTPUT',logicalKey:logicalKey(key),source:s.manifestDigest})},append);return false;}
+    const digest=journal.putObject(payload);if(!s.normalized[key])persist(item,{type:'NORMALIZED',key,digest,rawDigest:sha256(r.rawReview.output)},append);s=read(item);must(s.normalized[key].digest===digest,'normalization changed across resume');
+@@ -331,9 +347,9 @@
+   }
+  }
+  async function executeV2(h,key,extra){
+-  must(extra===undefined,'candidate cannot replace nonce request');const item=loaded(h);recoverV2(item);let s=read(item);if(s.stage==='OPERATIONAL_BLOCKED')return projection(item);if(s.steps.some(p=>p.key===key))return projection(item);
++  must(extra===undefined,'candidate cannot replace nonce request');const item=loaded(h);recoverV2(item);let s=read(item);if(s.stage==='OPERATIONAL_BLOCKED'&&!s.pending)return projection(item);if(s.steps.some(p=>p.key===key))return projection(item);
+   const step=next(s);must(step.key===key,'operation key is not the next bounded step');
+-  if(step.resume){const ack=journal.readAcknowledgement(ackDigest(s,key));if(!ack){persist(item,{type:'OPERATIONAL_BLOCK',cause:'UNCERTAIN_EFFECT_REQUIRES_ORIGINAL_OBSERVATION'});return projection(item);}if(await publishAcknowledged(h,key))return projection(item);s=read(item);return s.stage==='OPERATIONAL_BLOCKED'?projection(item):executeV2(h,next(s).key);}
++  if(step.resume){const ack=journal.readAcknowledgement(ackDigest(s,key));if(!ack){if(s.stage!=='OPERATIONAL_BLOCKED')persist(item,{type:'OPERATIONAL_BLOCK',cause:'UNCERTAIN_EFFECT_REQUIRES_ORIGINAL_OBSERVATION'});return projection(item);}if(await publishAcknowledged(h,key))return projection(item);s=read(item);return s.stage==='OPERATIONAL_BLOCKED'?projection(item):executeV2(h,next(s).key);}
+   if(s.counters.starts>=item.objective.input.maxSteps){persist(item,{type:'OPERATIONAL_BLOCK',cause:'SIGNED_OPERATIONAL_RESOURCES_EXHAUSTED'});return projection(item);}
+   const request={kind:step.kind,key,manifestDigest:s.manifestDigest},bind=binding(item,s,request);
+   if(step.kind==='PATCH'){
+@@ -345,7 +361,7 @@
+   const result={kind:step.kind,binding:bind,...value};journal.retainAcknowledgement(ackDigest(s,key),result);if(await publishAcknowledged(h,key))return projection(item);s=read(item);return s.stage==='OPERATIONAL_BLOCKED'?projection(item):executeV2(h,next(s).key);
+  }
+  async function runV2(h,options){
+-  const opts=z.strictObject({maxSteps:z.number().int().positive().max(30).optional()}).parse(options);for(let n=0;n<(opts.maxSteps||30);n++){const item=loaded(h);recoverV2(item);const s=read(item);if(['HANDOFF_PREPARED','OPERATIONAL_BLOCKED'].includes(s.stage))return projection(item);const out=await executeV2(h,next(s).key);if(out.status==='OPERATIONAL_BLOCKED')return out;}return projection(loaded(h));
++  const opts=z.strictObject({maxSteps:z.number().int().positive().max(30).optional()}).parse(options);for(let n=0;n<(opts.maxSteps||30);n++){const item=loaded(h);recoverV2(item);const s=read(item);if(s.stage==='HANDOFF_PREPARED'||s.stage==='OPERATIONAL_BLOCKED'&&!s.pending)return projection(item);const out=await executeV2(h,next(s).key);if(out.status==='OPERATIONAL_BLOCKED')return out;}return projection(loaded(h));
+  }
+  async function execute(h,key,extra){
+   if(v2)return executeV2(h,key,extra);
+--- red-source/product.schema.mjs
++++ quality-orchestrator/product.schema.mjs
+@@ -29,12 +29,15 @@
+ export const productRemediationRuleSchema=z.strictObject({kind:z.literal('canonical-record.v1'),path:reviewPath,goldenPath:reviewPath,corpusPath:reviewPath});
+ export const productInputV2Schema=productInputSchema.extend({version:z.literal(2),operations:z.strictObject({toolingRetries:z.number().int().nonnegative().max(5),noProgressLimit:positive.max(5)}),remediations:z.array(productRemediationRuleSchema).max(10)});
+ export const productObjectiveV2Schema=productObjectiveSchema.extend({version:z.literal(2),domain:z.literal('harness.product-objective.v2'),initialFiles:z.record(reviewPath,z.strictObject({digest:productHash,mode:z.enum(['100644','100755']),lines:z.number().int().nonnegative()})),input:productInputV2Schema,remediationProofs:z.array(z.strictObject({rule:productRemediationRuleSchema,semanticDigest:productHash,before:z.record(reviewPath,productHash),after:z.record(reviewPath,z.string().max(2*1024*1024))})).max(10)});
++// Additive, versioned causal outcome; historical TOOL_FAILURE payloads retain their meaning.
++export const productReviewFailureV1Schema=z.strictObject({version:z.literal(1),code:z.enum(['contextWindowExceeded','sessionBudgetExceeded','usageLimitExceeded','rateLimitExceeded','serverOverloaded','cyberPolicy','misalignmentPolicyViolation','internalServerError','unauthorized','badRequest','threadRollbackFailed','sandboxError','other','unknown']),sourceDigest:productHash,sessionId:id,misalignment:z.boolean()});
+ export const productPayloadV2Schema=z.discriminatedUnion('type',[
+  ...productPayloadSchema.options.filter(s=>s.shape.type.value!=='BOUND'),
+  z.strictObject({type:z.literal('BOUND'),wire:z.strictObject({objective:productObjectiveV2Schema,approval:z.unknown()})}),
+  z.strictObject({type:z.literal('NORMALIZED'),key:id,digest:productHash,rawDigest:productHash}),
+  z.strictObject({type:z.literal('TOOL_FAILURE'),key:id,cause:id,fingerprint:productHash}),
+  z.strictObject({type:z.literal('OPERATIONAL_BLOCK'),cause:id}),
++ z.strictObject({type:z.literal('SETTLED_REVIEW_FAILURE'),version:z.literal(1),key:id,failure:productReviewFailureV1Schema}),
+  z.strictObject({type:z.literal('REBIND_RUN'),oldRunId:productHash,newRunId:productHash}),
+  z.strictObject({type:z.literal('REMEDIATION_INTENT'),proofIndex:z.number().int().nonnegative(),beforeManifestDigest:productHash}),
+  z.strictObject({type:z.literal('REMEDIATION_OBSERVATION'),proofIndex:z.number().int().nonnegative(),afterManifestDigest:productHash,approvalDigest:productHash})
+--- red-source/codex-worker.mjs
++++ quality-orchestrator/codex-worker.mjs
+@@ -4,7 +4,7 @@
+ import {z} from 'zod';
+ import {canonical,digestData,sha256} from './identity.mjs';
+ import {productReviewV2JSONSchema,productReviewV2Schema,productReviewV2SchemaDigest,reviewJSONSchema,reviewSchema,reviewSchemaDigest,reviewPath} from './review.schema.mjs';
+-import {productPatchSchema,productPatchJSONSchema,productPatchSchemaDigest} from './product.schema.mjs';
++import {productReviewFailureV1Schema,productPatchSchema,productPatchJSONSchema,productPatchSchemaDigest} from './product.schema.mjs';
+ import {plainReviewRoot} from './review-shadow.mjs';
+ const hash=z.string().regex(/^[a-f0-9]{64}$/),absolute=z.string().refine(path.isAbsolute);
+ const hostSchema=z.strictObject({binary:absolute,binaryDigest:hash,protocolPath:absolute,protocolDigest:hash,sourceRoot:absolute,homeRoot:absolute,scratchRoot:absolute,containmentDigest:hash,artifactsDigest:hash});
+@@ -73,7 +73,13 @@
+       let completed=turnNotifications.find(m=>m.method==='turn/completed')?.params;
+       if(!completed)completed=await new Promise((resolve,reject)=>{turnWait={resolve,reject};if(fatal)reject(fatal);});
+       must(completed.threadId===thread.thread.id&&completed.turn?.id===turn.turn.id,'review turn identity mismatch');
+-      if(productV2&&completed.turn.status==='failed'&&completed.turn.error){must(sourceManifest()===before,'source changed during rejected review');output={rejection:{cause:'REVIEW_TRANSPORT_REJECTED',sourceDigest:before,sessionId:thread.thread.id}};}else{
++      if(productV2&&completed.turn.status==='failed'&&completed.turn.error){
++       must(sourceManifest()===before,'source changed during rejected review');const error=completed.turn.error;
++       // Keep only the bounded protocol discriminator. Message/details may contain
++       // private material and never establish a mechanical recovery permission.
++       const parsed=productReviewFailureV1Schema.shape.code.safeParse(typeof error.message==='string'?error.codexErrorInfo:null);
++       output={rejection:productReviewFailureV1Schema.parse({version:1,code:parsed.success?parsed.data:'unknown',sourceDigest:before,sessionId:thread.thread.id,misalignment:error.misalignment!=null})};
++      }else{
+       must(completed.turn.status==='completed'&&!completed.turn.error,'review turn was not completed');
+       const finals=turnNotifications.filter(m=>m.method==='item/completed'&&m.params.threadId===thread.thread.id&&m.params.turnId===turn.turn.id&&m.params.item?.type==='agentMessage'&&m.params.item.phase==='final_answer');
+       must(finals.length===1,'missing or ambiguous final review output');const raw=finals[0].params.item.text;must(typeof raw==='string'&&Buffer.byteLength(raw)<=maxOutput,'review final output bound exceeded');if(!productV2)outputSchema.parse(JSON.parse(raw));
+--- red-source/release.mjs
++++ quality-orchestrator/release.mjs
+@@ -198,12 +198,16 @@
+         const item=owned(handle),result=decision(handle,replayRelease(handle));if(result.status==='PRODUCTION_PASS')return result;if(!execution)return blocked(result,'REQUIRED_CAPABILITY_UNAVAILABLE');
+         if(item.state.pending.length){const resumed=await runtime.resumeReleaseExecution(handle,item.state.pending[0]);if(resumed.status!=='EXECUTION_VERIFIED')return blocked(result,'ORIGINAL_OPERATION_RECONCILIATION_PENDING');continue;}
+         const operation=result.nextObligation.kind==='accept-artifact'?'artifact-acceptance':result.nextObligation.kind==='revalidate-deployment'?'deployment':kinds[result.nextObligation.kind];
+-        const entry=options.authorizedExecutions.find(e=>e.wire?.request?.operation===operation&&canonical(e.wire.request.binding)===canonical(releaseBinding(item.objective))&&!journal.read(item.ctx).intents.has(e.wire.budget?.scope?.operationKey));
++        let entry;
++        for(const candidate of options.authorizedExecutions){
++          if(candidate.wire?.request?.operation!==operation||canonical(candidate.wire.request.binding)!==canonical(releaseBinding(item.objective))||journal.read(item.ctx).intents.has(candidate.wire.budget?.scope?.operationKey))continue;
++          const requestInput={...candidate.input};if(!requestInput.actionApproval&&['artifact-acceptance','deployment'].includes(operation)){
++            const action=operation==='artifact-acceptance'?'accept-artifact':result.nextObligation.kind==='revalidate-deployment'?'readback':'deploy',expected=actionExpectation(item,action,action==='readback'?{operationKey:result.nextObligation.operationKey}:undefined);requestInput.actionApproval=options.authorizedActions.find(a=>a?.kind===expected.kind&&a?.subjectDigest===expected.subjectDigest&&a?.scopeDigest===expected.scopeDigest);
++          }
++          const described=runtime.describeReleaseExecution(handle,requestInput);
++          if(described.status==='EXECUTION_DESCRIBED'&&canonical(described.request)===canonical(candidate.wire.request)&&canonical(described.budget)===canonical(candidate.wire.budget)){entry=candidate;break;}
++        }
+         if(!entry)return blocked(result,'EXACT_AUTHORIZED_INPUT_UNAVAILABLE');
+-        const requestInput={...entry.input};if(!requestInput.actionApproval&&['artifact-acceptance','deployment'].includes(operation)){
+-          const action=operation==='artifact-acceptance'?'accept-artifact':result.nextObligation.kind==='revalidate-deployment'?'readback':'deploy',expected=actionExpectation(item,action,action==='readback'?{operationKey:result.nextObligation.operationKey}:undefined);requestInput.actionApproval=options.authorizedActions.find(a=>a?.kind===expected.kind&&a?.subjectDigest===expected.subjectDigest&&a?.scopeDigest===expected.scopeDigest);
+-        }
+-        const described=runtime.describeReleaseExecution(handle,requestInput);if(described.status!=='EXECUTION_DESCRIBED')return blocked(result,'EXACT_AUTHORIZED_INPUT_UNAVAILABLE');must(canonical(described.request)===canonical(entry.wire.request)&&canonical(described.budget)===canonical(entry.wire.budget),'supplied release authorization differs from next exact obligation');
+         const started=await runtime.executeReleaseObligation(handle,entry.wire);if(!['EXECUTION_PENDING','EXECUTION_VERIFIED'].includes(started.status))return blocked(decision(handle,replayRelease(handle)),'EXECUTION_NOT_SETTLED');
+         const resumed=await runtime.resumeReleaseExecution(handle,entry.wire.budget.scope.operationKey);if(resumed.status!=='EXECUTION_VERIFIED')return blocked(decision(handle,replayRelease(handle)),'ORIGINAL_OPERATION_RECONCILIATION_PENDING');
+       }

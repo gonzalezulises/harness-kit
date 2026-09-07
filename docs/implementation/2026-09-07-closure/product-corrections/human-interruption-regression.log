@@ -1,0 +1,33 @@
+✔ A01 canonical representation and derived golden corpus recover within the original grant (19732.444801ms)
+✔ A02 stale mechanical run binding is replaced and replayed without resetting counts (20462.369304ms)
+✔ A03 credential-shaped infrastructure field is replaced without changing reviewer judgment (21262.103812ms)
+✔ A04 invalid evidence refs retry within tooling budget then bind only exact source (21443.154ms)
+✔ A05 invalid durable test id is deterministically generated from approved case (17600.970267ms)
+✔ e2e A06 output lost before ingest recovers durable bytes from retained output on resume (22605.663716ms)
+✔ A07 invalid output consumes tooling attempts and only one valid FULL judgment (25265.930469ms)
+✔ A08 bounded correction completes with original approval and independent focal reviewer (36301.551631ms)
+✔ A09 prior approval survives only proved already-authorized golden corpus refresh (21045.277402ms)
+✔ negative repeated invalid output exhausts operational resources without fabricated PO decision (23512.650774ms)
+✔ negative semantic threshold and out-of-scope remediation do not inherit approval (3442.722143ms)
+✔ negative expired authority cannot be refreshed by equivalent remediation (2257.203506ms)
+✔ negative invented evidence never reaches ingest or permission (24236.05895ms)
+✔ negative pending effect without retained acknowledgement is never redispatched (4858.913254ms)
+✔ release driver with no target capability reports operational blocker without a production claim (2144.412276ms)
+✔ A10 repeated mechanical blockers recover within signed retry limits and make delivery progress (44938.998147ms)
+✔ e2e release driver advances two supplied authorized obligations and reuses their receipts (6367.34809ms)
+✔ negative release authorization failure stays diagnostic and dispatches zero effects (2274.548131ms)
+✔ negative invalid focal output spends no FIX judgment before valid durable ingest (34977.700225ms)
+✔ negative terminal run cannot authorize a representation correction (2349.205073ms)
+✔ e2e release driver consumes authorized production trace through distinct smoke and observability (42006.902067ms)
+✔ publication contention reconciles retained v1 verifier evidence once (8699.057047ms)
+✔ publication contention reconciles retained v2 review evidence once (26162.047448ms)
+✔ negative persistent publication lock keeps retained effect pending without redispatch (10736.055955ms)
+✔ negative publication retry rechecks authority after the owner releases its lock (5174.914244ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 450415.757654

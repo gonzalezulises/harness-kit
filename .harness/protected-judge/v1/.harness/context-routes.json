@@ -1,0 +1,31 @@
+{
+  "routes": [
+    {
+      "paths": [
+        "bin/**",
+        "templates/**",
+        "scripts/**",
+        ".harness/**",
+        ".github/**",
+        "Makefile"
+      ],
+      "read": [
+        "AGENTS.md",
+        "DECISIONS.md",
+        "bin/ARCHITECTURE.md"
+      ],
+      "why": "These paths change installation, authority or executable gates."
+    },
+    {
+      "paths": [
+        "tests/**",
+        "packs/**"
+      ],
+      "read": [
+        "AGENTS.md",
+        "docs/quality-document.md"
+      ],
+      "why": "Test fixtures and packs define the evidence and its limits."
+    }
+  ]
+}

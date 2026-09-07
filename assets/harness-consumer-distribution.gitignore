@@ -1,0 +1,8 @@
+# The autonomy-runtime.v1 generation vendors its exact lockfile closure so a
+# fresh consumer checkout remains offline. This narrower rule overrides a
+# consumer's ordinary node_modules/ ignore only inside the managed namespace.
+!generations/
+!generations/*/
+!generations/*/runtime/
+!generations/*/runtime/node_modules/
+!generations/*/runtime/node_modules/**

@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "command": [
+    "node",
+    "--test",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-verifier-utf8.test.mjs"
+  ],
+  "exit_code": 1,
+  "tests": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-verifier-utf8.test.mjs": "8c73c93f6f6c6c4fc86c30e11650c77d95ff9848b2744bced357c182c7d04715",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-corrections-fixture.mjs": "3af5f39a3943f388676437da2bf2255de96d1c739bde6622801f9cc58fad4978"
+  },
+  "source": {
+    "docs/implementation/2026-09-07-closure/product-corrections/defective-product.mjs": "4e7213881c760a7283db74d1d8126efd4308b0fb0ef2ca50ffd4b9a67e8f8a9d"
+  },
+  "logs": {
+    "docs/implementation/2026-09-07-closure/product-corrections/product-verifier-utf8-red.log": "59264f69ad8da2586d931aa654c54527a8a517773f8fbf8c8a99eada44f4b1df"
+  },
+  "witness_source_commit": "dfd717b934667b1d6153a8934a657a70b8b0c9e1",
+  "assurance": "LOCAL_IMPLEMENTER_OBSERVATION"
+}

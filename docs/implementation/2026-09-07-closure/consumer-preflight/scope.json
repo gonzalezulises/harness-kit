@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "authorization": "Owner closure mandate 2026-09-07, item 5: isolated test consumer installation, upgrade and rollback",
+  "actor": "Codex acting within the explicit closure instruction",
+  "target": "/workspace/scratch/0be017df5260/closure-consumer-work/consumer",
+  "purpose": "Disposable independent Git consumer; technical distribution acceptance only",
+  "creation_scope": "Initialize this new test repository with fixture product, configuration and journal files",
+  "operation_scope": "Only the exact manager plans' allowedWrites inside this target and its own Git metadata lock; plans and evidence outside target",
+  "network": "None; locally retained exact Git source and pinned dependency archives",
+  "remote": "None",
+  "forbidden_targets": ["Casabat", "Aurobalance", "client applications"],
+  "runtime_authority": "No issuer enrollment, no fabricated signatures, no baseline promotion",
+  "expected_adoption_status": "NOT_ADOPTED",
+  "limits": "Independent filesystem/Git state for installer test; does not prove process/network containment of a real model pilot"
+}
