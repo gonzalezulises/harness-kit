@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "command": [
+    "node",
+    "--test",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs"
+  ],
+  "exit_code": 0,
+  "counts": {
+    "tests": 12,
+    "pass": 12,
+    "fail": 0
+  },
+  "tests": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs": "301c899443855c51581fcfa54f29f012fe6e4b36bd64882d2e60eccf0de75dc9",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-fixtures.mjs": "073d1269683de1f1108331ddc3970537e458e98b4a26b0cdb9ddd3d7f28d063a",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-process-worker.mjs": "b2a6ec1547061d3a5c34e5dbde2e1c8350b06e60ea037bfd3e54a51f8b1f2691"
+  },
+  "source": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/journal.mjs": "af720c59d2afc6bcfd3dd78752729b99b9a532aa4fa539c88541c9373076614b",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/execution.mjs": "0b4d4089e64172f722c10a807b67c255c934534179ae6e03c32321ca6af8b3cf",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/release.mjs": "769c9f37d6d0dba9cda61e8094bd062eb2426c4e58ef5b82926c18e974c13ad8",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/review.mjs": "f284c9ab006fd0cde18bbd541e724922135dad75cef36d89e8bb06ee21663389",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/capabilities.mjs": "a34077e46a1e38e65e3dda989d26d14e8822c14b3a1a388ebfad141ab7b44aa7"
+  },
+  "logs": {
+    "docs/implementation/2026-09-07-closure/global-corrections/green.log": "95b34f657c43762d782c82714eb43eb0836359853c027d79dc867a2f9f2e604c"
+  }
+}

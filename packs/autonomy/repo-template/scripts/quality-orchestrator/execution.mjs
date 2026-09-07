@@ -19,7 +19,8 @@ export function executionBoundary(host,auth,journal){
     const budget=executionBudgetSchema.parse({version:1,domain:'harness.execution-budget.v1',repositoryId:auth.repositoryId,authorityDigest:auth.authorityDigest,baselineDigest:state.baselineDigest,scope:{objectiveId:state.objectiveId,journalId:state.journalId,runId:run.runId,operationKey,budgetKind},requestDigest:digestData(request),profileDigest,limits});
     return freeze({status:'EXECUTION_DESCRIBED',request,budget,execution:'NOT_EXECUTED'});
   }
-  async function execute(wire,ctx){
+  async function execute(wire,ctx,validateStart){
+    wire=freeze(structuredClone(wire));
     fresh();const clean=z.strictObject({request:z.record(z.string(),z.unknown()),budget:executionBudgetSchema,approval:z.unknown()}).parse(wire),b=clean.budget;
     const approval=auth.verifyApproval(clean.approval,expected(b));must(!approval.status,approval.reason,approval.status);
     capable(clean.request.operation,clean.request.binding?.target);
@@ -29,14 +30,16 @@ export function executionBoundary(host,auth,journal){
     const before=journal.read(ctx),prior=before.intents.get(descriptor.operationKey);
     if(prior){must(prior.inputDigest===digest,'operation key reused with different inputs');return resume(descriptor.operationKey,ctx);}
     must(!before.state.pending.length,'existing operation must reconcile first','INCOMPLETE');
-    // Read-only capability discovery precedes spending. Recheck authority and CAS
-    // after await, then persist the exact intent before the sole POST attempt.
+    // Read-only discovery precedes spending. The closed owner check runs under
+    // journal ownership after await, only when acquiring a fresh reservation.
     await transport.preflight();fresh();const checked=auth.inspectApproval(approval);must(checked.status==='VERIFIED_APPROVAL',checked.reason,checked.status);
     const raced=journal.read(ctx).intents.get(descriptor.operationKey);
     if(raced){must(raced.inputDigest===digest,'operation key reused with different inputs');return resume(descriptor.operationKey,ctx);}
     if(clean.request.review){const catalog=records(ctx).find(record=>record.evidenceDigest===clean.request.review.catalogDigest);must(catalog?.descriptor.request.operation==='catalog'&&catalog.observation.issuedAt<=fresh()&&catalog.observation.expiresAt>fresh(),'authenticated catalog was not current at reservation','BLOCKED_BY_REQUIRED_CAPABILITY');}
     journal.putObject(descriptor);
-    journal.append(before.state.headDigest,{kind:'reserve',operationKey:descriptor.operationKey,runId:b.scope.runId,units:1,inputDigest:digest,budgetKind:b.scope.budgetKind,grantDigest:digestData(b)},ctx);
+    must(typeof validateStart==='function','closed operation authority check required');
+    const claimed=journal.claimExecution(before.state.headDigest,{kind:'reserve',operationKey:descriptor.operationKey,runId:b.scope.runId,units:1,inputDigest:digest,budgetKind:b.scope.budgetKind,grantDigest:digestData(b)},ctx,()=>{fresh();const current=auth.inspectApproval(approval);must(current.status==='VERIFIED_APPROVAL',current.reason,current.status);validateStart();});
+    if(!claimed.created)return freeze({status:'EXECUTION_PENDING',operationKey:descriptor.operationKey,descriptorDigest:digest,reason:'existing intent requires original-key reconciliation',execution:'NOT_EXECUTED'});
     const ack=await transport.dispatch(descriptor);journal.retainAcknowledgement(digest,ack);
     return freeze({status:'EXECUTION_PENDING',operationKey:descriptor.operationKey,descriptorDigest:digest,...ack,execution:'STARTED'});
   }

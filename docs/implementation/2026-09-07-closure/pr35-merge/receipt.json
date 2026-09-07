@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "claim": "INTEGRATION_OMISSION_REPRODUCED_AND_SOURCE_CORRECTED",
+  "first_full_exit": 2,
+  "first_full_log_sha256": "738cb639c03cf6561626d29b40dd62810cbb1bce4ffd12415fa9a3f8ff3a2b72",
+  "corrected_product_sha256": "5202e4994c008acb08739670a90bd43adb2e5275f8f29f310cd0961701e6e006",
+  "repeat_full_check": "PENDING",
+  "approved_source": "../pr35-corrections/verification.json"
+}

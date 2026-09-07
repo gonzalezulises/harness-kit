@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "command": [
+    "node",
+    "--test",
+    "tests/product-ack-publication.test.mjs"
+  ],
+  "exit_code": 1,
+  "tests": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-ack-publication.test.mjs": "c45bc825f37b6e41177850723721d449c8dc3c717ded9501851777f86518a6f4",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-ack-fixture.mjs": "de87e5347ea111cf57df5dfa476294639811c9e3c4f812661c01d2634d7357b8"
+  },
+  "source": {
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/.gitignore": "4d56952b0fb13bf8f9b6c13a6d4c34a075bac3af447636a1df4335d7576e2f97",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/authority.mjs": "c835ae848b7a6ad4dfc024b5eb2495fa6c6dc68f6cafa89dd7c3a0b12f8cfe26",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/budget.mjs": "bcf6bacf43d1bee8dfc28f6951d17cd8391f89411609bde61b58cba8f8c8b24b",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/capabilities.mjs": "12730d65dcfd2c93742c9b1417bfc9147dd769549ac02ddb31472e88a688d61a",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/classify.mjs": "497fb60b930dc8a3ac00062d297d865ccbfa6f713f31ed1ad050ff315fe90e49",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/codex-worker.mjs": "c15f2e7ed4076f0ee6add17384d1499cd3d1f2805ad62d23c29cafb7d11a3ce7",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/continuation.mjs": "939c95db08dcb8235311ad3e621bc448618f1a50bd815b660e91c02d480eb8e2",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/contracts-capabilities-v1.md": "c1b80efc5c76b0c22090bbd532c1dcbfa7269c5d663b5c90e4fcb6c6adb5d4ad",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/contracts-continuation-v1.md": "3c32d5bf60add70d7084bf2e895f0d39bd3c5eb6011a9ced061a31edb0901bc7",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/contracts-execution-v1.md": "c521f4cf6939f2fab392507673ae7299febc1a3187111f60412c69f521f4495c",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/contracts-journal-v1.md": "ae9e948d45595f2d5be8d61bc02c455ebe22d5467c6286a36c296aee10472755",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/contracts-product-v1.md": "f6a61be90ea3568ad98a61b1a74132a360d98c67b31b764152d838009bff3269",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/contracts-release-v1.md": "187f8aa8bc5cc050bb27f77a120cf93cae0882fede9d8a57aa030f8ce4a04941",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/contracts-review-v1.md": "0ccda6f601f92d9a22144f2bef452c23ffa10d3b1b9dd5ec76a0c82d7dcf3bd1",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/contracts-v1.md": "c50877646e70fcd34c35fc7ee484321ea75edd19575680a607eb09a7f3c51f1f",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/execution.mjs": "03b940f788662e802f3759982497103105eae64cec0065ecf938166825f55076",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/execution.schema.mjs": "014c78202f297a3918c13e672412dcb8a83a50b79fc025adceb08b667b86fdbe",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/github-actions.mjs": "db760d896e42f14e88f06165021c11ac146b3c4ad84fc929a486fc5245003bb1",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/identity.mjs": "f6bc4cf109851e22bece790619fe736808d7af52b06f79e9b00047e0106cfb21",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/index.mjs": "706b908393a05f6fcd8c00e22aedee38c8ad58dedde826feb7373bef8c71b09e",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/journal.mjs": "45d58afff96fbab523b068a392cab39368e2016dc702aa1fca154b31c28fb7ee",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/package-lock.json": "19d4495481f1a940a52ab63684bc400b938cc7c6bc744be889fa453030ba622c",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/package.json": "6c8370fa233ab09d20b96330d90a9541d0b3f2c71aa19025988677b879262296",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/product.mjs": "50a2ec1b54da1c1e5591dd97d0cbb7aae3a5d1d6609cbdbe8dd7963da794a1bc",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/product.schema.mjs": "e577a5fa7d1c6e2210b22c32dfc847afa99a96e3a6bacee35046da76ad8b9a0b",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/release.mjs": "cf6c62cf1c87aeb0b2ac7e406014c2f9b7b8c5acbd31432f017334263e31d4c0",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/release.schema.mjs": "9c719f1be018e38bfe8c95baa77281940211c2b4651a69e9835e88bffef98122",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/review-shadow.mjs": "84221bac483c39e517b288b11910a25e33e8c665e5a3d59faba657e97fef71dd",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/review.mjs": "0cad4e495369c1766a02b3a775b15c1234b512f1ae6620632141fa95dd39a8b9",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/review.schema.mjs": "6be78ce6ca8b003c5962b646305a9968af52b9c710639cfcb8c41627e9bcdf27",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/schemas/digest.v1.json": "3739807b2640848ddfcdf441eb72ca4801b77ebcfe22b5a2434bd9b2aac97972",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/schemas/record.v1.json": "6a9d79d9cc43b5a1f197e43f2915adc5e855fb902435fce1ee15532dccadbc4b",
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red-source/tests/helpers.mjs": "8eab979a11d050cc4f835a4824e42daa71e93bf4a18e0c2b45577ed589a48afc"
+  },
+  "logs": {
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/red.log": "da5dedc47e59cd5b4bc8b5f58bc1861695db0832a4b082eeb39ae511597e5d57"
+  }
+}

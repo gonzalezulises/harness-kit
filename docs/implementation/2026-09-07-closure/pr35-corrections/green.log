@@ -1,0 +1,10 @@
+✔ local PR preparation reads base objects from a linked worktree common Git directory (20010.799154ms)
+✔ malformed verifier UTF-8 returns a controlled tool failure (5703.2292ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 20521.327876

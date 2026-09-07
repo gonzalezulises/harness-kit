@@ -1,0 +1,419 @@
+harness-kit test suite
+  ok   H01 verifier hardening regressions
+
+1. Syntax
+  ok   syntax harness-activate.sh
+  ok   syntax harness-audit.sh
+  ok   syntax harness-init.sh
+  ok   syntax harness-protect.sh
+  ok   syntax harness-status.sh
+  ok   syntax check-arch.sh
+  ok   syntax clean-state-check.sh
+  ok   syntax install-githooks.sh
+  ok   syntax pre-commit-staged.sh
+  ok   syntax run-gates.sh
+  ok   syntax session-trace.sh
+  ok   syntax setup-oracles.sh
+  ok   syntax verify-agent-notes.sh
+  ok   syntax verify-claims.sh
+  ok   syntax verify-context-routes.sh
+  ok   syntax verify-decisions.sh
+  ok   syntax verify-delivery-doc.sh
+  ok   syntax verify-feature.sh
+  ok   syntax verify-makefile-gates.sh
+  ok   syntax verify-oracles.sh
+  ok   syntax run-tests.sh
+  ok   in sync: scripts/check-arch.sh
+  ok   in sync: scripts/clean-state-check.sh
+  ok   in sync: scripts/install-githooks.sh
+  ok   in sync: scripts/pre-commit-staged.sh
+  ok   in sync: scripts/run-gates.sh
+  ok   in sync: scripts/session-trace.sh
+  ok   in sync: scripts/setup-oracles.sh
+  ok   in sync: scripts/verify-agent-notes.sh
+  ok   in sync: scripts/verify-claims.sh
+  ok   in sync: scripts/verify-context-routes.sh
+  ok   in sync: scripts/verify-decisions.sh
+  ok   in sync: scripts/verify-delivery-doc.sh
+  ok   in sync: scripts/verify-feature.sh
+  ok   in sync: scripts/verify-makefile-gates.sh
+  ok   in sync: scripts/verify-oracles.sh
+  ok   valid json feature_list.json
+  ok   valid json arch-rules.json
+
+2. Audit on a bare repo
+  ok   bare repo fails critical checks (1/7)
+  ok   audit exits 1 when critical checks fail
+
+3. Stable denominator
+  ok   same total for empty and bare repo (comparable scores)
+
+4. init --dry-run writes nothing
+  ok   dry run left no AGENTS.md
+
+5. init --level minimal
+  ok   minimal wrote AGENTS.md
+  ok   minimal wrote CLAUDE.md
+  ok   minimal wrote init.sh
+  ok   minimal wrote PROGRESS.md
+  ok   minimal wrote feature_list.json
+  ok   minimal wrote clean-state-checklist.md
+  ok   minimal wrote DECISIONS.md
+  ok   minimal wrote docs/decisions/README.md
+  ok   init.sh is executable
+  ok   all placeholders substituted in AGENTS.md
+  ok   detected the real verify command
+  ok   minimal harness passes all 7 critical checks
+
+6. init --level full
+  ok   full wrote Makefile
+  ok   full wrote scripts/verify-feature.sh
+  ok   full wrote scripts/check-arch.sh
+  ok   full wrote scripts/clean-state-check.sh
+  ok   full wrote scripts/session-trace.sh
+  ok   full wrote .harness/arch-rules.json
+  ok   full wrote templates/sprint-contract.md
+  ok   full wrote templates/evaluator-rubric.md
+  ok   full wrote docs/quality-document.md
+  ok   full harness scores >= 70/84 (got 81)
+  ok   gitignored the trace artifact
+
+7. init never clobbers without --force
+  ok   existing AGENTS.md preserved
+  ok   --force does overwrite
+
+8. verify-feature gate
+  ok   passing layers promote the feature
+  ok   evidence recorded on promotion
+  ok   failing layer exits non-zero
+  ok   failure prints repair guidance
+  ok   failure names the layer
+  ok   budgeted failure is blocked pending recovery authority
+  ok   layer calling exit still prints repair
+  ok   unknown feature id exits 66
+  ok   multiline layer command passes
+  ok   multiline layer keeps both commands
+  ok   repair prose never enters the execution channel
+
+9. clean-state-check
+  ok   clean tree passes the clock-out gate
+  ok   stray .orig file fails the gate
+  ok   .DS_Store alone does not fail the gate
+  ok   .DS_Store is reported as a note
+  ok   verify command that cd's does not leak the working directory
+  ok   passing-without-evidence is caught
+  ok   WIP=1 violation is caught
+
+10. check-arch
+  ok   clean repo passes arch rules
+  ok   committed secret trips a rule
+  ok   violation reports WHAT
+  ok   env-var reference and function call are not flagged
+  ok   violation reports WHY
+  ok   violation reports FIX
+  ok   violation names the offending file
+  ok   conflict markers trip a rule
+
+11. session-trace
+  ok   trace file written
+  ok   three events recorded
+  ok   every trace line is valid JSON
+
+12. NO_COLOR and JSON hygiene
+  ok   NO_COLOR suppresses ANSI codes
+  ok   --json emits parseable JSON
+
+  ok   fixture has no budget_defaults (the case that used to break)
+  ok   complete budgets pass enf.stopcond without budget_defaults
+13. budgets — the anti-loop gate
+  ok   missing stop_condition exits 67
+  ok   first failure still exits 1
+  ok   first failure consumes one round
+  ok   first failure still prints repair
+  ok   first failure reports budget spent
+  ok   ungranted retry exits policy code 5
+  ok   recovery authority requirement is named
+  ok   remaining budget is not relabelled exhausted
+  ok   failed feature remains blocked
+  ok   state edit and raised maximum do not grant recovery
+  ok   ungranted recovery rejects before layer effects
+  ok   failed ledger restores blocked state
+  ok   rejected recovery preserves spent rounds
+  ok   repeated blocker exits 4
+  ok   repeated blocker is named
+  ok   ledger accumulated before attempted recovery
+  ok   edited command still needs recovery authority
+  ok   edited command reports recovery requirement
+  ok   edited command does not execute without recovery authority
+  ok   rejected recovery preserves prior review rounds
+  ok   no budgets means unchanged exit 1
+  ok   no budgets still prints repair
+
+14. verify-claims — re-check what the repo claims is passing
+  ok   honest passing claim exits 0
+  ok   reports how many claims were re-verified
+  ok   false claim exits 1
+  ok   false claim is named FALSE_CLAIM
+  ok   false claim names the feature
+  ok   unverifiable claim exits 2
+  ok   claim without evidence exits 2
+  ok   missing evidence is named
+  ok   unclaimed features do not block
+  ok   no claims still exits 0
+  ok   no claims is stated, not silent
+  ok   required-quality workflow is scaffolded
+  ok   weakened verification exits 5
+  ok   the weakening is named
+  ok   it names the feature
+  ok   it shows the command that was there before
+  ok   changing the command while going back to active is allowed
+  ok   unchanged layers pass against a base
+  ok   a new feature is not a weakening
+  ok   no base still falls back to FALSE_CLAIM
+
+15. workflow integrity — the gate must protect its own definition
+  ok   every action is pinned to a 40-hex SHA
+  ok   integrity ruleset payload is scaffolded
+  ok   integrity ruleset targets push
+  ok   integrity ruleset is active
+  ok   integrity ruleset has no bypass actors
+  ok   integrity ruleset restricts the workflow path
+  ok   required-check ruleset payload is scaffolded
+  ok   harness-protect.sh exists
+  ok   harness-protect.sh parses
+  ok   AGENTS.md documents the skipped-job bypass
+
+16. audit rubric v2 — the score measures what is now enforced
+  ok   json declares the rubric version
+  ok   text output names the rubric
+  ok   rubric adds enforcement checks (10)
+  ok   full scaffold passes every enforcement check
+  ok   missing verify-claims.sh is caught
+  ok   unpinned action is caught
+  ok   budgets without stop_condition is caught
+
+17. verify-decisions — the record of WHY cannot be rewritten
+  ok   unchanged ledger passes
+  ok   appending a decision is allowed
+  ok   rewriting an earlier decision exits 1
+  ok   the rewrite is named
+  ok   the altered decision is identified
+  ok   deleting an earlier decision exits 1
+  ok   the deleted decision is identified
+  ok   DECISIONS_BASE_FILE path catches the rewrite too
+  ok   DECISIONS_BASE_FILE path passes an intact ledger
+  ok   absent ledger in base is not an error
+
+18. activate / status — one command, and an honest answer
+  ok   status reports NOT_ACTIVATED before anything exists
+  ok   status exits non-zero when not activated
+  ok   activate --dry-run wrote nothing
+  ok   activate exits 0 on a local repo
+  ok   activate installed AGENTS.md
+  ok   activate installed feature_list.json
+  ok   activate installed Makefile
+  ok   activate installed scripts/verify-claims.sh
+  ok   activate installed scripts/verify-decisions.sh
+  ok   activate installed .github/workflows/required-quality.yml
+  ok   activate names the detected verify command
+  FAIL activate reports READY_LOCAL without a remote (missing 'READY_LOCAL')
+  FAIL status agrees after activation (missing 'READY_LOCAL')
+  FAIL status exits 0 when activated (expected '0', got '1')
+  ok   activate is idempotent and never clobbers
+  ok   --with gherkin installs the runner
+  ok   --with gherkin installs the validator
+  ok   gherkin stays opt-in when not requested
+  ok   an unknown pack is a usage error (exit 64)
+  ok   the unknown pack is named in the error
+  ok   a rejected --with installs nothing
+
+19. version and fleet drift
+  ok   VERSION file exists
+  ok   VERSION is semver (2.2.5)
+  ok   audit reports the VERSION file
+  ok   target records the kit version
+  ok   recorded version matches the kit
+  ok   status shows the kit version
+  ok   an up-to-date repo is not reported as stale
+  ok   a stale repo is reported
+  ok   the stale report names both versions
+  ok   version-sync passes when every copy agrees
+  ok   version-sync rejects a stale .harness/kit-version
+  ok   version-sync rejects a manifest that disagrees with VERSION
+  ok   sync-version.sh repairs the drift its own error message points at
+
+20. Declared gates must do real work
+  ok   scaffolded e2e without a command fails closed
+  ok   the empty e2e explains itself
+  ok   a placeholder target is rejected
+  ok   the offending target is named
+  ok   a Makefile whose targets all work is accepted
+  ok   installed: scripts/check-arch.sh
+  ok   installed: scripts/verify-agent-notes.sh
+  ok   installed: scripts/verify-claims.sh
+  ok   installed: scripts/verify-context-routes.sh
+  ok   installed: scripts/verify-decisions.sh
+  ok   installed: scripts/verify-delivery-doc.sh
+  ok   installed: scripts/verify-makefile-gates.sh
+  ok   installed: scripts/verify-oracles.sh
+  ok   makefile-gates is a registered gate
+
+21. verify-claims observes every declared execution
+  ok   shared-layer claims still exit 0
+  ok   an identical command runs for every declaration
+  ok   every feature is still reported
+  ok   two distinct commands both run
+  ok   a shared failing command still fails
+  ok   it fails once per feature that declares it
+
+15 — verify-delivery-doc
+  FAIL a runbook describing the previous release fails (expected '1', got '4')
+  ok   it names the stale deploy tag
+  FAIL it names the unmentioned migration (missing '20260917120000')
+  FAIL it flags the section about an older version (missing 'v1.2.1')
+  FAIL it flags the dead relative link (missing 'GUIA.md')
+  ok   an unresolvable DELIVERY_BASE is NOT_CONFIGURED, not a pass
+  FAIL the corrected runbook passes (expected '0', got '4')
+  ok   and says which release it describes
+  FAIL a changelog's own tags are not flagged (expected '0', got '4')
+  ok   no runbook heading is a skip, not a failure
+  ok   and the skip says why
+  ok   a delivering repo cannot lose its runbook silently
+
+16 — run-gates state machine
+  ok   a passing gate exits 0
+  ok   and reports PASS
+  ok   FAIL blocks the run
+  ok   FAIL is reported by name
+  ok   NOT_CONFIGURED blocks the run
+  ok   NOT_CONFIGURED is reported by name
+  ok   TOOL_FAILURE blocks the run
+  ok   TOOL_FAILURE is reported by name
+  ok   INCOMPLETE blocks the run
+  ok   INCOMPLETE is reported by name
+  ok   POLICY blocks the run
+  ok   POLICY is reported by name
+  ok   UNKNOWN blocks the run
+  ok   UNKNOWN is reported by name
+  ok   an unknown state says nothing was verified
+  ok   a missing REQUIRED gate blocks
+  ok   and is named NOT_EXECUTED
+  ok   a declared inapplicable kit-only gate does not block
+  ok   and states explicit applicability
+  ok   a passing gate does not offset a blocking one
+
+17 — verify-context-routes
+  FAIL a governed change citing nothing fails (expected '1', got '2')
+  FAIL it names the documents that govern it (missing 'DECISIONS.md')
+  FAIL and says why they govern (missing 'does not repeal a decision')
+  FAIL the same change, citing its source, passes (expected '0', got '2')
+  FAIL a citation inside an Agent Note counts (expected '0', got '2')
+  FAIL an ungoverned change is not nagged (expected '0', got '2')
+  FAIL --list advises without blocking (expected '0', got '2')
+  FAIL and prints the reading list (missing 'DECISIONS.md')
+  ok   an unresolvable base never passes
+  ok   a missing route map is NOT_CONFIGURED
+  ok   a malformed route map is NOT_CONFIGURED
+
+18 — verify-oracles
+  ok   no oracles is a pass, stated out loud
+  ok   an unanswered question blocks TEST_READY
+  ok   and the message quotes the question
+  ok   «TBD» does not count as answered
+  ok   a critical criterion with no falsification blocks
+  ok   and says what a test only seen passing proves
+  ok   a proved criterion passes
+  ok   editing the test after the proof goes stale
+  ok   and names the test that moved
+  ok   and says the proof no longer covers it
+  ok   a SHA outside this history blocks
+  ok   and says so plainly
+  ok   a test that does not exist blocks
+  ok   a critical DRAFT blocks
+  ok   and says no code should rely on it yet
+  ok   a retired criterion is not enforced
+  ok   --list never blocks
+  ok   and shows the status
+test_backup_is_exclusive (__main__.Regressions.test_backup_is_exclusive) ... ok
+test_candidate_profile_cannot_downgrade_base (__main__.Regressions.test_candidate_profile_cannot_downgrade_base) ... ok
+test_explicit_missing_delivery_source_blocks_with_default_absence_allowed (__main__.Regressions.test_explicit_missing_delivery_source_blocks_with_default_absence_allowed) ... ok
+test_formatter_nonzero_blocks (__main__.Regressions.test_formatter_nonzero_blocks) ... ok
+test_full_aggregate_terminates_without_recursion (__main__.Regressions.test_full_aggregate_terminates_without_recursion) ... FAIL
+test_full_scaffold_live_quick (__main__.Regressions.test_full_scaffold_live_quick) ... FAIL
+test_incomplete_ruleset_detail_is_not_known_absence (__main__.Regressions.test_incomplete_ruleset_detail_is_not_known_absence) ... ok
+test_integrated_check_declares_live_quick (__main__.Regressions.test_integrated_check_declares_live_quick) ... ok
+test_integrated_gate_blocks_live_candidate (__main__.Regressions.test_integrated_gate_blocks_live_candidate) ... ok
+test_live_profile_cannot_be_absent (__main__.Regressions.test_live_profile_cannot_be_absent) ... ok
+test_oracle_current_bytes_are_checked (__main__.Regressions.test_oracle_current_bytes_are_checked) ... ok
+test_oracle_duplicate_keys_rejected (__main__.Regressions.test_oracle_duplicate_keys_rejected) ... ok
+test_oracle_standard_multiline_and_alias_contract (__main__.Regressions.test_oracle_standard_multiline_and_alias_contract) ... ok
+test_pack_ports_are_os_assigned (__main__.Regressions.test_pack_ports_are_os_assigned) ... ok
+test_partial_index_handles_names_modes_and_formatter_failure (__main__.Regressions.test_partial_index_handles_names_modes_and_formatter_failure) ... ok
+test_partial_index_preserves_unstaged_bytes (__main__.Regressions.test_partial_index_preserves_unstaged_bytes) ... ok
+test_protected_judge_checks_target_and_preserves_source (__main__.Regressions.test_protected_judge_checks_target_and_preserves_source) ... ok
+test_protected_oracle_ignores_candidate_interpreter_and_imports (__main__.Regressions.test_protected_oracle_ignores_candidate_interpreter_and_imports) ... ok
+test_protected_workflow_keeps_candidate_source (__main__.Regressions.test_protected_workflow_keeps_candidate_source) ... ok
+test_receipt_binds_current_bytes_and_rejects_tampering (__main__.Regressions.test_receipt_binds_current_bytes_and_rejects_tampering) ... ok
+test_repair_prose_is_not_command_identity (__main__.Regressions.test_repair_prose_is_not_command_identity) ... ok
+test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import (__main__.Regressions.test_setup_ignores_cwd_and_pythonpath_for_pip_and_final_import) ... ok
+test_staged_symlink_cannot_escape_formatter_snapshot (__main__.Regressions.test_staged_symlink_cannot_escape_formatter_snapshot) ... ok
+test_status_api_failure_is_indeterminate (__main__.Regressions.test_status_api_failure_is_indeterminate) ... ok
+test_status_distinguishes_remote_api_failure (__main__.Regressions.test_status_distinguishes_remote_api_failure) ... ok
+test_status_requires_observed_local_check (__main__.Regressions.test_status_requires_observed_local_check) ... ok
+test_status_timeout_terminates_owned_descendants_only (__main__.Regressions.test_status_timeout_terminates_owned_descendants_only) ... ok
+test_strict_command_and_environment_identity_still_blocks (__main__.Regressions.test_strict_command_and_environment_identity_still_blocks) ... ok
+test_system_temp_alias_is_resolved_before_snapshot_checks (__main__.Regressions.test_system_temp_alias_is_resolved_before_snapshot_checks) ... ok
+test_workspace_context_route (__main__.Regressions.test_workspace_context_route) ... ok
+
+======================================================================
+FAIL: test_full_aggregate_terminates_without_recursion (__main__.Regressions.test_full_aggregate_terminates_without_recursion)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-judge-target/tests/h02-hardening-regressions.py", line 159, in test_full_aggregate_terminates_without_recursion
+    self.assertEqual(p.returncode,0,p.stdout+p.stderr)
+AssertionError: 1 != 0 : ── gates · aggregate full · profile v1/full
+  decisions-append-only    PASS (0.1s, exit 0)
+  agent-notes-tree         PASS (0.0s, exit 0)
+  arch-boundaries          PASS (0.7s, exit 0)
+  makefile-gates           PASS (0.0s, exit 0)
+  version-sync             NOT_APPLICABLE (Kit release metadata only)
+  delivery-doc             PASS (0.0s, exit 0)
+  context-routes           NOT_CONFIGURED (0.1s, exit 2)
+context-routes: invalid ROUTES_BASE
+
+  oracles-falsifiable      PASS (0.1s, exit 0)
+  claims-reverified        PASS (0.1s, exit 0)
+  make-check               PASS (0.0s, exit 0)
+── 8 pass · 1 blocking · 1 not applicable
+Only PASS satisfies a gate. A non-PASS state was not verified.
+
+
+======================================================================
+FAIL: test_full_scaffold_live_quick (__main__.Regressions.test_full_scaffold_live_quick)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-judge-target/tests/h02-hardening-regressions.py", line 48, in test_full_scaffold_live_quick
+    self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+AssertionError: 1 != 0 : ── gates · aggregate quick · profile v1/full
+  decisions-append-only    PASS (0.1s, exit 0)
+  agent-notes-tree         PASS (0.0s, exit 0)
+  arch-boundaries          PASS (0.6s, exit 0)
+  makefile-gates           PASS (0.1s, exit 0)
+  version-sync             NOT_APPLICABLE (Kit release metadata only)
+  delivery-doc             PASS (0.0s, exit 0)
+  context-routes           NOT_CONFIGURED (0.1s, exit 2)
+context-routes: invalid ROUTES_BASE
+
+  oracles-falsifiable      PASS (0.0s, exit 0)
+── 6 pass · 1 blocking · 1 not applicable
+Only PASS satisfies a gate. A non-PASS state was not verified.
+
+
+----------------------------------------------------------------------
+Ran 30 tests in 37.018s
+
+FAILED (failures=2)
+  FAIL H02 hardening regressions
+
+────────────────────────────────────────
+268 passed, 18 failed

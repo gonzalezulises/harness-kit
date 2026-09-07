@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "command": [
+    "node",
+    "--test",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-linked-worktree.test.mjs",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-verifier-utf8.test.mjs"
+  ],
+  "exit_code": 1,
+  "tests": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-linked-worktree.test.mjs": "b254805a85b53076553f77cc115228f70e71a21faa46ba3955b83506ed805682",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-verifier-utf8.test.mjs": "b700c75b47c465222ae8c30f6e99ef6db7d5baf2a158dcf7f8a963e03677571b",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-corrections-fixture.mjs": "e57fa5d6b9b8d24148c9a0df83247ba89fcd819d96521a2a1aa118a65de0ce41"
+  },
+  "source": {
+    "docs/implementation/2026-09-07-closure/pr35-corrections/defective-product.mjs": "50a2ec1b54da1c1e5591dd97d0cbb7aae3a5d1d6609cbdbe8dd7963da794a1bc"
+  },
+  "logs": {
+    "docs/implementation/2026-09-07-closure/pr35-corrections/red.log": "ab8b17ab3b64981342a2d4acd001388022fb6f8c26643919302b837818c99efd"
+  }
+}

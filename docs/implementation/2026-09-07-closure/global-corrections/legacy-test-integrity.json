@@ -1,0 +1,26 @@
+{
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/journal.test.mjs": {
+    "sha256": "2b1727e3d4e299c78b843732fd1989e641d1366a4e36cce29f35bb3194389318",
+    "matches_exact_pr33": true
+  },
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/execution-backend.test.mjs": {
+    "sha256": "d45e809ba74e7dd6f0109ad702b97d3961c175ef917ef272abad80afcfcb505d",
+    "matches_exact_pr33": true
+  },
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs": {
+    "sha256": "a5bd6cc0b4a1c6987398365b9c95dd4fa58d9a4af6ab1b7b16c5ed942b29152a",
+    "matches_exact_pr33": true
+  },
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs": {
+    "sha256": "bebe2481b6d12d9b5f0c70cd15b3cd96c16183ebb7d493983d1a77a5697fb741",
+    "matches_exact_pr33": true
+  },
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs": {
+    "sha256": "95ed2f3d23416629e8226ffbdd15cb28139e83b7abbe588a6d52e7ff03db291b",
+    "matches_exact_pr33": true
+  },
+  "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/literal-filename.test.mjs": {
+    "sha256": "1db50a3c4fd5af7d6a238ac12757af61e686fe04488756702b2191692dc0953d",
+    "matches_exact_pr33": true
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "command": [
+    "node",
+    "--test",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-ack-publication.test.mjs",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-linked-worktree.test.mjs",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-verifier-utf8.test.mjs"
+  ],
+  "working_directory": "/workspace/scratch/adce1c53b293/closure-pr35-integrated",
+  "exit_code": 0,
+  "tests": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-ack-publication.test.mjs": "c45bc825f37b6e41177850723721d449c8dc3c717ded9501851777f86518a6f4",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-ack-fixture.mjs": "de87e5347ea111cf57df5dfa476294639811c9e3c4f812661c01d2634d7357b8",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-linked-worktree.test.mjs": "b254805a85b53076553f77cc115228f70e71a21faa46ba3955b83506ed805682",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-verifier-utf8.test.mjs": "b700c75b47c465222ae8c30f6e99ef6db7d5baf2a158dcf7f8a963e03677571b"
+  },
+  "source": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/product.mjs": "01e1338655c5c835242308e2e833ee27f375cf6e47989f027ae8d8b6a930d8e0"
+  },
+  "logs": {
+    "docs/implementation/2026-09-07-closure/pr35-ack-publication/green.log": "dd59c420caa3188d62cc83774d132eb1e6da22c945a6b1131beaeaba9278b32d"
+  },
+  "historical_failure_limit": "The preceding full-check race did not retain child runtime results; its exact interleaving remains unproved. This separate deterministic RED establishes the acknowledgement publication gap.",
+  "pass_count": 5,
+  "fail_count": 0,
+  "assurance": "Focused local causal regressions only; full integrated check, remote CI and real acceptance pending"
+}

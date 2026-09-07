@@ -43,6 +43,11 @@ schema-state identity. Health/load alone is UNKNOWN. A configured verifier is
 trusted executable capability: its digest, runtime, argv and allowed environment
 are part of the grant. It is not a model-generated checker.
 
+Malformed verifier UTF-8 rejects the supervisor promise with BLOCKED_TOOL_FAILURE.
+The original charged pending operation remains resumable; without an observed
+result, resuming does not start that verifier again. Strict decoding failure
+does not escape the child close callback or terminate the controller.
+
 Model author and reviewer use separate fresh source/home/scratch directories and
 separate authenticated app-server sessions. Source remains read-only to the
 model; primary bytes are rechecked after awaits. This module does not create OS
@@ -97,3 +102,9 @@ from current manifest-bound GREEN observations; missing observations block PASS.
 The pilot has one CLI surface. It has no browser, HTTP API/server action, RPC,
 SQL/PostgREST, batch/sync, storage service, trigger, migration or privileged
 application client. Supervisor permissions are covered by separate harness tests.
+
+Local PR preparation resolves Git's absolute common directory, including linked
+worktrees. The isolated object database reads base objects from that directory;
+prepared parent and frozen tree entries are checked without modifying the source
+index, references, HEAD or frozen worktree bytes. This remains a local handoff
+and does not assert that a remote PR exists.

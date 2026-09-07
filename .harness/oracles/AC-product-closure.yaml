@@ -1,0 +1,33 @@
+id: AC-product-closure
+requirement: Local product handoff preserves Git authority and verifier failures remain resumable
+criticality: high
+status: TEST_READY
+observable: A linked worktree prepares the exact isolated commit and malformed verifier output returns a structured failure without a duplicate verifier call
+oracle:
+  expected: Prepared parent and frozen tree entries match the signed base while source index refs HEAD and frozen bytes remain unchanged; invalid UTF-8 never escapes the asynchronous controller boundary
+cases:
+  positive:
+  - A linked worktree reaches HANDOFF_PREPARED with its exact functional bytes
+  negative:
+  - A verifier emits malformed UTF-8 and leaves the original charged pending operation
+  boundary:
+  - Resuming that original operation does not invoke the verifier again or spend another unit
+context: Separate temporary Git repositories, actual verifier processes, fixture model protocol and ephemeral fixture signatures
+side_effects:
+  must:
+  - Preserve exact signed parent frozen files source index refs and HEAD
+  must_not:
+  - Crash the controller, copy credentials, change source Git state or repeat an uncertain verifier effect
+false_positive: Inspect actual prepared commit parent tree and bytes; compare source index refs HEAD and frozen bytes; count verifier invocations before and after a real resume call
+owner: harness-kit maintainers under the authorized PR35 closure mandate and AGENTS.md
+evidence:
+  formats:
+  - Exact published PR35 defective source and unchanged regression bytes with real RED and GREEN logs
+tests:
+- packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-linked-worktree.test.mjs
+- packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-verifier-utf8.test.mjs
+- packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-corrections-fixture.mjs
+falsification:
+  defect: Linked-worktree object lookup uses per-worktree metadata and strict UTF-8 decoding throws outside the verifier promise
+  proved_sha: dd8a20c1465b3ccd7e9a4d86ed6a11860146e7f7
+  receipt: docs/implementation/2026-09-07-closure/pr35-corrections/red-receipt.json

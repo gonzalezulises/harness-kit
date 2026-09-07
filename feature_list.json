@@ -763,6 +763,20 @@
         "Final make check exit0: core286/0, runtime264/0, installation/canary5/0 and remaining packs pass; selected48 sources unchanged. Startup286/0 reused only for unchanged core inputs. docs/implementation/2026-09-06-product-loop/evidence/verification.json. Real authority/authentication/containment/pilot remain NOT_EXECUTED; automatic remote PR creation UNIMPLEMENTED."
       ],
       "notes": "Portable controller and real-process fixtures verified in scoped review. P0 acceptance remains blocked: local handoff is not a published PR and authenticated real pilot is unproved. M1 linked-worktree PR preparation and M3 malformed verifier UTF-8 remain Medium backlog. No P0_PRODUCT_LOOP_READY."
+    },
+    {
+      "id": "F28",
+      "priority": 28,
+      "area": "closure-runtime",
+      "behavior": "Remaining supervisor defects and bounded remote product publication are closed without changing historical authority, signed budgets or readiness claims.",
+      "state": "active",
+      "verification": [
+        "Linked worktree local PR preparation preserves parent, frozen files, source index and refs.",
+        "Malformed verifier UTF-8 produces controlled failure with no duplicate effects.",
+        "Remote publication binds current authority and exact source; ambiguous effects reconcile without duplicate POST."
+      ],
+      "evidence": [],
+      "notes": "Owner-authorized 2026-09-07 closure increment. Real pilot and overall acceptance remain separate requirements."
     }
   ]
 }

@@ -8,6 +8,11 @@
 
 set -uo pipefail
 
+# The suite creates independent Git histories. CI's source-repository base SHAs
+# do not belong to these fixtures; each fixture selects or sets its own base.
+# This child shell cannot alter the caller's protected-gate environment.
+unset ROUTES_BASE DELIVERY_BASE
+
 KIT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT

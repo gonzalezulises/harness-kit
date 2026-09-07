@@ -1,0 +1,32 @@
+id: AC-product-ack-publication
+requirement: Retained v1 acknowledgements settle under bounded transient contention without duplicate effects or renewed authority
+criticality: high
+status: TEST_READY
+observable: One real verifier process creates one durable observation and one charge after a temporary journal lock collision
+oracle:
+  expected: Transient publication custody is retried within the original nonce; persistent custody and expired authority remain blocked
+cases:
+  positive:
+  - A retained RED acknowledgement is published after a transient lock collision and resume creates no new verifier effect
+  negative:
+  - Persistent foreign custody preserves its lock and the original pending acknowledgement without redispatch
+  boundary:
+  - Expired authority after lock release cannot publish the retained observation
+context: Temporary Git repository, actual verifier process, controlled filesystem collision, fixture-only signed authority
+side_effects:
+  must:
+  - Preserve one budget charge and the original acknowledgement throughout recovery
+  must_not:
+  - Delete another process lock, renew authority, repeat the verifier or publish after authority expiry
+false_positive: Count actual verifier invocations, durable observations, retained acknowledgement files and budget; exercise real resume and compare foreign lock bytes
+owner: harness-kit maintainers under the PR33–37 closure mandate and AGENTS.md
+evidence:
+  formats:
+  - Exact published PR35 source, unchanged test bytes, structured contender state and causal RED/GREEN logs
+tests:
+- packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-ack-publication.test.mjs
+- packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-ack-fixture.mjs
+falsification:
+  defect: Post-verifier observation publication attempts custody only once and does not reconcile the retained acknowledgement under a transient collision
+  proved_sha: dd8a20c1465b3ccd7e9a4d86ed6a11860146e7f7
+  receipt: docs/implementation/2026-09-07-closure/pr35-ack-publication/red-gate-receipt.json

@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "command": "make check",
+  "tool_path_prefix": [
+    "/workspace/scratch/adce1c53b293/tooling/k6-v2.1.0-linux-amd64",
+    "/workspace/scratch/adce1c53b293/tooling/shellcheck/shellcheck-v0.11.0"
+  ],
+  "exit_code": 0,
+  "core": {
+    "pass": 286,
+    "fail": 0
+  },
+  "protected_workflow_regression": "PASS",
+  "autonomy_runtime": {
+    "pass": 253,
+    "fail": 0
+  },
+  "installation_canary": {
+    "pass": 5,
+    "fail": 0
+  },
+  "gherkin": {
+    "pass": 15,
+    "fail": 0
+  },
+  "load": {
+    "pass": 55,
+    "fail": 0,
+    "explicit_authenticated_gh_omissions": 2
+  },
+  "sentry": {
+    "pass": 68,
+    "fail": 0
+  },
+  "source": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/authority.mjs": "c835ae848b7a6ad4dfc024b5eb2495fa6c6dc68f6cafa89dd7c3a0b12f8cfe26",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/budget.mjs": "bcf6bacf43d1bee8dfc28f6951d17cd8391f89411609bde61b58cba8f8c8b24b",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/capabilities.mjs": "a34077e46a1e38e65e3dda989d26d14e8822c14b3a1a388ebfad141ab7b44aa7",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/classify.mjs": "e5d1b4c4b9c9d5717f319ab60acb1ece4bffba05c00a9b6da9ea2358c728777f",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/codex-worker.mjs": "a7c64feb8dcadb12ca71c1e004bcbc346d7fae80f24fd64b625a8cb98a6d4629",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/continuation.mjs": "939c95db08dcb8235311ad3e621bc448618f1a50bd815b660e91c02d480eb8e2",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/execution.mjs": "2c11cde8830a16dfdd056e5c4f755bf9de944f1459e8fc21b7af3bcf03ecefdc",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/execution.schema.mjs": "014c78202f297a3918c13e672412dcb8a83a50b79fc025adceb08b667b86fdbe",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/github-actions.mjs": "db760d896e42f14e88f06165021c11ac146b3c4ad84fc929a486fc5245003bb1",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/identity.mjs": "f6bc4cf109851e22bece790619fe736808d7af52b06f79e9b00047e0106cfb21",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/index.mjs": "706b908393a05f6fcd8c00e22aedee38c8ad58dedde826feb7373bef8c71b09e",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/journal.mjs": "af720c59d2afc6bcfd3dd78752729b99b9a532aa4fa539c88541c9373076614b",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/release.mjs": "1aea5226e9f5d95c5e15284d67fbf4087541126efe7e9fff2b4d3b3cc122013d",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/release.schema.mjs": "9c719f1be018e38bfe8c95baa77281940211c2b4651a69e9835e88bffef98122",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/review-shadow.mjs": "84221bac483c39e517b288b11910a25e33e8c665e5a3d59faba657e97fef71dd",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/review.mjs": "984ba2cc87373df71958ade81bc738b55fca4b6aba4f721c061c961e0964a68d",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/review.schema.mjs": "6be78ce6ca8b003c5962b646305a9968af52b9c710639cfcb8c41627e9bcdf27",
+    "packs/autonomy/verify-pack.sh": "51e6b0751c06420b2877086451827dfb4d4d70f894b98e9f7f3da10ce0dc2077"
+  },
+  "logs": {
+    "full-check.log": "50568f05b5ef70727213be55af1937446489c52786812457035384e64e76de8c",
+    "missing-k6.log": "2746eabec980ce6c43107a9f631462038d245ded6741588a0e35152406927927"
+  },
+  "prior_failure": "../test-isolation/verification.json",
+  "assurance": "LOCAL_CHECK_ONLY; no required remote exact-head verdict, merge, real pilot, release or acceptance"
+}

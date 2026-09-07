@@ -3,7 +3,42 @@
 The durable memory of this repository. Every session reads this first and writes to it
 last. If it disagrees with your recollection, this file wins.
 
-## Current state — P0-PRODUCT-LOOP independent increment
+## Current PR35 closure — 2026-09-07
+
+The first full check of the corrected e5bfa534 integration exposed one historical
+concurrency assertion: one verifier invocation, zero durable observations. Child
+results were not retained, so its precise interleaving remains unproved. A separate
+three-case deterministic regression on exact published PR35 source produced two
+RED failures and one persistent-lock control PASS. The v1-only backport of F27
+acknowledgement publication now retries custody at most three times, without
+redispatch or budget renewal, and rechecks source/authority under custody. The
+three new cases plus linked-worktree/UTF-8 regressions passed5/5. Source, tests,
+logs and the original failed full check are retained in
+`docs/implementation/2026-09-07-closure/pr35-ack-publication/`.
+Independent scoped review now reports spec/quality PASS and zero open findings.
+The new complete `make check` passed core286, runtime283, installation5,
+Gherkin15, load55 (two explicit authenticated-gh omissions), Sentry68 and the
+protected-workflow regression. Exact source/log bindings are in
+`docs/implementation/2026-09-07-closure/pr35-verification/receipt.json`.
+
+
+This resolution incorporates corrected PR33 `e5bfa5343d064e376086e2b13e45203b4ad4a481`
+through a normal merge, retaining the adopted judge and proof ancestry. GR03/GR05
+and real acceptance remain open; this is not integration to main.
+
+The owner authorized necessary corrections and ordinary integration for PR33–37.
+The two remaining Medium product findings now have direct causal RED 2/2 on
+published PR35 `dd8a20c` and GREEN 2/2 after the narrow corrections. Linked
+worktrees resolve the common object store and preserve signed parent, frozen
+bytes and source index/refs/HEAD. Malformed verifier UTF-8 is a controlled failure;
+actual resume retains one invocation and the original budget/pending key.
+Independent scoped re-review approved both corrections. The current integrated
+branch passed its full check and still requires its own remote Required quality.
+F25 and historical F09 remain blocked. The source still produces a local PR
+handoff; remote publication and the real authenticated pilot remain separate
+closure requirements. Current evidence is under the 2026-09-07 closure directory.
+
+## Previous verified state — P0-PRODUCT-LOOP independent increment
 
 Base `a798c88` is the frozen local PR33 continuation. F25 adds the bounded
 product controller, explicit product journal contract and truthful JSON CLI

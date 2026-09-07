@@ -198,10 +198,12 @@ export function releaseBoundary(runtime,auth,journal,execution,review={}){
       const result=execution.describe(request,{...clean,budgetKind:request.review?request.review.policy.budgetKind:mechanicalBudget},item.ctx);prepared.set(digestData(request),{handle,options:clean});return result;
     }),
     executeReleaseObligation:(handle,wire)=>executionAsync(async()=>{
+      wire=freeze(structuredClone(wire));
       const item=owned(handle);must(execution,'Actions backend is not configured','BLOCKED_BY_REQUIRED_CAPABILITY');
       const prior=journal.read(item.ctx).intents.get(wire?.budget?.scope?.operationKey);
-      if(!prior){const preparation=prepared.get(digestData(wire.request));must(preparation?.handle===handle,'describe the exact release execution before dispatch');must(canonical(wire.request)===canonical(requestFor(item,preparation.options)),'release execution request changed');}
-      return execution.execute(wire,item.ctx);
+      const validateStart=()=>{const preparation=prepared.get(digestData(wire.request));must(preparation?.handle===handle,'describe the exact release execution before dispatch');must(canonical(wire.request)===canonical(requestFor(owned(handle),preparation.options)),'release execution request changed');};
+      if(!prior)validateStart();
+      return execution.execute(wire,item.ctx,validateStart);
     }),
     resumeReleaseExecution:(handle,key)=>executionAsync(async()=>{const item=owned(handle);must(execution,'Actions backend is not configured','BLOCKED_BY_REQUIRED_CAPABILITY');const result=await execution.resume(key,item.ctx);releaseEvents(owned(handle));return result;}),
     describeReleaseObjective:(input,ctx)=>safe(()=>{

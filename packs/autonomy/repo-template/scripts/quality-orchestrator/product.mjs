@@ -199,7 +199,7 @@ export function productBoundary(host,runtime,auth,journal){
    const child=spawn(config.nodePath,[config.verifier.path],{cwd:config.sessions,env:{LANG:'C.UTF-8'},shell:false,stdio:['pipe','pipe','pipe'],detached:true});let output=[],total=0,err='';
    const kill=()=>{try{process.kill(-child.pid,'SIGKILL');}catch{}};const timer=setTimeout(()=>{kill();reject(Error('verifier deadline exceeded'));},config.verifier.timeoutMs);
    child.on('error',reject);child.stdout.on('data',b=>{total+=b.length;if(total>config.verifier.outputLimit){kill();reject(Error('verifier output exceeds bound'));}else output.push(b);});child.stderr.on('data',b=>{total+=b.length;if(total>config.verifier.outputLimit){kill();reject(Error('verifier output exceeds bound'));}err=(err+b.toString()).slice(0,500);});
-   child.stdin.on('error',()=>{});child.stdin.end(canonical(q));child.on('close',(exit,signal)=>{clearTimeout(timer);kill();if(signal||![0,1].includes(exit))reject(Error('verifier tool failure: '+err));else resolve({exit,stdout:new TextDecoder('utf8',{fatal:true}).decode(Buffer.concat(output))});});
+   child.stdin.on('error',()=>{});child.stdin.end(canonical(q));child.on('close',(exit,signal)=>{clearTimeout(timer);kill();if(signal||![0,1].includes(exit))reject(Error('verifier tool failure: '+err));else{try{resolve({exit,stdout:new TextDecoder('utf8',{fatal:true}).decode(Buffer.concat(output))});}catch{reject(Object.assign(Error('verifier output is not valid UTF-8'),{productStatus:'BLOCKED_TOOL_FAILURE'}));}}});
   });
   fresh(item,s);let parsed;try{parsed=functionalObservationSchema.parse(JSON.parse(observed.stdout));}catch{must(false,'verifier did not produce typed functional cases','BLOCKED_TOOL_FAILURE');}
   must(new Set(parsed.cases.map(c=>c.id)).size===parsed.cases.length&&canonical(parsed.cases.map(c=>c.id).sort())===canonical(cases.map(c=>c.id).sort()),'verifier omitted or injected cases','BLOCKED_TOOL_FAILURE');
@@ -233,8 +233,8 @@ export function productBoundary(host,runtime,auth,journal){
   const git=(args,input)=>execFileSync(config.gitPath,args,{env,input,timeout:3000,maxBuffer:2*1024*1024,encoding:'utf8'}).trim();
   // A private object database, no source index/ref mutation, no hooks and no
   // push/merge. Alternates only read the exact base objects already on disk.
-  const gitDir=git(['--no-optional-locks','-C',config.root,'rev-parse','--absolute-git-dir']);
-  const objects=fs.realpathSync(path.join(gitDir,'objects'));must(!objects.includes('\n')&&!objects.includes('\r'),'unsafe local object path');
+  const commonGitDir=git(['--no-optional-locks','-C',config.root,'rev-parse','--path-format=absolute','--git-common-dir']);
+  const objects=fs.realpathSync(path.join(commonGitDir,'objects'));must(!objects.includes('\n')&&!objects.includes('\r'),'unsafe local object path');
   git(['init','--bare','--quiet',repository]);fs.writeFileSync(path.join(repository,'objects/info/alternates'),objects+'\n');
   const command=(args,input)=>git(['--git-dir',repository,'-c','core.hooksPath=/dev/null',...args],input);
   command(['cat-file','-e',item.objective.baseCommit+'^{commit}']);
@@ -248,11 +248,29 @@ export function productBoundary(host,runtime,auth,journal){
   const headCommit=command(['commit-tree',treeDigest,'-p',item.objective.baseCommit],title+'\n\n'+body+'\n');fresh(item,s);
   return {handoff:{repository,baseCommit:item.objective.baseCommit,headCommit,treeDigest,productManifestDigest:s.manifestDigest,title,body,commitCreated:true,prCreated:false,publication:'NOT_EXECUTED'}};
  }
+ // Reconcile retained evidence under the same custody as publication. This is
+ // the v1-only backport of the bounded recovery already exercised by F27.
+ async function publishAcknowledged(h,key){
+  for(let attempt=0;attempt<3;attempt++){
+   const item=loaded(h);
+   try{return journal.productCustody(append=>{
+    loaded(h);const s=read(item);fresh(item,s);
+    if(s.steps.some(step=>step.key===key))return true;
+    must(s.pending?.key===key,'acknowledgement does not match pending operation','INCOMPLETE');
+    const ack=journal.readAcknowledgement(digestData({domain:'product.step.v1',objective:s.objectiveDigest,key}));
+    must(ack,'uncertain operation requires observation or explicit operator recovery; never redispatch','INCOMPLETE');
+    persist(item,{type:'OBSERVATION',key,result:ack},append);return true;
+   });}catch(error){
+    if(error.journalStatus!=='BLOCKED_BY_OWNERSHIP'||attempt===2)throw error;
+    await new Promise(resolve=>setTimeout(resolve,attempt===0?250:1000));
+   }
+  }
+ }
  async function execute(h,key,extra){
   must(extra===undefined,'candidate cannot replace a nonce request');const item=loaded(h);let s=read(item);
   const done=s.steps.find(x=>x.key===key);if(done){fresh(item,s);return projection(item);}
   fresh(item,s);const step=next(s);must(step.key===key,'operation key is not the next bounded step');
-  if(step.resume){const ack=journal.readAcknowledgement(digestData({domain:'product.step.v1',objective:s.objectiveDigest,key}));must(ack,'uncertain operation requires observation or explicit operator recovery; never redispatch','INCOMPLETE');persist(item,{type:'OBSERVATION',key,result:ack});return projection(item);}
+  if(step.resume){await publishAcknowledged(h,key);return projection(item);}
   const request={kind:step.kind,key,manifestDigest:s.manifestDigest},bind=binding(item,s,request);
   if(step.kind==='PATCH'){
    journal.productCustody(append=>{s=read(item);fresh(item,s);const n=next(s);must(!n.resume&&n.key===key,'another process owns patch nonce','BLOCKED_BY_OWNERSHIP');persist(item,{type:'INTENT',key,kind:step.kind,binding:bind,request},append);s=read(item);const result={kind:step.kind,binding:bind,...patch(item,s)};journal.retainAcknowledgement(digestData({domain:'product.step.v1',objective:s.objectiveDigest,key}),result);persist(item,{type:'OBSERVATION',key,result},append);});return projection(item);
@@ -262,7 +280,7 @@ export function productBoundary(host,runtime,auth,journal){
   if(['RED','VERIFY','COUNTEREXAMPLE'].includes(step.kind)){value=await verifier(item,s,step.kind);if(step.kind==='VERIFY'&&s.fullReview){const regression=await verifier(item,s,'COUNTEREXAMPLE');value.regressionResult=regression.result;value.regression=regression;}}
   else if(step.kind==='PREPARE_PR')value=preparePR(item,s);
   else value=await worker(item,s,step.kind);
-  const result={kind:step.kind,binding:bind,...value};journal.retainAcknowledgement(digestData({domain:'product.step.v1',objective:s.objectiveDigest,key}),result);persist(item,{type:'OBSERVATION',key,result});const projected=projection(item);if(projected.stage==='BLOCKED_REQUIRED_IDENTITY')must(false,'loaded/health observation lacks required version/manifest/schema identity','BLOCKED_REQUIRED_IDENTITY');return projected;
+  const result={kind:step.kind,binding:bind,...value};journal.retainAcknowledgement(digestData({domain:'product.step.v1',objective:s.objectiveDigest,key}),result);await publishAcknowledged(h,key);const projected=projection(item);if(projected.stage==='BLOCKED_REQUIRED_IDENTITY')must(false,'loaded/health observation lacks required version/manifest/schema identity','BLOCKED_REQUIRED_IDENTITY');return projected;
  }
  return {
   describeProductObjective:(input,ctx)=>safe(()=>describe(input,ctx)),bindProductObjective:(wire,ctx)=>safe(()=>bind(wire,ctx)),

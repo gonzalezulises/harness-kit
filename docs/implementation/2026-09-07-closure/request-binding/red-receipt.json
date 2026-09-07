@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "command": [
+    "node",
+    "--test",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-request-binding.test.mjs"
+  ],
+  "exit_code": 1,
+  "tests": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-request-binding.test.mjs": "f178077389f4da8a8694d9178c015481bec95b598b9babe62b87f1ca6d662f36",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-fixtures.mjs": "073d1269683de1f1108331ddc3970537e458e98b4a26b0cdb9ddd3d7f28d063a"
+  },
+  "source": {
+    "docs/implementation/2026-09-07-closure/request-binding/red-source/authority.mjs": "c835ae848b7a6ad4dfc024b5eb2495fa6c6dc68f6cafa89dd7c3a0b12f8cfe26",
+    "docs/implementation/2026-09-07-closure/request-binding/red-source/budget.mjs": "bcf6bacf43d1bee8dfc28f6951d17cd8391f89411609bde61b58cba8f8c8b24b",
+    "docs/implementation/2026-09-07-closure/request-binding/red-source/capabilities.mjs": "a34077e46a1e38e65e3dda989d26d14e8822c14b3a1a388ebfad141ab7b44aa7",
+    "docs/implementation/2026-09-07-closure/request-binding/red-source/classify.mjs": "e5d1b4c4b9c9d5717f319ab60acb1ece4bffba05c00a9b6da9ea2358c728777f",
+    "docs/implementation/2026-09-07-closure/request-binding/red-source/codex-worker.mjs": "a7c64feb8dcadb12ca71c1e004bcbc346d7fae80f24fd64b625a8cb98a6d4629",
+    "docs/implementation/2026-09-07-closure/request-binding/red-source/continuation.mjs": "939c95db08dcb8235311ad3e621bc448618f1a50bd815b660e91c02d480eb8e2",
+    "docs/implementation/2026-09-07-closure/request-binding/red-source/execution.mjs": "0b4d4089e64172f722c10a807b67c255c934534179ae6e03c32321ca6af8b3cf",
+    "docs/implementation/2026-09-07-closure/request-binding/red-source/execution.schema.mjs": "014c78202f297a3918c13e672412dcb8a83a50b79fc025adceb08b667b86fdbe",
+    "docs/implementation/2026-09-07-closure/request-binding/red-source/github-actions.mjs": "db760d896e42f14e88f06165021c11ac146b3c4ad84fc929a486fc5245003bb1",
+    "docs/implementation/2026-09-07-closure/request-binding/red-source/identity.mjs": "f6bc4cf109851e22bece790619fe736808d7af52b06f79e9b00047e0106cfb21",
+    "docs/implementation/2026-09-07-closure/request-binding/red-source/index.mjs": "706b908393a05f6fcd8c00e22aedee38c8ad58dedde826feb7373bef8c71b09e",
+    "docs/implementation/2026-09-07-closure/request-binding/red-source/journal.mjs": "af720c59d2afc6bcfd3dd78752729b99b9a532aa4fa539c88541c9373076614b",
+    "docs/implementation/2026-09-07-closure/request-binding/red-source/package-lock.json": "19d4495481f1a940a52ab63684bc400b938cc7c6bc744be889fa453030ba622c",
+    "docs/implementation/2026-09-07-closure/request-binding/red-source/package.json": "6c8370fa233ab09d20b96330d90a9541d0b3f2c71aa19025988677b879262296",
+    "docs/implementation/2026-09-07-closure/request-binding/red-source/release.mjs": "769c9f37d6d0dba9cda61e8094bd062eb2426c4e58ef5b82926c18e974c13ad8",
+    "docs/implementation/2026-09-07-closure/request-binding/red-source/release.schema.mjs": "9c719f1be018e38bfe8c95baa77281940211c2b4651a69e9835e88bffef98122",
+    "docs/implementation/2026-09-07-closure/request-binding/red-source/review-shadow.mjs": "84221bac483c39e517b288b11910a25e33e8c665e5a3d59faba657e97fef71dd",
+    "docs/implementation/2026-09-07-closure/request-binding/red-source/review.mjs": "f284c9ab006fd0cde18bbd541e724922135dad75cef36d89e8bb06ee21663389",
+    "docs/implementation/2026-09-07-closure/request-binding/red-source/review.schema.mjs": "6be78ce6ca8b003c5962b646305a9968af52b9c710639cfcb8c41627e9bcdf27"
+  },
+  "logs": {
+    "docs/implementation/2026-09-07-closure/request-binding/red.log": "21fae64eba443a57df7110e82eba04ed26217fb95f0edaf9ca241c89a0347152"
+  }
+}

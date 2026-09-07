@@ -1,0 +1,23 @@
+{
+  "status": "CAUSAL_GREEN_REVIEW_PENDING",
+  "source_parent": "dd8a20c1465b3ccd7e9a4d86ed6a11860146e7f7",
+  "red": {
+    "tests": 2,
+    "fail": 2,
+    "pass": 0,
+    "exit": 1,
+    "receipt": "red-receipt.json"
+  },
+  "green": {
+    "tests": 2,
+    "fail": 0,
+    "pass": 2,
+    "exit": 0,
+    "receipt": "green-receipt.json"
+  },
+  "findings": [
+    "P0-R1-M1",
+    "P0-R1-M3"
+  ],
+  "scope": "Original product.v1 branch with exact current shared regression bytes; separate from later product.v2 corrective receipts. Fixture signatures and model protocol do not establish a live pilot."
+}

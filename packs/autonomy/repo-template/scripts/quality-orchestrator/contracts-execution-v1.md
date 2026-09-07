@@ -43,6 +43,30 @@ permission; the external owner signs its returned `budget` using
 `approvalSigningBytes`, kind `execution-budget`, subject `digestData(budget)`
 and scope `digestData(budget.scope)`.
 
+## Current operation authority at the dispatch boundary
+
+The closed release, review and catalog entrypoints take one immutable data
+snapshot of the caller wire before the asynchronous preflight. The same captured
+request is used to reconstruct the current obligation and construct the signed
+execution descriptor. Replacing caller data while preflight awaits cannot lend
+fresh authority to an older descriptor. Immediately before a new reservation,
+under journal ownership, the controller rechecks runtime pins, owner/objective
+and action-specific approval, review policy/catalog/shadow and prerequisite
+freshness as applicable. This is separate from the execution-budget check.
+
+The private journal claim returns fresh dispatch ownership only to the process
+that creates the durable reservation. An idempotent public APPENDED receipt is
+not that ownership. A second process uses original-key reconciliation, with no
+second POST or charge. Owner interruption after reservation leaves uncertainty
+in the original history rather than transferring a new dispatch right.
+
+The external supervisor must independently validate the exact descriptor's
+current objective, applicable action approval, review policy and prerequisites
+immediately before performing the operation, as well as its execution budget
+and fixed profile. The controller's earlier check cannot establish authority at
+a later remote start. Local fixture evidence exercises the controller boundary;
+no currently enrolled live supervisor or accepted isolated host is claimed.
+
 ## Durable dispatch and observations
 
 Before dispatch, canonical descriptor bytes are fsynced under their content
@@ -252,5 +276,7 @@ with candidate code and signing/deployment credentials is not this boundary.
 Offline tests exercise actual local protocol processes and test-only interception
 of the fixed HTTPS transport. No live GitHub dispatch, authenticated Codex call,
 deployment, smoke, observability or rollback was executed in this development
-session. The cancelled Codex preflight and interrupted broad review remain
-untouched and incomplete; this extension does not claim to complete either.
+session. The cancelled Codex preflight and earlier interrupted broad-review
+receipt remain historical. The 2026-09-07 permitted independent static global
+review completed with findings retained in the closure inventory; it does not
+retroactively change either historical outcome or establish a live pilot.

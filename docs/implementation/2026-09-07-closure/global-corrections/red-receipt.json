@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "command": [
+    "node",
+    "--test",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs"
+  ],
+  "exit_code": 1,
+  "tests": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-global-corrections.test.mjs": "301c899443855c51581fcfa54f29f012fe6e4b36bd64882d2e60eccf0de75dc9",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-fixtures.mjs": "073d1269683de1f1108331ddc3970537e458e98b4a26b0cdb9ddd3d7f28d063a",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-process-worker.mjs": "b2a6ec1547061d3a5c34e5dbde2e1c8350b06e60ea037bfd3e54a51f8b1f2691"
+  },
+  "source": {
+    "docs/implementation/2026-09-07-closure/global-corrections/red-source/authority.mjs": "c835ae848b7a6ad4dfc024b5eb2495fa6c6dc68f6cafa89dd7c3a0b12f8cfe26",
+    "docs/implementation/2026-09-07-closure/global-corrections/red-source/budget.mjs": "bcf6bacf43d1bee8dfc28f6951d17cd8391f89411609bde61b58cba8f8c8b24b",
+    "docs/implementation/2026-09-07-closure/global-corrections/red-source/capabilities.mjs": "12730d65dcfd2c93742c9b1417bfc9147dd769549ac02ddb31472e88a688d61a",
+    "docs/implementation/2026-09-07-closure/global-corrections/red-source/classify.mjs": "e5d1b4c4b9c9d5717f319ab60acb1ece4bffba05c00a9b6da9ea2358c728777f",
+    "docs/implementation/2026-09-07-closure/global-corrections/red-source/codex-worker.mjs": "a7c64feb8dcadb12ca71c1e004bcbc346d7fae80f24fd64b625a8cb98a6d4629",
+    "docs/implementation/2026-09-07-closure/global-corrections/red-source/continuation.mjs": "939c95db08dcb8235311ad3e621bc448618f1a50bd815b660e91c02d480eb8e2",
+    "docs/implementation/2026-09-07-closure/global-corrections/red-source/execution.mjs": "03b940f788662e802f3759982497103105eae64cec0065ecf938166825f55076",
+    "docs/implementation/2026-09-07-closure/global-corrections/red-source/execution.schema.mjs": "014c78202f297a3918c13e672412dcb8a83a50b79fc025adceb08b667b86fdbe",
+    "docs/implementation/2026-09-07-closure/global-corrections/red-source/github-actions.mjs": "db760d896e42f14e88f06165021c11ac146b3c4ad84fc929a486fc5245003bb1",
+    "docs/implementation/2026-09-07-closure/global-corrections/red-source/identity.mjs": "f6bc4cf109851e22bece790619fe736808d7af52b06f79e9b00047e0106cfb21",
+    "docs/implementation/2026-09-07-closure/global-corrections/red-source/index.mjs": "706b908393a05f6fcd8c00e22aedee38c8ad58dedde826feb7373bef8c71b09e",
+    "docs/implementation/2026-09-07-closure/global-corrections/red-source/journal.mjs": "ef330fa39d8eae90ad7fd767009e4f80c254658ee418f0fdfb059cec2b80c026",
+    "docs/implementation/2026-09-07-closure/global-corrections/red-source/package-lock.json": "19d4495481f1a940a52ab63684bc400b938cc7c6bc744be889fa453030ba622c",
+    "docs/implementation/2026-09-07-closure/global-corrections/red-source/package.json": "6c8370fa233ab09d20b96330d90a9541d0b3f2c71aa19025988677b879262296",
+    "docs/implementation/2026-09-07-closure/global-corrections/red-source/release.mjs": "cf6c62cf1c87aeb0b2ac7e406014c2f9b7b8c5acbd31432f017334263e31d4c0",
+    "docs/implementation/2026-09-07-closure/global-corrections/red-source/release.schema.mjs": "9c719f1be018e38bfe8c95baa77281940211c2b4651a69e9835e88bffef98122",
+    "docs/implementation/2026-09-07-closure/global-corrections/red-source/review-shadow.mjs": "84221bac483c39e517b288b11910a25e33e8c665e5a3d59faba657e97fef71dd",
+    "docs/implementation/2026-09-07-closure/global-corrections/red-source/review.mjs": "0cad4e495369c1766a02b3a775b15c1234b512f1ae6620632141fa95dd39a8b9",
+    "docs/implementation/2026-09-07-closure/global-corrections/red-source/review.schema.mjs": "6be78ce6ca8b003c5962b646305a9968af52b9c710639cfcb8c41627e9bcdf27"
+  },
+  "logs": {
+    "docs/implementation/2026-09-07-closure/global-corrections/red.log": "4ad8c73b55c0f8640fe750ce473b410b65b4ed2868fef02ceccdfcdc1539d67d"
+  }
+}

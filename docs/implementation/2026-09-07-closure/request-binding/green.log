@@ -1,0 +1,10 @@
+✔ GR02 immutable dispatch input cannot borrow a replacement request current after preflight (5562.300859ms)
+✔ GR02 unchanged current dispatch input retains one reservation and the exact request (2016.93505ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8036.998444

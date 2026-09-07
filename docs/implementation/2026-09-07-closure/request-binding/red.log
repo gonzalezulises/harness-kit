@@ -1,0 +1,27 @@
+✖ GR02 immutable dispatch input cannot borrow a replacement request current after preflight (5590.890652ms)
+✔ GR02 unchanged current dispatch input retains one reservation and the exact request (2108.73205ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8044.943124
+
+✖ failing tests:
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-request-binding.test.mjs:5:1
+✖ GR02 immutable dispatch input cannot borrow a replacement request current after preflight (5590.890652ms)
+  AssertionError [ERR_ASSERTION]: validation of the replacement must not authorize the captured obsolete merge request
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/harness-judge-target/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-request-binding.test.mjs:17:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'EXECUTION_PENDING',
+    expected: 'EXECUTION_PENDING',
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }

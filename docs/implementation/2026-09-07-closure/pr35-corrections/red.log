@@ -1,0 +1,43 @@
+✖ local PR preparation reads base objects from a linked worktree common Git directory (16229.159869ms)
+✖ malformed verifier UTF-8 returns a controlled tool failure (3436.053791ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16735.352436
+
+✖ failing tests:
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-linked-worktree.test.mjs:7:1
+✖ local PR preparation reads base objects from a linked worktree common Git directory (16229.159869ms)
+  AssertionError [ERR_ASSERTION]: {"status":"POLICY","reason":"ENOENT: no such file or directory, lstat '/tmp/product-correction-AbVKiS/repository/.git/worktrees/source/objects'"}
+  + actual - expected
+  
+  + undefined
+  - 'HANDOFF_PREPARED'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/adce1c53b293/closure-pr35/packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-linked-worktree.test.mjs:16:9)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'HANDOFF_PREPARED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packs/autonomy/repo-template/scripts/quality-orchestrator/tests/product-verifier-utf8.test.mjs:6:1
+✖ malformed verifier UTF-8 returns a controlled tool failure (3436.053791ms)
+  TypeError: The encoded data was not valid for encoding utf-8
+      at TextDecoder.decode (node:internal/encoding:494:28)
+      at ChildProcess.<anonymous> (file:///workspace/scratch/adce1c53b293/closure-pr35/packs/autonomy/repo-template/scripts/quality-orchestrator/product.mjs:202:266)
+      at ChildProcess.emit (node:events:509:28)
+      at maybeClose (node:internal/child_process:1141:16)
+      at ChildProcess._handle.onexit (node:internal/child_process:306:5) {
+    code: 'ERR_ENCODING_INVALID_ENCODED_DATA'
+  }

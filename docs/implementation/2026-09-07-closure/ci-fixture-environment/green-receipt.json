@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "claim": "CI_ENVIRONMENT_FULL_LOCAL_PASS",
+  "command": [
+    "env",
+    "ROUTES_BASE=2fb86f02d4de83eeb7496c32f01070fd547da8bb",
+    "DELIVERY_BASE=2fb86f02d4de83eeb7496c32f01070fd547da8bb",
+    "make",
+    "check"
+  ],
+  "exit_code": 0,
+  "source_head": "65c6e5f7aecd107188f4f164e849d7c8aed91cc3",
+  "changed_executable": {
+    "tests/run-tests.sh": "2427fe61ce005711b6a11627d8d8d716cfcc0bd90d8e2dfb872d9d36a77b68c7"
+  },
+  "log_sha256": "147f08ff721679b25a81acfc4122cd70ee02d52409e55f9a1a67f213b783a18c",
+  "observed": {
+    "quick_gates": 8,
+    "core": 286,
+    "runtime": 253,
+    "autonomy_pack": 5,
+    "gherkin": 15,
+    "load": 55,
+    "sentry": 68
+  },
+  "authenticated_gh_load_omissions": 2,
+  "protected_policy_changed": false,
+  "remote_rerun": "PENDING_PUBLICATION"
+}

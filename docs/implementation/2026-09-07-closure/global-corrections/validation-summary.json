@@ -1,0 +1,47 @@
+{
+  "scope": [
+    "GR01",
+    "GR02",
+    "GR04"
+  ],
+  "full_acceptance": false,
+  "deferred_untouched": [
+    "GR03",
+    "GR05"
+  ],
+  "red": {
+    "exit_code": 1,
+    "tests": 12,
+    "pass": 1,
+    "fail": 11
+  },
+  "new_green": {
+    "exit_code": 0,
+    "tests": 12,
+    "pass": 12,
+    "fail": 0
+  },
+  "legacy_green": {
+    "exit_code": 0,
+    "tests": 150,
+    "pass": 150,
+    "fail": 0
+  },
+  "literal_frozen_green": {
+    "exit_code": 0,
+    "tests": 2,
+    "pass": 2,
+    "fail": 0
+  },
+  "syntax": {
+    "commands": 5,
+    "all_exit_zero": true
+  },
+  "hash_consistency": "all receipt test/source/log bindings match after final verification",
+  "receipts": {
+    "docs/implementation/2026-09-07-closure/global-corrections/red-receipt.json": "bc353e1958319e4cdee0a114b1846004886410fbeb21def00dad7145db32d8b7",
+    "docs/implementation/2026-09-07-closure/global-corrections/green-receipt.json": "f9ea4a989289e6e63f2ae2f010c8b699f4ef39243ae37b8f41a7990c853b5177",
+    "docs/implementation/2026-09-07-closure/global-corrections/legacy-green-receipt.json": "277bff02c7e2ea68be7cce4ff4ccad9bdc4e4dcc584729ee909cc38195e12c55",
+    "docs/implementation/2026-09-07-closure/global-corrections/literal-frozen-green-receipt.json": "72b9d58159a5f0b7cb39d4418e1809aaaa7c870f3a32112e4b363ae7ab4b1da9"
+  }
+}

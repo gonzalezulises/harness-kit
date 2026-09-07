@@ -171,10 +171,14 @@ export function journalBoundary(host,runtime,auth,contextPaths,internal={}) {
   }
   const receipt=event=>freeze({status:'APPENDED',sequence:event.sequence,headDigest:event.digest,operationKey:event.operation.operationKey,requestDigest:event.requestDigest});
   function append(expectedHead,op,ctx) {return exclusive(()=>appendOwned(expectedHead,op,ctx));}
-  function appendOwned(expectedHead,op,ctx) {
+  function appendOwned(expectedHead,op,ctx) {return appendClaimOwned(expectedHead,op,ctx).receipt;}
+  function appendClaimOwned(expectedHead,op,ctx,validateNew) {
       const before=read(ctx);op=decodeOperation.parse(op);const existing=before.keys.get(op.operationKey);
-      if(existing){must(existing.requestDigest===digestData(op),'operation key reused with different inputs','POLICY');return receipt(existing);}
+      if(existing){must(existing.requestDigest===digestData(op),'operation key reused with different inputs','POLICY');return {created:false,receipt:receipt(existing)};}
       must(expectedHead===before.state.headDigest,'journal head changed','CONFLICT');
+      // Only the owning release/review module supplies this private check.
+      // Idempotent retrieval never reauthorizes a start or repeats dispatch.
+      validateNew?.();
       const issuedAt=auth.freshness();must(typeof issuedAt==='number','fresh authority required','BLOCKED_BY_STALE_AUTHORITY');
       const body={...common,sequence:before.state.sequence+1,previousDigest:before.state.headDigest,actorId:config.actorId,issuedAt,requestDigest:digestData(op),operation:op};
       const event={...body,digest:digestData(body)},encoded=canonical(event);
@@ -182,7 +186,7 @@ export function journalBoundary(host,runtime,auth,contextPaths,internal={}) {
       validateTransition(before,op,ctx);
       writeExclusive(path.join(objects,event.digest+'.json'),encoded);
       const fd=fs.openSync(log,'a',0o600);try{fs.writeFileSync(fd,encoded+'\n');fs.fsyncSync(fd);}finally{fs.closeSync(fd);}syncDirectory(directory);
-      writeIndex(headFile,{sequence:event.sequence,headDigest:event.digest});return receipt(event);
+      writeIndex(headFile,{sequence:event.sequence,headDigest:event.digest});return {created:true,receipt:receipt(event)};
   }
   function validateTransition(before,op,ctx) {
     const state=before.state,current=state.runs.at(-1);
@@ -229,6 +233,7 @@ export function journalBoundary(host,runtime,auth,contextPaths,internal={}) {
   }
   Object.assign(internal,{read,append,finalBinding,putObject,getObject,productContract:product,
     productCustody:fn=>{must(product,'product journal required','POLICY');return exclusive(()=>fn(appendOwned));},
+    claimExecution:(expectedHead,op,ctx,validateNew)=>{must(op.kind==='reserve'&&backendOwned(op)&&typeof validateNew==='function','private execution reservation required','POLICY');return exclusive(()=>appendClaimOwned(expectedHead,op,ctx,validateNew));},
     retainAcknowledgement:(descriptorDigest,ack)=>{hash.parse(descriptorDigest);const digest=putObject(ack);writeExclusive(path.join(objects,'ack-'+descriptorDigest+'.json'),canonical({digest}));},
     readAcknowledgement:descriptorDigest=>{hash.parse(descriptorDigest);const file=path.join(objects,'ack-'+descriptorDigest+'.json');return fs.existsSync(file)?getObject(JSON.parse(fs.readFileSync(file,'utf8')).digest):null;}
   });

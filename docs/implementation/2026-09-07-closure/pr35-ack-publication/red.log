@@ -1,0 +1,55 @@
+✖ v1 acknowledges one verifier effect after transient publication custody contention (3752.465631ms)
+ℹ {"result":{"status":"BLOCKED_BY_OWNERSHIP","reason":"existing owner requires explicit scoped recovery; elapsed time is insufficient"},"effects":1,"state":{"status":"PRODUCT_REPLAYED","objectiveDigest":"40890f9ca362df3caa1d1fbe92005b515347a22e9e2f7c34162f61c4f138e015","stage":"RED","manifestDigest":"91b4d21991d0136862c4ea914620a4e28d9baa30f21644fcc744c2b754446249","productDigest":"7470e9ffd2cf01d0602fd162a29b6e34ba1b3922fcc715c2bfa2f326dd2fbe1e","steps":[],"gates":[],"authorship":[],"review":null,"fullReview":null,"findings":[],"causalEvidence":[],"resolutions":[],"differences":[],"counters":{"fullReview":0,"fixAttempts":0,"controlOnlyWithoutValue":0,"starts":1},"causalRed":null,"verified_state":"UNKNOWN","desired_state":"Prepare verified product change","observed_state":"OBJECTIVE_BOUND","reported_state":{"classification":"REPORTED","value":"No model prose certifies this objective"},"executionAssurance":"FIXTURE","readiness":"NOT_P0_READY","metrics":{"interventionsPerObjective":"UNKNOWN","timeToFirstRED":"UNKNOWN","timeToActualPRReady":"UNKNOWN","duplicateGateMinutesAvoided":"UNKNOWN","findingsAfterFalseReady":"UNKNOWN","highCriticalRegressionRate":"UNKNOWN","autonomousObjectivesCompleted":0,"fixtureObjectivesCompleted":0},"coverage":[{"invariantId":"value","surface":"CLI","mutationPath":"product.json","principal":"local-user","negativeTestId":"value","applicability":"APPLICABLE","basis":"Run the pinned verifier","caseId":"value","observedResult":"UNKNOWN","evidenceDigest":null,"sourceManifestDigest":"91b4d21991d0136862c4ea914620a4e28d9baa30f21644fcc744c2b754446249"},{"invariantId":"value","surface":"UI","mutationPath":"N/A","principal":"N/A","negativeTestId":null,"applicability":"N/A","basis":"No browser UI exists","caseId":null,"observedResult":"N/A","evidenceDigest":null},{"invariantId":"value","surface":"API_SERVER_ACTION","mutationPath":"N/A","principal":"N/A","negativeTestId":null,"applicability":"N/A","basis":"No HTTP API exists","caseId":null,"observedResult":"N/A","evidenceDigest":null},{"invariantId":"value","surface":"RPC","mutationPath":"N/A","principal":"N/A","negativeTestId":null,"applicability":"N/A","basis":"No RPC exists","caseId":null,"observedResult":"N/A","evidenceDigest":null},{"invariantId":"value","surface":"DIRECT_DML_POSTGREST","mutationPath":"N/A","principal":"N/A","negativeTestId":null,"applicability":"N/A","basis":"No database exists","caseId":null,"observedResult":"N/A","evidenceDigest":null},{"invariantId":"value","surface":"BATCH_SYNC","mutationPath":"N/A","principal":"N/A","negativeTestId":null,"applicability":"N/A","basis":"No batch interface exists","caseId":null,"observedResult":"N/A","evidenceDigest":null},{"invariantId":"value","surface":"STORAGE","mutationPath":"N/A","principal":"N/A","negativeTestId":null,"applicability":"N/A","basis":"No storage interface exists","caseId":null,"observedResult":"N/A","evidenceDigest":null},{"invariantId":"value","surface":"TRIGGERS","mutationPath":"N/A","principal":"N/A","negativeTestId":null,"applicability":"N/A","basis":"No triggers exist","caseId":null,"observedResult":"N/A","evidenceDigest":null},{"invariantId":"value","surface":"MIGRATIONS","mutationPath":"N/A","principal":"N/A","negativeTestId":null,"applicability":"N/A","basis":"No migrations exist","caseId":null,"observedResult":"N/A","evidenceDigest":null},{"invariantId":"value","surface":"PRIVILEGED_CLIENTS","mutationPath":"N/A","principal":"N/A","negativeTestId":null,"applicability":"N/A","basis":"No privileged client exists","caseId":null,"observedResult":"N/A","evidenceDigest":null}],"pending":{"key":"red:0","kind":"RED"},"claims":[{"classification":"VERIFIED","value":"UNKNOWN","basis":[]},{"classification":"OBSERVED","value":"OBJECTIVE_BOUND"},{"classification":"UNKNOWN","value":"production, external authority acceptance and actual PR"}],"handoff":null},"budget":{"limit":10,"spent":1,"limits":null,"byKind":{"product-semantic-review":0,"harness-implementation-review":0,"mechanical-remediation-verification":0}},"acknowledgements":["ack-39d98a327e2b0eda0500f7be664351ad4cf87267018210ffc61425f482771ec3.json"],"collisions":1}
+✔ v1 persistent publication custody retains the original acknowledgement and charge (4777.796475ms)
+ℹ {"result":{"status":"BLOCKED_BY_OWNERSHIP","reason":"existing owner requires explicit scoped recovery; elapsed time is insufficient"},"effects":1,"state":{"status":"PRODUCT_REPLAYED","objectiveDigest":"bde35af193716fd57c0245f51728a009e012d515ed37546bfd321cb671f9cfe0","stage":"RED","manifestDigest":"91b4d21991d0136862c4ea914620a4e28d9baa30f21644fcc744c2b754446249","productDigest":"22e54abfb7ef905963a174ddb4f2746f3c8a01c135a6568463d0c1d92cc5ad78","steps":[],"gates":[],"authorship":[],"review":null,"fullReview":null,"findings":[],"causalEvidence":[],"resolutions":[],"differences":[],"counters":{"fullReview":0,"fixAttempts":0,"controlOnlyWithoutValue":0,"starts":1},"causalRed":null,"verified_state":"UNKNOWN","desired_state":"Prepare verified product change","observed_state":"OBJECTIVE_BOUND","reported_state":{"classification":"REPORTED","value":"No model prose certifies this objective"},"executionAssurance":"FIXTURE","readiness":"NOT_P0_READY","metrics":{"interventionsPerObjective":"UNKNOWN","timeToFirstRED":"UNKNOWN","timeToActualPRReady":"UNKNOWN","duplicateGateMinutesAvoided":"UNKNOWN","findingsAfterFalseReady":"UNKNOWN","highCriticalRegressionRate":"UNKNOWN","autonomousObjectivesCompleted":0,"fixtureObjectivesCompleted":0},"coverage":[{"invariantId":"value","surface":"CLI","mutationPath":"product.json","principal":"local-user","negativeTestId":"value","applicability":"APPLICABLE","basis":"Run the pinned verifier","caseId":"value","observedResult":"UNKNOWN","evidenceDigest":null,"sourceManifestDigest":"91b4d21991d0136862c4ea914620a4e28d9baa30f21644fcc744c2b754446249"},{"invariantId":"value","surface":"UI","mutationPath":"N/A","principal":"N/A","negativeTestId":null,"applicability":"N/A","basis":"No browser UI exists","caseId":null,"observedResult":"N/A","evidenceDigest":null},{"invariantId":"value","surface":"API_SERVER_ACTION","mutationPath":"N/A","principal":"N/A","negativeTestId":null,"applicability":"N/A","basis":"No HTTP API exists","caseId":null,"observedResult":"N/A","evidenceDigest":null},{"invariantId":"value","surface":"RPC","mutationPath":"N/A","principal":"N/A","negativeTestId":null,"applicability":"N/A","basis":"No RPC exists","caseId":null,"observedResult":"N/A","evidenceDigest":null},{"invariantId":"value","surface":"DIRECT_DML_POSTGREST","mutationPath":"N/A","principal":"N/A","negativeTestId":null,"applicability":"N/A","basis":"No database exists","caseId":null,"observedResult":"N/A","evidenceDigest":null},{"invariantId":"value","surface":"BATCH_SYNC","mutationPath":"N/A","principal":"N/A","negativeTestId":null,"applicability":"N/A","basis":"No batch interface exists","caseId":null,"observedResult":"N/A","evidenceDigest":null},{"invariantId":"value","surface":"STORAGE","mutationPath":"N/A","principal":"N/A","negativeTestId":null,"applicability":"N/A","basis":"No storage interface exists","caseId":null,"observedResult":"N/A","evidenceDigest":null},{"invariantId":"value","surface":"TRIGGERS","mutationPath":"N/A","principal":"N/A","negativeTestId":null,"applicability":"N/A","basis":"No triggers exist","caseId":null,"observedResult":"N/A","evidenceDigest":null},{"invariantId":"value","surface":"MIGRATIONS","mutationPath":"N/A","principal":"N/A","negativeTestId":null,"applicability":"N/A","basis":"No migrations exist","caseId":null,"observedResult":"N/A","evidenceDigest":null},{"invariantId":"value","surface":"PRIVILEGED_CLIENTS","mutationPath":"N/A","principal":"N/A","negativeTestId":null,"applicability":"N/A","basis":"No privileged client exists","caseId":null,"observedResult":"N/A","evidenceDigest":null}],"pending":{"key":"red:0","kind":"RED"},"claims":[{"classification":"VERIFIED","value":"UNKNOWN","basis":[]},{"classification":"OBSERVED","value":"OBJECTIVE_BOUND"},{"classification":"UNKNOWN","value":"production, external authority acceptance and actual PR"}],"handoff":null},"budget":{"limit":10,"spent":1,"limits":null,"byKind":{"product-semantic-review":0,"harness-implementation-review":0,"mechanical-remediation-verification":0}},"acknowledgements":["ack-2527507e2a468e22404ef4285ce25fe9b5abf10976f0201084905266dbc5f56d.json"],"collisions":2,"again":{"status":"BLOCKED_BY_OWNERSHIP","reason":"existing owner requires explicit scoped recovery; elapsed time is insufficient"}}
+✖ v1 acknowledgement publication revalidates expired authority after custody is released (3505.187256ms)
+ℹ {"result":{"status":"BLOCKED_BY_OWNERSHIP","reason":"existing owner requires explicit scoped recovery; elapsed time is insufficient"},"effects":1,"collisions":1}
+ℹ tests 3
+ℹ suites 0
+ℹ pass 1
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12501.533337
+
+✖ failing tests:
+
+test at tests/product-ack-publication.test.mjs:26:1
+✖ v1 acknowledges one verifier effect after transient publication custody contention (3752.465631ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/0be017df5260/closure-review/pr35-ack-red-runtime/tests/product-ack-publication.test.mjs:30:64)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/product-ack-publication.test.mjs:39:1
+✖ v1 acknowledgement publication revalidates expired authority after custody is released (3505.187256ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'BLOCKED_BY_OWNERSHIP'
+  - 'BLOCKED_BY_STALE_AUTHORITY'
+                ^
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/0be017df5260/closure-review/pr35-ack-red-runtime/tests/product-ack-publication.test.mjs:43:9)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'BLOCKED_BY_OWNERSHIP',
+    expected: 'BLOCKED_BY_STALE_AUTHORITY',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
