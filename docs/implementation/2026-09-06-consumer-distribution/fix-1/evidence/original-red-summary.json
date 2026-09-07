@@ -1,0 +1,92 @@
+{
+  "source_sha256": "1643ef9b406086922e322d1435ea80b665cdad4a9814df50e56a66098f61a691",
+  "test_sha256": "f1f080aee78f74331e69b16bca25f84448ff830ba9be8e509e6f689518996e3e",
+  "runs": [
+    {
+      "layer": "runtime",
+      "argv": [
+        "python3",
+        "-I",
+        "tests/consumer-distribution.test.py",
+        "-k",
+        "ConsumerRuntime"
+      ],
+      "exit_code": 1,
+      "seconds": 24.144,
+      "failures": 10,
+      "errors": 0
+    },
+    {
+      "layer": "e2e",
+      "argv": [
+        "python3",
+        "-I",
+        "tests/consumer-distribution.test.py",
+        "-k",
+        "ConsumerEndToEnd"
+      ],
+      "exit_code": 1,
+      "seconds": 5.849,
+      "failures": 1,
+      "errors": 0
+    }
+  ],
+  "raw_runtime_stderr": {
+    "sha256": "9bfdfea374812547368946cf915b883b8e02917cbf32ca4f447ca449435c0acb",
+    "bytes": 408197,
+    "coordination_only": ".superpowers/sdd/consumer-distribution/fix-1-raw/original-runtime-red.stderr.log"
+  },
+  "findings": {
+    "H1": {
+      "tests": [
+        "test_plan_is_bound_to_exact_target_root",
+        "test_live_drift_blocks_idempotent_apply_and_approved_upgrade"
+      ],
+      "red": "wrong target, idempotent drift and approved-upgrade drift all reached success paths"
+    },
+    "H2": {
+      "tests": [
+        "test_consumer_managed_ancestors_cannot_escape_through_symlinks"
+      ],
+      "red": "plan accepted symlinked .harness/distribution and exposed an external effect path"
+    },
+    "H3": {
+      "tests": [
+        "test_sigkill_before_selection_releases_lock_and_resumes",
+        "test_sigkill_after_selection_resumes_without_repeating_generation"
+      ],
+      "red": "both retries returned CONCURRENT_APPLY after the owner was killed"
+    },
+    "H4": {
+      "tests": [
+        "test_manifest_requires_unique_complete_stable_inventory",
+        "test_plan_and_descriptor_schemas_reject_unknown_fields"
+      ],
+      "red": "missing stable inventory and recomputed unknown fields were accepted"
+    },
+    "H5": {
+      "tests": [
+        "test_ci_documentation_uses_an_external_protected_checker"
+      ],
+      "red": "guide lacked the protected external checker path"
+    },
+    "H7": {
+      "tests": [
+        "test_verify_and_plan_accept_fresh_git_modes_without_writing"
+      ],
+      "red": "fresh-clone verify/plan pair included a MANAGED_FILE_DRIFT exit"
+    },
+    "M1": {
+      "tests": [
+        "test_plan_git_queries_do_not_refresh_index_metadata"
+      ],
+      "red": "Git index SHA256 changed during plan"
+    },
+    "M2": {
+      "tests": [
+        "test_candidate_and_exact_local_tag_have_distinct_nonpublished_status"
+      ],
+      "red": "production inventory contained runtime/tests/not-production.mjs"
+    }
+  }
+}

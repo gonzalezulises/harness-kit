@@ -1,0 +1,623 @@
+--- a/bin/harness-consumer.py
++++ b/bin/harness-consumer.py
+@@ -475,6 +475,14 @@
+     return root, git_dir, head
+ 
+ 
++def target_lock(git_dir):
++    lock = git_dir/'harness-consumer.lock'
++    reject(not git_dir.is_absolute() or git_dir.resolve() != git_dir or
++           lock.parent != git_dir or lock.name != 'harness-consumer.lock',
++           'BUNDLE_PATH_UNSAFE', 'Git lock path is not a plain absolute path')
++    return lock
++
++
+ def validate_managed_ancestors(root):
+     candidates = [root/'.harness', distribution(root)]
+     candidates += [distribution(root)/name for name in
+@@ -632,9 +640,26 @@
+     return int(match.group(1))
+ 
+ 
++def stable_signature(manifest):
++    return {item['installPath']: (item['sha256'], item['mode'])
++            for item in manifest['files'] if item['target'] == 'stable'}
++
++
++def planned_creates(kind, manifest, before_manifest, available):
++    result = []
++    if kind in {'install', 'upgrade'} and manifest['bundleDigest'] not in available:
++        result += [f'.harness/distribution/generations/{manifest["bundleDigest"]}/{item["path"]}'
++                   for item in manifest['files'] if item['target'] == 'generation']
++    if before_manifest is None:
++        result += [f'.harness/distribution/{item["installPath"]}'
++                   for item in manifest['files'] if item['target'] == 'stable']
++    return result
++
++
+ def create_plan(args, kind):
+     bindings(args)
+-    root, _, head = target_git(args.target)
++    root, git_dir, head = target_git(args.target)
++    lock = target_lock(git_dir)
+     validate_managed_ancestors(root)
+     suitable(root)
+     current = load_active(root)
+@@ -650,9 +675,8 @@
+         reject(current['bundleDigest'] == manifest['bundleDigest'], 'MIGRATION_REQUIRED', 'target bundle is already selected')
+         reject(version_major(before_manifest['source']['version']) != version_major(manifest['source']['version']),
+                'MIGRATION_REQUIRED', 'major runtime migration is unsupported')
+-        existing_bootstrap = next(item for item in before_manifest['files'] if item.get('installPath') == 'bootstrap.mjs')
+-        next_bootstrap = next(item for item in manifest['files'] if item.get('installPath') == 'bootstrap.mjs')
+-        reject(existing_bootstrap['sha256'] != next_bootstrap['sha256'], 'MIGRATION_REQUIRED', 'bootstrap migration unsupported')
++        reject(stable_signature(before_manifest) != stable_signature(manifest),
++               'MIGRATION_REQUIRED', 'stable managed payload migration unsupported')
+     else:
+         reject(current is None, 'NOT_INSTALLED', 'rollback requires an installed runtime')
+         reject(not HASH.fullmatch(args.to or ''), 'MISSING_REQUIRED_BINDING', 'rollback generation digest required')
+@@ -661,6 +685,8 @@
+         reject(current['bundleDigest'] == args.to, 'MIGRATION_REQUIRED', 'rollback target is already selected')
+         reject(version_major(before_manifest['source']['version']) != version_major(manifest['source']['version']),
+                'MIGRATION_REQUIRED', 'rollback requires an unsupported state migration')
++        reject(stable_signature(before_manifest) != stable_signature(manifest),
++               'MIGRATION_REQUIRED', 'stable managed payload migration unsupported')
+     target_digest = manifest['bundleDigest']
+     available = []
+     manifests = distribution(root)/'manifests'
+@@ -675,10 +701,11 @@
+         'installedVersion': before_manifest['source']['version'] if before_manifest else None,
+         'targetVersion': manifest['source']['version'],
+         'preserved': preserved_snapshot(root),
+-        'create': [f'.harness/distribution/generations/{target_digest}/{item["path"]}' for item in manifest['files'] if item['target'] == 'generation'],
++        'create': planned_creates(kind, manifest, before_manifest, available),
+         'change': ['.harness/distribution/active.json'],
+         'managedDrift': [], 'migrations': [], 'incompatibilities': [],
+-        'allowedWrites': ['.git/harness-consumer.lock', '.harness/distribution/'],
++        'lockPath': str(lock),
++        'allowedWrites': [str(lock), '.harness/distribution/'],
+         'availableRollback': available,
+     }
+     return {**subject, 'planDigest': digest(subject)}
+@@ -688,7 +715,7 @@
+     'schemaVersion', 'kind', 'profile', 'configSchema', 'stateSchema', 'targetRoot',
+     'targetHead', 'beforeBundleDigest', 'bundleDigest', 'sourceSha', 'installedVersion',
+     'targetVersion', 'preserved', 'create', 'change', 'managedDrift', 'migrations',
+-    'incompatibilities', 'allowedWrites', 'availableRollback', 'planDigest',
++    'incompatibilities', 'lockPath', 'allowedWrites', 'availableRollback', 'planDigest',
+ }
+ 
+ 
+@@ -699,6 +726,8 @@
+            plan['profile'] != PROFILE or plan['configSchema'] != CONFIG_SCHEMA or
+            plan['stateSchema'] != STATE_SCHEMA or not isinstance(plan['targetRoot'], str) or
+            not pathlib.Path(plan['targetRoot']).is_absolute() or
++           not isinstance(plan['lockPath'], str) or
++           not pathlib.Path(plan['lockPath']).is_absolute() or
+            not GIT_HASH.fullmatch(str(plan['targetHead'])) or
+            (plan['beforeBundleDigest'] is not None and
+             not HASH.fullmatch(str(plan['beforeBundleDigest']))) or
+@@ -717,11 +746,14 @@
+         reject(not isinstance(value, list) or any(not isinstance(item, str) for item in value) or
+                len(value) != len(set(value)), status, 'invalid plan list: '+name)
+     expected_create_prefix = '.harness/distribution/generations/'+plan['bundleDigest']+'/'
+-    reject(any(not item.startswith(expected_create_prefix) or
+-               not safe_relative(item) for item in plan['create']) or
++    stable_creates = {'.harness/distribution/'+value[0]
++                      for value in STABLE_SOURCES.values()}
++    reject(any((not item.startswith(expected_create_prefix) and
++                item not in stable_creates) or not safe_relative(item)
++               for item in plan['create']) or
+            plan['change'] != ['.harness/distribution/active.json'] or
+            plan['managedDrift'] or plan['migrations'] or plan['incompatibilities'] or
+-           plan['allowedWrites'] != ['.git/harness-consumer.lock', '.harness/distribution/'] or
++           plan['allowedWrites'] != [plan['lockPath'], '.harness/distribution/'] or
+            any(not HASH.fullmatch(item) for item in plan['availableRollback']),
+            status, 'invalid plan operations')
+     supplied = plan['planDigest']
+@@ -731,20 +763,21 @@
+     return plan
+ 
+ 
+-def acquire_lock(git_dir):
+-    file = git_dir/'harness-consumer.lock'
+-    try:
+-        descriptor = os.open(file, os.O_RDWR | os.O_CREAT, 0o600)
++def acquire_lock(file):
++    try:
++        descriptor = os.open(file, os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW | os.O_CLOEXEC,
++                             0o600)
+     except OSError as error:
+-        raise Failure('TOOL_FAILURE', str(error))
++        raise Failure('BUNDLE_PATH_UNSAFE', 'unsafe consumer lock: '+str(error))
++    info = os.fstat(descriptor)
++    if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1:
++        os.close(descriptor)
++        raise Failure('BUNDLE_PATH_UNSAFE', 'consumer lock must be one plain file')
+     try:
+         fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+     except BlockingIOError:
+         os.close(descriptor)
+         raise Failure('CONCURRENT_APPLY', 'another consumer transaction owns the lock')
+-    os.ftruncate(descriptor, 0)
+-    os.write(descriptor, (str(os.getpid())+'\n').encode())
+-    os.fsync(descriptor)
+     return file, descriptor
+ 
+ 
+@@ -807,9 +840,9 @@
+     return manifest
+ 
+ 
+-def validate_plan_live(root, head, plan, manifest, before_manifest, check_available):
+-    expected_create = [f'.harness/distribution/generations/{plan["bundleDigest"]}/{item["path"]}'
+-                       for item in manifest['files'] if item['target'] == 'generation']
++def validate_plan_live(root, head, plan, manifest, before_manifest, recovering):
++    expected_create = planned_creates(plan['kind'], manifest, before_manifest,
++                                      plan['availableRollback'])
+     reject(plan['targetRoot'] != str(root) or plan['targetHead'] != head or
+            plan['preserved'] != preserved_snapshot(root) or
+            plan['bundleDigest'] != manifest['bundleDigest'] or
+@@ -819,15 +852,16 @@
+                                         if before_manifest else None) or
+            plan['create'] != expected_create,
+            'PLAN_BINDING_CHANGED', 'approved plan differs from live target or bundle')
+-    if check_available:
+-        manifests = distribution(root)/'manifests'
+-        available = []
+-        if manifests.is_dir():
+-            available = sorted(path.stem for path in manifests.glob('*.json')
+-                               if HASH.fullmatch(path.stem) and
+-                               path.stem != plan['beforeBundleDigest'])
+-        reject(plan['availableRollback'] != available, 'PLAN_BINDING_CHANGED',
+-               'available rollback inventory changed after plan')
++    manifests = distribution(root)/'manifests'
++    available = []
++    excluded = {plan['beforeBundleDigest']}
++    if recovering and plan['bundleDigest'] not in plan['availableRollback']:
++        excluded.add(plan['bundleDigest'])
++    if manifests.is_dir():
++        available = sorted(path.stem for path in manifests.glob('*.json')
++                           if HASH.fullmatch(path.stem) and path.stem not in excluded)
++    reject(plan['availableRollback'] != available, 'PLAN_BINDING_CHANGED',
++           'available rollback inventory changed after plan')
+     if plan['kind'] == 'install':
+         reject(plan['beforeBundleDigest'] is not None, 'PLAN_BINDING_CHANGED',
+                'install plan has an existing generation')
+@@ -837,13 +871,8 @@
+         reject(version_major(before_manifest['source']['version']) !=
+                version_major(manifest['source']['version']),
+                'MIGRATION_REQUIRED', 'major runtime migration is unsupported')
+-        if plan['kind'] == 'upgrade':
+-            old_bootstrap = next(item for item in before_manifest['files']
+-                                 if item.get('installPath') == 'bootstrap.mjs')
+-            new_bootstrap = next(item for item in manifest['files']
+-                                 if item.get('installPath') == 'bootstrap.mjs')
+-            reject(old_bootstrap['sha256'] != new_bootstrap['sha256'],
+-                   'MIGRATION_REQUIRED', 'bootstrap migration unsupported')
++        reject(stable_signature(before_manifest) != stable_signature(manifest),
++               'MIGRATION_REQUIRED', 'stable managed payload migration unsupported')
+ 
+ 
+ def validate_transaction(value, plan_digest):
+@@ -852,7 +881,7 @@
+         keys.add('installationDigest')
+     exact_object(value, keys, 'INCOMPLETE', 'transaction')
+     reject(value['schemaVersion'] != 1 or value['planDigest'] != plan_digest or
+-           value['stage'] not in {'PREPARED', 'ACTIVATED'} or
++           value['stage'] not in {'STARTED', 'PREPARED', 'ACTIVATED'} or
+            not HASH.fullmatch(str(value['bundleDigest'])),
+            'INCOMPLETE', 'transaction cannot be reconciled')
+     reject(value['priorActive'] is not None and not isinstance(value['priorActive'], dict),
+@@ -883,14 +912,22 @@
+ def execute(args, kind):
+     plan = read_plan(args, kind)
+     root, git_dir, _ = target_git(args.target)
+-    _, lock_descriptor = acquire_lock(git_dir)
++    lock = target_lock(git_dir)
++    reject(plan['targetRoot'] != str(root) or plan['lockPath'] != str(lock) or
++           plan['allowedWrites'] != [str(lock), '.harness/distribution/'],
++           'PLAN_BINDING_CHANGED', 'target or effective Git lock changed after plan')
++    _, lock_descriptor = acquire_lock(lock)
+     try:
+         hold = float(os.environ.get('HARNESS_CONSUMER_HOLD_LOCK', '0'))
+         if hold > 0:
+             time.sleep(min(hold, 10))
+         root, locked_git_dir, head = target_git(args.target)
+-        reject(locked_git_dir != git_dir, 'PLAN_BINDING_CHANGED',
+-               'target Git directory changed while acquiring lock')
++        locked_lock = target_lock(locked_git_dir)
++        reject(locked_git_dir != git_dir or locked_lock != lock or
++               plan['targetRoot'] != str(root) or plan['lockPath'] != str(locked_lock) or
++               plan['allowedWrites'] != [str(locked_lock), '.harness/distribution/'],
++               'PLAN_BINDING_CHANGED',
++               'target or effective Git lock changed while acquiring lock')
+         validate_managed_ancestors(root)
+         suitable(root)
+         if kind in {'install', 'upgrade'}:
+@@ -910,7 +947,7 @@
+                                             plan['planDigest'])
+                        if os.path.lexists(transaction_file) else None)
+         validate_plan_live(root, head, plan, manifest, before_manifest,
+-                           check_available=transaction is None)
++                           recovering=transaction is not None)
+         completed = bool(active and active['bundleDigest'] == plan['bundleDigest'] and
+                          active['planDigest'] == plan['planDigest'] and
+                          os.path.lexists(receipt_file))
+@@ -930,17 +967,23 @@
+         for name in ['generations', 'manifests', 'transactions', 'receipts', 'failures']:
+             (dist/name).mkdir(parents=True, exist_ok=True)
+         validate_managed_ancestors(root)
++        if transaction is None:
++            transaction = {'schemaVersion': 1, 'planDigest': plan['planDigest'],
++                           'stage': 'STARTED', 'bundleDigest': plan['bundleDigest'],
++                           'priorActive': active}
++            atomic_json(transaction_file, transaction)
++        reject(transaction['bundleDigest'] != plan['bundleDigest'] or
++               (transaction['priorActive'] or {}).get('bundleDigest') !=
++               plan['beforeBundleDigest'],
++               'INCOMPLETE', 'transaction does not match the approved transition')
+         prior_bytes = ((canonical(transaction['priorActive'])+'\n').encode()
+-                       if pending and transaction['priorActive'] is not None else
+-                       ((dist/'active.json').read_bytes()
+-                        if not pending and os.path.lexists(dist/'active.json') else None))
++                       if transaction['priorActive'] is not None else None)
+         if not pending and kind in {'install', 'upgrade'}:
+             install_stable(root, bundle_root, manifest)
+             staging = dist/('.staging-'+plan['bundleDigest'])
+             generation = dist/'generations'/plan['bundleDigest']
+             if not os.path.lexists(generation):
+-                if (not transaction or transaction['stage'] != 'PREPARED' or
+-                        not os.path.lexists(staging)):
++                if not os.path.lexists(staging):
+                     copy_generation(bundle_root, manifest, staging)
+                 verify_generation_at(staging, manifest)
+             manifest_file = dist/'manifests'/(plan['bundleDigest']+'.json')
+@@ -956,13 +999,28 @@
+             verify_generation(root, manifest)
+ 
+         if not pending:
+-            transaction = {'schemaVersion': 1, 'planDigest': plan['planDigest'],
+-                           'stage': 'PREPARED', 'bundleDigest': plan['bundleDigest'],
+-                           'priorActive': active}
++            transaction = {**transaction, 'stage': 'PREPARED'}
+             atomic_json(transaction_file, transaction)
+             if os.environ.get('HARNESS_CONSUMER_INTERRUPT_AFTER_PREPARE') == '1':
+                 raise Failure('INTERRUPTED_RESUMABLE',
+                               'prepared transaction can resume with the same approved plan', 75)
++            live_root, live_git_dir, live_head = target_git(args.target)
++            live_lock = target_lock(live_git_dir)
++            reject(live_root != root or live_git_dir != git_dir or live_lock != lock or
++                   plan['targetRoot'] != str(live_root) or
++                   plan['lockPath'] != str(live_lock),
++                   'PLAN_BINDING_CHANGED',
++                   'target or effective Git lock changed before selection')
++            validate_managed_ancestors(live_root)
++            suitable(live_root)
++            live_active = load_active(live_root)
++            if live_active:
++                live_active, _ = verify_current(live_root)
++            reject((live_active or {}).get('bundleDigest') != plan['beforeBundleDigest'],
++                   'PLAN_BINDING_CHANGED', 'active generation changed before selection')
++            live_before_manifest = plan_before_manifest(live_root, plan)
++            validate_plan_live(live_root, live_head, plan, manifest,
++                               live_before_manifest, recovering=True)
+             descriptor = {
+                 'schemaVersion': 1, 'profile': PROFILE,
+                 'bundleDigest': plan['bundleDigest'], 'sourceSha': plan['sourceSha'],
+@@ -1009,6 +1067,13 @@
+ 
+ 
+ def verify_generation_at(base, manifest):
++    try:
++        base_info = base.lstat()
++    except OSError as error:
++        raise Failure('MANAGED_FILE_DRIFT', str(error))
++    reject(stat.S_ISLNK(base_info.st_mode) or not stat.S_ISDIR(base_info.st_mode),
++           'MANAGED_FILE_DRIFT', 'staging generation is not a plain directory')
++    expected = set()
+     for item in manifest['files']:
+         if item['target'] != 'generation':
+             continue
+@@ -1019,6 +1084,15 @@
+             raise Failure('MANAGED_FILE_DRIFT', str(error))
+         reject(stat.S_ISLNK(info.st_mode) or not stat.S_ISREG(info.st_mode) or info.st_nlink != 1 or stat.S_IMODE(info.st_mode) != item['mode'] or file_hash(file) != item['sha256'],
+                'MANAGED_FILE_DRIFT', item['path'])
++        expected.add(item['path'])
++    actual = set()
++    for file in base.rglob('*'):
++        info = file.lstat()
++        reject(stat.S_ISLNK(info.st_mode) or not (stat.S_ISDIR(info.st_mode) or
++               stat.S_ISREG(info.st_mode)), 'MANAGED_FILE_DRIFT', str(file))
++        if stat.S_ISREG(info.st_mode):
++            actual.add(file.relative_to(base).as_posix())
++    reject(actual != expected, 'MANAGED_FILE_DRIFT', 'staging inventory differs')
+ 
+ 
+ def verify_command(args):
+--- a/tests/consumer-distribution.test.py
++++ b/tests/consumer-distribution.test.py
+@@ -233,6 +233,10 @@
+         value, path = make_plan(self.root, 'plan', target, bundle)
+         self.assertEqual(tree(target), before)
+         self.assertEqual((target/'.git/index').read_bytes(), index)
++        self.assertTrue({'.harness/distribution/bootstrap.mjs',
++                         '.harness/distribution/harness-consumer.py',
++                         '.harness/distribution/consumer-installation.v1.json',
++                         '.harness/distribution/.gitignore'}.issubset(value['create']))
+         result = apply('apply', target, bundle, value, path)
+         self.assertEqual(result.returncode, 0, result.stdout+result.stderr)
+         installed = json.loads(result.stdout)
+@@ -250,6 +254,33 @@
+         rejected = apply('apply', other, bundle, value, path)
+         self.assertStatus(rejected, 'PLAN_BINDING_CHANGED')
+         self.assertFalse((other/'.harness/distribution/active.json').exists())
++
++    def test_linked_worktree_plan_declares_and_uses_real_git_lock(self):
++        main = consumer(self.root/'main')
++        linked = self.root/'linked-consumer'
++        git(main, 'worktree', 'add', '-q', '-b', 'fixture-linked', str(linked))
++        bundle, _ = self.bundle()
++        value, path = make_plan(self.root, 'plan', linked, bundle)
++        git_dir = pathlib.Path(git(linked, 'rev-parse', '--absolute-git-dir'))
++        lock = git_dir/'harness-consumer.lock'
++        installed = apply('apply', linked, bundle, value, path)
++        self.assertEqual(installed.returncode, 0, installed.stdout+installed.stderr)
++        self.assertTrue(lock.is_file())
++        declared = [(pathlib.Path(item) if pathlib.Path(item).is_absolute()
++                     else linked/item.rstrip('/')).resolve()
++                    for item in value['allowedWrites']]
++        self.assertIn(lock, declared, 'effective Git lock write was not declared')
++        self.assertEqual(value['lockPath'], str(lock))
++        self.assertEqual(value['allowedWrites'], [str(lock), '.harness/distribution/'])
++        changed = dict(value, lockPath=str(lock)+'-different')
++        changed['allowedWrites'] = [changed['lockPath'], '.harness/distribution/']
++        subject = dict(changed); subject.pop('planDigest')
++        changed['planDigest'] = hashlib.sha256(json.dumps(
++            subject, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
++        path.write_text(json.dumps(changed, sort_keys=True))
++        self.assertStatus(apply('apply', linked, bundle, changed, path),
++                          'PLAN_BINDING_CHANGED')
++        self.assertFalse(pathlib.Path(changed['lockPath']).exists())
+ 
+     def test_live_drift_blocks_idempotent_apply_and_approved_upgrade(self):
+         origin = consumer(self.root/'origin')
+@@ -293,6 +324,26 @@
+                     os.link(outside, active)
+                 result = run([sys.executable, str(CLI), 'verify', '--target', str(target)])
+                 self.assertStatus(result, 'BUNDLE_PATH_UNSAFE')
++
++    def test_consumer_lock_rejects_links_without_changing_sentinel(self):
++        bundle, _ = self.bundle()
++        for kind in ['symlink', 'hardlink']:
++            with self.subTest(kind=kind):
++                target = consumer(self.root/kind)
++                value, path = make_plan(self.root, 'plan', target, bundle)
++                sentinel = self.root/(kind+'-consumer-owned.txt')
++                expected = b'preserve consumer-owned sentinel\n'
++                sentinel.write_bytes(expected)
++                lock = target/'.git/harness-consumer.lock'
++                if kind == 'symlink':
++                    lock.symlink_to(sentinel)
++                else:
++                    os.link(sentinel, lock)
++                rejected = apply('apply', target, bundle, value, path)
++                self.assertEqual(sentinel.read_bytes(), expected,
++                                 kind+' lock changed consumer-owned bytes')
++                self.assertStatus(rejected, 'BUNDLE_PATH_UNSAFE')
++                self.assertFalse((target/'.harness/distribution/active.json').exists())
+ 
+     def test_plan_git_queries_do_not_refresh_index_metadata(self):
+         target = consumer(self.root)
+@@ -469,6 +520,90 @@
+         self.assertEqual(generation.stat().st_ino, inode,
+                          'resume replaced the already verified generation')
+ 
++    def test_sigkill_after_manifest_reconciles_own_attempt_and_rejects_drift(self):
++        target = consumer(self.root/'after-manifest')
++        bundle, _ = self.bundle()
++        value, path = make_plan(self.root, 'plan', target, bundle)
++        injection = r'''import importlib.util,sys,os,signal
++cli=sys.argv.pop(1)
++spec=importlib.util.spec_from_file_location('f26_manifest_crash',cli)
++m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
++original=m.atomic_json
++def stop_after_manifest(path,value,mode=0o644):
++    original(path,value,mode)
++    if path.parent.name=='manifests':os.kill(os.getpid(),signal.SIGKILL)
++m.atomic_json=stop_after_manifest
++m.main()
++'''
++        killed = subprocess.run(
++            [sys.executable, '-I', '-c', injection, str(CLI), 'apply',
++             '--target', str(target), '--bundle', str(bundle), '--plan', str(path),
++             '--approve-plan', value['planDigest']],
++            capture_output=True, text=True, timeout=60)
++        self.assertEqual(killed.returncode, -9)
++        dist = target/'.harness/distribution'
++        manifest = dist/'manifests'/(value['bundleDigest']+'.json')
++        transaction = dist/'transactions'/(value['planDigest']+'.json')
++        active = dist/'active.json'
++        self.assertTrue(manifest.is_file())
++        self.assertTrue(transaction.is_file(),
++                        'recoverable effects preceded the durable attempt record')
++        self.assertFalse(active.exists())
++
++        foreign = dist/'manifests'/('f'*64+'.json')
++        foreign.write_text('{}\n')
++        self.assertStatus(apply('apply', target, bundle, value, path),
++                          'PLAN_BINDING_CHANGED')
++        foreign.unlink()
++
++        original = manifest.read_bytes()
++        changed = json.loads(original)
++        changed['source']['version'] = '0.1.1'
++        manifest.chmod(0o644)
++        manifest.write_text(json.dumps(changed, sort_keys=True))
++        manifest.chmod(0o444)
++        self.assertStatus(apply('apply', target, bundle, value, path),
++                          'MANAGED_FILE_DRIFT')
++        manifest.chmod(0o644)
++        manifest.write_bytes(original)
++        manifest.chmod(0o444)
++
++        resumed = apply('apply', target, bundle, value, path)
++        self.assertEqual(resumed.returncode, 0, resumed.stdout+resumed.stderr)
++        self.assertEqual(json.loads(resumed.stdout)['status'], 'INSTALLED_NOT_ADOPTED')
++        generations = [item for item in (dist/'generations').iterdir()
++                       if item.is_dir()]
++        self.assertEqual([item.name for item in generations], [value['bundleDigest']])
++
++    def test_head_change_after_prepare_blocks_selector_effect(self):
++        target = consumer(self.root/'prepare-drift')
++        bundle, _ = self.bundle()
++        value, path = make_plan(self.root, 'plan', target, bundle)
++        injection = r'''import importlib.util,sys,subprocess
++cli=sys.argv.pop(1);target=sys.argv.pop(1)
++spec=importlib.util.spec_from_file_location('f26_prepare_drift',cli)
++m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
++original=m.atomic_json
++def change_head_after_prepare(path,value,mode=0o644):
++    original(path,value,mode)
++    if path.parent.name=='transactions' and value.get('stage')=='PREPARED':
++        subprocess.run(['git','-C',target,'commit','--allow-empty','-qm','concurrent change'],
++                       check=True)
++m.atomic_json=change_head_after_prepare
++try:m.main()
++except m.Failure as error:
++    print(m.canonical({'status':error.status,'reason':error.reason}),file=sys.stderr)
++    sys.exit(error.code)
++'''
++        changed = subprocess.run(
++            [sys.executable, '-I', '-c', injection, str(CLI), str(target), 'apply',
++             '--target', str(target), '--bundle', str(bundle), '--plan', str(path),
++             '--approve-plan', value['planDigest']],
++            capture_output=True, text=True, timeout=60)
++        self.assertStatus(changed, 'PLAN_BINDING_CHANGED')
++        self.assertFalse((target/'.harness/distribution/active.json').exists(),
++                         'changed HEAD was selected without revalidation')
++
+     def test_postverify_failure_restores_prior_selection_and_records_failure(self):
+         target = consumer(self.root)
+         first, _ = self.install(target)
+@@ -497,6 +632,31 @@
+         result = run(plan_args('upgrade-plan', target, bad))
+         self.assertStatus(result, 'BUNDLE_PATH_UNSAFE')
+         self.assertEqual((target/'product.txt').read_text(), 'consumer product\n')
++
++    def test_upgrade_plan_rejects_changed_nonbootstrap_stable_payload(self):
++        target = consumer(self.root)
++        self.install(target)
++        next_bundle, _ = self.bundle(1)
++        changed_bundle = self.root/'changed-stable-bundle'
++        shutil.copytree(next_bundle, changed_bundle)
++        manifest_path = changed_bundle/'manifest.json'
++        manifest_path.chmod(0o644)
++        manifest = json.loads(manifest_path.read_text())
++        item = next(item for item in manifest['files']
++                    if item.get('installPath') == 'harness-consumer.py')
++        payload = changed_bundle/'payload'/item['path']
++        payload.chmod(0o644)
++        payload.write_bytes(payload.read_bytes()+b'\n# incompatible stable fixture\n')
++        payload.chmod(item['mode'])
++        item['sha256'] = hashlib.sha256(payload.read_bytes()).hexdigest()
++        subject = dict(manifest); subject.pop('bundleDigest')
++        manifest['bundleDigest'] = hashlib.sha256(json.dumps(
++            subject, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
++        manifest_path.write_text(json.dumps(manifest, sort_keys=True,
++                                            separators=(',', ':'))+'\n')
++        manifest_path.chmod(0o444)
++        rejected = run(plan_args('upgrade-plan', target, changed_bundle))
++        self.assertStatus(rejected, 'MIGRATION_REQUIRED')
+ 
+     def test_upgrade_and_rollback_preserve_newer_journal_and_configuration(self):
+         target = consumer(self.root)
+--- a/schemas/consumer-installation.v1.json
++++ b/schemas/consumer-installation.v1.json
+@@ -105,7 +105,7 @@
+     "plan": {
+       "type": "object",
+       "additionalProperties": false,
+-      "required": ["schemaVersion", "kind", "profile", "configSchema", "stateSchema", "targetRoot", "targetHead", "beforeBundleDigest", "bundleDigest", "sourceSha", "installedVersion", "targetVersion", "preserved", "create", "change", "managedDrift", "migrations", "incompatibilities", "allowedWrites", "availableRollback", "planDigest"],
++      "required": ["schemaVersion", "kind", "profile", "configSchema", "stateSchema", "targetRoot", "targetHead", "lockPath", "beforeBundleDigest", "bundleDigest", "sourceSha", "installedVersion", "targetVersion", "preserved", "create", "change", "managedDrift", "migrations", "incompatibilities", "allowedWrites", "availableRollback", "planDigest"],
+       "properties": {
+         "schemaVersion": { "const": 1 },
+         "kind": { "enum": ["install", "upgrade", "rollback"] },
+@@ -114,6 +114,7 @@
+         "stateSchema": { "const": "autonomy-state.v1" },
+         "targetRoot": { "type": "string", "minLength": 1 },
+         "targetHead": { "$ref": "#/$defs/gitSha" },
++        "lockPath": { "type": "string", "pattern": "^/" },
+         "beforeBundleDigest": { "oneOf": [{ "$ref": "#/$defs/sha256" }, { "type": "null" }] },
+         "bundleDigest": { "$ref": "#/$defs/sha256" },
+         "sourceSha": { "$ref": "#/$defs/gitSha" },
+@@ -125,7 +126,15 @@
+         "managedDrift": { "const": [] },
+         "migrations": { "const": [] },
+         "incompatibilities": { "const": [] },
+-        "allowedWrites": { "const": [".git/harness-consumer.lock", ".harness/distribution/"] },
++        "allowedWrites": {
++          "type": "array",
++          "prefixItems": [
++            { "type": "string", "pattern": "^/" },
++            { "const": ".harness/distribution/" }
++          ],
++          "minItems": 2,
++          "maxItems": 2
++        },
+         "availableRollback": { "type": "array", "items": { "$ref": "#/$defs/sha256" }, "uniqueItems": true },
+         "planDigest": { "$ref": "#/$defs/sha256" }
+       }
+--- a/docs/consumer-distribution.md
++++ b/docs/consumer-distribution.md
+@@ -21,7 +21,7 @@
+ 
+ ## Plan, aplicación y verificación
+ 
+-Guarde el plan fuera del checkout consumidor y entregue su digest exacto por un canal de aprobación separado. `plan` y `upgrade-plan` son de sólo lectura.
++Guarde el plan fuera del checkout consumidor y entregue su digest exacto por un canal de aprobación separado. `plan` y `upgrade-plan` son de sólo lectura. El plan declara `lockPath` como la ruta absoluta del directorio Git efectivo y la incluye en `allowedWrites`; en un worktree enlazado puede estar fuera del checkout. Apply la revalida antes y después de tomar el lock y no escribe contenido en ese archivo.
+ 
+ ```bash
+ python3 bin/harness-consumer.py plan \
+@@ -62,7 +62,7 @@
+ 
+ ## Propiedad del consumidor
+ 
+-Todo path fuera de `.harness/distribution/` sigue siendo propiedad del consumidor. Esto incluye producto, comandos, workflows, root `AGENTS.md`, `Makefile`, package/lock, políticas, autoridad, objetivos, allowlists, frozen regions, adapters y gates. No se presupone ni enumera el contenido de Casabat.
++Salvo el `lockPath` Git exacto declarado por cada plan, todo path fuera de `.harness/distribution/` sigue siendo propiedad del consumidor. Esto incluye producto, comandos, workflows, root `AGENTS.md`, `Makefile`, package/lock, políticas, autoridad, objetivos, allowlists, frozen regions, adapters y gates. El lock debe ser un archivo regular privado, sin symlink ni hardlink, y sólo aporta ownership de proceso mediante `flock`. No se presupone ni enumera el contenido de Casabat.
+ 
+ El instalador preserva explícitamente `.harness/autonomy-v2.json`, `.harness/FIXTURE_ONLY-state/`, `.harness/autonomy/`, `.harness/oracles/`, `.harness/receipts/`, `feature_list.json`, `PROGRESS.md`, `DECISIONS.md`, journals, runs y markers. También conserva cualquier `scripts/quality-orchestrator/` existente: el nuevo bootstrap es paralelo y explícito. Rollback conmuta a una generación verificada y mantiene configuración, journal y evidencia más nuevos.
+ 
+--- a/bin/ARCHITECTURE.md
++++ b/bin/ARCHITECTURE.md
+@@ -10,7 +10,9 @@
+ read-only plans and applies exact digest-approved install, upgrade, verify and
+ rollback operations inside `.harness/distribution/`. Source identity is declared
+ separately from observed Git lineage; local candidates never assert publication or
+-human adoption. CI authority must execute this checker from a protected source
++human adoption. Exact plans also declare the effective Git-dir lock path; apply uses
++that unlinked regular file for process ownership and revalidates before selection.
++CI authority must execute this checker from a protected source
+ outside the candidate checkout.
+ 
+ ## harness-audit.sh
+--- a/.agents/notes/implemented/process/2026-09-06-reproducible-offline-consumer-distribution.md
++++ b/.agents/notes/implemented/process/2026-09-06-reproducible-offline-consumer-distribution.md
+@@ -2,8 +2,8 @@
+ 
+ AGENTS.md, MIGRATION-01, `bin/ARCHITECTURE.md` y el plan de distribución autorizan un único perfil `autonomy-runtime.v1`. El manager usa sólo Python estándar y obtiene del mismo SHA Git los módulos QO de producción, sus contratos y schemas, el manager, bootstrap y schema de instalación. Verifica los archives locales de `yaml` y `zod` contra el lockfile y genera un manifest canónico sin fechas ni paths locales. Un bundle candidato o un tag local siguen sin ser prueba de publicación.
+ 
+-La instalación mantiene todo bajo `.harness/distribution/`. Prepara una generación por digest, verifica path, tipo, link count, modo y hash, y conmuta sólo `active.json` mediante reemplazo y fsync. Plan y upgrade-plan no escriben; apply, upgrade y rollback requieren el digest exacto aprobado, revalidan bajo lock exclusivo y dejan transacción/receipt. Un postverify fallido restaura el selector anterior y conserva evidencia. Cambios incompatibles de major, bootstrap o schema fallan con `MIGRATION_REQUIRED`; no hay migraciones ejecutables arbitrarias.
++La instalación mantiene sus payloads y registros bajo `.harness/distribution/`; la única escritura externa es el `lockPath` absoluto del directorio Git efectivo que el propio plan declara, incluso para worktrees enlazados. Ese archivo se abre sin seguir enlaces, debe ser regular con un solo link y no se trunca: `flock` aporta ownership de proceso. Prepara una generación por digest, verifica path, tipo, link count, modo y hash, y conmuta sólo `active.json` mediante reemplazo y fsync. Plan y upgrade-plan no escriben; apply, upgrade y rollback requieren el digest exacto aprobado, revalidan bajo lock exclusivo e inmediatamente antes del selector, y dejan intento/transacción/receipt. Un postverify fallido restaura el selector anterior y conserva evidencia. Cambios incompatibles de major o de cualquier payload estable, incluido bootstrap/schema, fallan con `MIGRATION_REQUIRED`; no hay migraciones ejecutables arbitrarias.
+ 
+ Las generaciones se sellan read-only. Como Git sólo transporta el bit ejecutable, `verify` y los comandos de plan aceptan en modo lectura exclusivamente la normalización versionada 0444→0644 o 0555→0755 cuando el SHA256 y la entrada del índice coinciden; el bootstrap vuelve a sellar el modo declarado antes de cargar el runtime. La `.gitignore` interna exceptúa únicamente `generations/*/runtime/node_modules/**`, haciendo versionable el cierre offline aunque el consumidor ignore `node_modules/` globalmente.
+ 
+-Todo fuera del namespace continúa consumer-owned. Se preservan la configuración, estado, journals, oracles, receipts, feature/progress/decisions y un runtime legacy paralelo; no se crea baseline, autoridad ni `ACTIVE`. La prueba E2E versiona sólo el namespace instalado, clona de nuevo, vuelve inaccesibles source y bundle, deja cache npm vacío y ejecuta `identify` con el runtime real y `yaml`/`zod` reales bajo autoridad efímera explícita. Reconsiderar este diseño al introducir otro perfil o una migración compatible de bootstrap/schema; ambos quedan fuera del alcance actual.
++Todo fuera del namespace, salvo el lock Git exacto declarado, continúa consumer-owned. Se preservan la configuración, estado, journals, oracles, receipts, feature/progress/decisions y un runtime legacy paralelo; no se crea baseline, autoridad ni `ACTIVE`. La prueba E2E versiona sólo el namespace instalado, clona de nuevo, vuelve inaccesibles source y bundle, deja cache npm vacío y ejecuta `identify` con el runtime real y `yaml`/`zod` reales bajo autoridad efímera explícita. Reconsiderar este diseño al introducir otro perfil o una migración compatible de bootstrap/schema; ambos quedan fuera del alcance actual.
+--- a/.harness/oracles/AC-CONSUMER-DISTRIBUTION.yaml
++++ b/.harness/oracles/AC-CONSUMER-DISTRIBUTION.yaml
+@@ -29,4 +29,4 @@
+ falsification:
+   defect: Removing both exact approval guards allows apply without --approve-plan to create the active selector; the final boundary test observes that unauthorized managed effect
+   proved_sha: a798c88ad625be2478d24df52c0dc45c51e2d4e4
+-  receipt: docs/implementation/2026-09-06-consumer-distribution/fix-1/evidence/unauthorized-red-receipt.json
++  receipt: docs/implementation/2026-09-06-consumer-distribution/fix-2/evidence/unauthorized-red-receipt.json

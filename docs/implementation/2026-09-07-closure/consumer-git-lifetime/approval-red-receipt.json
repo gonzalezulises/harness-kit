@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "command": [
+    "python3",
+    "-I",
+    "tests/consumer-distribution.test.py",
+    "-k",
+    "ConsumerRuntime.test_missing_approval_cannot_create_managed_effects"
+  ],
+  "exit_code": 1,
+  "tests": {
+    "tests/consumer-distribution.test.py": "a9487a0596038df75d57754366ac91fd56b7e707773679e3962c35dc5124e17e"
+  },
+  "source": {
+    "docs/implementation/2026-09-07-closure/consumer-git-lifetime/approval-defective-snapshot/bin/harness-consumer.py": "1ed806aa50d271419e9c5f9b84fc45617ba8edfa83e6679905962047e07e3d60",
+    "docs/implementation/2026-09-07-closure/consumer-git-lifetime/approval-reproof-metadata.json": "ce13f986bfae154ae3d6b3b8117de14d09839bc05ddafe790e3a041b3effc41e"
+  },
+  "logs": {
+    "docs/implementation/2026-09-07-closure/consumer-git-lifetime/approval-red.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/implementation/2026-09-07-closure/consumer-git-lifetime/approval-red.stderr.log": "dd4d58e66cbc6db4852ef05dd70e162a56ab2724dbfa23d28fd2573633b43b14",
+    "docs/implementation/2026-09-07-closure/consumer-git-lifetime/approval-red.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+  }
+}

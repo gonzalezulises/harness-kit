@@ -1,0 +1,14 @@
+{
+  "state": "RED",
+  "command": "python3 -I tests/consumer-distribution.test.py -k ConsumerGitLifecycle",
+  "cwd": "/workspace/scratch/adce1c53b293/closure-dependencies",
+  "head": "6677e9978dfd9fa344186a65adddcadabd21cc7e",
+  "merge_head": "b567669fcd41c40caa8235e758a0f1fdca9a00a5",
+  "git_version": "2.51.1",
+  "exit_code": 1,
+  "tests": 2,
+  "failures": 2,
+  "source_sha256": "c23085b1d2a3b1c5937bed2485dc6b5cf6e0a73267a181ee03e3619cd940009f",
+  "observed": "Both explicit auto gc and normal commit returned before real object packing completed",
+  "limit": "This proves a fixture lifetime defect. The exact writer/interleaving in the original GitHub Git2.55.0 cleanup error was not captured."
+}

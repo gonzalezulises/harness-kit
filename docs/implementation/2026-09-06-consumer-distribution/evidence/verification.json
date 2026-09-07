@@ -1,0 +1,331 @@
+{
+  "schemaVersion": 1,
+  "scope": "F26 autonomy-runtime.v1, fixture repositories only",
+  "status": "FIXTURE_PROFILE_VALIDATED",
+  "sourceBinding": {
+    "baseCommit": "a798c88ad625be2478d24df52c0dc45c51e2d4e4",
+    "sourceManifest": "verified-sources.json",
+    "sourceManifestSha256": "30d816919ae0621c933ff0a8fcf0c528d4a5ac4533d00d7e28753f2487d80556",
+    "selectedFiles": 85,
+    "meaning": "Commands ran against the base commit plus the exact frozen working-tree files in the source manifest; the base commit alone does not contain F26.",
+    "consumerPolicyAdoption": "NOT_PERFORMED"
+  },
+  "toolchainManifest": {
+    "path": "toolchain.json",
+    "sha256": "19185a931d645bae4d2e906bcc111ad3580978cc0752808c4500f50e1e10160b"
+  },
+  "featureGate": {
+    "command": [
+      "make",
+      "verify-feature",
+      "F=F26"
+    ],
+    "sourceCommit": "a798c88ad625be2478d24df52c0dc45c51e2d4e4",
+    "sourceManifestSha256": "30d816919ae0621c933ff0a8fcf0c528d4a5ac4533d00d7e28753f2487d80556",
+    "exit_code": 0,
+    "elapsed_seconds": 51.20072599199921,
+    "source_unchanged": true,
+    "streams": {
+      "stdout": {
+        "sha256": "be80499f4904ee173d09e3d6aed7a480843038b166fb08d39087e59182d54fd2",
+        "bytes": 627
+      },
+      "stderr": {
+        "sha256": "269f890fc58e3924d687f4b5fd02b2079b85f0d942a1e27d51c38b39ed2ba4aa",
+        "bytes": 5291
+      }
+    },
+    "verification_summaries": [
+      "Ran 31 tests in 39.378s",
+      "OK",
+      "Ran 2 tests in 11.226s",
+      "OK"
+    ],
+    "environment": {
+      "NO_COLOR": "1",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "K6_NO_USAGE_REPORT": "true",
+      "unsupportedNpmConfigRemoved": true
+    }
+  },
+  "requiredCases": [
+    {
+      "case": 1,
+      "requirement": "clean installation",
+      "test": "ConsumerRuntime.test_clean_install_plan_is_read_only_and_repeat_is_idempotent",
+      "result": "PASS_IN_FEATURE_GATE"
+    },
+    {
+      "case": 2,
+      "requirement": "legacy harness adoption preserves consumer bytes",
+      "test": "ConsumerRuntime.test_legacy_runtime_and_custom_consumer_state_are_preserved",
+      "result": "PASS_IN_FEATURE_GATE"
+    },
+    {
+      "case": 3,
+      "requirement": "repeat installation is idempotent",
+      "test": "ConsumerRuntime.test_clean_install_plan_is_read_only_and_repeat_is_idempotent",
+      "result": "PASS_IN_FEATURE_GATE"
+    },
+    {
+      "case": 4,
+      "requirement": "managed local edit blocks",
+      "test": "ConsumerRuntime.test_managed_file_drift_blocks_verify_and_upgrade",
+      "result": "PASS_IN_FEATURE_GATE"
+    },
+    {
+      "case": 5,
+      "requirement": "custom configuration preserved",
+      "test": "ConsumerRuntime.test_legacy_runtime_and_custom_consumer_state_are_preserved",
+      "result": "PASS_IN_FEATURE_GATE"
+    },
+    {
+      "case": 6,
+      "requirement": "interrupted apply resumes",
+      "test": "ConsumerRuntime.test_sigkill_during_started_copy_recovers_only_safe_partial_staging",
+      "result": "PASS_IN_FEATURE_GATE"
+    },
+    {
+      "case": 7,
+      "requirement": "changed plan digest blocks",
+      "test": "ConsumerRuntime.test_changed_plan_and_adulterated_bundle_block_before_writes",
+      "result": "PASS_IN_FEATURE_GATE"
+    },
+    {
+      "case": 8,
+      "requirement": "adulterated bundle blocks",
+      "test": "ConsumerRuntime.test_changed_plan_and_adulterated_bundle_block_before_writes",
+      "result": "PASS_IN_FEATURE_GATE"
+    },
+    {
+      "case": 9,
+      "requirement": "incompatible version/schema blocks",
+      "test": "ConsumerRuntime.test_unknown_schema_missing_bindings_and_unsuitable_tree_fail_closed",
+      "result": "PASS_IN_FEATURE_GATE"
+    },
+    {
+      "case": 10,
+      "requirement": "rollback preserves newer journal and configuration",
+      "test": "ConsumerRuntime.test_upgrade_and_rollback_preserve_newer_journal_and_configuration",
+      "result": "PASS_IN_FEATURE_GATE"
+    },
+    {
+      "case": 11,
+      "requirement": "upgrade cannot modify product paths",
+      "test": "ConsumerRuntime.test_upgrade_cannot_target_product_or_unsafe_bundle_paths",
+      "result": "PASS_IN_FEATURE_GATE"
+    },
+    {
+      "case": 12,
+      "requirement": "fresh consumer runs without upstream or package cache",
+      "test": "ConsumerEndToEnd.test_fresh_clone_executes_real_runtime_offline_with_vendored_yaml_and_zod",
+      "result": "PASS_IN_FEATURE_GATE"
+    }
+  ],
+  "initialFullGateAttempt": {
+    "command": [
+      "make",
+      "check"
+    ],
+    "sourceCommit": "a798c88ad625be2478d24df52c0dc45c51e2d4e4",
+    "sourceManifestSha256": "30d816919ae0621c933ff0a8fcf0c528d4a5ac4533d00d7e28753f2487d80556",
+    "exit_code": 2,
+    "elapsed_seconds": 119.9080303449955,
+    "source_unchanged": true,
+    "streams": {
+      "stdout": {
+        "sha256": "292df435c360812fd24774b391a783e93e475744337cbd270d740346770dfe28",
+        "bytes": 14060
+      },
+      "stderr": {
+        "sha256": "691d0234ff6ad72b9ff7d18afded3e354ec65f30652e488a1d279016f253c8e0",
+        "bytes": 5664
+      }
+    },
+    "verification_summaries": [
+      "286 passed, 0 failed",
+      "Ran 33 tests in 46.504s",
+      "OK"
+    ],
+    "environment": {
+      "NO_COLOR": "1",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "K6_NO_USAGE_REPORT": "true",
+      "unsupportedNpmConfigRemoved": true
+    },
+    "failure": "TOOL_FAILURE: missing runtime node_modules/yaml/package.json in the isolated worktree",
+    "repair": {
+      "argv": [
+        "npm",
+        "ci",
+        "--prefix",
+        "packs/autonomy/repo-template/scripts/quality-orchestrator",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "--offline"
+      ],
+      "exit": 0,
+      "packagesInstalled": 2,
+      "sourceChanged": false,
+      "networkUsed": false
+    }
+  },
+  "review": {
+    "path": "review.json",
+    "openCriticalHigh": 0,
+    "historicalMediumBacklog": [
+      "F26-F1-M3"
+    ],
+    "engineeringCorrections": 3,
+    "originalLocalEngineeringBudget": 2,
+    "deviation": "One disclosed bounded recovery correction. Separate P0 runtime remediation budget remains two."
+  },
+  "causalEvidence": {
+    "authorizationRed": "../recovery-fix/evidence/unauthorized-red-receipt.json",
+    "authorizationGreen": "../recovery-fix/evidence/unauthorized-green-manifest.json",
+    "recoveryRed": "../recovery-fix/evidence/fix2-partial-copy-red-manifest.json",
+    "recoveryGreen": "../recovery-fix/evidence/green-layers-summary.json",
+    "fix1BoundaryCounterexamples": "../fix-2/evidence/fix1-final-red-manifest.json",
+    "historicalInputLimitation": "The original RED test variant f1f080 was not retained; its old ten-failure run is not claimed reconstructible. Current causal records include exact retained patches and test/source hashes."
+  },
+  "preservation": {
+    "historicalFeatureRecordsUnchanged": 24,
+    "casabat": "UNTOUCHED",
+    "pr33": "FROZEN_SEPARATE_BRANCH",
+    "p0": "SEPARATE_COMMIT_6400e65",
+    "journalAndConsumerConfiguration": "VERIFIED_IN_FIXTURES"
+  },
+  "limits": [
+    "Single autonomy-runtime.v1 profile; Linux fixture execution.",
+    "Local source owner identity is DECLARED_NOT_REMOTE_VERIFIED; local tags do not prove publication.",
+    "Unsupported major, schema or stable-manager migrations fail closed with MIGRATION_REQUIRED.",
+    "Installation produces NOT_ADOPTED; owner acceptance, baseline, merge, release and production remain separate.",
+    "The new distribution increment does not certify the interrupted global review or the real authenticated P0 pilot.",
+    "GitHub publication remains blocked by prior automatic approval review; no alternate publication route was attempted.",
+    "Two authenticated-gh load cases are outside local acceptance; green fixture gates do not certify authenticated GitHub behavior."
+  ],
+  "reproduction": {
+    "feature": [
+      "make",
+      "verify-feature",
+      "F=F26"
+    ],
+    "requiredGate": [
+      "make",
+      "check"
+    ],
+    "startup": [
+      "./init.sh"
+    ],
+    "dependencies": "Provide the exact local npm archives described by package-lock.json or a populated npm cache; distribution builder verifies archive SHA512. Existing full-gate tools are listed in toolchain.json."
+  },
+  "finalFullGate": {
+    "command": [
+      "make",
+      "check"
+    ],
+    "sourceCommit": "a798c88ad625be2478d24df52c0dc45c51e2d4e4",
+    "sourceManifestSha256": "30d816919ae0621c933ff0a8fcf0c528d4a5ac4533d00d7e28753f2487d80556",
+    "exit_code": 0,
+    "elapsed_seconds": 360.7756351659991,
+    "source_unchanged": true,
+    "streams": {
+      "stdout": {
+        "sha256": "097fc466f3c79b880912728283532dee977f8732c035e7b65421e1d42a205d38",
+        "bytes": 71022
+      },
+      "stderr": {
+        "sha256": "c662eedad50c70bb686ca81865fc6e2e1f62733288998a31a89aab39ab032184",
+        "bytes": 5192
+      }
+    },
+    "verification_summaries": [
+      "286 passed, 0 failed",
+      "Ran 33 tests in 44.625s",
+      "OK",
+      "# tests 33",
+      "# pass 33",
+      "# fail 0",
+      "# skipped 0",
+      "# tests 206",
+      "# pass 206",
+      "# fail 0",
+      "# skipped 0",
+      "# tests 5",
+      "# pass 5",
+      "# fail 0",
+      "# skipped 0",
+      "15 passed, 0 failed",
+      "68 passed, 0 failed"
+    ],
+    "environment": {
+      "NO_COLOR": "1",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "K6_NO_USAGE_REPORT": "true",
+      "unsupportedNpmConfigRemoved": true
+    }
+  },
+  "startup": {
+    "command": [
+      "./init.sh"
+    ],
+    "sourceCommit": "a798c88ad625be2478d24df52c0dc45c51e2d4e4",
+    "sourceManifestSha256": "30d816919ae0621c933ff0a8fcf0c528d4a5ac4533d00d7e28753f2487d80556",
+    "exit_code": 0,
+    "elapsed_seconds": 69.2937156889966,
+    "source_unchanged": true,
+    "streams": {
+      "stdout": {
+        "sha256": "1b40cd45400d8ec6a29f5aa9c4db9590dc8963cdd22a045c40a045e62bc9df37",
+        "bytes": 13529
+      },
+      "stderr": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      }
+    },
+    "verification_summaries": [
+      "286 passed, 0 failed"
+    ],
+    "environment": {
+      "NO_COLOR": "1",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "K6_NO_USAGE_REPORT": "true",
+      "unsupportedNpmConfigRemoved": true
+    }
+  },
+  "readiness": {
+    "supportedProfile": "FIXTURE_PROFILE_VALIDATED",
+    "globalHarnessReadiness": "NOT_CLAIMED",
+    "consumerAdoption": "NOT_ADOPTED",
+    "upstreamPublication": "PENDING_AUTOMATIC_APPROVAL_BLOCK",
+    "p0ProductLoopReady": "NOT_ESTABLISHED"
+  },
+  "cleanStateChecklist": {
+    "requiredGate": "PASS",
+    "startup": "PASS",
+    "featureEvidence": "HARNESS_ISSUED_F26_PASS",
+    "historicalRecords": "24_UNCHANGED",
+    "sourceManifest": "85_UNCHANGED",
+    "stateFiles": "UPDATED_IN_SAME_COMMIT",
+    "debugArtifacts": "GENERATED_PYC_REMOVED"
+  },
+  "formatCheck": {
+    "sourceAndDocuments": "PASS",
+    "rawEvidence": "Exact patch context lines and observed stderr retain whitespace required by their recorded hashes; full diff --check reports these evidence bytes.",
+    "affectedRawFiles": [
+      "docs/implementation/2026-09-06-consumer-distribution/evidence/causal-approval-bypass.patch",
+      "docs/implementation/2026-09-06-consumer-distribution/fix-1/evidence/fix-1-corrective.patch",
+      "docs/implementation/2026-09-06-consumer-distribution/fix-1/evidence/unauthorized-activation.patch",
+      "docs/implementation/2026-09-06-consumer-distribution/fix-2/evidence/fix-1-to-fix-2.patch",
+      "docs/implementation/2026-09-06-consumer-distribution/fix-2/evidence/fix1-final-red.stderr.log",
+      "docs/implementation/2026-09-06-consumer-distribution/fix-2/evidence/fix1-final-tests-red.stderr.log",
+      "docs/implementation/2026-09-06-consumer-distribution/fix-2/evidence/fix1-focused-red.stderr.log",
+      "docs/implementation/2026-09-06-consumer-distribution/fix-2/evidence/unauthorized-activation.patch",
+      "docs/implementation/2026-09-06-consumer-distribution/recovery-fix/evidence/fix-2-to-recovery-fix.patch",
+      "docs/implementation/2026-09-06-consumer-distribution/recovery-fix/evidence/unauthorized-activation.patch"
+    ],
+    "requiredGate": "UNCHANGED_PASS"
+  }
+}

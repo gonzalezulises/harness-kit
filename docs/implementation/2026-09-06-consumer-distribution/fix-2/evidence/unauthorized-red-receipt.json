@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "command": [
+    "python3",
+    "-I",
+    "tests/consumer-distribution.test.py",
+    "-k",
+    "ConsumerRuntime.test_missing_approval_cannot_create_managed_effects"
+  ],
+  "exit_code": 1,
+  "tests": {
+    "tests/consumer-distribution.test.py": "697a4d35215c42da2a78f0de0c1fa66c7d0025704b561fe3532d501ba950e85c"
+  },
+  "source": {
+    "docs/implementation/2026-09-06-consumer-distribution/fix-2/evidence/unauthorized-activation.patch": "8519b3b9a10148e7825979927a48124b71b03c140b28a0878a44c5958383d357"
+  },
+  "logs": {
+    "docs/implementation/2026-09-06-consumer-distribution/fix-2/evidence/unauthorized-red.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/implementation/2026-09-06-consumer-distribution/fix-2/evidence/unauthorized-red.stderr.log": "4daf4bb36fd6da414fdf6c8603e58b4cf9625bd87852bc2c45ef5bcdf9119cbd",
+    "docs/implementation/2026-09-06-consumer-distribution/fix-2/evidence/unauthorized-red.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+  }
+}

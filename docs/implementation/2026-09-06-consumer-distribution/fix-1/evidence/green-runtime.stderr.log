@@ -1,0 +1,30 @@
+test_archive_traversal_symlink_hardlink_and_bundle_hardlink_are_rejected (__main__.ConsumerRuntime.test_archive_traversal_symlink_hardlink_and_bundle_hardlink_are_rejected) ... ok
+test_candidate_and_exact_local_tag_have_distinct_nonpublished_status (__main__.ConsumerRuntime.test_candidate_and_exact_local_tag_have_distinct_nonpublished_status) ... ok
+test_changed_plan_and_adulterated_bundle_block_before_writes (__main__.ConsumerRuntime.test_changed_plan_and_adulterated_bundle_block_before_writes) ... ok
+test_ci_documentation_uses_an_external_protected_checker (__main__.ConsumerRuntime.test_ci_documentation_uses_an_external_protected_checker) ... ok
+test_clean_install_plan_is_read_only_and_repeat_is_idempotent (__main__.ConsumerRuntime.test_clean_install_plan_is_read_only_and_repeat_is_idempotent) ... ok
+test_cli_and_schema_contract (__main__.ConsumerRuntime.test_cli_and_schema_contract) ... ok
+test_concurrent_apply_cannot_execute_plan_twice (__main__.ConsumerRuntime.test_concurrent_apply_cannot_execute_plan_twice) ... ok
+test_consumer_managed_ancestors_cannot_escape_through_symlinks (__main__.ConsumerRuntime.test_consumer_managed_ancestors_cannot_escape_through_symlinks) ... ok
+test_consumer_managed_descriptor_rejects_symlink_and_hardlink_leaves (__main__.ConsumerRuntime.test_consumer_managed_descriptor_rejects_symlink_and_hardlink_leaves) ... ok
+test_interrupted_apply_resumes_same_plan_and_incomplete_bootstrap_fails (__main__.ConsumerRuntime.test_interrupted_apply_resumes_same_plan_and_incomplete_bootstrap_fails) ... ok
+test_legacy_runtime_and_custom_consumer_state_are_preserved (__main__.ConsumerRuntime.test_legacy_runtime_and_custom_consumer_state_are_preserved) ... ok
+test_live_drift_blocks_idempotent_apply_and_approved_upgrade (__main__.ConsumerRuntime.test_live_drift_blocks_idempotent_apply_and_approved_upgrade) ... ok
+test_managed_file_drift_blocks_verify_and_upgrade (__main__.ConsumerRuntime.test_managed_file_drift_blocks_verify_and_upgrade) ... ok
+test_manifest_requires_unique_complete_stable_inventory (__main__.ConsumerRuntime.test_manifest_requires_unique_complete_stable_inventory) ... ok
+test_missing_approval_cannot_create_managed_effects (__main__.ConsumerRuntime.test_missing_approval_cannot_create_managed_effects) ... ok
+test_plan_and_descriptor_schemas_reject_unknown_fields (__main__.ConsumerRuntime.test_plan_and_descriptor_schemas_reject_unknown_fields) ... ok
+test_plan_git_queries_do_not_refresh_index_metadata (__main__.ConsumerRuntime.test_plan_git_queries_do_not_refresh_index_metadata) ... ok
+test_plan_is_bound_to_exact_target_root (__main__.ConsumerRuntime.test_plan_is_bound_to_exact_target_root) ... ok
+test_postverify_failure_restores_prior_selection_and_records_failure (__main__.ConsumerRuntime.test_postverify_failure_restores_prior_selection_and_records_failure) ... ok
+test_sigkill_after_selection_resumes_without_repeating_generation (__main__.ConsumerRuntime.test_sigkill_after_selection_resumes_without_repeating_generation) ... ok
+test_sigkill_before_selection_releases_lock_and_resumes (__main__.ConsumerRuntime.test_sigkill_before_selection_releases_lock_and_resumes) ... ok
+test_unknown_schema_missing_bindings_and_unsuitable_tree_fail_closed (__main__.ConsumerRuntime.test_unknown_schema_missing_bindings_and_unsuitable_tree_fail_closed) ... ok
+test_upgrade_and_rollback_preserve_newer_journal_and_configuration (__main__.ConsumerRuntime.test_upgrade_and_rollback_preserve_newer_journal_and_configuration) ... ok
+test_upgrade_cannot_target_product_or_unsafe_bundle_paths (__main__.ConsumerRuntime.test_upgrade_cannot_target_product_or_unsafe_bundle_paths) ... ok
+test_verify_distinguishes_local_integrity_from_external_authority (__main__.ConsumerRuntime.test_verify_distinguishes_local_integrity_from_external_authority) ... ok
+
+----------------------------------------------------------------------
+Ran 25 tests in 28.608s
+
+OK

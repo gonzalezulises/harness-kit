@@ -1,0 +1,57 @@
+bash scripts/run-gates.sh quick
+── gates · aggregate quick · profile v1/kit
+  decisions-append-only    PASS (0.1s, exit 0)
+  agent-notes-tree         PASS (0.2s, exit 0)
+  arch-boundaries          PASS (0.6s, exit 0)
+  makefile-gates           PASS (0.1s, exit 0)
+  version-sync             PASS (0.0s, exit 0)
+  delivery-doc             PASS (0.0s, exit 0)
+  context-routes           PASS (0.1s, exit 0)
+  oracles-falsifiable      FAIL (0.2s, exit 1)
+  local RED receipt consistent: AC-CONSUMER-DISTRIBUTION; a local receipt is not independent authority
+  local RED receipt consistent: AC-F24-protected-ci; a local receipt is not independent authority
+  local RED receipt consistent: AC-F24; a local receipt is not independent authority
+  local RED receipt consistent: AC-FR01-literal-filename; a local receipt is not independent authority
+  local RED receipt consistent: AC-H01; a local receipt is not independent authority
+  local RED receipt consistent: AC-H02; a local receipt is not independent authority
+  local RED receipt consistent: AC-H03; a local receipt is not independent authority
+  local RED receipt consistent: AC-H04; a local receipt is not independent authority
+  local RED receipt consistent: AC-H05; a local receipt is not independent authority
+  local RED receipt consistent: AC-H06-authority; a local receipt is not independent authority
+  local RED receipt consistent: AC-H06; a local receipt is not independent authority
+  local RED receipt consistent: AC-H07; a local receipt is not independent authority
+  local RED receipt consistent: AC-H08; a local receipt is not independent authority
+  local RED receipt consistent: AC-P0-PRODUCT-LOOP; a local receipt is not independent authority
+  local RED receipt consistent: AC-closure-request-binding; a local receipt is not independent authority
+  local RED receipt consistent: AC-closure-supervisor; a local receipt is not independent authority
+  ok       TEST_READY         AC-CONSUMER-DISTRIBUTION
+  ok       TEST_READY         AC-F24-protected-ci
+  ok       TEST_READY         AC-F24
+  ok       TEST_READY         AC-FR01-literal-filename
+  ok       TEST_READY         AC-H01
+  ok       TEST_READY         AC-H02
+  ok       TEST_READY         AC-H03
+  ok       TEST_READY         AC-H04
+  ok       TEST_READY         AC-H05
+  ok       TEST_READY         AC-H06-authority
+  ok       TEST_READY         AC-H06
+  ok       TEST_READY         AC-H07
+  ok       TEST_READY         AC-H08
+  ok       TEST_READY         AC-P0-PRODUCT-LOOP
+  ok       TEST_READY         AC-closure-request-binding
+  ok       TEST_READY         AC-closure-supervisor
+  FINDING  TEST_READY         AC-product-ack-publication
+  FINDING  TEST_READY         AC-product-closure
+
+oracles: AC-product-ack-publication records a proof at dd8a20c1, which is not in this history
+    · Fetch the required history or record the actual witnessed base.
+
+oracles: AC-product-closure records a proof at dd8a20c1, which is not in this history
+    · Fetch the required history or record the actual witnessed base.
+
+An oracle records what would prove the code wrong. Weakening it to go green
+removes the only thing standing between a plausible answer and a shipped one.
+
+── 7 pass · 1 blocking · 0 not applicable
+Only PASS satisfies a gate. A non-PASS state was not verified.
+make: *** [Makefile:25: check] Error 1

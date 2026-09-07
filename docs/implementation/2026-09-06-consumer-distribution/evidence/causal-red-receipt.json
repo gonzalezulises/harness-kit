@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "command": [
+    "python3",
+    "tests/consumer-distribution.test.py",
+    "ConsumerRuntime.test_changed_plan_and_adulterated_bundle_block_before_writes"
+  ],
+  "exit_code": 1,
+  "tests": {
+    "tests/consumer-distribution.test.py": "cdeae1af616e85b35140a351a40f49e2dda578a738e32a01ab76acf2caf8a0d2"
+  },
+  "source": {
+    "docs/implementation/2026-09-06-consumer-distribution/evidence/causal-approval-bypass.patch": "fd94d01c80c464ad42670fc9e2ee7fc1852a83fae3b7d84a75107c689accb9ef"
+  },
+  "logs": {
+    "docs/implementation/2026-09-06-consumer-distribution/evidence/causal-red.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/implementation/2026-09-06-consumer-distribution/evidence/causal-red.stderr.log": "c7e87aa812949110eccff70d812a40855dfaf96ea77d172ea43a199d4e635b94",
+    "docs/implementation/2026-09-06-consumer-distribution/evidence/causal-red.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+  }
+}

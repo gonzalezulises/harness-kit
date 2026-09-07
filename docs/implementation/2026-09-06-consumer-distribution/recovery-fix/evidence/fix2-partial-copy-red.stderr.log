@@ -1,0 +1,15 @@
+test_sigkill_during_started_copy_recovers_only_safe_partial_staging (__main__.ConsumerRuntime.test_sigkill_during_started_copy_recovers_only_safe_partial_staging) ... FAIL
+
+======================================================================
+FAIL: test_sigkill_during_started_copy_recovers_only_safe_partial_staging (__main__.ConsumerRuntime.test_sigkill_during_started_copy_recovers_only_safe_partial_staging)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-consumer-distribution/tests/consumer-distribution.test.py", line 615, in test_sigkill_during_started_copy_recovers_only_safe_partial_staging
+    self.assertEqual(resumed.returncode, 0, resumed.stdout+resumed.stderr)
+AssertionError: 1 != 0 : {"reason":"[Errno 2] No such file or directory: '/tmp/consumer-runtime-xazfmyof/safe-partial/consumer/.harness/distribution/.staging-77f851f35e85373a2a85230c7dd5f4c04ccd79be8cf3405970f81209ea325e56/runtime/budget.mjs'","status":"MANAGED_FILE_DRIFT"}
+
+
+----------------------------------------------------------------------
+Ran 1 test in 2.018s
+
+FAILED (failures=1)

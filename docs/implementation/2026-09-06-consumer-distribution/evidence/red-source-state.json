@@ -1,0 +1,4 @@
+{
+  "bin/harness-consumer.py": "ABSENT",
+  "schemas/consumer-installation.v1.json": "ABSENT"
+}

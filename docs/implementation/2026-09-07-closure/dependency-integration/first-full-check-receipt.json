@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "state": "PASS_WITH_REVIEW_LOW_STILL_OPEN",
+  "command": "make check",
+  "cwd": "/workspace/scratch/adce1c53b293/closure-dependencies",
+  "exit_code": 0,
+  "quick_passed": 8,
+  "core_passed": 286,
+  "distribution_passed": 35,
+  "runtime_passed": 283,
+  "installation_canary_passed": 5,
+  "protected_workflow_passed": 1,
+  "gherkin_passed": 15,
+  "load_passed": 55,
+  "load_authenticated_omitted": 2,
+  "sentry_passed": 68,
+  "source_test_sha256": "a9487a0596038df75d57754366ac91fd56b7e707773679e3962c35dc5124e17e",
+  "log_sha256": "3ddb69240c62b7874b48ec1d7dd6f096ca47e28cd987aedb911944ee5f11d148",
+  "limit": "This run precedes correction of CG-L1; it cannot certify later bytes."
+}

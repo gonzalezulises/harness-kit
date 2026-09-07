@@ -1,0 +1,27 @@
+test_auto_gc_finishes_before_fixture_git_returns (__main__.ConsumerGitLifecycle.test_auto_gc_finishes_before_fixture_git_returns) ... FAIL
+test_commit_maintenance_finishes_before_fixture_git_returns (__main__.ConsumerGitLifecycle.test_commit_maintenance_finishes_before_fixture_git_returns) ... FAIL
+
+======================================================================
+FAIL: test_auto_gc_finishes_before_fixture_git_returns (__main__.ConsumerGitLifecycle.test_auto_gc_finishes_before_fixture_git_returns)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/closure-dependencies/tests/consumer-distribution.test.py", line 1018, in test_auto_gc_finishes_before_fixture_git_returns
+    self.assert_maintenance_finishes_before_return(('gc', '--auto'))
+  File "/workspace/scratch/adce1c53b293/closure-dependencies/tests/consumer-distribution.test.py", line 997, in assert_maintenance_finishes_before_return
+    self.assertTrue(packers and packers <= completed,
+AssertionError: set() is not true : Git returned before automatic object packing completed
+
+======================================================================
+FAIL: test_commit_maintenance_finishes_before_fixture_git_returns (__main__.ConsumerGitLifecycle.test_commit_maintenance_finishes_before_fixture_git_returns)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/closure-dependencies/tests/consumer-distribution.test.py", line 1021, in test_commit_maintenance_finishes_before_fixture_git_returns
+    self.assert_maintenance_finishes_before_return(('commit', '--allow-empty', '-qm', 'trigger auto maintenance'))
+  File "/workspace/scratch/adce1c53b293/closure-dependencies/tests/consumer-distribution.test.py", line 997, in assert_maintenance_finishes_before_return
+    self.assertTrue(packers and packers <= completed,
+AssertionError: set() is not true : Git returned before automatic object packing completed
+
+----------------------------------------------------------------------
+Ran 2 tests in 3.120s
+
+FAILED (failures=2)

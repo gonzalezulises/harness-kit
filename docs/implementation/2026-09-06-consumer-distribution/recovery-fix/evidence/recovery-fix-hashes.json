@@ -1,0 +1,16 @@
+{
+  "files": {
+    "bin/harness-consumer.py": {
+      "fix2_sha256": "051f880bed8b7788c77ae3265a9b3378c537a2e8ff58cb3078f26dac9e600d4e",
+      "recovery_fix_sha256": "35d4e2ca41c3a3585ee4edb13def46596a6336dc1d61451ffd5363ae16c56b73"
+    },
+    "tests/consumer-distribution.test.py": {
+      "fix2_sha256": "697a4d35215c42da2a78f0de0c1fa66c7d0025704b561fe3532d501ba950e85c",
+      "recovery_fix_sha256": "3651818b4be511ac88f8c96aead84c962d8e3ff714004393d109613a5199c76a"
+    },
+    ".harness/oracles/AC-CONSUMER-DISTRIBUTION.yaml": {
+      "fix2_sha256": "2895aad932440f2d90a3bc7264a410b3cf5fd9dd1f3a59d7d423863018937844",
+      "recovery_fix_sha256": "de5afa2393bdf26cb90cfa813a96cfb868c86b20e725079c30299c7fa3307fb2"
+    }
+  }
+}

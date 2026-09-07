@@ -1,8 +1,19 @@
 # bin/ — architecture
 
-Five executables with separate responsibilities. The auditor remains independent: the auditor must
+Six executables with separate responsibilities. The auditor remains independent: the auditor must
 run standalone over `curl | bash` in a repository that has never seen this kit, so it
 cannot source anything.
+
+## harness-consumer.py
+
+Builds and inspects the single `autonomy-runtime.v1` offline bundle, then creates
+read-only plans and applies exact digest-approved install, upgrade, verify and
+rollback operations inside `.harness/distribution/`. Source identity is declared
+separately from observed Git lineage; local candidates never assert publication or
+human adoption. Exact plans also declare the effective Git-dir lock path; apply uses
+that unlinked regular file for process ownership and revalidates before selection.
+CI authority must execute this checker from a protected source
+outside the candidate checkout.
 
 ## harness-audit.sh
 

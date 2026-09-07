@@ -382,11 +382,12 @@
     {
       "id": "PR36-MERGE-1",
       "severity": "Medium",
-      "state": "CORRECTED_SEPARATE_READBACK_AND_SCOPED_REVIEW_PASS_FULL_CHECK_PENDING",
+      "state": "CORRECTED_FULL_LOCAL_GREEN_SCOPED_REVIEW_PASS",
       "problem": "First local merge omitted the reviewed distribution inventory correction",
       "expected_manager_sha256": "c204ad219c3137157e8edf7721392cb2554c1bc17edd1623f42dbfb96089264c",
       "mechanical_evidence": "evidence/integration-file-persistence.json",
-      "review": "evidence/ci-fixture-and-merge-followup-review.md"
+      "review": "evidence/ci-fixture-and-merge-followup-review.md",
+      "verification": "pr36-verification/receipt.json"
     },
     {
       "id": "PR35-ACK-PUBLICATION",
@@ -415,6 +416,30 @@
       "historical_gate": "pr35-ack-publication/first-metadata-gate-failure.log"
     },
     {
+      "id": "PR36-CI-GIT-LIFETIME",
+      "category": "tests",
+      "severity": "Medium",
+      "finding": "PR36 b567 Required quality101607579425 failed F26 e2e temporary .git cleanup after repository pipeline passed. Exact writer unknown.",
+      "change": "Real-Git RED2/2 demonstrated detached maintenance outside fixture helper lifetime; foreground maintenance GREEN2/2 and e2e2/2. Production manager unchanged; no errors ignored.",
+      "evidence": "consumer-git-lifetime/README.md",
+      "historical_limit": "Remote Git2.55.0 interleaving remains unproved; no old failure or F26-F1-M3 missing input converted to PASS.",
+      "historical_status": "FIXED_PENDING_INDEPENDENT_REVIEW_AND_INTEGRATED_CI",
+      "state": "CORRECTED_CAUSAL_GREEN_FINAL_FULL_CHECK_AND_SCOPED_REVIEW_PASS_PENDING_NEW_CI",
+      "review": "consumer-git-lifetime/followup-independent-review.md",
+      "verification": "dependency-integration/final-verification.json"
+    },
+    {
+      "id": "CG-L1",
+      "severity": "Low",
+      "state": "CORRECTED_CAUSAL_GREEN_FINAL_FULL_CHECK_AND_SCOPED_REVIEW_PASS_PENDING_NEW_CI",
+      "problem": "Direct Git commit in HEAD-drift injection could launch detached maintenance",
+      "evidence": "consumer-git-lifetime/independent-review.md",
+      "followup": "consumer-git-lifetime/followup-green-receipt.json",
+      "current_critical_red": "consumer-git-lifetime/approval-followup/approval-red-receipt.json",
+      "review": "consumer-git-lifetime/followup-independent-review.md",
+      "verification": "dependency-integration/final-verification.json"
+    },
+    {
       "id": "PR35-CI-ENVELOPE",
       "severity": "Medium",
       "state": "MECHANICAL_CHANGE_REVIEWED_LOCAL_FULL_CHECK_PASS_PENDING_NEW_CI",
@@ -438,5 +463,17 @@
     "target_parent_pr37": "dfd717b934667b1d6153a8934a657a70b8b0c9e1",
     "state": "CONFLICTS_RESOLVED_PENDING_INTEGRATED_CHECK",
     "preserved": "Original F01-F27 records and historical evidence; added F26 without replacing F25/F27"
+  },
+  "dependency_integration": {
+    "state": "MERGED_WORKTREE_PENDING_FULL_VERIFICATION",
+    "pr35": "6677e9978dfd9fa344186a65adddcadabd21cc7e",
+    "pr36": "b567669fcd41c40caa8235e758a0f1fdca9a00a5",
+    "strategy": "Normal merge; all existing feature records and production-source corrections retained"
+  },
+  "current_dependency_worktree": {
+    "first_parent": "5a1a0b872fb8f1eb8fd0e54b767f019657eb1ea0",
+    "merge_head": "b567669fcd41c40caa8235e758a0f1fdca9a00a5",
+    "state": "FINAL_FULL_CHECK_PASS_SCOPED_REVIEW_PASS_PENDING_NEW_HEAD_CI",
+    "merge_method": "ordinary git merge; original proof ancestry retained"
   }
 }

@@ -1,0 +1,11 @@
+test_auto_gc_finishes_before_fixture_git_returns (__main__.ConsumerGitLifecycle.test_auto_gc_finishes_before_fixture_git_returns) ... ok
+test_commit_maintenance_finishes_before_fixture_git_returns (__main__.ConsumerGitLifecycle.test_commit_maintenance_finishes_before_fixture_git_returns) ... ok
+test_head_change_after_prepare_blocks_selector_effect (__main__.ConsumerRuntime.test_head_change_after_prepare_blocks_selector_effect) ... ok
+test_missing_approval_cannot_create_managed_effects (__main__.ConsumerRuntime.test_missing_approval_cannot_create_managed_effects) ... ok
+test_fresh_clone_executes_real_runtime_offline_with_vendored_yaml_and_zod (__main__.ConsumerEndToEnd.test_fresh_clone_executes_real_runtime_offline_with_vendored_yaml_and_zod) ... ok
+test_verify_and_plan_accept_fresh_git_modes_without_writing (__main__.ConsumerEndToEnd.test_verify_and_plan_accept_fresh_git_modes_without_writing) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 16.872s
+
+OK

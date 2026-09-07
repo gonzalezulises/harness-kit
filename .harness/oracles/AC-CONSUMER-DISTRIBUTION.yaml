@@ -1,0 +1,32 @@
+id: AC-CONSUMER-DISTRIBUTION
+requirement: Versioned consumer installation and upgrade require exact approved provenance and preserve consumer configuration and state
+criticality: critical
+status: TEST_READY
+observable: Offline fixture installation, upgrade, drift refusal, interrupted resume and verified rollback select only an approved immutable generation
+oracle:
+  expected: The exact approved plan and bundle bind source SHA, managed bytes, consumer baseline and compatible schemas before any managed effect
+cases:
+  positive:
+  - Clean and legacy fixtures install, repeat idempotently, upgrade and roll back while the real pinned runtime executes without upstream access
+  negative:
+  - Managed drift, changed plans or bundles, unknown schemas, consumer-file overwrite, missing bindings and unsuitable worktrees stop before activation
+  boundary:
+  - Interrupted and concurrent applies reconcile one approved transaction and rollback preserves newer journal and consumer configuration bytes
+context: Local fixture repositories under the autonomy-runtime.v1 profile; Casabat remains untouched and installation is distinct from owner adoption
+side_effects:
+  must:
+  - Preserve exact consumer-owned files and state, publish a compact before/after receipt and confine effects to declared distribution paths
+  must_not:
+  - Overwrite drift, invoke a shell or network dependency, change product files, manufacture baseline acceptance or declare ACTIVE before human adoption
+false_positive: A self-consistent candidate manifest is not trusted adoption; CI authority requires an externally expected approved digest
+owner: harness-kit maintainers under AGENTS.md and the owner HARNESS DISTRIBUTION AND CONSUMER ADOPTION requirement
+evidence:
+  formats:
+  - Current test and source hashes, observed command and exit, minimal causal error excerpt, structured fixture result and reproduction instructions
+tests:
+- tests/consumer-distribution.test.py
+
+falsification:
+  defect: Removing both exact approval guards allows apply without --approve-plan to create the active selector; the final boundary test observes that unauthorized managed effect
+  proved_sha: 6677e9978dfd9fa344186a65adddcadabd21cc7e
+  receipt: docs/implementation/2026-09-07-closure/consumer-git-lifetime/approval-followup/approval-red-receipt.json

@@ -1,0 +1,11 @@
+{
+  "requested_sha256": "f1f080aee78f74331e69b16bca25f84448ff830ba9be8e509e6f689518996e3e",
+  "status": "INPUT_BYTES_UNAVAILABLE",
+  "searched_scope": "consumer-distribution.test.py files under /workspace/scratch/adce1c53b293 plus frozen-review-1 and compact FIX1 evidence",
+  "available_candidates": {
+    "frozen_review_1": "cdeae1af616e85b35140a351a40f49e2dda578a738e32a01ab76acf2caf8a0d2",
+    "fix1_final": "cd61ac98c686b7ef75efb7038e0a231fceb0e56a42936ae0c7dd8ae3ce14c091",
+    "fix2_final": "697a4d35215c42da2a78f0de0c1fa66c7d0025704b561fe3532d501ba950e85c"
+  },
+  "note": "The 408197-byte raw stderr is output, not reconstructible test input. No patch claiming the requested hash was invented."
+}

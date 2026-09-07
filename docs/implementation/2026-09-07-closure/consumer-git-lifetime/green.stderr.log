@@ -1,0 +1,7 @@
+test_auto_gc_finishes_before_fixture_git_returns (__main__.ConsumerGitLifecycle.test_auto_gc_finishes_before_fixture_git_returns) ... ok
+test_commit_maintenance_finishes_before_fixture_git_returns (__main__.ConsumerGitLifecycle.test_commit_maintenance_finishes_before_fixture_git_returns) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 3.047s
+
+OK

@@ -1,0 +1,20 @@
+test_changed_plan_and_adulterated_bundle_block_before_writes (__main__.ConsumerRuntime.test_changed_plan_and_adulterated_bundle_block_before_writes) ... FAIL
+
+======================================================================
+FAIL: test_changed_plan_and_adulterated_bundle_block_before_writes (__main__.ConsumerRuntime.test_changed_plan_and_adulterated_bundle_block_before_writes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-consumer-distribution/tests/consumer-distribution.test.py", line 264, in test_changed_plan_and_adulterated_bundle_block_before_writes
+    self.assertStatus(missing, 'MISSING_PLAN_APPROVAL')
+  File "/workspace/scratch/adce1c53b293/harness-consumer-distribution/tests/consumer-distribution.test.py", line 197, in assertStatus
+    self.assertEqual(json.loads(result.stderr)['status'], status,
+AssertionError: 'PLAN_APPROVAL_MISMATCH' != 'MISSING_PLAN_APPROVAL'
+- PLAN_APPROVAL_MISMATCH
++ MISSING_PLAN_APPROVAL
+ : {"reason":"approval does not match exact plan","status":"PLAN_APPROVAL_MISMATCH"}
+
+
+----------------------------------------------------------------------
+Ran 1 test in 1.684s
+
+FAILED (failures=1)

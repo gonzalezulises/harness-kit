@@ -1,0 +1,43 @@
+test_linked_worktree_plan_declares_and_uses_real_git_lock (__main__.ConsumerRuntime.test_linked_worktree_plan_declares_and_uses_real_git_lock) ... ERROR
+test_consumer_lock_rejects_links_without_changing_sentinel (__main__.ConsumerRuntime.test_consumer_lock_rejects_links_without_changing_sentinel) ... 
+  test_consumer_lock_rejects_links_without_changing_sentinel (__main__.ConsumerRuntime.test_consumer_lock_rejects_links_without_changing_sentinel) (kind='symlink') ... FAIL
+  test_consumer_lock_rejects_links_without_changing_sentinel (__main__.ConsumerRuntime.test_consumer_lock_rejects_links_without_changing_sentinel) (kind='hardlink') ... FAIL
+test_sigkill_after_manifest_reconciles_own_attempt_and_rejects_drift (__main__.ConsumerRuntime.test_sigkill_after_manifest_reconciles_own_attempt_and_rejects_drift) ... FAIL
+
+======================================================================
+ERROR: test_linked_worktree_plan_declares_and_uses_real_git_lock (__main__.ConsumerRuntime.test_linked_worktree_plan_declares_and_uses_real_git_lock)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-consumer-distribution/tests/consumer-distribution.test.py", line 262, in test_linked_worktree_plan_declares_and_uses_real_git_lock
+    self.assertEqual(value['lockPath'], str(lock))
+                     ~~~~~^^^^^^^^^^^^
+KeyError: 'lockPath'
+
+======================================================================
+FAIL: test_consumer_lock_rejects_links_without_changing_sentinel (__main__.ConsumerRuntime.test_consumer_lock_rejects_links_without_changing_sentinel) (kind='symlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-consumer-distribution/tests/consumer-distribution.test.py", line 326, in test_consumer_lock_rejects_links_without_changing_sentinel
+    self.assertEqual(sentinel.read_bytes(), expected,
+AssertionError: b'182\n' != b'preserve consumer-owned sentinel\n' : symlink lock changed consumer-owned bytes
+
+======================================================================
+FAIL: test_consumer_lock_rejects_links_without_changing_sentinel (__main__.ConsumerRuntime.test_consumer_lock_rejects_links_without_changing_sentinel) (kind='hardlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-consumer-distribution/tests/consumer-distribution.test.py", line 326, in test_consumer_lock_rejects_links_without_changing_sentinel
+    self.assertEqual(sentinel.read_bytes(), expected,
+AssertionError: b'202\n' != b'preserve consumer-owned sentinel\n' : hardlink lock changed consumer-owned bytes
+
+======================================================================
+FAIL: test_sigkill_after_manifest_reconciles_own_attempt_and_rejects_drift (__main__.ConsumerRuntime.test_sigkill_after_manifest_reconciles_own_attempt_and_rejects_drift)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/adce1c53b293/harness-consumer-distribution/tests/consumer-distribution.test.py", line 532, in test_sigkill_after_manifest_reconciles_own_attempt_and_rejects_drift
+    self.assertTrue(transaction.is_file(),
+AssertionError: False is not true : recoverable effects preceded the durable attempt record
+
+----------------------------------------------------------------------
+Ran 3 tests in 3.616s
+
+FAILED (failures=3, errors=1)

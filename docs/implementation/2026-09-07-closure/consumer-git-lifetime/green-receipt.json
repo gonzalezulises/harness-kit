@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "state": "PASS_FOCUSED",
+  "source_sha256": "a9487a0596038df75d57754366ac91fd56b7e707773679e3962c35dc5124e17e",
+  "git_version": "2.51.1",
+  "python": "3.12.13",
+  "runs": [
+    {
+      "command": "python3 -I tests/consumer-distribution.test.py -k ConsumerGitLifecycle",
+      "cwd": "/workspace/scratch/adce1c53b293/closure-dependencies",
+      "exit_code": 0,
+      "tests": 2
+    },
+    {
+      "command": "python3 -I tests/consumer-distribution.test.py -k ConsumerEndToEnd",
+      "cwd": "/workspace/scratch/adce1c53b293/closure-dependencies",
+      "exit_code": 0,
+      "tests": 2
+    },
+    {
+      "command": "python3 -I tests/consumer-distribution.test.py -k ConsumerRuntime.test_missing_approval_cannot_create_managed_effects",
+      "cwd": "/workspace/scratch/adce1c53b293/closure-dependencies",
+      "exit_code": 0,
+      "tests": 1
+    }
+  ],
+  "logs": {
+    "green.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "green.stderr.log": "9b46f905705e51b45d41780634a12bd350322b25cbe84e420580bda0753771a5",
+    "green.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "e2e.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "e2e.stderr.log": "38f7f0c161d34db3d81d1a55ee338ba20d1ea9e7a16fd9555bc296f7bdb3ffa2",
+    "e2e.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "approval-green.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "approval-green.stderr.log": "0dfce61a2b51bf86268b7402db8f55cc3c0c18e5117213a5e5fb0ac9ca886527",
+    "approval-green.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "limit": "Local fixture verification; current integrated full gate, independent review and exact-head CI recorded separately"
+}

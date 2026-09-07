@@ -1,0 +1,74 @@
+test_clean_install_plan_is_read_only_and_repeat_is_idempotent (f26_fix2_red.ConsumerRuntime.test_clean_install_plan_is_read_only_and_repeat_is_idempotent) ... FAIL
+test_linked_worktree_plan_declares_and_uses_real_git_lock (f26_fix2_red.ConsumerRuntime.test_linked_worktree_plan_declares_and_uses_real_git_lock) ... FAIL
+test_consumer_lock_rejects_links_without_changing_sentinel (f26_fix2_red.ConsumerRuntime.test_consumer_lock_rejects_links_without_changing_sentinel) ... 
+  test_consumer_lock_rejects_links_without_changing_sentinel (f26_fix2_red.ConsumerRuntime.test_consumer_lock_rejects_links_without_changing_sentinel) (kind='symlink') ... FAIL
+  test_consumer_lock_rejects_links_without_changing_sentinel (f26_fix2_red.ConsumerRuntime.test_consumer_lock_rejects_links_without_changing_sentinel) (kind='hardlink') ... FAIL
+test_sigkill_after_manifest_reconciles_own_attempt_and_rejects_drift (f26_fix2_red.ConsumerRuntime.test_sigkill_after_manifest_reconciles_own_attempt_and_rejects_drift) ... FAIL
+test_head_change_after_prepare_blocks_selector_effect (f26_fix2_red.ConsumerRuntime.test_head_change_after_prepare_blocks_selector_effect) ... FAIL
+test_upgrade_plan_rejects_changed_nonbootstrap_stable_payload (f26_fix2_red.ConsumerRuntime.test_upgrade_plan_rejects_changed_nonbootstrap_stable_payload) ... FAIL
+
+======================================================================
+FAIL: test_clean_install_plan_is_read_only_and_repeat_is_idempotent (f26_fix2_red.ConsumerRuntime.test_clean_install_plan_is_read_only_and_repeat_is_idempotent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "tests/consumer-distribution.test.py", line 236, in test_clean_install_plan_is_read_only_and_repeat_is_idempotent
+    self.assertTrue({'.harness/distribution/bootstrap.mjs',
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_linked_worktree_plan_declares_and_uses_real_git_lock (f26_fix2_red.ConsumerRuntime.test_linked_worktree_plan_declares_and_uses_real_git_lock)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "tests/consumer-distribution.test.py", line 272, in test_linked_worktree_plan_declares_and_uses_real_git_lock
+    self.assertIn(lock, declared, 'effective Git lock write was not declared')
+AssertionError: PosixPath('/tmp/consumer-runtime-q11ryr67/main/consumer/.git/worktrees/linked-consumer/harness-consumer.lock') not found in [PosixPath('/tmp/consumer-runtime-q11ryr67/linked-consumer/.git/harness-consumer.lock'), PosixPath('/tmp/consumer-runtime-q11ryr67/linked-consumer/.harness/distribution')] : effective Git lock write was not declared
+
+======================================================================
+FAIL: test_consumer_lock_rejects_links_without_changing_sentinel (f26_fix2_red.ConsumerRuntime.test_consumer_lock_rejects_links_without_changing_sentinel) (kind='symlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "tests/consumer-distribution.test.py", line 343, in test_consumer_lock_rejects_links_without_changing_sentinel
+    self.assertEqual(sentinel.read_bytes(), expected,
+AssertionError: b'202\n' != b'preserve consumer-owned sentinel\n' : symlink lock changed consumer-owned bytes
+
+======================================================================
+FAIL: test_consumer_lock_rejects_links_without_changing_sentinel (f26_fix2_red.ConsumerRuntime.test_consumer_lock_rejects_links_without_changing_sentinel) (kind='hardlink')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "tests/consumer-distribution.test.py", line 343, in test_consumer_lock_rejects_links_without_changing_sentinel
+    self.assertEqual(sentinel.read_bytes(), expected,
+AssertionError: b'222\n' != b'preserve consumer-owned sentinel\n' : hardlink lock changed consumer-owned bytes
+
+======================================================================
+FAIL: test_sigkill_after_manifest_reconciles_own_attempt_and_rejects_drift (f26_fix2_red.ConsumerRuntime.test_sigkill_after_manifest_reconciles_own_attempt_and_rejects_drift)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "tests/consumer-distribution.test.py", line 549, in test_sigkill_after_manifest_reconciles_own_attempt_and_rejects_drift
+    self.assertTrue(transaction.is_file(),
+AssertionError: False is not true : recoverable effects preceded the durable attempt record
+
+======================================================================
+FAIL: test_head_change_after_prepare_blocks_selector_effect (f26_fix2_red.ConsumerRuntime.test_head_change_after_prepare_blocks_selector_effect)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "tests/consumer-distribution.test.py", line 603, in test_head_change_after_prepare_blocks_selector_effect
+    self.assertStatus(changed, 'PLAN_BINDING_CHANGED')
+  File "tests/consumer-distribution.test.py", line 202, in assertStatus
+    self.assertNotEqual(result.returncode, 0, diagnostic)
+AssertionError: 0 == 0 : {"adoptionDate":null,"adoptionStatus":"NOT_ADOPTED","bundleDigest":"76c4f6c90f8ac2b842e6afeb5ea9fb3078be7d091ae182449c07a2a74bbd8f2d","installationDigest":"b849c43ed4c7f605ec3bd7fc242f74709360a71c647619b81684f49f904bff63","observedAt":"2026-09-06T17:37:07.445377+00:00","planDigest":"8d7fb7dce23ca0176641fe491a980fb72e301e2c381d2bbe09f0786adaa7a000","preserved":[".harness/FIXTURE_ONLY-state/events.jsonl",".harness/autonomy-v2.json",".harness/oracles/fixture.yaml",".harness/receipts/old.json","DECISIONS.md","PROGRESS.md","feature_list.json"],"profile":"autonomy-runtime.v1","receipt":"receipts/8d7fb7dce23ca0176641fe491a980fb72e301e2c381d2bbe09f0786adaa7a000.json","schemaVersion":1,"sourceSha":"8176d1630a320fbc9282f3dbde17650d87031e94","status":"INSTALLED_NOT_ADOPTED"}
+
+
+======================================================================
+FAIL: test_upgrade_plan_rejects_changed_nonbootstrap_stable_payload (f26_fix2_red.ConsumerRuntime.test_upgrade_plan_rejects_changed_nonbootstrap_stable_payload)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "tests/consumer-distribution.test.py", line 659, in test_upgrade_plan_rejects_changed_nonbootstrap_stable_payload
+    self.assertStatus(rejected, 'MIGRATION_REQUIRED')
+  File "tests/consumer-distribution.test.py", line 202, in assertStatus
+    self.assertNotEqual(result.returncode, 0, diagnostic)
+AssertionError: 0 == 0 : {"allowedWrites":[".git/harness-consumer.lock",".harness/distribution/"],"availableRollback":[],"beforeBundleDigest":"76c4f6c90f8ac2b842e6afeb5ea9fb3078be7d091ae182449c07a2a74bbd8f2d","bundleDigest":"5e0d0e0870b45f78b1db703b62092a695f5c03bf88f23ec946f89a77dd997b70","change":[".harness/distribution/active.json"],"configSchema":"autonomy-config.v1","create":[".harness/distribution/generations/5e0d0e0870b45f78b1db703b62092a695f5c03bf88f23ec946f89a77dd997b70/runtime/authority.mjs",".harness/distribution/generations/5e0d0e0870b45f78b1db703b62092a695f5c03bf88f23ec946f89a77dd997b70/runtime/budget.mjs",".harness/distribution/generations/5e0d0e0870b45f78b1db703b62092a695f5c03bf88f23ec946f89a77dd997b70/runtime/capabilities.mjs",".harness/distribution/generations/5e0d0e0870b45f78b1db703b62092a695f5c03bf88f23ec946f89a77dd997b70/runtime/classify.mjs",".harness/distribution/generations/5e0d0e0870b45f78b1db703b62092a695f5c03bf88f23ec946f89a77dd997b70/runtime/codex-worker.mjs",".harness/distribution/g
+
+----------------------------------------------------------------------
+Ran 6 tests in 7.352s
+
+FAILED (failures=7)

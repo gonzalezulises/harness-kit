@@ -3,17 +3,47 @@
 The durable memory of this repository. Every session reads this first and writes to it
 last. If it disagrees with your recollection, this file wins.
 
-## Current PR35 closure — 2026-09-07
+## Current PR35–PR36 dependency integration — 2026-09-07
 
-Remote Required quality run 34079150314 passed the repository suite and was
-cancelled while rechecking claims at approximately the 30-minute outer job limit.
-The correction changes only that workflow timeout to 60 minutes, with independent
-review classifying it as mechanical. Commands, required checks, protected judge
-and signed runtime budgets are unchanged. The new full `make check` passed with
-exit 0 and unchanged source bindings; see `ci-envelope/verification.json`.
-The exact new head must still finish remote Required quality. The historical
-cancelled run remains blocked; its timing supports a timeout inference, not an
-explicit annotation of the cancellation cause.
+The historical PR36 remote check failed F26 cleanup after the repository suite
+passed. Its exact writer remains unknown. A separate real-Git reproduction proves
+the fixture helper can return with maintenance still writing. Two causal RED
+cases passed after synchronous maintenance. CG-L1 corrected the remaining direct
+commit call; six focused cases and independent spec/quality review now pass with
+zero open findings for this fixture correction. The critical approval boundary
+was falsified again using the final test bytes and preserved source. The earlier
+full combined check passed before CG-L1 and is retained with that explicit scope.
+The final combined `make check` now passed with exit 0: core 286, consumer 35,
+runtime 283, installation/canary 5 and all other required suites. The final
+source bindings and raw log are in `dependency-integration/final-verification.json`.
+Independent resolution review also passed. New-head remote CI remains required.
+
+PR35 now includes the independently reviewed outer CI job limit of 60 minutes.
+Its full local check passed without changing judge bytes or signed budgets; the
+historical cancelled run remains blocked. See `ci-envelope/verification.json`.
+
+This worktree merges published PR36 `b567669fcd41c40caa8235e758a0f1fdca9a00a5`
+into PR35 `5a1a0b872fb8f1eb8fd0e54b767f019657eb1ea0` through the ordinary merge
+operation. This establishes the dependency order 33 →35 →36 →37 and preserves
+the original proof history. The merge retains exact reviewed product/journal
+and consumer-manager bytes; it adds both original F25 blocked and F26 passing
+records without rewriting either. F28 remains the only active closure feature.
+
+PR35 full check passed core286/runtime283 and every other required suite, with
+independent spec/quality PASS for its scoped fixes. PR36 prior full check passed
+distribution33/runtime253 and all required suites. The combined worktree passed
+its own full check and independent review of the resolutions. GR03/GR05,
+main integration, real pilot, release and acceptance remain open.
+
+The independent checkpoint consumer completed install b567669f, upgrade b82e2a2
+and rollback b567669f with installed runtime operation and newer configuration/
+journal preserved. That evidence belongs to the main closure inventory and does
+not certify this new combined candidate or a final published release.
+
+The following PR35 blocks retain the published6677e997 record, including the
+unattributed race and original P0 limitations; their checkpoint scope is historical.
+
+## Previous PR35 closure checkpoint — 2026-09-07
 
 The first full check of the corrected e5bfa534 integration exposed one historical
 concurrency assertion: one verifier invocation, zero durable observations. Child
@@ -75,6 +105,73 @@ NOT_EXECUTED / NOT_P0_READY: accepted product authority, authenticated model
 sessions, actual containment and a published PR have not been demonstrated.
 No prior authentication, broad-review or publication block is retried here.
 Casabat is untouched. Distribution has its own branch and is not part of F25.
+
+## Previous PR36 checkpoint — 2026-09-07
+
+This resolution incorporates corrected PR33 `e5bfa5343d064e376086e2b13e45203b4ad4a481`
+through a normal merge, retaining the adopted judge and proof ancestry. GR03/GR05
+and real acceptance remain open; this is not integration to main.
+
+The owner authorized integration and technical/operational closure of PR33–37.
+The product/distribution integration exposed an offline bundle failure: the old
+fixed inventory omitted the new product schema modules. The manager now applies
+one exact production-module predicate to bundle construction and validation,
+with pinned source paths and exclusion of tests/fixtures/subdirectories. The
+unchanged integrated distribution suite passed33/33 and independent static
+review approved that correction; its causal failed full check is preserved.
+This branch incorporates corrected PR33. The current full `make check` passed
+with core286, distribution33, runtime253, installation5, Gherkin15, load55
+(two explicit authenticated-gh omissions), Sentry68 and the protected-workflow
+regression. Exact source/log bindings are in `docs/implementation/2026-09-07-closure/pr36-verification/receipt.json`. PR33 Required quality run34076543082
+also passed all steps at e5bfa534; this branch still requires its own remote CI.
+
+Historical F26-F1-M3 remains HISTORICAL_INPUT_UNAVAILABLE. Current two-stage
+reconstruction and13 retained bindings were validated separately, without
+inventing the old missing input or changing its historical verdict. A scoped
+independent test consumer has installed and loaded the original PR36 package;
+upgrade/rollback of the final candidate and real pilot remain pending.
+No live authority adoption or resulting Harness Kit release is claimed.
+
+## Previous verified state — 2026-09-06 consumer distribution
+
+F26 is complete on this independent branch over frozen PR33 continuation
+`a798c88`. Its plan, review and compact verification receipt are in
+`docs/implementation/2026-09-06-consumer-distribution/`. The supported
+`autonomy-runtime.v1` profile provides reproducible exact-SHA bundles, read-only
+plans, explicit digest approval, atomic generation selection, drift refusal,
+SIGKILL resume and rollback preserving newer consumer configuration and journal.
+A fresh Git consumer clone runs the real QO with locked vendored yaml/zod after
+source, bundle and npm cache become unavailable. Casabat is untouched.
+
+The harness issued F26 passing receipts: static PASS, runtime31/31 and E2E2/2.
+Final `make check` exits0 in360.776s; current `./init.sh` exits0 with286/0.
+Both preserve the exact85-source manifest. All24 earlier feature records are
+unchanged and no feature is active. The first full gate correctly refused a
+missing local runtime dependency; a locked offline install repaired only the
+environment before the successful retry. No green claim relies on that failure.
+
+Independent scoped review closed all F26 Critical/High. One additional recovery
+correction exceeded the local plan's two-correction work budget; all three
+engineering corrections are disclosed. P0's runtime limit stays two. The
+unavailable original RED test variant remains Medium backlog, while current
+unauthorized-activation and recovery counterexamples retain reconstructible
+patches and exact source/test bindings. See `evidence/review.json` and
+`evidence/verification.json` for the reviewed scope and causal limits.
+
+Status is FIXTURE_PROFILE_VALIDATED, with installation NOT_ADOPTED. No published
+release, remote source-owner authentication, baseline acceptance, merge or
+production adoption is claimed. Unsupported major/schema/stable-manager changes
+require a migration and fail closed. Two authenticated-gh load cases remain
+outside local acceptance. The separate P0 commit `6400e65` has a passing local
+gate, but its real authenticated pilot and automatic remote PR creation remain
+incomplete; P0_PRODUCT_LOOP_READY is not established.
+
+Next action is publication of the prepared separate commits after resolution of
+the prior automatic approval block. No remote ref was updated and no alternate
+publication route was attempted. The interrupted whole-branch review remains
+INCOMPLETE; this bounded distribution approval does not replace it. Consumer
+adoption instructions are in `docs/consumer-distribution.md`; do not run them on
+Casabat without a separate adoption task.
 
 ## Previous verified state — 2026-09-06 execution backend continuation
 
