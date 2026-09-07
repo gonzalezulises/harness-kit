@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "repository": "gonzalezulises/harness-kit",
+  "head_sha": "6677e9978dfd9fa344186a65adddcadabd21cc7e",
+  "run_id": 34079150314,
+  "status": "completed",
+  "conclusion": "cancelled",
+  "run_started_at": "2026-09-07T03:17:23Z",
+  "updated_at": "2026-09-07T03:47:45Z",
+  "run_attempt": 1,
+  "job_id": 101610962956,
+  "repository_pipeline": "SUCCESS",
+  "claims": "CANCELLED",
+  "final_gate": "FAILURE",
+  "configured_job_timeout_minutes": 30,
+  "inference": "Cancellation at approximately the configured 30-minute job envelope; the log does not print an explicit timeout-cause annotation.",
+  "log": "pr35-required-quality-6677.log",
+  "limit": "No PASS claimed; original runtime signed budgets and protected judge remain unchanged."
+}

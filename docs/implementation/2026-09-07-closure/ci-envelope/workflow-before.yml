@@ -28,7 +28,7 @@ jobs:
   required-quality:
     name: Required quality
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 30
     steps:
       - name: Resolve exact commit identities
         id: identity

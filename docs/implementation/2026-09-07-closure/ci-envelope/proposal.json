@@ -1,0 +1,9 @@
+{
+  "change": "Required quality timeout-minutes30 to60 only",
+  "workflow_sha256": "7ee4a7cebb41fbf49bcdf8ded65c47de4bb4697314b2eb6ca79719192d77e1fd",
+  "protected_judge_changed": false,
+  "signed_runtime_budgets_changed": false,
+  "independent_review": "independent-review.md",
+  "state": "LOCAL_FULL_CHECK_PASS_PENDING_NEW_HEAD_CI",
+  "verification": "verification.json"
+}

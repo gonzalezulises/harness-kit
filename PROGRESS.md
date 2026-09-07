@@ -5,6 +5,16 @@ last. If it disagrees with your recollection, this file wins.
 
 ## Current PR35 closure — 2026-09-07
 
+Remote Required quality run 34079150314 passed the repository suite and was
+cancelled while rechecking claims at approximately the 30-minute outer job limit.
+The correction changes only that workflow timeout to 60 minutes, with independent
+review classifying it as mechanical. Commands, required checks, protected judge
+and signed runtime budgets are unchanged. The new full `make check` passed with
+exit 0 and unchanged source bindings; see `ci-envelope/verification.json`.
+The exact new head must still finish remote Required quality. The historical
+cancelled run remains blocked; its timing supports a timeout inference, not an
+explicit annotation of the cancellation cause.
+
 The first full check of the corrected e5bfa534 integration exposed one historical
 concurrency assertion: one verifier invocation, zero durable observations. Child
 results were not retained, so its precise interleaving remains unproved. A separate

@@ -413,6 +413,16 @@
       "state": "CORRECTED_SCOPED_REVIEW_CLOSED",
       "review": "evidence/pr35-ack-review.md",
       "historical_gate": "pr35-ack-publication/first-metadata-gate-failure.log"
+    },
+    {
+      "id": "PR35-CI-ENVELOPE",
+      "severity": "Medium",
+      "state": "MECHANICAL_CHANGE_REVIEWED_LOCAL_FULL_CHECK_PASS_PENDING_NEW_CI",
+      "problem": "Required quality at 6677 cancelled during claims approximately at the 30-minute job envelope, after the repository pipeline passed",
+      "change": "Only the outer job timeout: 30 to 60 minutes; all checks, protected judge and signed runtime budgets unchanged",
+      "evidence": "ci-envelope/independent-review.md",
+      "inference_limit": "Cancellation timing matches limit; no explicit timeout-cause annotation.",
+      "verification": "ci-envelope/verification.json"
     }
   ],
   "local_startup": {
