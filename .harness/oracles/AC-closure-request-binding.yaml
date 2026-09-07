@@ -1,0 +1,32 @@
+id: AC-closure-request-binding
+requirement: Final operation authority validates the exact immutable dispatch input
+criticality: high
+status: TEST_READY
+observable: Replacing a caller wire during awaited preflight cannot authorize the captured obsolete operation
+oracle:
+  expected: Closed release, review and catalog owners capture immutable input before validation and dispatch
+cases:
+  positive:
+  - An unchanged current request creates exactly one reservation and dispatches its exact descriptor
+  negative:
+  - Replacing an obsolete merge request with a freshly described slice request during preflight creates no reservation or dispatch
+  boundary:
+  - Slice evidence expires exactly at the final preflight callback while objective and execution budget remain current
+context: Real local journal, fixture signatures, controlled clock and fixed HTTPS interception; no external execution
+side_effects:
+  must:
+  - Preserve the original budget and empty pending set when the captured request is obsolete
+  must_not:
+  - Borrow replacement authority, dispatch stale work, reset budgets or introduce caller-selected validation callbacks
+false_positive: The replacement callback must run during the awaited preflight and describe a valid fresh request; assertions count real dispatches and replay journal state
+owner: harness-kit maintainers under AGENTS.md and authorized GR02 closure
+evidence:
+  formats:
+  - Preserved first-correction source, unchanged regression bytes, actual RED failure and matching GREEN receipt
+tests:
+- packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-request-binding.test.mjs
+- packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-fixtures.mjs
+falsification:
+  defect: The closed final callback rereads mutable caller input while the backend dispatches an older captured descriptor
+  proved_sha: 0a51623b5db42951a6091847a179262182abd67d
+  receipt: docs/implementation/2026-09-07-closure/request-binding/red-receipt.json

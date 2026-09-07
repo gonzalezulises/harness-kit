@@ -1,0 +1,33 @@
+id: AC-H01
+requirement: "Legacy verifiers fail closed before executing when contract, authority, state, or a declared check is invalid"
+criticality: critical
+status: TEST_READY
+observable: "The verifier returns nonzero before layer side effects and preserves blocked state and budget receipts"
+oracle:
+  expected: "R01-R09 and R13 adversarial fixtures plus the independent-review ambiguity cases are rejected; valid first-run verification and valid claims still pass"
+cases:
+  positive:
+    - "An active feature with one non-empty successful command is promoted with evidence"
+  negative:
+    - "Malformed JSON, duplicate keys or IDs, partial ledgers, NUL commands, missing explicit baselines, stale command inputs, exact-byte decision changes, and undeclared nonzero architecture exits are rejected"
+  boundary:
+    - "No-ledger bootstrap passes only when a readable base proves DECISIONS.md absent"
+context: "A portable local Git fixture running the shipped shell verifier with Python stdlib and no network"
+side_effects:
+  must:
+    - "A failed executed feature layer records one bounded attempt when a valid budget applies"
+  must_not:
+    - "No invalid preflight executes layer or repair text, resets a receipt, treats edited maxima/state as recovery authority, or promotes ambiguous records"
+false_positive: "A test is false-green if it asserts only the exit while a marker file proves an invalid layer or repair command ran"
+owner: "harness-kit maintainers; changes to authority or state semantics require an appended decision"
+evidence:
+  formats:
+    - "unittest assertion results, subprocess exits, before/after JSON, side-effect marker files, and SHA-256 source hashes"
+tests:
+  - "docs/reviews/2026-09-05-harness-hardening/red_regressions.py"
+  - "docs/reviews/2026-09-05-harness-hardening/local_red_regressions.py"
+  - "docs/reviews/2026-09-05-harness-hardening/supplemental_state_red.py"
+falsification:
+  defect: "At commit 9ee4eaa, the committed probes produced assertion failures because invalid verifier inputs executed effects or returned success"
+  proved_sha: "9ee4eaaf6b19ded4b5e32349d77ba8fdaf6af79e"
+  receipt: "docs/implementation/2026-09-05-harness-hardening/h02/h01-red-receipt.json"

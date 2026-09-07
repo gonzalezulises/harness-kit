@@ -727,6 +727,20 @@
       ],
       "notes": "Owner continuation 2026-09-06. Four initial scoped review findings are fixed and independently closed. CI integration uses protected base only. Fixtures do not certify live execution, containment, baseline acceptance or deployment.",
       "user_visible_behavior": "A consumer connects approved remote execution workflows, resumes an uncertain operation without duplicate effects or charges, and derives release progress only from exact authenticated observations."
+    },
+    {
+      "id": "F28",
+      "priority": 28,
+      "area": "closure-runtime",
+      "behavior": "Remaining supervisor defects and bounded remote product publication are closed without changing historical authority, signed budgets or readiness claims.",
+      "state": "active",
+      "verification": [
+        "Linked worktree local PR preparation preserves parent, frozen files, source index and refs.",
+        "Malformed verifier UTF-8 produces controlled failure with no duplicate effects.",
+        "Remote publication binds current authority and exact source; ambiguous effects reconcile without duplicate POST."
+      ],
+      "evidence": [],
+      "notes": "Owner-authorized 2026-09-07 closure increment. Real pilot and overall acceptance remain separate requirements."
     }
   ]
 }

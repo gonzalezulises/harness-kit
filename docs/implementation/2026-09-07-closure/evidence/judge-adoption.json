@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "claim": "OBSERVED",
+  "repository": "gonzalezulises/harness-kit",
+  "pr": 34,
+  "authorized_head": "b6b93e4fd8241298471e9cfc4356ecca47412f43",
+  "base_before": "88ea1e6c45faf5b5db9e29935eef6e25e50f633b",
+  "merge_commit": "2fb86f02d4de83eeb7496c32f01070fd547da8bb",
+  "tree": "30e7ee0edcd390fc2ab818bf738557bffef8f46d",
+  "merged": true,
+  "required_quality_run": 34051386295,
+  "required_quality": "success",
+  "independent_review": "judge-review.md",
+  "review_sha256": "30a4f5753f45cc974274cc4bc3ed07a62d628ffff14f357beed07ce9756bcbee",
+  "ruleset": {
+    "id": 20874477,
+    "active": true,
+    "bypass_actors": [],
+    "current_user_can_bypass": "never",
+    "changed": false
+  },
+  "authority_limit": "GitHub policy adoption only; no signed runtime authority or real pilot acceptance"
+}

@@ -1,0 +1,18 @@
+bash scripts/run-gates.sh quick
+── gates · aggregate quick · profile v1/kit
+  decisions-append-only    PASS (0.1s, exit 0)
+  agent-notes-tree         PASS (0.4s, exit 0)
+  arch-boundaries          PASS (0.9s, exit 0)
+  makefile-gates           PASS (0.1s, exit 0)
+  version-sync             PASS (0.0s, exit 0)
+  delivery-doc             PASS (0.0s, exit 0)
+  context-routes           PASS (0.1s, exit 0)
+  oracles-falsifiable      PASS (0.2s, exit 0)
+── 8 pass · 0 blocking · 0 not applicable
+make check-core
+make[1]: Entering directory '/workspace/scratch/adce1c53b293/harness-judge-target'
+bash scripts/check-prerequisites.sh full
+TOOL_FAILURE: full verification needs k6
+make[1]: *** [Makefile:30: check-core] Error 3
+make[1]: Leaving directory '/workspace/scratch/adce1c53b293/harness-judge-target'
+make: *** [Makefile:26: check] Error 2

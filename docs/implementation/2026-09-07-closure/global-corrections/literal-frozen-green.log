@@ -1,0 +1,10 @@
+✔ prepared capability rejects a changed frozen file named frozen.txt before effects or spending (1496.595823ms)
+✔ prepared capability rejects a changed frozen file named __proto__ before effects or spending (1300.085037ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3174.520026

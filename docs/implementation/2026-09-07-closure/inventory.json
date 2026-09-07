@@ -1,0 +1,375 @@
+{
+  "schema_version": 1,
+  "overall": "INCOMPLETE",
+  "mandate_date": "2026-09-07",
+  "base_heads": {
+    "33": "0a51623b5db42951a6091847a179262182abd67d",
+    "34": "b6b93e4fd8241298471e9cfc4356ecca47412f43",
+    "35": "dd8a20c1465b3ccd7e9a4d86ed6a11860146e7f7",
+    "36": "43e32833945a1fbb0cdd9dca2d582a428209d4fc",
+    "37": "dfd717b934667b1d6153a8934a657a70b8b0c9e1"
+  },
+  "items": [
+    {
+      "id": "judge-adoption",
+      "state": "CLOSED",
+      "pr": 34,
+      "merge_sha": "2fb86f02d4de83eeb7496c32f01070fd547da8bb",
+      "evidence": "evidence/judge-review.md",
+      "remote_check": "https://github.com/gonzalezulises/harness-kit/actions/runs/34051386295",
+      "readback_merged": true
+    },
+    {
+      "id": "P0-R1-M1",
+      "state": "CORRECTED_CAUSAL_GREEN_SCOPED_REVIEW_APPROVED",
+      "problem": "Linked source worktree local PR preparation",
+      "evidence": "product-corrections/acceptance-followup/verification.json",
+      "review": "evidence/root-followup-review.md"
+    },
+    {
+      "id": "P0-R1-M3",
+      "state": "CORRECTED_CAUSAL_GREEN_SCOPED_REVIEW_APPROVED",
+      "problem": "Malformed verifier UTF-8 uncontrolled termination",
+      "evidence": "product-corrections/acceptance-followup/verification.json",
+      "review": "evidence/root-followup-review.md"
+    },
+    {
+      "id": "remote-product-pr",
+      "state": "MISSING",
+      "problem": "Product handoff has no real remote publication operation"
+    },
+    {
+      "id": "global-review",
+      "state": "COMPLETED_NEEDS_FIXES",
+      "prior": "INCOMPLETE platform interruption preserved",
+      "evidence": "evidence/pr33-global-review.md",
+      "findings": {
+        "critical": 0,
+        "high": 4,
+        "medium": 1
+      }
+    },
+    {
+      "id": "human-interruption-review",
+      "state": "COMPLETED_NEEDS_FIXES",
+      "prior": "INCOMPLETE platform interruption preserved",
+      "evidence": "evidence/pr37-review.md",
+      "findings": {
+        "critical": 0,
+        "high": 0,
+        "medium": 6
+      }
+    },
+    {
+      "id": "F26-F1-M3",
+      "state": "HISTORICAL_INPUT_UNAVAILABLE",
+      "problem": "Original RED input cannot be reconstructed; current evidence must remain separate",
+      "current_obligation": "Retained current causal inputs validated separately; two-stage exact defective-source reconstruction verified",
+      "source": "docs/implementation/2026-09-06-consumer-distribution/evidence/verification.json#causalRecords",
+      "claim": "HISTORICAL_LIMITATION_NOT_RECERTIFIED",
+      "current_evidence": "evidence/distribution-history-validation.json"
+    },
+    {
+      "id": "docs-publication-status",
+      "state": "PENDING"
+    },
+    {
+      "id": "integrated-ci",
+      "state": "PENDING"
+    },
+    {
+      "id": "real-pilot-isolation",
+      "state": "OPERATIONAL_BLOCKED",
+      "observation": "bwrap exited 1: loopback: Failed to create NETLINK_ROUTE socket: Operation not permitted",
+      "attempt": "bwrap --ro-bind / / --unshare-user --unshare-pid --unshare-net --die-with-parent /bin/true",
+      "minimum_action": "Provide an authorized host with tested process/filesystem/network isolation"
+    },
+    {
+      "id": "real-pilot-authority",
+      "state": "NOT_ENROLLED",
+      "minimum_action": "Enroll genuine owner and execution-supervisor authority on the accepted host"
+    },
+    {
+      "id": "real-pilot-auth",
+      "state": "NOT_VERIFIED",
+      "note": "Previous preflight did not establish authentication; no blocked authentication route retried"
+    },
+    {
+      "id": "consumer-adoption",
+      "state": "ISOLATED_INSTALL_PREFLIGHT_GREEN_UPDATE_ROLLBACK_PENDING",
+      "note": "Initial preflight remains INSTALLED_NOT_ADOPTED; fixture runtime identity is not live authority adoption."
+    },
+    {
+      "id": "release",
+      "state": "PENDING_ACCEPTANCE"
+    },
+    {
+      "id": "F09",
+      "state": "HISTORICAL_BLOCKED_PRESERVED"
+    },
+    {
+      "id": "judge-stale-prose",
+      "state": "CORRECTED_FULL_CHECK_GREEN",
+      "target_branch": "closure/pr33-base",
+      "paths": [
+        "PROGRESS.md",
+        "docs/protected-judge-adoption.md"
+      ],
+      "historical_receipt": "PRESERVED"
+    },
+    {
+      "id": "merge-history-policy",
+      "state": "BLOCKED_BY_REQUIRED_CAPABILITY",
+      "evidence": "evidence/merge-ancestry.json",
+      "problem": "Allowed squash/rebase merge methods conflict with protected oracle proof ancestry",
+      "minimum_action": "Enable ordinary history-preserving merge commits without changing checks/bypasses, or explicitly approve an evidence-policy migration after review"
+    },
+    {
+      "id": "GR-01",
+      "severity": "High",
+      "state": "CORRECTED_CAUSAL_GREEN_SCOPED_STATIC_REVIEW_PASS",
+      "problem": "Cross-process idempotent reservation allows duplicate dispatch",
+      "evidence": "evidence/pr33-global-review.md",
+      "review": "evidence/global-fixes-review.md"
+    },
+    {
+      "id": "GR-02",
+      "severity": "High",
+      "state": "CORRECTED_CAUSAL_GREEN_SCOPED_STATIC_REVIEW_PASS",
+      "problem": "Action-specific authority/prerequisites not revalidated after awaited preflight",
+      "evidence": "evidence/pr33-global-review.md",
+      "followup": "request-binding/verification.json",
+      "review": "evidence/request-binding-review.md",
+      "limit": "Controller boundary only; external supervisor authority at effect time and real acceptance remain outstanding."
+    },
+    {
+      "id": "GR-03",
+      "severity": "High",
+      "state": "PROTECTED_EXECUTION_CHANGE_PENDING_SPECIFIC_ADOPTION",
+      "problem": "Candidate execution shares write authority with protected CI judge and verdict files",
+      "evidence": "evidence/pr33-global-review.md",
+      "proposal": "evidence/ci-isolation-design.md",
+      "minimum_action": "Review and specifically approve a versioned protected execution contract after concrete implementation/profile and isolated CI evidence exist"
+    },
+    {
+      "id": "GR-04",
+      "severity": "Medium",
+      "state": "CORRECTED_CAUSAL_GREEN_SCOPED_STATIC_REVIEW_PASS",
+      "problem": "Literal output filename can produce a verified no-op",
+      "evidence": "evidence/pr33-global-review.md",
+      "review": "evidence/global-fixes-review.md"
+    },
+    {
+      "id": "GR-05",
+      "severity": "High",
+      "state": "OPEN",
+      "problem": "Squash/rebase integration severs exact oracle proof ancestry",
+      "evidence": "evidence/pr33-global-review.md"
+    },
+    {
+      "id": "F27-R2-M1",
+      "severity": "Medium",
+      "state": "OPEN",
+      "problem": "Remediation does not reject changed signed base before writes",
+      "evidence": "evidence/pr37-review.md"
+    },
+    {
+      "id": "F27-R2-M2",
+      "severity": "Medium",
+      "state": "OPEN",
+      "problem": "Remediation missing-file inventory check occurs after writes",
+      "evidence": "evidence/pr37-review.md"
+    },
+    {
+      "id": "F27-R2-M3",
+      "severity": "Medium",
+      "state": "OPEN",
+      "problem": "Late retained acknowledgement cannot resume operational checkpoint",
+      "evidence": "evidence/pr37-review.md"
+    },
+    {
+      "id": "F27-R2-M4",
+      "severity": "Medium",
+      "state": "OPEN",
+      "problem": "Unknown and refused reviewer failures are treated as mechanical",
+      "evidence": "evidence/pr37-review.md"
+    },
+    {
+      "id": "F27-R2-M5",
+      "severity": "Medium",
+      "state": "OPEN",
+      "problem": "Release driver input selection ignores exact next obligation",
+      "evidence": "evidence/pr37-review.md"
+    },
+    {
+      "id": "F27-R2-M6",
+      "severity": "Medium",
+      "state": "OPEN",
+      "problem": "Different correction can write under unresolved original correction",
+      "evidence": "evidence/pr37-review.md"
+    },
+    {
+      "id": "product-review-evidence-gap",
+      "severity": "Medium",
+      "state": "CORRECTED_CAUSAL_GREEN_SCOPED_REVIEW_APPROVED",
+      "evidence": "product-corrections/acceptance-followup/verification.json",
+      "review": "evidence/root-followup-review.md"
+    },
+    {
+      "id": "product-report-hash-typo",
+      "severity": "Low",
+      "state": "CORRECTED_BY_VERIFIED_ERRATUM",
+      "evidence": "product-corrections/acceptance-followup/verification.json"
+    },
+    {
+      "id": "distribution-product-module-closure",
+      "severity": "High",
+      "state": "CORRECTED_CAUSAL_GREEN_SCOPED_REVIEW_APPROVED",
+      "problem": "PR36 fixed inventory omitted PR35/37 imported runtime modules; offline consumer failed to load",
+      "evidence": "distribution-integration/green-receipt.json",
+      "review": "evidence/root-followup-review.md"
+    },
+    {
+      "id": "GR02-H1",
+      "severity": "High",
+      "state": "CORRECTED_CAUSAL_GREEN_SCOPED_STATIC_REVIEW_PASS",
+      "problem": "Mutable caller wire can lend fresh request authority to captured obsolete dispatch",
+      "evidence": "request-binding/verification.json",
+      "review": "evidence/request-binding-review.md",
+      "limit": "Controller boundary only; external supervisor authority at effect time and real acceptance remain outstanding."
+    },
+    {
+      "id": "PR33-test-dependency-race",
+      "state": "CORRECTED_FULL_CHECK_GREEN_SCOPED_STATIC_REVIEW_PASS",
+      "problem": "Parallel tests observe temporary shared dependency mutation",
+      "evidence": "test-isolation/verification.json",
+      "correction_source": "dd8a20c1465b3ccd7e9a4d86ed6a11860146e7f7:packs/autonomy/verify-pack.sh",
+      "review": "evidence/pr35-and-runner-review.md"
+    },
+    {
+      "id": "H02-medium-parser",
+      "severity": "Medium",
+      "state": "HISTORICAL_CORRECTION_RETAINED",
+      "problem": "Isolated parser setup",
+      "source": "../2026-09-05-harness-hardening/ledger.md",
+      "current_review": "evidence/pr33-global-review.md"
+    },
+    {
+      "id": "H02-medium-child-cleanup",
+      "severity": "Medium",
+      "state": "HISTORICAL_CORRECTION_RETAINED",
+      "problem": "Owned timeout child cleanup",
+      "source": "../2026-09-05-harness-hardening/ledger.md",
+      "current_review": "evidence/pr33-global-review.md"
+    },
+    {
+      "id": "H02-medium-delivery-source",
+      "severity": "Medium",
+      "state": "HISTORICAL_CORRECTION_RETAINED",
+      "problem": "Explicit missing delivery source rejection",
+      "source": "../2026-09-05-harness-hardening/ledger.md",
+      "current_review": "evidence/pr33-global-review.md"
+    },
+    {
+      "id": "H03-medium-tag-directive",
+      "severity": "Medium",
+      "state": "HISTORICAL_CORRECTION_RETAINED",
+      "problem": "Explicit TAG directive rejection",
+      "source": "../2026-09-05-harness-hardening/ledger.md",
+      "current_review": "evidence/pr33-global-review.md"
+    },
+    {
+      "id": "H03-medium-stale-constructor",
+      "severity": "Medium",
+      "state": "HISTORICAL_CORRECTION_RETAINED",
+      "problem": "Propagate stale constructor stop",
+      "source": "../2026-09-05-harness-hardening/ledger.md",
+      "current_review": "evidence/pr33-global-review.md"
+    },
+    {
+      "id": "H04-M1",
+      "severity": "Medium",
+      "state": "HISTORICAL_CORRECTION_RETAINED",
+      "problem": "Internal outcome key length for 191\u2013200-character reservation keys",
+      "source": "../2026-09-05-harness-hardening/ledger.md",
+      "current_review": "evidence/pr33-global-review.md"
+    },
+    {
+      "id": "H04-M2",
+      "severity": "Medium",
+      "state": "HISTORICAL_CORRECTION_RETAINED",
+      "problem": "Retain verified intermediate external witness before successor",
+      "source": "../2026-09-05-harness-hardening/ledger.md",
+      "current_review": "evidence/pr33-global-review.md"
+    },
+    {
+      "id": "H06-M1",
+      "severity": "Medium",
+      "state": "HISTORICAL_CORRECTION_RETAINED",
+      "problem": "Require actual public observed defect",
+      "source": "../2026-09-05-harness-hardening/ledger.md",
+      "current_review": "evidence/pr33-global-review.md"
+    },
+    {
+      "id": "H07-low-empty-log",
+      "severity": "Low",
+      "state": "HISTORICAL_LIMITATION_DISCLOSED_NOT_REWRITTEN",
+      "problem": "Historical empty static log disclosed by original README/current receipt",
+      "source": "../2026-09-05-harness-hardening/ledger.md",
+      "current_review": "evidence/pr33-global-review.md"
+    },
+    {
+      "id": "H08-low-mutation-wording",
+      "severity": "Low",
+      "state": "HISTORICAL_LIMITATION_DISCLOSED_NOT_REWRITTEN",
+      "problem": "Historical mutation classification wording clarified in original README/oracle",
+      "source": "../2026-09-05-harness-hardening/ledger.md",
+      "current_review": "evidence/pr33-global-review.md"
+    },
+    {
+      "id": "P0-R1-M2",
+      "severity": "Medium",
+      "state": "HISTORICAL_CORRECTION_RETAINED",
+      "problem": "Pilot surface inventory and observed-case bindings are incomplete",
+      "historical_status": "ADDRESSED_IN_FIX_2",
+      "source": "../2026-09-06-product-loop/evidence/review.json"
+    },
+    {
+      "id": "F26-R1-M1",
+      "severity": "Medium",
+      "state": "HISTORICAL_CORRECTION_RETAINED",
+      "problem": "Plan refreshes Git index metadata despite unchanged product bytes.",
+      "historical_status": "ADDRESSED_FIX1",
+      "source": "../2026-09-06-consumer-distribution/evidence/review.json"
+    },
+    {
+      "id": "F26-R1-M2",
+      "severity": "Medium",
+      "state": "HISTORICAL_CORRECTION_RETAINED",
+      "problem": "Recursive builder includes repository tests outside the declared production profile.",
+      "historical_status": "ADDRESSED_FIX1",
+      "source": "../2026-09-06-consumer-distribution/evidence/review.json"
+    },
+    {
+      "id": "F27-followup-late-ack",
+      "severity": "Medium",
+      "state": "CAUSAL_FOLLOWUP_IN_PROGRESS",
+      "problem": "Late settled transient or malformed review acknowledgement cannot leave prior operational checkpoint for authorized retry",
+      "evidence": "evidence/f27-fixes-review.md"
+    }
+  ],
+  "local_startup": {
+    "command": "./init.sh",
+    "exit": 0,
+    "core_passed": 286,
+    "core_failed": 0,
+    "source_commit": "dfd717b934667b1d6153a8934a657a70b8b0c9e1",
+    "log_sha256": "f33640f1dd5263e54a272117cba7a65d24912494c91ba979b6af52cf3b73af64"
+  },
+  "local_distribution_integration": {
+    "source_pr36": "43e32833945a1fbb0cdd9dca2d582a428209d4fc",
+    "target_parent_pr37": "dfd717b934667b1d6153a8934a657a70b8b0c9e1",
+    "state": "CONFLICTS_RESOLVED_PENDING_INTEGRATED_CHECK",
+    "preserved": "Original F01-F27 records and historical evidence; added F26 without replacing F25/F27"
+  }
+}

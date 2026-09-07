@@ -1,0 +1,13 @@
+import {z} from 'zod';
+import {budgetKindSchema,budgetLimitsSchema} from './budget.mjs';
+export const executionDomain='harness.github-actions.execution.v1';
+export const hash=z.string().regex(/^[a-f0-9]{64}$/),id=z.string().min(1).max(200),integer=z.number().int().nonnegative().safe(),positive=integer.positive();
+const segment=z.string().regex(/^[A-Za-z0-9_.-]+$/).max(100);
+export const operationSchema=z.enum(['catalog','review','slice','merge','integrated-verification','independent-review','external-gate','deployment','smoke','observability','rollback','artifact-acceptance']);
+export const targetSchema=z.strictObject({kind:z.literal('deployment.v1'),id,environment:z.enum(['production','preview'])});
+export const actionsProfileSchema=z.strictObject({owner:segment,repository:segment,repositoryId:positive,workflowId:positive,workflowPath:z.string().regex(/^\.github\/workflows\/[A-Za-z0-9_.-]+\.ya?ml$/),workflowRef:segment,workflowSha:z.string().regex(/^[a-f0-9]{40}$/),contractDigest:hash,operations:z.array(operationSchema).min(1).refine(v=>new Set(v).size===v.length),target:targetSchema.nullable(),review:z.strictObject({containmentDigest:hash,workerDigest:hash,protocolDigest:hash}).optional()});
+export const actionsHostSchema=actionsProfileSchema.extend({token:z.string().min(1).max(1000).regex(/^[^\r\n]+$/)});
+export const executionBudgetSchema=z.strictObject({version:z.literal(1),domain:z.literal('harness.execution-budget.v1'),repositoryId:id,authorityDigest:hash,baselineDigest:hash,scope:z.strictObject({objectiveId:id,journalId:id,runId:hash,operationKey:id.refine(v=>!v.startsWith('reconcile:')),budgetKind:budgetKindSchema}),requestDigest:hash,profileDigest:hash,limits:budgetLimitsSchema});
+export const descriptorSchema=z.strictObject({version:z.literal(1),domain:z.literal(executionDomain),operationKey:id,profile:actionsProfileSchema,request:z.record(z.string(),z.unknown()),budget:executionBudgetSchema,approval:z.unknown()});
+export const observationSchema=z.strictObject({version:z.literal(1),domain:z.literal('harness.actions.observation.v1'),descriptorDigest:hash,operationKey:id,repositoryId:positive,workflowId:positive,workflowSha:z.string().regex(/^[a-f0-9]{40}$/),workflowPath:id,runId:positive,runAttempt:z.literal(1),contractDigest:hash,output:z.record(z.string(),z.unknown()),outputDigest:hash,issuedAt:integer,expiresAt:integer});
+export const observationWireSchema=z.strictObject({observation:observationSchema,approval:z.unknown()});

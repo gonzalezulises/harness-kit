@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "command": [
+    "node",
+    "--test",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-request-binding.test.mjs"
+  ],
+  "exit_code": 0,
+  "tests": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-request-binding.test.mjs": "f178077389f4da8a8694d9178c015481bec95b598b9babe62b87f1ca6d662f36",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/closure-fixtures.mjs": "073d1269683de1f1108331ddc3970537e458e98b4a26b0cdb9ddd3d7f28d063a"
+  },
+  "source": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/execution.mjs": "2c11cde8830a16dfdd056e5c4f755bf9de944f1459e8fc21b7af3bcf03ecefdc",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/release.mjs": "1aea5226e9f5d95c5e15284d67fbf4087541126efe7e9fff2b4d3b3cc122013d",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/review.mjs": "984ba2cc87373df71958ade81bc738b55fca4b6aba4f721c061c961e0964a68d"
+  },
+  "logs": {
+    "docs/implementation/2026-09-07-closure/request-binding/green.log": "5023a5bf2e3f1578deea6eb8d1f286576ae9b63477f4cb70d4cbc29186db0c98"
+  }
+}

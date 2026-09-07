@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "claim": "OBSERVED",
+  "pr33": "0a51623b5db42951a6091847a179262182abd67d",
+  "adopted_main": "2fb86f02d4de83eeb7496c32f01070fd547da8bb",
+  "checks": [
+    {
+      "oracle": ".harness/oracles/AC-F24-protected-ci.yaml",
+      "proved_sha": "cca4b16dbe1e59d1057dfba54d9380766a207e89",
+      "ancestor_of_pr33": true,
+      "ancestor_of_adopted_main": false
+    },
+    {
+      "oracle": ".harness/oracles/AC-F24.yaml",
+      "proved_sha": "cca4b16dbe1e59d1057dfba54d9380766a207e89",
+      "ancestor_of_pr33": true,
+      "ancestor_of_adopted_main": false
+    },
+    {
+      "oracle": ".harness/oracles/AC-FR01-literal-filename.yaml",
+      "proved_sha": "65c0c6976520ca53b878224e081d042a62853db4",
+      "ancestor_of_pr33": true,
+      "ancestor_of_adopted_main": false
+    },
+    {
+      "oracle": ".harness/oracles/AC-H01-fail-closed-verifiers.yaml",
+      "proved_sha": "9ee4eaaf6b19ded4b5e32349d77ba8fdaf6af79e",
+      "ancestor_of_pr33": true,
+      "ancestor_of_adopted_main": false
+    },
+    {
+      "oracle": ".harness/oracles/AC-H02.yaml",
+      "proved_sha": "fff527b2c7a64fb6d70d60d633a0261e68315169",
+      "ancestor_of_pr33": true,
+      "ancestor_of_adopted_main": false
+    },
+    {
+      "oracle": ".harness/oracles/AC-H03.yaml",
+      "proved_sha": "29445190ae94fd85771d5b41223104f8e1d1c011",
+      "ancestor_of_pr33": true,
+      "ancestor_of_adopted_main": false
+    },
+    {
+      "oracle": ".harness/oracles/AC-H04.yaml",
+      "proved_sha": "96438e86b3d671027c8398b8c10edbb994e8ee59",
+      "ancestor_of_pr33": true,
+      "ancestor_of_adopted_main": false
+    },
+    {
+      "oracle": ".harness/oracles/AC-H05.yaml",
+      "proved_sha": "772f47da8a96335346a126481fd11590126d75cb",
+      "ancestor_of_pr33": true,
+      "ancestor_of_adopted_main": false
+    },
+    {
+      "oracle": ".harness/oracles/AC-H06-authority.yaml",
+      "proved_sha": "589a4e3efe924264825c0f3de4b3820d83b196be",
+      "ancestor_of_pr33": true,
+      "ancestor_of_adopted_main": false
+    },
+    {
+      "oracle": ".harness/oracles/AC-H06.yaml",
+      "proved_sha": "589a4e3efe924264825c0f3de4b3820d83b196be",
+      "ancestor_of_pr33": true,
+      "ancestor_of_adopted_main": false
+    },
+    {
+      "oracle": ".harness/oracles/AC-H07.yaml",
+      "proved_sha": "19851a295fdac9159dad8161f4fd1dbd446c308a",
+      "ancestor_of_pr33": true,
+      "ancestor_of_adopted_main": false
+    },
+    {
+      "oracle": ".harness/oracles/AC-H08.yaml",
+      "proved_sha": "c8988acc87a18441e310e8f78e9015b3107d9341",
+      "ancestor_of_pr33": true,
+      "ancestor_of_adopted_main": false
+    }
+  ],
+  "lost_by_single_parent_squash": 12,
+  "repository_merge_methods": {
+    "merge": false,
+    "squash": true,
+    "rebase": true
+  },
+  "policy_changed": false,
+  "implication": "Single-parent squash cannot retain these proof ancestors; GitHub rebase rewrites commit identities. Normal DAG-preserving merge availability or an explicitly approved evidence-policy migration is required.",
+  "method": "Read every current oracle proof (including quoted values) and git merge-base --is-ancestor against exact commits"
+}

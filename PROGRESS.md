@@ -3,7 +3,37 @@
 The durable memory of this repository. Every session reads this first and writes to it
 last. If it disagrees with your recollection, this file wins.
 
-## Current state — 2026-09-06 execution backend continuation
+## Current closure — 2026-09-07
+
+The owner authorized ordinary adoption of exact PR34, necessary corrections to
+PR33–PR37, integration after required checks/reviews, release and a real pilot.
+PR34 was merged as `2fb86f02d4de83eeb7496c32f01070fd547da8bb` after independent
+read-only review and successful Required quality run34051386295 on the exact
+authorized head. Its complete 30-file snapshot and modes remain unchanged.
+The active required ruleset has no bypass actors; no protection was modified.
+
+This worktree merges that adopted base into published PR33 `0a51623`. The only
+merge conflict is this progress document; the prior PR33 history is retained
+below. The permitted global review completed with four High and one Medium
+finding. GR01/GR02/GR04 have local causal corrections; a follow-up immutable
+request binding regression reproduced the remaining GR02 gap and passed after
+correction. Independent static follow-up review passed with no new findings;
+the first full check failed because the shared dependency mutation overlapped
+three tests. The existing PR35 runner isolation is now applied without changing
+test bytes, and full verification passed: make check exit0, eight quick gates, core286,
+runtime253, installation/canary5, protected workflow1 and all other packs.
+Two authenticated-gh load omissions remain explicit. The follow-up reviews
+approve only these corrected scopes. GR03
+(candidate/judge execution isolation) and GR05 (history-preserving integration)
+remain open in the unique closure inventory. No PR33 merge, real model/host
+acceptance, baseline acceptance or release is claimed. The previous interrupted
+review receipts remain historical evidence.
+
+PR33–PR37 are already published; earlier statements about blocked publication
+describe the previous session state. Current integrated check results will be
+recorded after closure fixes, before committing and publishing this integration.
+
+## Previous state — 2026-09-06 execution backend continuation
 
 F24 now connects the fixed GitHub execution transport, Codex stdio worker and
 H07/H08 evidence bridge. Independent backend review identified four concrete

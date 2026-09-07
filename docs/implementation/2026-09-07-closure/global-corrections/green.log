@@ -1,0 +1,20 @@
+✔ GR01 separate controllers that both saw absence may issue exactly one dispatch (4207.659745ms)
+✔ GR01 owner death after durable intent before POST stays uncertain on original-key resume (5203.565009ms)
+✔ GR02 deploy approval expiring in asynchronous preflight blocks reservation (32303.517762ms)
+✔ GR02 rollback approval expiring in asynchronous preflight blocks reservation (35515.083641ms)
+✔ GR02 accept-artifact approval expiring in asynchronous preflight blocks reservation (26216.50434ms)
+✔ GR02 readback approval expiring in asynchronous preflight blocks reservation (35683.307747ms)
+✔ GR02 release objective expiry alone during preflight blocks reservation (1961.283614ms)
+✔ GR02 standalone review policy expiry alone during preflight blocks reservation (9501.589926ms)
+✔ GR02 release review policy expiry alone during preflight blocks reservation (17903.693217ms)
+✔ GR02 prerequisite slice evidence expires in preflight while objective and budgets remain current (6314.275465ms)
+✔ GR04 canonical-write.v1 preserves literal output keys and verifies changed bytes, exact scope and one debit (1791.566661ms)
+✔ GR04 derived-write.v1 preserves literal output keys and verifies changed bytes, exact scope and one debit (2071.345714ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 179164.053738

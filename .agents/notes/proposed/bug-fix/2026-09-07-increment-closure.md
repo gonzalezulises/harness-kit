@@ -1,0 +1,13 @@
+# Close increments with current evidence and preserved authority
+
+The owner-authorized 2026-09-07 closure continues PR33–37 and permits strictly necessary fixes in the previously frozen PR33. The current decision and backlog are recorded in docs/implementation/2026-09-07-closure/mandate.md and inventory.json. AGENTS.md, DECISIONS.md, bin/ARCHITECTURE.md and docs/quality-document.md continue to govern the changes.
+
+Linked Git worktrees must resolve their common object store before local PR preparation. Malformed verifier UTF-8 must reject the supervisor promise with a typed tool failure. These changes preserve the original nonce, budget and history contracts. Retained causal RED/GREEN records identify the exact tested bytes; subsequent review evidence remains a separate acceptance requirement.
+
+The closure branch integrates the distribution delta locally while retaining F25, F26, F27 and original review receipts. Current distribution inventory is authoritative for module membership; an enumerated historical module list was stale after product integration. Local fixture execution cannot stand in for an authenticated real pilot or consumer adoption.
+
+The exact PR34 policy was adopted through ordinary GitHub controls. The new global review found that history-preserving integration and a separately adopted isolated protected execution boundary are still required. This note does not authorize changes to that policy. Squashing away required proof ancestors, sharing judge write authority with candidate programs, or promoting historical blocked F09 would invalidate the intended closure. Revisit this note only with the corresponding concrete correction and accepted evidence; record a different policy decision separately.
+
+The PR33 supervisor correction gives only the newly created durable reservation dispatch ownership. It revalidates the exact immutable operation input under that ownership after awaited preflight, and materializes literal output keys with exact scope. Public receipts, event meanings, signed limits and historical evidence remain unchanged. The remote supervisor still owes its own current action/prerequisite check at effect time. The follow-up mutable-wire regression preserves the defective first correction separately from the original branch. No test receipt asserts live authority.
+
+The first PR33 full check exposed three runtime-binding failures from a shared dependency mutation in capabilities.test.mjs. The already published PR35 runner ordering is applied unchanged: complete that file before the remaining parallel files. No test body, adverse expectation or required gate is removed. The failed full check is retained.

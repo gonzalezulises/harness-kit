@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/journal.test.mjs",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/execution-backend.test.mjs",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs"
+  ],
+  "exit_code": 0,
+  "counts": {
+    "tests": 150,
+    "pass": 150,
+    "fail": 0
+  },
+  "tests": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/journal.test.mjs": "2b1727e3d4e299c78b843732fd1989e641d1366a4e36cce29f35bb3194389318",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/execution-backend.test.mjs": "d45e809ba74e7dd6f0109ad702b97d3961c175ef917ef272abad80afcfcb505d",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/release.test.mjs": "a5bd6cc0b4a1c6987398365b9c95dd4fa58d9a4af6ab1b7b16c5ed942b29152a",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs": "bebe2481b6d12d9b5f0c70cd15b3cd96c16183ebb7d493983d1a77a5697fb741",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/tests/capabilities.test.mjs": "95ed2f3d23416629e8226ffbdd15cb28139e83b7abbe588a6d52e7ff03db291b"
+  },
+  "source": {
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/journal.mjs": "af720c59d2afc6bcfd3dd78752729b99b9a532aa4fa539c88541c9373076614b",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/execution.mjs": "0b4d4089e64172f722c10a807b67c255c934534179ae6e03c32321ca6af8b3cf",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/release.mjs": "769c9f37d6d0dba9cda61e8094bd062eb2426c4e58ef5b82926c18e974c13ad8",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/review.mjs": "f284c9ab006fd0cde18bbd541e724922135dad75cef36d89e8bb06ee21663389",
+    "packs/autonomy/repo-template/scripts/quality-orchestrator/capabilities.mjs": "a34077e46a1e38e65e3dda989d26d14e8822c14b3a1a388ebfad141ab7b44aa7"
+  },
+  "logs": {
+    "docs/implementation/2026-09-07-closure/global-corrections/legacy-green.log": "d7a43e11fb565b2250581d8d3b673cc012be97be3a9b81aa2e49df80b32bc51d"
+  }
+}
