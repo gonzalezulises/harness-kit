@@ -3,7 +3,24 @@
 The durable memory of this repository. Every session reads this first and writes to it
 last. If it disagrees with your recollection, this file wins.
 
-## Current closure — 2026-09-07
+## Current PR33 CI correction — 2026-09-07
+
+Published PR33 checkpoint `65c6e5f7aecd107188f4f164e849d7c8aed91cc3`
+passed the protected live policy step, then Required quality run34074937651
+failed18 independent-fixture assertions. The exact CI comparison environment
+reproduced those18 failures locally. The fixture suite now clears only inherited
+ROUTES_BASE and DELIVERY_BASE inside its own child shell; the caller and all
+protected/base-selected production gates retain their original environment.
+
+The corrected exact CI environment completed `make check` exit0: core286,
+runtime253, pack5 and all remaining applicable suites, with8 quick gates passing.
+The local RED, full GREEN, unchanged protected-policy limit and independent
+static approval are in `docs/implementation/2026-09-07-closure/ci-fixture-environment/`
+and `evidence/ci-fixture-and-merge-followup-review.md`. Remote re-verification
+follows publication. GR03, GR05, real acceptance, integration and release remain
+open. No failed check or historical blocked feature is promoted to success.
+
+## Previous corrective checkpoint — 2026-09-07
 
 The owner authorized ordinary adoption of exact PR34, necessary corrections to
 PR33–PR37, integration after required checks/reviews, release and a real pilot.

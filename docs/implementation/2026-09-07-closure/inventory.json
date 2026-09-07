@@ -356,6 +356,34 @@
       "state": "CAUSAL_FOLLOWUP_IN_PROGRESS",
       "problem": "Late settled transient or malformed review acknowledgement cannot leave prior operational checkpoint for authorized retry",
       "evidence": "evidence/f27-fixes-review.md"
+    },
+    {
+      "id": "CI-FIXTURE-BASE",
+      "severity": "Medium",
+      "state": "CORRECTED_FULL_LOCAL_GREEN_SCOPED_REVIEW_PASS_REMOTE_RERUN_PENDING",
+      "problem": "Independent fixture repositories inherit the real source repository comparison SHAs",
+      "remote_failure_run": 34074937651,
+      "causal_red": "ci-fixture-environment/red-receipt.json",
+      "fix_scope": "Only the fixture suite child shell clears ROUTES_BASE and DELIVERY_BASE; protected selectors and production gates remain exact.",
+      "green": "ci-fixture-environment/green-receipt.json",
+      "review": "evidence/ci-fixture-and-merge-followup-review.md"
+    },
+    {
+      "id": "PR35-MERGE-1",
+      "severity": "Medium",
+      "state": "CORRECTED_SEPARATE_READBACK_AND_SCOPED_REVIEW_PASS_FULL_CHECK_PENDING",
+      "problem": "First local merge omitted the already reviewed product M1/M3 file; regression observed the omission",
+      "review": "evidence/ci-fixture-and-merge-followup-review.md",
+      "mechanical_evidence": "evidence/integration-file-persistence.json"
+    },
+    {
+      "id": "PR36-MERGE-1",
+      "severity": "Medium",
+      "state": "CORRECTED_SEPARATE_READBACK_AND_SCOPED_REVIEW_PASS_FULL_CHECK_PENDING",
+      "problem": "First local merge omitted the reviewed distribution inventory correction",
+      "expected_manager_sha256": "c204ad219c3137157e8edf7721392cb2554c1bc17edd1623f42dbfb96089264c",
+      "mechanical_evidence": "evidence/integration-file-persistence.json",
+      "review": "evidence/ci-fixture-and-merge-followup-review.md"
     }
   ],
   "local_startup": {
