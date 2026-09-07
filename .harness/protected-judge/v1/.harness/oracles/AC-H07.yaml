@@ -1,0 +1,33 @@
+id: AC-H07
+requirement: Independent review never upgrades fixture output or unavailable containment into acceptance
+criticality: critical
+status: TEST_READY
+observable: Signed frozen bindings, exact trusted Git shadows and strict output checks precede a truthful blocked reviewer attempt
+oracle:
+  expected: Unavailable containment always prevents reviewer and counterexample execution; local parsing never creates an authenticated review receipt
+cases:
+  positive:
+  - Operator model preference wins over catalog order; absent remote schema changes only transport
+  - Exact Git objects and file modes survive trusted shadow construction without global configuration inheritance
+  negative:
+  - Forged approval or handles, changed executable/protocol/schema/model/auth, malformed or extra output and fabricated receipts block
+  - Untrusted Git paths, symbolic links, alternates and primary or shadow manifest changes block
+  boundary:
+  - Cancelled or partial catalog and unavailable real execution remain explicit nonacceptance without consuming review budget
+context: Existing runtime and signed continuation with ephemeral fixture issuer; trusted local Git plumbing only, no authenticated Codex session
+side_effects:
+  must:
+  - Check known availability before any objective budget reservation; future real launches must use the existing objective budget
+  must_not:
+  - Spawn reviewer or counterexample processes, mutate primary/global configuration, accept fixtures or expand product proof semantics
+false_positive: A prototype-shaped primary filename omitted by ordinary object maps makes actual tampering invisible; the frozen regression must reject it
+owner: harness-kit maintainers under AGENTS.md and DECISIONS.md MIGRATION-01
+evidence:
+  formats:
+  - Exact source and test hashes, causal nonzero RED logs, local static runtime and e2e logs; real reviewer acceptance NOT_EXECUTED
+tests:
+- packs/autonomy/repo-template/scripts/quality-orchestrator/tests/review.test.mjs
+falsification:
+  defect: Ordinary-object manifest maps omit the __proto__ primary filename, so post-construction tampering incorrectly returns REVIEW_SHADOW_BUILT. The exact current test witnesses this assertion failure before null-prototype maps fix it.
+  proved_sha: 19851a295fdac9159dad8161f4fd1dbd446c308a
+  receipt: docs/implementation/2026-09-05-harness-hardening/h07/red-receipt.json

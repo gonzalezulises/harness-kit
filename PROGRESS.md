@@ -3,7 +3,23 @@
 The durable memory of this repository. Every session reads this first and writes to it
 last. If it disagrees with your recollection, this file wins.
 
-## Current State
+## Current proposal — 2026-09-06
+
+Prepared an additive30-file protected judge snapshot from local PR33 continuation
+a798c88ad625be2478d24df52c0dc45c51e2d4e4. The source manifest binds exact bytes
+and modes. Live relocated quick gates passed8/0 against that exact isolated
+target. Current main verification passed411/0 (two authenticated-gh load cases
+explicitly omitted); startup passed273/0. The only active-code change disables
+k6 usage telemetry for local fixtures; its behavior was independently reviewed.
+Workflow, root judge scripts, feature_list and DECISIONS remain unchanged.
+
+No new feature is active or claimed. This is a policy proposal, not adoption.
+Remote publication of the source was blocked by automatic approval review, so
+this separate proposal is retained locally for a later draft PR. No merge,
+ruleset change or owner/baseline acceptance occurred. See
+`docs/protected-judge-adoption.md` and its compact verification receipt.
+
+## Previous state — retained as history
 
 - **Last commit:** `b8c2ceb` — Merge pull request #12 (release 2.2.0)
 - **Released:** `v2.2.0` — first release cut by release-please, tag and GitHub
