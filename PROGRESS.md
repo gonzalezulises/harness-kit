@@ -3,6 +3,21 @@
 The durable memory of this repository. Every session reads this first and writes to it
 last. If it disagrees with your recollection, this file wins.
 
+## Current state — 2026-09-15
+
+`version-sync` is registered as `optional` in `scripts/run-gates.sh` and its template (branch
+`fix/version-sync-optional-in-installations`). Since #31 a missing `required` script blocks, and an
+installation never ships `verify-version-sync.sh`, so every scaffolded repo's `make gates` ended
+blocked on it (found in `inno-arq/mallol-costos`, kit 2.2.5). In the kit the gate still runs and
+passes: `make gates` gives 8 pass, 0 blocking. Test 20g keeps the template optional and fails against
+`2fb86f0`.
+
+Verification: core suite 274/0, Gherkin pack 15/0, the CI-flow pack 57/0 and the Sentry pack 68/0.
+On this Mac `make check` reports one Sentry failure only because the shell exports
+`SENTRY_AUTH_TOKEN`; with `env -u SENTRY_AUTH_TOKEN` that pack passes.
+
+Merged since the entry below: #34 (adopt versioned protected judge).
+
 ## Current proposal — 2026-09-06
 
 Prepared an additive30-file protected judge snapshot from local PR33 continuation

@@ -9,6 +9,27 @@ already says.
 
 ---
 
+## 2026-09-15 — version-sync is optional in the shared gate registry
+
+**Context.** `version-sync` checks the four copies of the kit's own release version. It was meant
+to SKIP wherever its script is absent, so the kit and its installations could share one
+`run-gates.sh` (2026-08-31). The 2026-09-03 change "only PASS satisfies a gate" (#31) turned a
+missing script into NOT_EXECUTED, which blocks for every `required` gate, and `version-sync` was
+registered as required. Since then `make gates` ends blocked in every scaffolded repo; seen on
+2026-09-15 in `inno-arq/mallol-costos` (kit 2.2.5), with the other seven gates in PASS.
+
+**Decision.** Register `version-sync` as `optional` in `scripts/run-gates.sh` and in its template,
+which stay identical. In the kit the script is present, so the gate runs and must pass; in an
+installation it reports "not installed (optional)". Test 20g keeps the template optional.
+
+**Alternatives rejected.** A separate registry for installations: it breaks the in-sync test and the
+shared-file decision. Copying `verify-version-sync.sh` into installations: it exits 3 there for lack
+of a release manifest. Bringing SKIP back for required gates: it reopens the silent hole #31 closed.
+
+**Consequences.** Deleting `verify-version-sync.sh` from the kit would now stand down instead of
+blocking; the release workflow still runs it directly. Installations get the fix on their next kit
+upgrade; until then they can mark the entry optional locally, as `mallol-costos` did.
+
 ## 2026-09-03 — An oracle must carry proof it can fail
 
 **Context.** `AGENTS.md` already required it — "una prueba que solo se ha visto

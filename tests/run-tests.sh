@@ -1006,6 +1006,12 @@ for tpl in "$KIT_DIR"/templates/full/scripts/*.sh; do
   assert_file "installed: scripts/$base" "$GATES/scripts/$base"
 done
 
+# 20g — version-sync checks the kit's own release versions. A scaffolded repo has no VERSION
+# or release manifest, so the shared registry must declare it optional: the kit still runs it
+# (the script is present) and an installation stands down instead of blocking make gates.
+assert_contains "version-sync is optional in the shared gate registry" \
+  "$(cat "$KIT_DIR/templates/full/scripts/run-gates.sh")" '"version-sync|quick full|optional|'
+
 # 20e — the gate is registered, or nobody ever runs it
 assert_contains "makefile-gates is a registered gate" \
   "$(cat "$KIT_DIR/scripts/run-gates.sh")" "makefile-gates"
