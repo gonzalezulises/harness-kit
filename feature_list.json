@@ -435,7 +435,7 @@
       "priority": 15,
       "area": "security",
       "behavior": "Installing a pack opens no hole in the repository that receives it: no shipped workflow interpolates a ${{ }} expression into a run: script, and every Sentry.init a pack ships scrubs URLs through beforeSend and beforeSendTransaction.",
-      "state": "not_started",
+      "state": "active",
       "budgets": {
         "review_rounds_max": 2,
         "repeated_blocker_max": 3,
