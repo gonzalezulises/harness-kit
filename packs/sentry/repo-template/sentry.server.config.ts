@@ -22,13 +22,13 @@ Sentry.init({
   // bug tracker is not the place to discover you are storing it.
   sendDefaultPii: process.env.SENTRY_SEND_DEFAULT_PII === "true",
 
-  // Local runs would otherwise fill the production project with noise from
-  // code that was never deployed.
-
   // La URL no la filtra sendDefaultPii: un token en el path —enlace mágico,
   // portal de cliente— sale vivo hacia Sentry con el primer error. Ver
   // sentry-scrub.ts.
   beforeSend: (event) => scrubEvent(event),
   beforeSendTransaction: (event) => scrubEvent(event),
+
+  // Local runs would otherwise fill the production project with noise from
+  // code that was never deployed.
   enabled: process.env.NODE_ENV === "production",
 });
