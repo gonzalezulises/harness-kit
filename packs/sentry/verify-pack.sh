@@ -171,9 +171,11 @@ assert "a canary without SENTRY_ORG blocks instead of skipping" 3 \
   NO_COLOR=1 "SENTRY_DSN=$GOOD_DSN" SENTRY_AUTH_TOKEN=t \
   "SENTRY_STUB_DIR=$STUB_DIR" -- canary
 
+# The absence is created, not assumed: a developer with the Sentry CLI
+# authenticated exports SENTRY_AUTH_TOKEN, and env would pass it through.
 assert "a canary without an auth token blocks instead of skipping" 3 \
   NO_COLOR=1 "SENTRY_DSN=$GOOD_DSN" SENTRY_ORG=acme SENTRY_PROJECT=web \
-  "SENTRY_STUB_DIR=$STUB_DIR" -- canary
+  SENTRY_AUTH_TOKEN= "SENTRY_STUB_DIR=$STUB_DIR" -- canary
 
 # ── 16-19. A release without source maps is a notification, not a stack trace ─
 stub
