@@ -3,6 +3,33 @@
 The durable memory of this repository. Every session reads this first and writes to it
 last. If it disagrees with your recollection, this file wins.
 
+## Current state — 2026-09-19
+
+The F15–F30 backlog from the 2026-09-19 external review is on branch `backlog/f15-f30` (PR #39):
+sixteen features in `feature_list.json`, all `not_started`, and ten acceptance probes under
+`tests/contract/` for F15–F21 and F23–F25, written before the features they judge. The review's
+patch was applied unedited with `git am`. `bash tests/contract/run.sh` reports 0 green, 10 red — red
+on purpose; the probes stay out of `make check` until F22 wires them in.
+
+**No feature is active. Next: F15**, then by priority; F15, F16 and F17 each fit one session. Iterate
+against the feature's probe (`bash tests/contract/F15-packs-expose-nothing.sh`) without editing it,
+and run `make verify-feature F=F15` only once the probe is green — every failed `verify-feature`
+spends one of the feature's two review rounds.
+
+- **F19 must not be activated** until the owner writes the `DECISIONS.md` entry that supersedes or
+  confirms the 2026-09-15 rejection of a separate gate registry. That entry is the owner's, not an
+  agent's.
+- **Outside the list — owner decisions and rituals, not features:** publish release 2.3.0 before
+  F18; return the repo to private; freeze the autonomy branch; version the skills inside the kit.
+
+Verification: `make check` exit 0 — core suite 274/0, Gherkin pack 15/0, CI-flow pack 57/0, Sentry
+pack 68/0 (with `env -u SENTRY_AUTH_TOKEN`, see below); `make gates` 8 pass, 0 blocking.
+
+This Mac holds two `gh` accounts. A push here as `inno-arq` gets 403: run
+`gh auth switch -u gonzalezulises` first, and `gh auth switch -u inno-arq` before the Mallol repos.
+
+Merged since the entry below: #38.
+
 ## Current state — 2026-09-15
 
 `version-sync` is registered as `optional` in `scripts/run-gates.sh` and its template (branch
@@ -57,8 +84,8 @@ ruleset change or owner/baseline acceptance occurred. See
 
 ## In Progress
 
-_Nothing active. All fourteen features are `passing`, each promoted by
-`verify-feature.sh` with recorded evidence — none set by hand._
+_Nothing active. F01–F14 are `passing`, each promoted by `verify-feature.sh` with
+recorded evidence — none set by hand. F15–F30 are `not_started`; the next is F15._
 
 ## Session log — 2026-08-31 (installed in two real repos; the canary had never worked)
 
