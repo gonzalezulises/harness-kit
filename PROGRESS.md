@@ -3,7 +3,34 @@
 The durable memory of this repository. Every session reads this first and writes to it
 last. If it disagrees with your recollection, this file wins.
 
-## Current state — 2026-09-19
+## Current state — 2026-09-19 (F15 passing)
+
+F15 is `passing` on branch `feat/f15-packs-expose-nothing`, promoted by `verify-feature.sh` at
+`86ff9f1` on the first round: contract 6/0, Sentry pack 75/0, load-testing pack 57/0, suite 274/0.
+The three commits of `fix/sentry-pack-security-hardening` landed by cherry-pick, and
+`packs/load-testing` `perf.yml` now passes its inputs through `env:` as well. Not pushed; no PR yet.
+
+**Next: F16.** No feature is active.
+
+- **The F15 probe had never run on this Mac.** bash 3.2 cannot parse `"${{"` in a heredoc inside
+  `$( )`, so it died before inspecting anything. Fixed in a separate commit with the owner's
+  authorisation — see `DECISIONS.md` 2026-09-19. Before F22 wires probes into `make check`, run
+  `bash -n` under `/bin/bash` over every probe.
+- **An installed repo still carries the injectable workflow.** In the local checkout of
+  `casabat-comparador-cliente` (`21beea8`, kit 2.1.0), `.github/workflows/perf.yml` interpolates
+  `github.event.inputs.target` into `run:` on lines 60, 61 and 63. Its three `Sentry.init` have no
+  scrubber, but they do not come from the Sentry pack. `Aurobalance` (`82ae8e3`) and
+  `portal-expediente-kyc` (`34645ae`) already carry the scrubber and the `env:` workflow. Fixing the
+  other repo is its owner's call, not this repo's.
+- `verify-feature` must run with `env -u SENTRY_AUTH_TOKEN` here: with the token exported, the
+  Sentry pack's "canary without an auth token" case fails (74/1). That is a test-isolation defect
+  in the pack, not an F15 regression.
+
+Verification: `make check` exit 0 — core 274/0, Gherkin 15/0, CI-flow 57/0, Sentry 75/0 (with
+`env -u SENTRY_AUTH_TOKEN`); `make gates` 8 pass, 0 blocking; `bash tests/contract/run.sh` 1 green
+(F15), 9 red.
+
+## Current state — 2026-09-19 (backlog)
 
 The F15–F30 backlog from the 2026-09-19 external review is on branch `backlog/f15-f30` (PR #39):
 sixteen features in `feature_list.json`, all `not_started`, and ten acceptance probes under
@@ -84,8 +111,8 @@ ruleset change or owner/baseline acceptance occurred. See
 
 ## In Progress
 
-_Nothing active. F01–F14 are `passing`, each promoted by `verify-feature.sh` with
-recorded evidence — none set by hand. F15–F30 are `not_started`; the next is F15._
+_Nothing active. F01–F15 are `passing`, each promoted by `verify-feature.sh` with
+recorded evidence — none set by hand. F16–F30 are `not_started`; the next is F16._
 
 ## Session log — 2026-08-31 (the pack itself had never been audited)
 

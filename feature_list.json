@@ -435,7 +435,7 @@
       "priority": 15,
       "area": "security",
       "behavior": "Installing a pack opens no hole in the repository that receives it: no shipped workflow interpolates a ${{ }} expression into a run: script, and every Sentry.init a pack ships scrubs URLs through beforeSend and beforeSendTransaction.",
-      "state": "active",
+      "state": "passing",
       "budgets": {
         "review_rounds_max": 2,
         "repeated_blocker_max": 3,
@@ -464,7 +464,9 @@
           "repair": "Read the first failing assertion only. Fix that one, re-run. Do not batch fixes."
         }
       ],
-      "evidence": [],
+      "evidence": [
+        "all layers passed — commit 86ff9f1, 2026-09-19T19:53:21Z"
+      ],
       "notes": "Found 2026-09-19. The probe was validated both ways: red on main, and on the hardening branch the Sentry half goes green while perf.yml stays red. main has shipped the injectable workflow for 19 days."
     },
     {
