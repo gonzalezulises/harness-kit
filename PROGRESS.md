@@ -22,9 +22,9 @@ The three commits of `fix/sentry-pack-security-hardening` landed by cherry-pick,
   scrubber, but they do not come from the Sentry pack. `Aurobalance` (`82ae8e3`) and
   `portal-expediente-kyc` (`34645ae`) already carry the scrubber and the `env:` workflow. Fixing the
   other repo is its owner's call, not this repo's.
-- `verify-feature` must run with `env -u SENTRY_AUTH_TOKEN` here: with the token exported, the
-  Sentry pack's "canary without an auth token" case fails (74/1). That is a test-isolation defect
-  in the pack, not an F15 regression.
+- `make check` no longer needs `env -u SENTRY_AUTH_TOKEN`. The Sentry pack's "canary without an
+  auth token" case assumed the token was absent and failed 74/1 wherever the CLI is authenticated;
+  it now creates the absence and passes 75/0 with the token exported or unset.
 
 Verification: `make check` exit 0 — core 274/0, Gherkin 15/0, CI-flow 57/0, Sentry 75/0 (with
 `env -u SENTRY_AUTH_TOKEN`); `make gates` 8 pass, 0 blocking; `bash tests/contract/run.sh` 1 green
