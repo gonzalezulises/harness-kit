@@ -26,9 +26,10 @@ The three commits of `fix/sentry-pack-security-hardening` landed by cherry-pick,
   auth token" case assumed the token was absent and failed 74/1 wherever the CLI is authenticated;
   it now creates the absence and passes 75/0 with the token exported or unset.
 
-Verification: `make check` exit 0 — core 274/0, Gherkin 15/0, CI-flow 57/0, Sentry 75/0 (with
-`env -u SENTRY_AUTH_TOKEN`); `make gates` 8 pass, 0 blocking; `bash tests/contract/run.sh` 1 green
-(F15), 9 red.
+Verification, with `SENTRY_AUTH_TOKEN` exported as this Mac normally has it: `make check` exit 0 —
+core 274/0, Gherkin 15/0, CI-flow 57/0, Sentry 75/0; `make gates` 8 pass, 0 blocking;
+`make verify-claims` re-verified all 15; `make clean-check` exit 0; `bash tests/contract/run.sh`
+1 green (F15), 9 red.
 
 ## Current state — 2026-09-19 (backlog)
 
