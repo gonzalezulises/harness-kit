@@ -42,7 +42,7 @@ for n, line in enumerate(lines, 1):
     indent = len(line) - len(stripped)
     if in_block:
         if stripped == "" or indent > block_indent:
-            if "${{" in line:
+            if "\x24{{" in line:
                 print(f"{n}: {stripped.strip()}")
             continue
         in_block = False
@@ -52,7 +52,7 @@ for n, line in enumerate(lines, 1):
     rest = m.group(2)
     if re.match(r"^[|>][+-]?\s*$", rest):
         in_block, block_indent = True, indent + (len(m.group(1)) if m.group(1) else 0)
-    elif "${{" in rest:
+    elif "\x24{{" in rest:
         print(f"{n}: {stripped.strip()}")
 PYEOF
 )"
