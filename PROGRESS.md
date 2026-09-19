@@ -8,7 +8,8 @@ last. If it disagrees with your recollection, this file wins.
 F15 is `passing` on branch `feat/f15-packs-expose-nothing`, promoted by `verify-feature.sh` at
 `86ff9f1` on the first round: contract 6/0, Sentry pack 75/0, load-testing pack 57/0, suite 274/0.
 The three commits of `fix/sentry-pack-security-hardening` landed by cherry-pick, and
-`packs/load-testing` `perf.yml` now passes its inputs through `env:` as well. Not pushed; no PR yet.
+`packs/load-testing` `perf.yml` now passes its inputs through `env:` as well. Open as PR #40, not
+merged.
 
 **Next: F16.** No feature is active.
 
@@ -16,12 +17,14 @@ The three commits of `fix/sentry-pack-security-hardening` landed by cherry-pick,
   `$( )`, so it died before inspecting anything. Fixed in a separate commit with the owner's
   authorisation — see `DECISIONS.md` 2026-09-19. Before F22 wires probes into `make check`, run
   `bash -n` under `/bin/bash` over every probe.
-- **An installed repo still carries the injectable workflow.** In the local checkout of
-  `casabat-comparador-cliente` (`21beea8`, kit 2.1.0), `.github/workflows/perf.yml` interpolates
-  `github.event.inputs.target` into `run:` on lines 60, 61 and 63. Its three `Sentry.init` have no
-  scrubber, but they do not come from the Sentry pack. `Aurobalance` (`82ae8e3`) and
-  `portal-expediente-kyc` (`34645ae`) already carry the scrubber and the `env:` workflow. Fixing the
-  other repo is its owner's call, not this repo's.
+- **The installed repo that still carried it is fixed too.** `casabat-comparador-cliente` shipped
+  the same `perf.yml` (kit 2.1.0) and, in `deploy-production.yml`, the same shape around a job
+  exporting `VERCEL_TOKEN`. Both moved to `env:` in that repo's PR #207, where the `smoke` job — the
+  very step rewritten — ran green on GitHub Actions. `Aurobalance` (`82ae8e3`) and
+  `portal-expediente-kyc` (`34645ae`) already carried the scrubber and the `env:` workflow.
+  `casabat`'s three `Sentry.init` have no scrubber, but they do not come from the Sentry pack.
+- CI on PR #40, at `2dd1ad1`: `Required quality` pass, GitGuardian pass, Cursor Security Reviewer
+  pass. That run is the probe's first green on Linux and bash 5 inside this repo's own pipeline.
 - `make check` no longer needs `env -u SENTRY_AUTH_TOKEN`. The Sentry pack's "canary without an
   auth token" case assumed the token was absent and failed 74/1 wherever the CLI is authenticated;
   it now creates the absence and passes 75/0 with the token exported or unset.
