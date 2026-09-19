@@ -34,6 +34,13 @@ failure — never what the gate exposes by being installed. A tool that verifies
 others earns no exemption from being verified. Eight cases now cover the
 surface, including the exact `${{ }}`-inside-`run:` shape.
 
+**The fix covered one pack, not the class.** `packs/load-testing` shipped the
+same shape in `perf.yml` — `github.event.inputs.target`, free text from whoever
+dispatches the workflow, interpolated into a `run:` script of a job holding
+`GH_TOKEN`. It moved to `env:` on 2026-09-19 under F15. The class is now judged
+by `tests/contract/F15-packs-expose-nothing.sh`, which reads every workflow the
+kit ships instead of one file per pack.
+
 **Given up:** the scrubber is a heuristic — a path segment of 16+ characters
 mixing letters and digits — plus an optional route list. It cannot recognise a
 short token, and it will redact a legitimate identifier of that shape. Accepted
