@@ -9,6 +9,29 @@ already says.
 
 ---
 
+## 2026-09-19 — The F15 probe is fixed for bash 3.2; its contract is unchanged
+
+**Context.** `tests/contract/F15-packs-expose-nothing.sh` was written on Linux and watched failing
+there. On macOS, whose only `bash` is 3.2.57, it never ran: bash 3.2 scans the body of a quoted
+heredoc inside `$( )` as shell text, and the Python literal `"${{"` opens a `${` that never closes
+— `syntax error near unexpected token '('`, exit 2, before inspecting a file. Its red on this Mac
+was a parse error, not a verdict, so `make verify-feature F=F15` could only fail here, whatever the
+code. The other nine probes and the 274-case suite parse and pass under 3.2.
+
+**Decision.** Spell the literal `"\x24{{"` in the probe's two Python lines. It is the same
+three-character string to Python and gives bash nothing to open. No check, path or message changed.
+Watched both ways under bash 3.2.57 and 5.2.37: 1 ok / 5 fail on `9f4e047`, 6 ok / 0 fail after F15.
+The owner authorised the edit on 2026-09-19, after the instruction not to touch the probe.
+
+**Alternatives rejected.** Installing bash 5 on this Mac: the probe would stay broken on stock
+macOS, and F22, which wires every probe into `make check`, would inherit it. Running
+`verify-feature` in a Linux container: the other layers would run without the tools they measure.
+
+**Consequences.** A probe has to parse under bash 3.2 like the rest of the kit. Before F22 wires
+probes into `make check`, run `bash -n` under `/bin/bash` over each one.
+
+---
+
 ## 2026-09-15 — version-sync is optional in the shared gate registry
 
 **Context.** `version-sync` checks the four copies of the kit's own release version. It was meant
