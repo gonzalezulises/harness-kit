@@ -171,9 +171,11 @@ assert "a canary without SENTRY_ORG blocks instead of skipping" 3 \
   NO_COLOR=1 "SENTRY_DSN=$GOOD_DSN" SENTRY_AUTH_TOKEN=t \
   "SENTRY_STUB_DIR=$STUB_DIR" -- canary
 
+# The absence is created, not assumed: a developer with the Sentry CLI
+# authenticated exports SENTRY_AUTH_TOKEN, and env would pass it through.
 assert "a canary without an auth token blocks instead of skipping" 3 \
   NO_COLOR=1 "SENTRY_DSN=$GOOD_DSN" SENTRY_ORG=acme SENTRY_PROJECT=web \
-  "SENTRY_STUB_DIR=$STUB_DIR" -- canary
+  SENTRY_AUTH_TOKEN= "SENTRY_STUB_DIR=$STUB_DIR" -- canary
 
 # ── 16-19. A release without source maps is a notification, not a stack trace ─
 stub
@@ -533,6 +535,51 @@ esac
 case "$INGEST_URL" in
   https:///*|*api//*) bad "the ingest URL is the empty-host shape: $INGEST_URL" ;;
   *) ok "the ingest URL is not the empty-host shape" ;;
+esac
+
+
+
+# ── 69-76. Lo que el pack expone, no sólo lo que verifica ───────────────────
+# Tres hallazgos de una revisión de seguridad sobre el propio pack. Los tres
+# eran reales; ninguno lo habría encontrado la matriz, porque medía si la
+# compuerta detecta fallos y no qué superficie abre al instalarse.
+
+# 1. sendDefaultPii:false NO filtra la URL. Un token de capacidad en el path
+#    —portal de cliente, enlace mágico— salía vivo hacia Sentry con el primer
+#    error, y con él el acceso que ese token concede.
+for f in instrumentation-client.ts sentry.server.config.ts sentry.edge.config.ts; do
+  if grep -q 'beforeSend:' "$PACK_DIR/repo-template/$f" &&
+     grep -q 'beforeSendTransaction:' "$PACK_DIR/repo-template/$f"; then
+    ok "$f redacts URLs before the event leaves"
+  else
+    bad "$f initialises Sentry with no URL scrubbing"
+  fi
+done
+
+# 2. GitHub sustituye ${{ }} antes de que bash lea la línea: las comillas no
+#    delimitan, y el job exporta SENTRY_AUTH_TOKEN.
+if grep -nE 'run:.*\$\{\{' "$PACK_DIR/repo-template/.github/workflows/observability.yml" >/dev/null 2>&1; then
+  bad "the workflow interpolates an expression inside a run: script"
+else
+  ok "no workflow expression is interpolated into a shell script"
+fi
+
+# 3. El DSN de cliente es público: el título de un issue de Sentry puede venir
+#    de cualquiera, y este comando lo copia a un tracker privado.
+if grep -q 'sanitize_title' "$PACK_DIR/repo-template/bin/sentry-to-issues"; then
+  ok "issue titles are sanitised before they reach the tracker"
+else
+  bad "an attacker-controlled title reaches gh issue create unchanged"
+fi
+if grep -q 'MAX_NEW_ISSUES' "$PACK_DIR/repo-template/bin/sentry-to-issues"; then
+  ok "a run cannot open an unbounded number of issues"
+else
+  bad "no ceiling on issues created in one run"
+fi
+SANITIZED="$(printf '%s' 'ping @equipo y `code`' | tr -d '\000-\037' | sed 's/@/@\xe2\x80\x8b/g; s/`/'"'"'/g')"
+case "$SANITIZED" in
+  *'@equipo'*) bad "sanitize leaves a live @mention: $SANITIZED" ;;
+  *) ok "an @mention no longer notifies anyone" ;;
 esac
 
 

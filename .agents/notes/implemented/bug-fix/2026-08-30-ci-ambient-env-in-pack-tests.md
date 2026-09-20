@@ -11,6 +11,12 @@ real API and returned the wrong exit code (also explaining the layer's
 test that asserts an absence must create that absence, not assume it.
 Verified both ways locally (with and without the variable: 57/0).
 
+**Second instance, 2026-09-19:** the Sentry pack's "a canary without an auth
+token blocks" case passed nothing for the token and trusted it to be absent. On
+a machine with the Sentry CLI authenticated, `SENTRY_AUTH_TOKEN` is exported,
+the case failed 74/1, and every `make check` there needed `env -u` to pass. The
+case now sets `SENTRY_AUTH_TOKEN=` itself; 75/0 with the token exported or not.
+
 **Superseded diagnosis chain (kept for the pattern):** ESM parse mode →
 mawk intervals → summary visibility → this. Each fix was real; only this one
 was the runner's remaining failure.

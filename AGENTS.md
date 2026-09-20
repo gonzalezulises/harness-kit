@@ -117,8 +117,46 @@ the mechanical gates.
 | `make e2e` | End-to-end suite. |
 | `make session-start` / `session-end` | Open and close the session trace. |
 | `make gates` (`A=full` for everything) | Run the gate registry — every mechanically checkable convention lives there. |
+| `bash scripts/verify-context-routes.sh --list` | Print which documents govern the paths this diff touches. Read them before writing. |
+| `bash scripts/verify-oracles.sh --list` | Status of every acceptance oracle: what is draft, what is stale. |
 | `make verify-agent-notes` | Agent Notes tree/format gate. |
 | `make hooks-install` | Opt-in staged-only git hooks with formatter autofix. |
+
+## Gate states
+
+Only **PASS** satisfies a gate. `make gates` distinguishes PASS, FAIL,
+NOT_CONFIGURED, TOOL_FAILURE, INCOMPLETE, POLICY, UNKNOWN and NOT_EXECUTED, and
+everything that is not PASS blocks. Never report a non-PASS state as a pass, and
+never repair one by loosening the gate: FAIL means fix the code, TOOL_FAILURE
+means fix the environment, INCOMPLETE means nothing was verified.
+
+## Governed paths
+
+`.harness/context-routes.json` records which documents govern which paths. A
+change under a governed path must cite one of them — in a commit message on the
+branch, or in the Agent Note it carries; `make gates` enforces it. Run
+`scripts/verify-context-routes.sh --list` at the start of the work to see the
+reading list for your diff.
+
+A document does not stop being in force because the change looks obviously
+right. If one forbids what you are doing, amend it where it lives, with an owner
+and a date, and cite the amendment — or comply.
+
+## Oracles
+
+A criterion critical enough that getting it wrong ships harm gets a file in
+`.harness/oracles/`, written **before** the implementation — afterwards, the
+cases you imagine are the ones your code already passes. It answers the eight
+questions in the folder's README, and it records a `falsification`: the defect
+that must make its tests fail, and the commit where you watched them fail.
+
+`make gates` checks that proof is still live. Edit a test after proving it can
+fail and the proof no longer covers the test that exists — the criterion goes
+stale and blocks. That is the mechanical half of the rule this repo already had:
+a test only ever seen passing has not been shown to test anything.
+
+Do not write one per requirement. A folder of ceremonial oracles is worse than an
+empty one, because it teaches everyone to skim.
 
 ## Agent Notes
 

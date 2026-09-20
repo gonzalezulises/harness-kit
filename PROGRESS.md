@@ -3,7 +3,96 @@
 The durable memory of this repository. Every session reads this first and writes to it
 last. If it disagrees with your recollection, this file wins.
 
-## Current State
+## Current state — 2026-09-19 (F15 passing)
+
+F15 is `passing` on branch `feat/f15-packs-expose-nothing`, promoted by `verify-feature.sh` at
+`86ff9f1` on the first round: contract 6/0, Sentry pack 75/0, load-testing pack 57/0, suite 274/0.
+The three commits of `fix/sentry-pack-security-hardening` landed by cherry-pick, and
+`packs/load-testing` `perf.yml` now passes its inputs through `env:` as well. Open as PR #40, not
+merged.
+
+**Next: F16.** No feature is active.
+
+- **The F15 probe had never run on this Mac.** bash 3.2 cannot parse `"${{"` in a heredoc inside
+  `$( )`, so it died before inspecting anything. Fixed in a separate commit with the owner's
+  authorisation — see `DECISIONS.md` 2026-09-19. Before F22 wires probes into `make check`, run
+  `bash -n` under `/bin/bash` over every probe.
+- **The installed repo that still carried it is fixed too.** `casabat-comparador-cliente` shipped
+  the same `perf.yml` (kit 2.1.0) and, in `deploy-production.yml`, the same shape around a job
+  exporting `VERCEL_TOKEN`. Both moved to `env:` in that repo's PR #207, where the `smoke` job — the
+  very step rewritten — ran green on GitHub Actions. `Aurobalance` (`82ae8e3`) and
+  `portal-expediente-kyc` (`34645ae`) already carried the scrubber and the `env:` workflow.
+  `casabat`'s three `Sentry.init` have no scrubber, but they do not come from the Sentry pack.
+- CI on PR #40, at `2dd1ad1`: `Required quality` pass, GitGuardian pass, Cursor Security Reviewer
+  pass. That run is the probe's first green on Linux and bash 5 inside this repo's own pipeline.
+- `make check` no longer needs `env -u SENTRY_AUTH_TOKEN`. The Sentry pack's "canary without an
+  auth token" case assumed the token was absent and failed 74/1 wherever the CLI is authenticated;
+  it now creates the absence and passes 75/0 with the token exported or unset.
+
+Verification, with `SENTRY_AUTH_TOKEN` exported as this Mac normally has it: `make check` exit 0 —
+core 274/0, Gherkin 15/0, CI-flow 57/0, Sentry 75/0; `make gates` 8 pass, 0 blocking;
+`make verify-claims` re-verified all 15; `make clean-check` exit 0; `bash tests/contract/run.sh`
+1 green (F15), 9 red.
+
+## Current state — 2026-09-19 (backlog)
+
+The F15–F30 backlog from the 2026-09-19 external review is on branch `backlog/f15-f30` (PR #39):
+sixteen features in `feature_list.json`, all `not_started`, and ten acceptance probes under
+`tests/contract/` for F15–F21 and F23–F25, written before the features they judge. The review's
+patch was applied unedited with `git am`. `bash tests/contract/run.sh` reports 0 green, 10 red — red
+on purpose; the probes stay out of `make check` until F22 wires them in.
+
+**No feature is active. Next: F15**, then by priority; F15, F16 and F17 each fit one session. Iterate
+against the feature's probe (`bash tests/contract/F15-packs-expose-nothing.sh`) without editing it,
+and run `make verify-feature F=F15` only once the probe is green — every failed `verify-feature`
+spends one of the feature's two review rounds.
+
+- **F19 must not be activated** until the owner writes the `DECISIONS.md` entry that supersedes or
+  confirms the 2026-09-15 rejection of a separate gate registry. That entry is the owner's, not an
+  agent's.
+- **Outside the list — owner decisions and rituals, not features:** publish release 2.3.0 before
+  F18; return the repo to private; freeze the autonomy branch; version the skills inside the kit.
+
+Verification: `make check` exit 0 — core suite 274/0, Gherkin pack 15/0, CI-flow pack 57/0, Sentry
+pack 68/0 (with `env -u SENTRY_AUTH_TOKEN`, see below); `make gates` 8 pass, 0 blocking.
+
+This Mac holds two `gh` accounts. A push here as `inno-arq` gets 403: run
+`gh auth switch -u gonzalezulises` first, and `gh auth switch -u inno-arq` before the Mallol repos.
+
+Merged since the entry below: #38.
+
+## Current state — 2026-09-15
+
+`version-sync` is registered as `optional` in `scripts/run-gates.sh` and its template (branch
+`fix/version-sync-optional-in-installations`). Since #31 a missing `required` script blocks, and an
+installation never ships `verify-version-sync.sh`, so every scaffolded repo's `make gates` ended
+blocked on it (found in `inno-arq/mallol-costos`, kit 2.2.5). In the kit the gate still runs and
+passes: `make gates` gives 8 pass, 0 blocking. Test 20g keeps the template optional and fails against
+`2fb86f0`.
+
+Verification: core suite 274/0, Gherkin pack 15/0, the CI-flow pack 57/0 and the Sentry pack 68/0.
+On this Mac `make check` reports one Sentry failure only because the shell exports
+`SENTRY_AUTH_TOKEN`; with `env -u SENTRY_AUTH_TOKEN` that pack passes.
+
+Merged since the entry below: #34 (adopt versioned protected judge).
+
+## Current proposal — 2026-09-06
+
+Prepared an additive30-file protected judge snapshot from local PR33 continuation
+a798c88ad625be2478d24df52c0dc45c51e2d4e4. The source manifest binds exact bytes
+and modes. Live relocated quick gates passed8/0 against that exact isolated
+target. Current main verification passed411/0 (two authenticated-gh load cases
+explicitly omitted); startup passed273/0. The only active-code change disables
+k6 usage telemetry for local fixtures; its behavior was independently reviewed.
+Workflow, root judge scripts, feature_list and DECISIONS remain unchanged.
+
+No new feature is active or claimed. This is a policy proposal, not adoption.
+Remote publication of the source was blocked by automatic approval review, so
+this separate proposal is retained locally for a later draft PR. No merge,
+ruleset change or owner/baseline acceptance occurred. See
+`docs/protected-judge-adoption.md` and its compact verification receipt.
+
+## Previous state — retained as history
 
 - **Last commit:** `b8c2ceb` — Merge pull request #12 (release 2.2.0)
 - **Released:** `v2.2.0` — first release cut by release-please, tag and GitHub
@@ -18,7 +107,7 @@ last. If it disagrees with your recollection, this file wins.
 - **Release ritual:** a release-please PR arrives with its required check never
   run. Close and reopen it to trigger the check, then merge. Never `--admin`.
 - **Pack verification:** `packs/load-testing/` 57/57 · `packs/gherkin/` 15/15 ·
-  `packs/sentry/` 68/68, exit 0
+  `packs/sentry/` 75/75, exit 0
 - **Audit:** rubric v2, 84 checks. The kit scores **84/84** against itself.
 - **Startup path:** `./init.sh` — activation for other repos: `bin/harness-activate.sh`
 - **Active feature:** none — all fourteen features passing (VCR 14/14)
@@ -26,8 +115,39 @@ last. If it disagrees with your recollection, this file wins.
 
 ## In Progress
 
-_Nothing active. All fourteen features are `passing`, each promoted by
-`verify-feature.sh` with recorded evidence — none set by hand._
+_Nothing active. F01–F15 are `passing`, each promoted by `verify-feature.sh` with
+recorded evidence — none set by hand. F16–F30 are `not_started`; the next is F16._
+
+## Session log — 2026-08-31 (the pack itself had never been audited)
+
+A security review on the first real installation found three holes the pack
+opened in every repository it touched. All three verified against the code
+rather than taken on the reviewer's word.
+
+**Capability tokens were leaking to Sentry.** `sendDefaultPii: false` does not
+filter the URL — Sentry sends the request URL, transaction name, Referer and
+every navigation breadcrumb verbatim. The target repo carries tokens in the
+path (`/mi-perfil/<token>`, `/encuesta/<token>`, `/encuesta-evaluacion/<token>`
+— the review saw one, the code has three), so the first error on a client's page
+would hand that client's live token to a third party. It is a wellbeing app.
+`sentry-scrub.ts` now redacts them, wired through `beforeSend` and
+`beforeSendTransaction` in all three inits; 17 cases pin it against the real
+routes.
+
+**Command injection in the workflow.** GitHub substitutes `${{ inputs.release }}`
+before bash reads the line, so the quotes bound nothing and anyone able to
+dispatch the workflow could inject into a job exporting `SENTRY_AUTH_TOKEN`.
+Inputs moved to `env:`.
+
+**Unauthenticated writes into a private tracker.** The client DSN is public, so
+anyone can create a Sentry issue with a title they control, and
+`sentry-to-issues` copied it into GitHub Issues where `@mentions` notify people.
+Titles are sanitised and a run is capped.
+
+**Worth keeping:** 68 failure cases could not have caught any of these, because
+every one measured whether the gate detects failure — never what the gate
+exposes by being installed. Matrix 68 → 75. Reasoning in
+[the Agent Note](.agents/notes/implemented/bug-fix/2026-08-31-the-pack-had-to-be-audited-too.md).
 
 ## Session log — 2026-08-31 (installed in two real repos; the canary had never worked)
 

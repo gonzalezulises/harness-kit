@@ -12,6 +12,9 @@
 
 set -uo pipefail
 
+# Local fixtures do not need k6 usage telemetry; all child invocations inherit this.
+export K6_NO_USAGE_REPORT=true
+
 PACK_DIR="$(cd "$(dirname "$0")" && pwd)"
 TEMPLATE="${PACK_DIR}/repo-template"
 WORK="$(mktemp -d)"
