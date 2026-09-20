@@ -3,13 +3,23 @@
 The durable memory of this repository. Every session reads this first and writes to it
 last. If it disagrees with your recollection, this file wins.
 
-## Current state — 2026-09-19 (F15 passing)
+## Current state — 2026-09-20 (F15 merged, 2.3.0 released, no open PRs)
 
-F15 is `passing` on branch `feat/f15-packs-expose-nothing`, promoted by `verify-feature.sh` at
-`86ff9f1` on the first round: contract 6/0, Sentry pack 75/0, load-testing pack 57/0, suite 274/0.
-The three commits of `fix/sentry-pack-security-hardening` landed by cherry-pick, and
-`packs/load-testing` `perf.yml` now passes its inputs through `env:` as well. Open as PR #40, not
-merged.
+F15 is `passing` and on `main`: PR #40 rebase-merged, VCR 15/15. It was promoted by
+`verify-feature.sh` on the first round — contract 6/0, Sentry pack 75/0, load-testing pack 57/0,
+suite 274/0 — and on `main` after the release `make check` exits 0 and `make gates` gives 8 pass,
+0 blocking. The three commits of `fix/sentry-pack-security-hardening` landed by cherry-pick after
+19 days unmerged, and `packs/load-testing` `perf.yml` now passes its inputs through `env:` as well.
+
+**Release `v2.3.0` is published** — tag and GitHub Release, 2026-09-20T20:25:15Z, `VERSION` and
+`.harness/kit-version` both 2.3.0. The close-and-reopen ritual was needed again: the release-please
+PR arrived with `Required quality` never run, and reopening is what queued it.
+
+**No pull request is open.** The four autonomy drafts (#33, #35, #36, #37) were closed by owner
+decision — the branches stay on the remote and `gh pr reopen <n>` brings each back. Dependabot #28
+(`actions/checkout` 4→7) and #29 (`release-please-action` 4→5) were updated onto `main` and merged
+once green; the release workflow then ran on `b83c20c` under the v5 action and completed `success`,
+which is the only thing that proves that bump.
 
 **Next: F16.** No feature is active.
 
@@ -20,9 +30,14 @@ merged.
 - **The installed repo that still carried it is fixed too.** `casabat-comparador-cliente` shipped
   the same `perf.yml` (kit 2.1.0) and, in `deploy-production.yml`, the same shape around a job
   exporting `VERCEL_TOKEN`. Both moved to `env:` in that repo's PR #207, where the `smoke` job — the
-  very step rewritten — ran green on GitHub Actions. `Aurobalance` (`82ae8e3`) and
-  `portal-expediente-kyc` (`34645ae`) already carried the scrubber and the `env:` workflow.
-  `casabat`'s three `Sentry.init` have no scrubber, but they do not come from the Sentry pack.
+  very step rewritten — ran green on GitHub Actions. It is merged there too, as PR #208.
+  `Aurobalance` (`82ae8e3`) and `portal-expediente-kyc` (`34645ae`) already carried the scrubber
+  and the `env:` workflow. `casabat`'s three `Sentry.init` have no scrubber, but they do not come
+  from the Sentry pack.
+- **A PR inherits whatever the local branch point carried.** #207 was cut from a `casabat` `main`
+  that held an unpushed "Auto-save" commit, so it dragged 15 files of someone else's in-flight work
+  behind a two-file fix. It was closed and reopened as #208 from `origin/main`. Branch from the
+  remote, or read `git log origin/main..HEAD` before opening the PR.
 - CI on PR #40, at `2dd1ad1`: `Required quality` pass, GitGuardian pass, Cursor Security Reviewer
   pass. That run is the probe's first green on Linux and bash 5 inside this repo's own pipeline.
 - `make check` no longer needs `env -u SENTRY_AUTH_TOKEN`. The Sentry pack's "canary without an
