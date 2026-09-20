@@ -1006,6 +1006,12 @@ for tpl in "$KIT_DIR"/templates/full/scripts/*.sh; do
   assert_file "installed: scripts/$base" "$GATES/scripts/$base"
 done
 
+# 20g — version-sync checks the kit's own release versions. A scaffolded repo has no VERSION
+# or release manifest, so the shared registry must declare it optional: the kit still runs it
+# (the script is present) and an installation stands down instead of blocking make gates.
+assert_contains "version-sync is optional in the shared gate registry" \
+  "$(cat "$KIT_DIR/templates/full/scripts/run-gates.sh")" '"version-sync|quick full|optional|'
+
 # 20e — the gate is registered, or nobody ever runs it
 assert_contains "makefile-gates is a registered gate" \
   "$(cat "$KIT_DIR/scripts/run-gates.sh")" "makefile-gates"
@@ -1058,6 +1064,371 @@ dedup_claims '[{"id":"D1","state":"passing","behavior":"b","evidence":["e"],"lay
 OUTF="$(bash scripts/verify-claims.sh 2>&1)"; RCF=$?
 assert_eq "a shared failing command still fails" "1" "$RCF"
 assert_contains "it fails once per feature that declares it" "$OUTF" "2 layer(s) failed"
+
+# ── 15 — verify-delivery-doc: the runbook must describe THIS release ─────────
+# Fixture reproduces the real handover that motivated the gate: a v1.2.5 pass
+# whose runbook still carried a v1.2.4 deploy command, a section about an
+# already-applied migration, no mention of the one being shipped, and a dead link.
+echo ""
+echo "${BOLD}15 — verify-delivery-doc${RESET}"
+
+DD="$WORK/delivery"; mkdir -p "$DD/scripts" "$DD/supabase/migrations"
+cd "$DD" || exit 1
+git init -q . && git config user.email t@t && git config user.name t
+cp "$KIT_DIR/templates/full/scripts/verify-delivery-doc.sh" scripts/
+printf '{\n  "version": "1.2.5"\n}\n' > package.json
+cat > README.md <<'DOC'
+# X
+
+## Desplegar v1.2.5
+
+```bash
+just ecr-push-tag v1.2.5
+```
+
+### La migración de v1.2.1 (solo si vienen de v1.2.0)
+
+| Hacer | No hacer |
+|---|---|
+| Los pasos | `just ecr-push-tag v1.2.4` |
+
+Ver [`GUIA.md`](./GUIA.md).
+DOC
+printf -- '-- vieja\n' > supabase/migrations/20260916120000_a.sql
+git add -A >/dev/null && git commit -qm base && git tag v1.2.4
+printf -- '-- nueva\n' > supabase/migrations/20260917120000_b.sql
+git add -A >/dev/null && git commit -qm nueva
+
+OUT15="$(bash scripts/verify-delivery-doc.sh 2>&1)"; RC15=$?
+assert_eq "a runbook describing the previous release fails" "1" "$RC15"
+assert_contains "it names the stale deploy tag"        "$OUT15" "ecr-push-tag v1.2.4"
+assert_contains "it names the unmentioned migration"   "$OUT15" "20260917120000"
+assert_contains "it flags the section about an older version" "$OUT15" "v1.2.1"
+assert_contains "it flags the dead relative link"      "$OUT15" "GUIA.md"
+
+# A base that does not resolve must stop the run, never pass quietly: reporting
+# "no new migrations" for a release that ships one is the silence this prevents.
+DELIVERY_BASE=deadbeef bash scripts/verify-delivery-doc.sh >/dev/null 2>&1
+assert_eq "an unresolvable DELIVERY_BASE is NOT_CONFIGURED, not a pass" "3" "$?"
+
+# The same document, corrected, is the green path.
+cat > README.md <<'DOC'
+# X
+
+## Desplegar v1.2.5
+
+```bash
+just ecr-push-tag v1.2.5
+```
+
+Migración de este pase: `20260917120000`.
+
+### Ya en v1.2.1: lo que trajo aquel pase
+
+Histórico.
+DOC
+touch GUIA.md && git add -A >/dev/null && git commit -qm fix
+OUT15B="$(bash scripts/verify-delivery-doc.sh 2>&1)"; RC15B=$?
+assert_eq "the corrected runbook passes" "0" "$RC15B"
+assert_contains "and says which release it describes" "$OUT15B" "1.2.5"
+
+# A changelog citing each release's own tag is history, not a stale command.
+printf '# CHANGELOG\n\n- v1.2.4: `just ecr-push-tag v1.2.4`\n' > CHANGELOG.md
+git add -A >/dev/null && git commit -qm changelog
+bash scripts/verify-delivery-doc.sh >/dev/null 2>&1
+assert_eq "a changelog's own tags are not flagged" "0" "$?"
+
+# A repo that publishes no runbook stands down loudly instead of failing: a gate
+# that cries wolf on those gets silenced, and takes the real signal with it.
+rm -f README.md && printf '# X\n\nNo runbook here.\n' > README.md
+git add -A >/dev/null && git commit -qm noheading
+OUT15C="$(bash scripts/verify-delivery-doc.sh 2>&1)"
+assert_eq "no runbook heading is a skip, not a failure" "0" "$?"
+assert_contains "and the skip says why"  "$OUT15C" "publishes no deploy runbook"
+
+# Unless the repo declares it does deliver one — then the missing heading is the finding.
+DELIVERY_DOC_REQUIRED=1 bash scripts/verify-delivery-doc.sh >/dev/null 2>&1
+assert_eq "a delivering repo cannot lose its runbook silently" "1" "$?"
+
+cd "$KIT_DIR" || exit 1
+
+# ── 16 — run-gates: only PASS satisfies a gate ───────────────────────────────
+# The runner used to know two answers, so a gate that could not check anything
+# looked the same as one that checked and was clean. verify-delivery-doc shipped
+# with exactly that hole: handed an unresolvable ref, it printed "no new
+# migrations" for a release that shipped one.
+echo ""
+echo "${BOLD}16 — run-gates state machine${RESET}"
+
+RG="$WORK/rungates"; mkdir -p "$RG/scripts"
+cd "$RG" || exit 1
+cp "$KIT_DIR/templates/full/scripts/run-gates.sh" scripts/
+mk_gate() { printf '#!/usr/bin/env bash\nexit %s\n' "$2" > "scripts/$1"; chmod +x "scripts/$1"; }
+reg() { python3 - "$@" <<'PYX'
+import re, sys, pathlib
+p = pathlib.Path("scripts/run-gates.sh"); t = p.read_text()
+rows = "\n".join(f'  "{r}"' for r in sys.argv[1:])
+t = re.sub(r"GATES=\(\n.*?\n\)", f"GATES=(\n{rows}\n)", t, count=1, flags=re.S)
+p.write_text(t)
+PYX
+}
+
+mk_gate g-pass.sh 0
+mk_gate g-fail.sh 1
+mk_gate g-config.sh 2
+mk_gate g-tool.sh 3
+mk_gate g-incomplete.sh 4
+mk_gate g-policy.sh 5
+mk_gate g-weird.sh 42
+
+reg "only-pass|quick|required|bash scripts/g-pass.sh"
+OUT16="$(bash scripts/run-gates.sh quick 2>&1)"
+assert_eq "a passing gate exits 0" "0" "$?"
+assert_contains "and reports PASS" "$OUT16" "PASS"
+
+# Each non-zero code keeps its own name, because each sends you somewhere else:
+# FAIL means fix the code, TOOL_FAILURE means fix the machine.
+for pair in "g-fail.sh:FAIL" "g-config.sh:NOT_CONFIGURED" "g-tool.sh:TOOL_FAILURE" \
+            "g-incomplete.sh:INCOMPLETE" "g-policy.sh:POLICY" "g-weird.sh:UNKNOWN"; do
+  s="${pair%%:*}"; want="${pair##*:}"
+  reg "probe|quick|required|bash scripts/$s"
+  O="$(bash scripts/run-gates.sh quick 2>&1)"; RC=$?
+  assert_eq "$want blocks the run" "1" "$RC"
+  assert_contains "$want is reported by name" "$O" "$want"
+done
+
+# An unknown exit code must never be read as success — that is the whole point.
+reg "probe|quick|required|bash scripts/g-weird.sh"
+assert_contains "an unknown state says nothing was verified" \
+  "$(bash scripts/run-gates.sh quick 2>&1)" "not verified"
+
+# A required gate that is simply absent is a finding, not a skip.
+reg "ghost|quick|required|bash scripts/does-not-exist.sh"
+O16B="$(bash scripts/run-gates.sh quick 2>&1)"; RC16B=$?
+assert_eq "a missing REQUIRED gate blocks" "1" "$RC16B"
+assert_contains "and is named NOT_EXECUTED" "$O16B" "NOT_EXECUTED"
+
+# Optional is the only way to stand a gate down, and it has to be declared.
+reg "ghost|quick|optional|bash scripts/does-not-exist.sh"
+O16C="$(bash scripts/run-gates.sh quick 2>&1)"
+assert_eq "a missing OPTIONAL gate does not block" "0" "$?"
+assert_contains "and says it is not installed" "$O16C" "not installed"
+
+# Mixed run: one clean gate cannot carry a broken one.
+reg "ok|quick|required|bash scripts/g-pass.sh" "broken|quick|required|bash scripts/g-tool.sh"
+bash scripts/run-gates.sh quick >/dev/null 2>&1
+assert_eq "a passing gate does not offset a blocking one" "1" "$?"
+
+cd "$KIT_DIR" || exit 1
+
+# ── 17 — verify-context-routes: a governed change must cite what governs it ───
+# Reproduces the real failure: a fix that invented engineering tolerances while
+# DECISIONS.md §D2 forbade exactly that, one grep away and never opened.
+echo ""
+echo "${BOLD}17 — verify-context-routes${RESET}"
+
+CR="$WORK/routes"; mkdir -p "$CR/scripts" "$CR/.harness" "$CR/lib/rules" "$CR/docs"
+cd "$CR" || exit 1
+git init -q . && git config user.email t@t && git config user.name t
+cp "$KIT_DIR/templates/full/scripts/verify-context-routes.sh" scripts/
+cp "$KIT_DIR/templates/full/.harness/context-routes.json" .harness/
+printf '# D2\nEl comparador no inventa tolerancias.\n' > docs/DECISIONS.md
+printf 'export const x = 1;\n' > lib/rules/base.ts
+git add -A >/dev/null && git commit -qm base && git branch -M main
+
+git checkout -qb feat/tolerances
+printf 'export const WIDTH_MIN = 80;\n' > lib/rules/spec-plausibility.ts
+git add -A >/dev/null && git commit -qm "feat: valida rangos fisicos del ancho"
+O17="$(bash scripts/verify-context-routes.sh 2>&1)"; RC17=$?
+assert_eq "a governed change citing nothing fails" "1" "$RC17"
+assert_contains "it names the documents that govern it" "$O17" "DECISIONS.md"
+assert_contains "and says why they govern"             "$O17" "does not repeal a decision"
+
+git commit -q --amend -m "feat: rangos por compatibility_rules
+
+DECISIONS.md D2 prohibe inventar tolerancias, asi que los rangos los aporta
+Compras y no el codigo."
+assert_eq "the same change, citing its source, passes" "0" \
+  "$(bash scripts/verify-context-routes.sh >/dev/null 2>&1; echo $?)"
+
+# An Agent Note carries the citation just as well as a commit message.
+git checkout -q main && git checkout -qb feat/via-note
+mkdir -p .agents/notes/implemented/bug-fix
+printf 'export const z = 3;\n' > lib/rules/other.ts
+printf '# Why\n\nGoverned by DECISIONS.md and left in force.\n' \
+  > .agents/notes/implemented/bug-fix/note.md
+git add -A >/dev/null && git commit -qm "fix: something"
+assert_eq "a citation inside an Agent Note counts" "0" \
+  "$(bash scripts/verify-context-routes.sh >/dev/null 2>&1; echo $?)"
+
+# Ungoverned paths must not be nagged: a gate that fires on everything gets
+# silenced, and takes the real signal with it.
+git checkout -q main && git checkout -qb docs/only
+printf 'hola\n' > LEEME.md && git add -A >/dev/null && git commit -qm "docs: nota"
+assert_eq "an ungoverned change is not nagged" "0" \
+  "$(bash scripts/verify-context-routes.sh >/dev/null 2>&1; echo $?)"
+
+# The advisory mode reads the same map but never blocks.
+git checkout -q main && git checkout -qb feat/list
+printf 'export const w = 4;\n' > lib/rules/more.ts
+git add -A >/dev/null && git commit -qm wip
+O17L="$(bash scripts/verify-context-routes.sh --list 2>&1)"
+assert_eq "--list advises without blocking" "0" "$?"
+assert_contains "and prints the reading list" "$O17L" "DECISIONS.md"
+
+# Neither a bad base nor a missing map may look clean.
+git checkout -q main
+ROUTES_BASE=deadbeef bash scripts/verify-context-routes.sh >/dev/null 2>&1
+assert_eq "an unresolvable base never passes" "2" "$?"
+CONTEXT_ROUTES=.harness/nope.json bash scripts/verify-context-routes.sh >/dev/null 2>&1
+assert_eq "a missing route map is NOT_CONFIGURED" "2" "$?"
+printf 'not json at all' > .harness/broken.json
+CONTEXT_ROUTES=.harness/broken.json bash scripts/verify-context-routes.sh >/dev/null 2>&1
+assert_eq "a malformed route map is NOT_CONFIGURED" "2" "$?"
+
+cd "$KIT_DIR" || exit 1
+
+# ── 18 — verify-oracles: a critical criterion must be proved falsifiable ─────
+# AGENTS.md already required it: a test only ever seen passing does not count.
+# This is that convention with a gate behind it.
+echo ""
+echo "${BOLD}18 — verify-oracles${RESET}"
+
+OR="$WORK/oracles"; mkdir -p "$OR/scripts" "$OR/.harness/oracles" "$OR/test"
+cd "$OR" || exit 1
+git init -q . && git config user.email t@t && git config user.name t
+cp "$KIT_DIR/templates/full/scripts/verify-oracles.sh" scripts/
+printf 'it("works", () => {});\n' > test/rule.test.ts
+git add -A >/dev/null && git commit -qm base
+
+# An empty folder is an honest answer, not a silence: the gate arrives before
+# the criteria do.
+rm -rf .harness/oracles && mkdir -p .harness/oracles
+assert_eq "no oracles is a pass, stated out loud" "0" \
+  "$(bash scripts/verify-oracles.sh >/dev/null 2>&1; echo $?)"
+
+write_oracle() { cat > .harness/oracles/AC-001.yaml; }
+
+# TEST_READY with unanswered questions must not pass — that is the form-filling
+# this gate exists to refuse.
+write_oracle <<'YML'
+id: AC-001
+requirement: "Opposite polarity never matches"
+criticality: critical
+status: TEST_READY
+observable: "The offer is excluded"
+oracle:
+  expected: "mismatch"
+cases:
+  negative:
+    - "25 against 35"
+context: "A catalogue entry in group 25"
+side_effects:
+  must_not:
+    - "no other verdict changes"
+false_positive: "TBD"
+owner: "Compras"
+evidence:
+  formats: ["junit"]
+tests:
+  - "test/rule.test.ts"
+YML
+O18="$(bash scripts/verify-oracles.sh 2>&1)"; RC18=$?
+assert_eq "an unanswered question blocks TEST_READY" "1" "$RC18"
+assert_contains "and the message quotes the question" "$O18" "false positive"
+
+# A placeholder is not an answer.
+assert_contains "«TBD» does not count as answered" "$O18" "AC-001"
+
+# All eight answered, but no proof it can fail.
+write_oracle <<'YML'
+id: AC-001
+requirement: "Opposite polarity never matches"
+criticality: critical
+status: TEST_READY
+observable: "The offer is excluded from the ranking"
+oracle:
+  expected: "mismatch"
+cases:
+  positive:
+    - "25 against 25"
+  negative:
+    - "25 against 35"
+context: "A catalogue entry in group 25"
+side_effects:
+  must_not:
+    - "no other verdict changes"
+false_positive: "It would pass if the test asserted on its own fixture"
+owner: "Compras"
+evidence:
+  formats: ["junit"]
+tests:
+  - "test/rule.test.ts"
+YML
+O18B="$(bash scripts/verify-oracles.sh 2>&1)"
+assert_eq "a critical criterion with no falsification blocks" "1" "$?"
+assert_contains "and says what a test only seen passing proves" "$O18B" "has not been shown to test anything"
+
+add_falsification() {
+  cat >> .harness/oracles/AC-001.yaml <<YML
+falsification:
+  defect: "Compare with string equality again"
+  proved_sha: "$1"
+  output: "1 failed"
+YML
+}
+
+git add -A >/dev/null && git commit -qm "oracle"
+SHA_OK="$(git rev-parse HEAD)"
+add_falsification "$SHA_OK"
+git add -A >/dev/null && git commit -qm "prove"
+assert_eq "a proved criterion passes" "0" \
+  "$(bash scripts/verify-oracles.sh >/dev/null 2>&1; echo $?)"
+
+# ── The case this gate exists for ────────────────────────────────────────────
+# Editing the test after proving it can fail leaves a proof that no longer covers
+# the test that exists. That is STALE, and STALE is not green.
+printf 'it("works", () => { expect(1).toBe(1); });\n' > test/rule.test.ts
+git add -A >/dev/null && git commit -qm "loosen the test"
+O18C="$(bash scripts/verify-oracles.sh 2>&1)"; RC18C=$?
+assert_eq "editing the test after the proof goes stale" "1" "$RC18C"
+assert_contains "and names the test that moved" "$O18C" "test/rule.test.ts"
+assert_contains "and says the proof no longer covers it" "$O18C" "predates its own tests"
+
+# A SHA from nowhere is not a proof either.
+sed -i.bak "s/proved_sha: .*/proved_sha: \"deadbeefdeadbeefdeadbeefdeadbeefdeadbeef\"/" .harness/oracles/AC-001.yaml
+rm -f .harness/oracles/AC-001.yaml.bak
+O18D="$(bash scripts/verify-oracles.sh 2>&1)"
+assert_eq "a SHA outside this history blocks" "1" "$?"
+assert_contains "and says so plainly" "$O18D" "not in this history"
+
+# A named test that does not exist is a wish, not a criterion.
+git checkout -q -- test/rule.test.ts 2>/dev/null
+sed -i.bak "s|proved_sha: .*|proved_sha: \"$SHA_OK\"|" .harness/oracles/AC-001.yaml
+sed -i.bak "s|- \"test/rule.test.ts\"|- \"test/does-not-exist.ts\"|" .harness/oracles/AC-001.yaml
+rm -f .harness/oracles/AC-001.yaml.bak
+assert_eq "a test that does not exist blocks" "1" \
+  "$(bash scripts/verify-oracles.sh >/dev/null 2>&1; echo $?)"
+
+# A critical criterion still in DRAFT is unfinished thinking, not a failing test.
+sed -i.bak 's/status: TEST_READY/status: DRAFT/' .harness/oracles/AC-001.yaml
+rm -f .harness/oracles/AC-001.yaml.bak
+O18E="$(bash scripts/verify-oracles.sh 2>&1)"
+assert_eq "a critical DRAFT blocks" "1" "$?"
+assert_contains "and says no code should rely on it yet" "$O18E" "no production code should rely on it"
+
+# RETIRED keeps its history without being enforced.
+sed -i.bak 's/status: DRAFT/status: RETIRED/' .harness/oracles/AC-001.yaml
+rm -f .harness/oracles/AC-001.yaml.bak
+assert_eq "a retired criterion is not enforced" "0" \
+  "$(bash scripts/verify-oracles.sh >/dev/null 2>&1; echo $?)"
+
+# --list reports without blocking.
+O18F="$(bash scripts/verify-oracles.sh --list 2>&1)"
+assert_eq "--list never blocks" "0" "$?"
+assert_contains "and shows the status" "$O18F" "RETIRED"
+
+cd "$KIT_DIR" || exit 1
 
 # ═════════════════════════════════════════════════════════════════════════════
 echo ""

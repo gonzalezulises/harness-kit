@@ -1,0 +1,66 @@
+# Template. Copy to AC-001.yaml and answer for a real criterion.
+# Kept as .txt so the gate does not read the placeholders as a real oracle.
+#
+# Write this BEFORE the implementation. After you have written code, the cases
+# you imagine are the ones it already passes.
+
+id: AC-001
+requirement: "One sentence, in the language of whoever asked for it."
+criticality: critical          # low | medium | high | critical
+status: DRAFT                  # DRAFT until all eight are answered
+
+# 1. What observable behaviour demonstrates compliance?
+#    Something a person could watch happen. Not "the function returns true".
+observable: ""
+
+# 2. What is the expected oracle?
+#    The exact expected result. A number, a status, a verdict — not "works".
+oracle:
+  expected: ""
+
+# 3. Which positive, negative and boundary cases are required?
+#    The negative ones are the point. Anyone can list cases that pass.
+cases:
+  positive:
+    - ""
+  negative:
+    - ""
+  boundary:
+    - ""
+
+# 4. Which actor, state and initial data are involved?
+context: ""
+
+# 5. Which side effects must happen, and which must not?
+#    "Must not" catches the fix that works by breaking something adjacent.
+side_effects:
+  must:
+    - ""
+  must_not:
+    - ""
+
+# 6. How would a false positive be detected?
+#    How would this pass while the system is wrong? If you cannot answer, the
+#    test is probably asserting on its own setup.
+false_positive: ""
+
+# 7. Who may change this oracle?
+#    A role, not "the team". This question is what stops invented thresholds:
+#    a number nobody owns is a number nobody agreed to.
+owner: ""
+
+# 8. What evidence does it produce?
+evidence:
+  formats: ["junit"]
+
+# The tests that execute this criterion. They must exist.
+tests:
+  - ""
+
+# Proof it can fail. The gate verifies this one.
+# Break the implementation deliberately, run the tests, watch them fail, and
+# record the commit you were on. If a test changes later, the proof goes stale.
+falsification:
+  defect: ""            # the mutation that must make the tests fail
+  proved_sha: ""        # git rev-parse --short HEAD, at the moment you saw it fail
+  output: ""            # a line or two of what failing looked like

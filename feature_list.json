@@ -1,6 +1,6 @@
 {
   "project": "harness-kit",
-  "last_updated": "2026-08-14",
+  "last_updated": "2026-09-19",
   "rules": {
     "single_active_feature": true,
     "passing_requires_evidence": true,
@@ -429,6 +429,561 @@
         "all layers passed — commit aa73fef, 2026-08-14T19:34:09Z"
       ],
       "notes": "READY_PARTIAL exists because push rules are organization-only: a personal repo gets a real gate that cannot protect itself."
+    },
+    {
+      "id": "F15",
+      "priority": 15,
+      "area": "security",
+      "behavior": "Installing a pack opens no hole in the repository that receives it: no shipped workflow interpolates a ${{ }} expression into a run: script, and every Sentry.init a pack ships scrubs URLs through beforeSend and beforeSendTransaction.",
+      "state": "passing",
+      "budgets": {
+        "review_rounds_max": 2,
+        "repeated_blocker_max": 3,
+        "stop_condition": "Stop, record the blocker in PROGRESS.md, and escalate to a human. Do not retry, do not refactor around it, do not open a new approach."
+      },
+      "verification": [
+        "Land fix/sentry-pack-security-hardening (3 commits, unmerged since 2026-08-31) on main.",
+        "Apply the same repair to packs/load-testing perf.yml lines 60-63 — the branch fixed one pack, not the class.",
+        "Confirm the probe is red on 9f4e047 and green after; confirm both pack matrices still block every failure mode.",
+        "Re-check the repositories where the Sentry pack is already installed; they carry the old template."
+      ],
+      "layers": [
+        {
+          "label": "contract",
+          "cmd": "bash tests/contract/F15-packs-expose-nothing.sh",
+          "repair": "Read the first FAIL line only. The probe was written before this feature and watched failing; do not edit it to pass — if its contract is wrong, say so in DECISIONS.md and change it in a separate commit."
+        },
+        {
+          "label": "packs",
+          "cmd": "bash packs/sentry/verify-pack.sh && bash packs/load-testing/verify-pack.sh",
+          "repair": "A pack's failure matrix regressed. Read its first FAIL; the pack must still block every mode."
+        },
+        {
+          "label": "suite",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Read the first failing assertion only. Fix that one, re-run. Do not batch fixes."
+        }
+      ],
+      "evidence": [
+        "all layers passed — commit 86ff9f1, 2026-09-19T19:53:21Z"
+      ],
+      "notes": "Found 2026-09-19. The probe was validated both ways: red on main, and on the hardening branch the Sentry half goes green while perf.yml stays red. main has shipped the injectable workflow for 19 days."
+    },
+    {
+      "id": "F16",
+      "priority": 16,
+      "area": "gates",
+      "behavior": "The architecture gate can fail and cannot pass by absence: a missing rules file, an expect=exit0 rule whose check exits non-zero, and an unknown expect value each block, and run-gates never reports arch-boundaries PASS without a rules file.",
+      "state": "not_started",
+      "budgets": {
+        "review_rounds_max": 2,
+        "repeated_blocker_max": 3,
+        "stop_condition": "Stop, record the blocker in PROGRESS.md, and escalate to a human. Do not retry, do not refactor around it, do not open a new approach."
+      },
+      "verification": [
+        "Reproduce the three holes against 9f4e047 with the probe before changing anything.",
+        "Map the missing/malformed file to NOT_CONFIGURED (exit 2), as verify-context-routes.sh already does.",
+        "Port the repair to .harness/protected-judge/v1 only through a reviewed source revision — v1 still exits 0 on a missing file.",
+        "Confirm the two controls still hold: a rule that holds passes, a violated rule blocks."
+      ],
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash -n scripts/check-arch.sh && bash -n templates/full/scripts/check-arch.sh",
+          "repair": "Fix the syntax error."
+        },
+        {
+          "label": "contract",
+          "cmd": "bash tests/contract/F16-check-arch-fails-closed.sh",
+          "repair": "Read the first FAIL line only. The probe was written before this feature and watched failing; do not edit it to pass — if its contract is wrong, say so in DECISIONS.md and change it in a separate commit."
+        },
+        {
+          "label": "suite",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Read the first failing assertion only. Fix that one, re-run. Do not batch fixes."
+        }
+      ],
+      "evidence": [],
+      "notes": "`|| true` inside the command substitution zeroes $? before RC is read, so expect=exit0 has never been able to fire. rules: [] is deliberately left passing (the kit's convention: an empty set passes out loud); rules REMOVED relative to the base belong to F24."
+    },
+    {
+      "id": "F17",
+      "priority": 17,
+      "area": "scaffold",
+      "behavior": "A repository activated one minute ago passes `make gates` on every stack harness-init detects — app or library, Node, Python, Go, Rust or bare — while a target that announces a TODO and exits 0 still blocks.",
+      "state": "not_started",
+      "budgets": {
+        "review_rounds_max": 2,
+        "repeated_blocker_max": 3,
+        "stop_condition": "Stop, record the blocker in PROGRESS.md, and escalate to a human. Do not retry, do not refactor around it, do not open a new approach."
+      },
+      "verification": [
+        "Run the probe: on 9f4e047 four of seven shapes are born red (node library, python-uv, python-pip, bare).",
+        "Make the dev placeholder fail closed like VERIFY_CMD and E2E_CMD already do, and give an empty setup a recipe.",
+        "Confirm the phantom-e2e control still blocks — the repair must not be «stop checking»."
+      ],
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash -n bin/harness-init.sh",
+          "repair": "Fix the syntax error."
+        },
+        {
+          "label": "contract",
+          "cmd": "bash tests/contract/F17-fresh-scaffold-is-green.sh",
+          "repair": "Read the first FAIL line only. The probe was written before this feature and watched failing; do not edit it to pass — if its contract is wrong, say so in DECISIONS.md and change it in a separate commit."
+        },
+        {
+          "label": "suite",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Read the first failing assertion only. Fix that one, re-run. Do not batch fixes."
+        }
+      ],
+      "evidence": [],
+      "notes": "Same class as the 2026-09-15 version-sync incident: the suite exercises each gate against fixtures and never the path every consumer takes — activate, then run the gates. A throwaway two-line patch to harness-init.sh turned this probe 8/8 green, so the repair is small; the missing test was the defect."
+    },
+    {
+      "id": "F18",
+      "priority": 18,
+      "area": "distribution",
+      "behavior": "The stamp identifies the code that was installed, not the last release: installing from a checkout that is past the latest tag records that commit in .harness/kit-version, and harness-status shows it.",
+      "state": "not_started",
+      "budgets": {
+        "review_rounds_max": 2,
+        "repeated_blocker_max": 3,
+        "stop_condition": "Stop, record the blocker in PROGRESS.md, and escalate to a human. Do not retry, do not refactor around it, do not open a new approach."
+      },
+      "verification": [
+        "Confirm the probe is red on 9f4e047: two installs from different commits both stamp «2.2.5».",
+        "Keep VERSION, the manifest and verify-version-sync.sh agreeing — the stamp gains build metadata, the release string does not change.",
+        "Decide and record whether activation from an untagged or dirty checkout warns, or requires --dev."
+      ],
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash -n bin/harness-init.sh && bash -n bin/harness-status.sh",
+          "repair": "Fix the syntax error."
+        },
+        {
+          "label": "contract",
+          "cmd": "bash tests/contract/F18-stamp-identifies-the-code.sh",
+          "repair": "Read the first FAIL line only. The probe was written before this feature and watched failing; do not edit it to pass — if its contract is wrong, say so in DECISIONS.md and change it in a separate commit."
+        },
+        {
+          "label": "suite",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Read the first failing assertion only. Fix that one, re-run. Do not batch fixes."
+        }
+      ],
+      "evidence": [],
+      "notes": "On 2026-09-15 a client repo read «kit 2.2.5» while running behaviour that exists only after #31. Release 2.3.0 has been pending since that day with three feat commits on main: cut it before starting this, so the fleet has a real tag to move to."
+    },
+    {
+      "id": "F19",
+      "priority": 19,
+      "area": "gates",
+      "behavior": "A repository registers its own gates in .harness/gates.conf without editing the runner, run-gates.sh stays byte-identical to the kit's template, a malformed row blocks, and in the kit itself losing verify-version-sync.sh blocks again instead of standing down.",
+      "state": "not_started",
+      "budgets": {
+        "review_rounds_max": 2,
+        "repeated_blocker_max": 3,
+        "stop_condition": "Stop, record the blocker in PROGRESS.md, and escalate to a human. Do not retry, do not refactor around it, do not open a new approach."
+      },
+      "verification": [
+        "REOPENS an alternative rejected on 2026-09-15 («a separate registry for installations»). Append a DECISIONS entry that supersedes it, or reject this feature there — do not start without one of the two.",
+        "Move version-sync out of the shared rows into the kit's own registry as `required`.",
+        "Keep the in-sync test on the runner; add one asserting the template ships no kit-only rows."
+      ],
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash -n scripts/run-gates.sh && bash -n templates/full/scripts/run-gates.sh",
+          "repair": "Fix the syntax error."
+        },
+        {
+          "label": "contract",
+          "cmd": "bash tests/contract/F19-registry-is-not-the-runner.sh",
+          "repair": "Read the first FAIL line only. The probe was written before this feature and watched failing; do not edit it to pass — if its contract is wrong, say so in DECISIONS.md and change it in a separate commit."
+        },
+        {
+          "label": "suite",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Read the first failing assertion only. Fix that one, re-run. Do not batch fixes."
+        }
+      ],
+      "evidence": [],
+      "notes": "New evidence since the rejection: (1) a client repo already patched its run-gates.sh by hand, so the shared file is no longer shared; (2) a file consumers must edit cannot be a file an upgrade replaces (F20/F21); (3) stack profiles (F26+) add gates per repository. The runner stays one file — only the rows move out."
+    },
+    {
+      "id": "F20",
+      "priority": 20,
+      "area": "distribution",
+      "behavior": "Activation records which files belong to the kit: .harness/kit-lock.json lists every managed file with its sha256, the judge is managed, the repository's memory and policy are not, and harness-status names a managed file that was edited locally.",
+      "state": "not_started",
+      "budgets": {
+        "review_rounds_max": 2,
+        "repeated_blocker_max": 3,
+        "stop_condition": "Stop, record the blocker in PROGRESS.md, and escalate to a human. Do not retry, do not refactor around it, do not open a new approach."
+      },
+      "verification": [
+        "Draw the line once, in one place: managed = verifiers, runner, required workflow, auditor; owned = DECISIONS, PROGRESS, feature_list, arch rules, context routes, gate registry, AGENTS.md, Makefile.",
+        "Every recorded hash must match the file on disk at the moment the lock is written — a receipt, not a list.",
+        "Confirm a locally edited verifier shows up in harness-status as drift."
+      ],
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash -n bin/harness-init.sh && bash -n bin/harness-status.sh",
+          "repair": "Fix the syntax error."
+        },
+        {
+          "label": "contract",
+          "cmd": "bash tests/contract/F20-lock-records-what-the-kit-owns.sh",
+          "repair": "Read the first FAIL line only. The probe was written before this feature and watched failing; do not edit it to pass — if its contract is wrong, say so in DECISIONS.md and change it in a separate commit."
+        },
+        {
+          "label": "suite",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Read the first failing assertion only. Fix that one, re-run. Do not batch fixes."
+        }
+      ],
+      "evidence": [],
+      "notes": "Depends on F19: while the registry lives inside run-gates.sh the runner cannot be honestly «managed». A throwaway patch turned this probe 14/14 green."
+    },
+    {
+      "id": "F21",
+      "priority": 21,
+      "area": "distribution",
+      "behavior": "bin/harness-upgrade.sh brings an installation to the kit's current judge and never writes to an owned file: decisions, progress, features, rules, routes, AGENTS.md and Makefile survive; a locally edited managed file stays recoverable and is named; an installation that predates the lock can be upgraded; and harness-status stops recommending --force.",
+      "state": "not_started",
+      "budgets": {
+        "review_rounds_max": 2,
+        "repeated_blocker_max": 3,
+        "stop_condition": "Stop, record the blocker in PROGRESS.md, and escalate to a human. Do not retry, do not refactor around it, do not open a new approach."
+      },
+      "verification": [
+        "Reproduce first: `harness-init.sh --force` on a live repo replaces all seven owned files.",
+        "Cover --dry-run (writes nothing), the drifted-judge case and the legacy no-lock case.",
+        "Upgrade one real installation end to end and record it in PROGRESS.md before promoting."
+      ],
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash -n bin/harness-upgrade.sh && bash -n bin/harness-status.sh",
+          "repair": "Fix the syntax error."
+        },
+        {
+          "label": "contract",
+          "cmd": "bash tests/contract/F21-upgrade-preserves-state.sh",
+          "repair": "Read the first FAIL line only. The probe was written before this feature and watched failing; do not edit it to pass — if its contract is wrong, say so in DECISIONS.md and change it in a separate commit."
+        },
+        {
+          "label": "suite",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Read the first failing assertion only. Fix that one, re-run. Do not batch fixes."
+        }
+      ],
+      "evidence": [],
+      "notes": "The probe was tested against a fake upgrade that calls --force and caught it: all seven owned files and the local hotfix reported destroyed. Depends on F20. If this does not fit one session, split the legacy case out."
+    },
+    {
+      "id": "F22",
+      "priority": 22,
+      "area": "quality",
+      "behavior": "`make check` runs the consumer-contract probes, CI lints them, and a probe that finds nothing to inspect fails — so a change to the kit that breaks a freshly activated or freshly upgraded repository is refused here, not discovered in a client repo.",
+      "state": "not_started",
+      "budgets": {
+        "review_rounds_max": 2,
+        "repeated_blocker_max": 3,
+        "stop_condition": "Stop, record the blocker in PROGRESS.md, and escalate to a human. Do not retry, do not refactor around it, do not open a new approach."
+      },
+      "verification": [
+        "Wire tests/contract/run.sh into `make check` only once F15-F21 are green — a red baseline is what this whole block exists to stop.",
+        "Add tests/contract/*.sh to `make lint` and to the workflow's shellcheck step (governed path: cite DECISIONS.md).",
+        "Add the released-tag matrix: install from each of the last three tags, upgrade with HEAD, assert F21's survival checks."
+      ],
+      "layers": [
+        {
+          "label": "wired",
+          "cmd": "make -n check | grep -q 'tests/contract/run.sh' && grep -q 'tests/contract' Makefile .github/workflows/required-quality.yml",
+          "repair": "The probes exist but nothing runs them. Add them to `make check` and to both shellcheck invocations."
+        },
+        {
+          "label": "contract",
+          "cmd": "bash tests/contract/run.sh",
+          "repair": "A probe is red. Fix the feature it belongs to; do not remove it from the board."
+        },
+        {
+          "label": "suite",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Read the first failing assertion only. Fix that one, re-run. Do not batch fixes."
+        }
+      ],
+      "evidence": [],
+      "notes": "Two incidents in three weeks (version-sync, the `make dev` placeholder) had one root: no test plays the consumer."
+    },
+    {
+      "id": "F23",
+      "priority": 23,
+      "area": "governance",
+      "behavior": "The gate registry runs inside the required workflow, in the kit and in the template: runner and registry are taken from the protected base, the step leaves a sentinel the final conclusion requires, and the head has enough history for the gates that diff from a base.",
+      "state": "not_started",
+      "budgets": {
+        "review_rounds_max": 2,
+        "repeated_blocker_max": 3,
+        "stop_condition": "Stop, record the blocker in PROGRESS.md, and escalate to a human. Do not retry, do not refactor around it, do not open a new approach."
+      },
+      "verification": [
+        "Static probe first; it only guards the wiring.",
+        "Then the receipt: on the organization canary, a PR that violates an architecture rule and a PR that deletes a registry row are both refused by GitHub. Record it in docs/evidence/ like 2026-08-14.",
+        "Confirm a diff-based gate that cannot resolve its base reports INCOMPLETE and blocks, never PASS."
+      ],
+      "layers": [
+        {
+          "label": "contract",
+          "cmd": "bash tests/contract/F23-gates-bind-the-merge.sh",
+          "repair": "Read the first FAIL line only. The probe was written before this feature and watched failing; do not edit it to pass — if its contract is wrong, say so in DECISIONS.md and change it in a separate commit."
+        },
+        {
+          "label": "evidence",
+          "cmd": "ls docs/evidence/*-gates-canary.md >/dev/null 2>&1",
+          "repair": "Wiring is not enforcement. Run the canary PRs against a real repository and record what GitHub did."
+        },
+        {
+          "label": "suite",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Read the first failing assertion only. Fix that one, re-run. Do not batch fixes."
+        }
+      ],
+      "evidence": [],
+      "notes": "Every gate added since 2026-08-30 binds no merge today. DECISIONS holds the proof: a `required` gate was NOT_EXECUTED in every installation from 2026-09-03 to 2026-09-15 and no merge was refused. Workflow edits are a governed path, and on organization repos the integrity ruleset must be lifted and re-applied around the change."
+    },
+    {
+      "id": "F24",
+      "priority": 24,
+      "area": "governance",
+      "behavior": "Weakening what verifies the code is a deliberate, recorded act: deleting a test, adding a skip marker or a lint/type suppression, repointing a verification script, hollowing out `make check`, or removing an architecture rule blocks with POLICY unless the same change appends an entry to DECISIONS.md.",
+      "state": "not_started",
+      "budgets": {
+        "review_rounds_max": 2,
+        "repeated_blocker_max": 3,
+        "stop_condition": "Stop, record the blocker in PROGRESS.md, and escalate to a human. Do not retry, do not refactor around it, do not open a new approach."
+      },
+      "verification": [
+        "Confirm the two controls: adding a test and changing production code are never nagged.",
+        "Register the gate in the shared rows and run it from the protected base (F23).",
+        "Prove it on the canary with a PR that deletes a failing test and leaves `make check` green."
+      ],
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash -n scripts/verify-no-weakening.sh && bash -n templates/full/scripts/verify-no-weakening.sh",
+          "repair": "Fix the syntax error."
+        },
+        {
+          "label": "contract",
+          "cmd": "bash tests/contract/F24-verification-cannot-be-weakened-quietly.sh",
+          "repair": "Read the first FAIL line only. The probe was written before this feature and watched failing; do not edit it to pass — if its contract is wrong, say so in DECISIONS.md and change it in a separate commit."
+        },
+        {
+          "label": "suite",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Read the first failing assertion only. Fix that one, re-run. Do not batch fixes."
+        }
+      ],
+      "evidence": [],
+      "notes": "WEAKENED_VERIFICATION compares the layer's command STRING; everything the command reaches is unguarded, and `make check` runs from the PR head. Path routes on tests/** are the wrong tool — they fire on every honest change (DECISIONS 2026-09-03). A throwaway implementation turned this probe 9/9 green; it is not shipped, on purpose: the oracle and the code should not share an author."
+    },
+    {
+      "id": "F25",
+      "priority": 25,
+      "area": "quality",
+      "behavior": "A test run is judged by its report, not its exit code: zero tests executed, skipped tests, a failure in the report, a missing or unparseable report, and fewer tests than the harness-written baseline each block, for any runner that emits JUnit XML.",
+      "state": "not_started",
+      "budgets": {
+        "review_rounds_max": 2,
+        "repeated_blocker_max": 3,
+        "stop_condition": "Stop, record the blocker in PROGRESS.md, and escalate to a human. Do not retry, do not refactor around it, do not open a new approach."
+      },
+      "verification": [
+        "Generalise packs/gherkin's ZERO_EXECUTION to vitest, jest, pytest, go-junit-report and Playwright.",
+        "The baseline in .harness/test-baseline.json is written by the harness on a green run, never by hand; the count goes down only through F24's ledger entry.",
+        "Confirm exit codes follow the runner's contract (2 for zero/skipped, 4 for no report)."
+      ],
+      "layers": [
+        {
+          "label": "static",
+          "cmd": "bash -n scripts/verify-test-report.sh && bash -n templates/full/scripts/verify-test-report.sh",
+          "repair": "Fix the syntax error."
+        },
+        {
+          "label": "contract",
+          "cmd": "bash tests/contract/F25-the-test-report-is-the-verdict.sh",
+          "repair": "Read the first FAIL line only. The probe was written before this feature and watched failing; do not edit it to pass — if its contract is wrong, say so in DECISIONS.md and change it in a separate commit."
+        },
+        {
+          "label": "suite",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Read the first failing assertion only. Fix that one, re-run. Do not batch fixes."
+        }
+      ],
+      "evidence": [],
+      "notes": "A renamed directory, a filter that matches nothing, or a config that excludes everything leaves `npm test` and `pytest` at exit 0. A throwaway implementation turned this probe 8/8 green."
+    },
+    {
+      "id": "F26",
+      "priority": 26,
+      "area": "profiles",
+      "behavior": "`--profile <name>` installs a stack profile: a pack that declares which stages `make check` must contain for that stack, registers its gates through .harness/gates.conf, ships a verify-pack.sh proving each one blocks, and adds an «Engineering» group to the audit so a repository whose check verifies nothing stops scoring well.",
+      "state": "not_started",
+      "budgets": {
+        "review_rounds_max": 2,
+        "repeated_blocker_max": 3,
+        "stop_condition": "Stop, record the blocker in PROGRESS.md, and escalate to a human. Do not retry, do not refactor around it, do not open a new approach."
+      },
+      "verification": [
+        "Write tests/contract/F26-*.sh first and watch it fail on the pre-feature commit.",
+        "A repository whose `check` script is `echo ok` scores 79/84 today — add the case and make it fail a critical check.",
+        "Keep the core stack-agnostic: a profile is opt-in, like every pack."
+      ],
+      "layers": [
+        {
+          "label": "contract",
+          "cmd": "bash tests/contract/F26-profile-mechanism.sh",
+          "repair": "The probe does not exist yet: writing it, and watching it fail, is the first task of this feature."
+        },
+        {
+          "label": "suite",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Read the first failing assertion only. Fix that one, re-run. Do not batch fixes."
+        }
+      ],
+      "evidence": [],
+      "notes": "This is the gap against the kit's stated purpose. It governs how the agent works; what «quality» means in the product collapses into one opaque {{VERIFY_CMD}}. Depends on F19. Split before activating if it exceeds a session."
+    },
+    {
+      "id": "F27",
+      "priority": 27,
+      "area": "profiles",
+      "behavior": "The next-supabase profile makes structure mechanical: strict TypeScript, a dependency rule that fails when UI code imports the data layer directly, and a test stage judged by F25 — each proven by a failure matrix.",
+      "state": "not_started",
+      "budgets": {
+        "review_rounds_max": 2,
+        "repeated_blocker_max": 3,
+        "stop_condition": "Stop, record the blocker in PROGRESS.md, and escalate to a human. Do not retry, do not refactor around it, do not open a new approach."
+      },
+      "verification": [
+        "One real layering rule (dependency-cruiser or eslint-plugin-boundaries), not a grep.",
+        "Ship the four reference ADRs the practice already mandates: persistence, auth, deployment, errors/observability.",
+        "verify-pack.sh must show each stage blocking its own seeded violation."
+      ],
+      "layers": [
+        {
+          "label": "pack",
+          "cmd": "bash packs/profile-next-supabase/verify-pack.sh",
+          "repair": "Every failure mode must block. Read the first mode that passed and should not have."
+        },
+        {
+          "label": "suite",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Read the first failing assertion only. Fix that one, re-run. Do not batch fixes."
+        }
+      ],
+      "evidence": [],
+      "notes": "check-arch ships four hygiene greps and zero boundary rules; the layering guidance lives as prose in packs/openai-advanced. Depends on F26."
+    },
+    {
+      "id": "F28",
+      "priority": 28,
+      "area": "profiles",
+      "behavior": "The next-supabase profile refuses a schema that leaks: a table in an exposed schema without row-level security, a policy that lets one tenant read another's rows, and a destructive migration without a ledger entry each block.",
+      "state": "not_started",
+      "budgets": {
+        "review_rounds_max": 2,
+        "repeated_blocker_max": 3,
+        "stop_condition": "Stop, record the blocker in PROGRESS.md, and escalate to a human. Do not retry, do not refactor around it, do not open a new approach."
+      },
+      "verification": [
+        "Test against a real local Postgres (supabase start or a container), not by parsing SQL.",
+        "Policies are tested as a second tenant trying to read the first one's rows (pgTAP or equivalent).",
+        "The migration route already exists in context-routes.json; this adds the check that reads the migration."
+      ],
+      "layers": [
+        {
+          "label": "pack",
+          "cmd": "bash packs/profile-next-supabase/verify-pack.sh",
+          "repair": "Every failure mode must block. Read the first mode that passed and should not have."
+        },
+        {
+          "label": "suite",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Read the first failing assertion only. Fix that one, re-run. Do not batch fixes."
+        }
+      ],
+      "evidence": [],
+      "notes": "Where the client data lives. Needs Docker in CI; if the runner cannot start Postgres the gate is TOOL_FAILURE, never a pass. Depends on F27."
+    },
+    {
+      "id": "F29",
+      "priority": 29,
+      "area": "profiles",
+      "behavior": "The python-data profile makes an analysis reproducible and its boundaries mechanical: lint and types, import contracts, a test stage judged by F25, seeded determinism for statistical engines, and a data contract at every ingestion point — each proven by a failure matrix.",
+      "state": "not_started",
+      "budgets": {
+        "review_rounds_max": 2,
+        "repeated_blocker_max": 3,
+        "stop_condition": "Stop, record the blocker in PROGRESS.md, and escalate to a human. Do not retry, do not refactor around it, do not open a new approach."
+      },
+      "verification": [
+        "ruff + a type checker, import-linter contracts, pip-audit.",
+        "Determinism: the same seed and the same input produce byte-identical output, asserted twice in one run.",
+        "A data contract (pandera or equivalent) rejects a frame with a missing or retyped column."
+      ],
+      "layers": [
+        {
+          "label": "pack",
+          "cmd": "bash packs/profile-python-data/verify-pack.sh",
+          "repair": "Every failure mode must block. Read the first mode that passed and should not have."
+        },
+        {
+          "label": "suite",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Read the first failing assertion only. Fix that one, re-run. Do not batch fixes."
+        }
+      ],
+      "evidence": [],
+      "notes": "Covers the statistical engines and survey pipelines. Depends on F26."
+    },
+    {
+      "id": "F30",
+      "priority": 30,
+      "area": "adoption",
+      "behavior": "An optional Claude Code adapter pack gives a personal repository the protection GitHub reserves for organizations: the agent cannot edit the required workflow, the verifiers, the gate registry or .harness/, cannot merge with --admin or force-push, and the pack's matrix proves each denial.",
+      "state": "not_started",
+      "budgets": {
+        "review_rounds_max": 2,
+        "repeated_blocker_max": 3,
+        "stop_condition": "Stop, record the blocker in PROGRESS.md, and escalate to a human. Do not retry, do not refactor around it, do not open a new approach."
+      },
+      "verification": [
+        "settings.json deny rules plus a PreToolUse hook; the core stays agent-agnostic — this is a pack.",
+        "Separately, as a proposed Agent Note and a canary: does `pull_request_target` (workflow definition taken from the base) close workflow tampering without push rules? Unverified — test it, including a second workflow reusing the check name.",
+        "State plainly what it does not cover: a human, or another agent, outside Claude Code."
+      ],
+      "layers": [
+        {
+          "label": "pack",
+          "cmd": "bash packs/agent-claude-code/verify-pack.sh",
+          "repair": "Every denial must be observed. Read the first action that went through and should not have."
+        },
+        {
+          "label": "suite",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Read the first failing assertion only. Fix that one, re-run. Do not batch fixes."
+        }
+      ],
+      "evidence": [],
+      "notes": "README lists workflow editing on personal repos as a known limit whose only defence is manual review. This is a compensating control, not a guarantee, and must be reported as such by harness-status."
     }
   ]
 }

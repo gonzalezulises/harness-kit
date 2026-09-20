@@ -6,6 +6,36 @@ con qué versión se construyó, así que `harness-status.sh` puede decir cuál 
 
 ---
 
+## [2.3.0](https://github.com/gonzalezulises/harness-kit/compare/v2.2.5...v2.3.0) (2026-09-20)
+
+
+### Añadido
+
+* **gates:** an oracle must carry proof it can fail ([#32](https://github.com/gonzalezulises/harness-kit/issues/32)) ([88ea1e6](https://github.com/gonzalezulises/harness-kit/commit/88ea1e6c45faf5b5db9e29935eef6e25e50f633b))
+* **gates:** only PASS satisfies a gate, and governed changes cite what governs them ([#31](https://github.com/gonzalezulises/harness-kit/issues/31)) ([b626c84](https://github.com/gonzalezulises/harness-kit/commit/b626c8497ef1c19209edc9e92dfbbce4aa107411))
+* **gates:** verify the delivery document, not only the code ([#30](https://github.com/gonzalezulises/harness-kit/issues/30)) ([db5d04b](https://github.com/gonzalezulises/harness-kit/commit/db5d04b5ef806322e546ea342deb4ccb7ae49244))
+
+
+### Arreglado
+
+* **contract:** let the F15 probe parse under bash 3.2 ([1881061](https://github.com/gonzalezulises/harness-kit/commit/1881061c9750c7ab743f25902054f4c13a4b6e64))
+* **gates:** register version-sync as optional so installations stop blocking ([#38](https://github.com/gonzalezulises/harness-kit/issues/38)) ([9f4e047](https://github.com/gonzalezulises/harness-kit/commit/9f4e0471c5bffcb841f463f0ec055ce40abb7766))
+* **load-testing:** pass workflow inputs through env, not into the script ([7f03311](https://github.com/gonzalezulises/harness-kit/commit/7f03311be6eea386daa333da6305e50eb7a409b4))
+* **sentry:** close three holes the pack opened in every repo it touched ([aa243ad](https://github.com/gonzalezulises/harness-kit/commit/aa243add87e8b80b4d2113bfdbaf7ecc95822099))
+* **sentry:** create the token's absence in the canary case, not assume it ([04f65fa](https://github.com/gonzalezulises/harness-kit/commit/04f65faa324e0ded28d8368829989da7db487b87))
+* **sentry:** let scrubEvent accept Sentry's own event types ([0e7e79e](https://github.com/gonzalezulises/harness-kit/commit/0e7e79e55d2e81fc097ade924bdf7eb3e9d5802d))
+* una puerta declarada tiene que poder fallar ([#26](https://github.com/gonzalezulises/harness-kit/issues/26)) ([32f8cb5](https://github.com/gonzalezulises/harness-kit/commit/32f8cb5829616ee53d50c6d5a750c2a1bec174d7))
+
+
+### Documentación
+
+* **progress:** F15 passing, and what the installed repos still carry ([1721b9a](https://github.com/gonzalezulises/harness-kit/commit/1721b9aaa0cf7e32a87ea6d798d1ec76b3bfef2d))
+* **progress:** record PR [#40](https://github.com/gonzalezulises/harness-kit/issues/40), its CI run, and the repo that carried the same hole ([0a7a5fa](https://github.com/gonzalezulises/harness-kit/commit/0a7a5fa9025175d48bee2509b27fd24f806f211d))
+* **progress:** record the F15-F30 backlog and that F15 is next ([b69286e](https://github.com/gonzalezulises/harness-kit/commit/b69286e619ca43f76c28de8f71975fc7f6a0c1be))
+* **progress:** record the verification run without env -u ([fdd0994](https://github.com/gonzalezulises/harness-kit/commit/fdd0994bd004d237daee926c5dfd7197735f5cf8))
+* **sentry:** declare the scrubber's route-hint variables ([172cb75](https://github.com/gonzalezulises/harness-kit/commit/172cb750f57b84c752da44559a262084a8613154))
+* **sentry:** put the enabled comment back above enabled ([8b4cb46](https://github.com/gonzalezulises/harness-kit/commit/8b4cb46806549b9b8a67da04315b53a5f6888b2c))
+
 ## [2.2.5](https://github.com/gonzalezulises/harness-kit/compare/v2.2.4...v2.2.5) (2026-08-31)
 
 

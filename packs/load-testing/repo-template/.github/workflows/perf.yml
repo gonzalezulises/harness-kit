@@ -56,11 +56,17 @@ jobs:
         id: target
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Por env, nunca interpolado en el script: GitHub sustituye ${{ }}
+          # antes de que bash lea la línea, así que las comillas no son un
+          # límite y quien pueda lanzar el workflow inyecta comandos en un job
+          # que tiene GH_TOKEN.
+          TARGET_INPUT: ${{ github.event.inputs.target }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          if [ -n "${{ github.event.inputs.target }}" ]; then
-            echo "url=${{ github.event.inputs.target }}" >> "$GITHUB_OUTPUT"
+          if [ -n "$TARGET_INPUT" ]; then
+            echo "url=${TARGET_INPUT}" >> "$GITHUB_OUTPUT"
           else
-            url="$(bash bin/perf-resolve-target "${{ github.event.pull_request.head.sha }}" "$GITHUB_REPOSITORY")"
+            url="$(bash bin/perf-resolve-target "$HEAD_SHA" "$GITHUB_REPOSITORY")"
             echo "url=${url}" >> "$GITHUB_OUTPUT"
           fi
 
