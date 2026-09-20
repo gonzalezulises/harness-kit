@@ -6,6 +6,13 @@ con qué versión se construyó, así que `harness-status.sh` puede decir cuál 
 
 ---
 
+## [2.3.1](https://github.com/gonzalezulises/harness-kit/compare/v2.3.0...v2.3.1) (2026-09-20)
+
+
+### Documentación
+
+* **progress:** F15 is on main, 2.3.0 is published, no PR is open ([9dd2f05](https://github.com/gonzalezulises/harness-kit/commit/9dd2f05710caa12a431e5b877ebe55b73af5f77f))
+
 ## [2.3.0](https://github.com/gonzalezulises/harness-kit/compare/v2.2.5...v2.3.0) (2026-09-20)
 
 
