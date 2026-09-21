@@ -23,6 +23,18 @@ which is the only thing that proves that bump.
 
 **Next: F16.** No feature is active.
 
+- **Three rituals this session skipped, written down rather than faked.** No session trace was
+  opened: `.harness/traces/traces.jsonl` does not exist and never has, so every session so far has
+  been reconstructed from memory — which is the failure mode `session-trace.sh` exists to remove.
+  No sprint contract was filled before F15, and the session was not scored against
+  `templates/evaluator-rubric.md`. A trace cannot be backfilled honestly after the fact; F16 should
+  start with `make session-start` or the ritual should be dropped from `AGENTS.md` for being
+  decorative. `docs/quality-document.md` was updated today for the first time since 2026-08-05,
+  with real rows.
+- **release-please opens a PR for a `docs:` commit and not for `chore(deps):`.** #28 and #29 landed
+  without one; the `docs(progress)` commit produced #42, released as `v2.3.1`. So "no PR is open"
+  is a state that ends the moment documentation is committed — releasing is what restores it.
+
 - **The F15 probe had never run on this Mac.** bash 3.2 cannot parse `"${{"` in a heredoc inside
   `$( )`, so it died before inspecting anything. Fixed in a separate commit with the owner's
   authorisation — see `DECISIONS.md` 2026-09-19. Before F22 wires probes into `make check`, run
