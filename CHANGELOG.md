@@ -6,6 +6,13 @@ con qué versión se construyó, así que `harness-status.sh` puede decir cuál 
 
 ---
 
+## [2.3.2](https://github.com/gonzalezulises/harness-kit/compare/v2.3.1...v2.3.2) (2026-09-21)
+
+
+### Documentación
+
+* **quality:** grade the modules this session touched, and name what it skipped ([6746769](https://github.com/gonzalezulises/harness-kit/commit/6746769393640e71d68f835bf7390f828b60ddd1))
+
 ## [2.3.1](https://github.com/gonzalezulises/harness-kit/compare/v2.3.0...v2.3.1) (2026-09-20)
 
 
