@@ -215,7 +215,6 @@ templates/full/           Makefile, compuertas, workflow, payloads de ruleset
 packs/gherkin/            especificación ejecutable + matriz de modos de falla
 packs/load-testing/       compuerta de rendimiento k6
 packs/sentry/             compuerta de observabilidad: prueba que los errores llegan
-packs/openai-advanced/    estructura pesada para bases de código grandes
 docs/evidence/            evidencia de que la compuerta bloquea de verdad
 tests/run-tests.sh        verificación end-to-end del kit
 ```
@@ -233,7 +232,7 @@ necesita configuración del repositorio para funcionar:
 
 # Los demás — copiar la plantilla y verificar que la compuerta bloquea
 KIT=~/GitHub/harness-kit
-cp -R "$KIT"/packs/sentry/repo-template/. .      # o load-testing, u openai-advanced
+cp -R "$KIT"/packs/sentry/repo-template/. .      # o load-testing
 bash "$KIT"/packs/sentry/verify-pack.sh          # cada modo de falla debe bloquear
 ```
 
