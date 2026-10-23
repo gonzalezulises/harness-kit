@@ -1016,6 +1016,38 @@
         "all layers passed — commit 1584e89, 2026-10-23T23:38:12Z"
       ],
       "notes": "Born from the 2026-10-23 measurement with pr_cost.py over the last 30 merged PRs of 11 repos."
+    },
+    {
+      "id": "F32",
+      "priority": 32,
+      "area": "adoption",
+      "behavior": "harness-wiring checks, read-only and against the live systems, that a repo is wired to what it depends on as the right account — identity, Dependabot, a required check, CI and lint, deploy wiring, Supabase signup over USING true, Sentry, production env per integration — and names the failing object and its fix.",
+      "state": "passing",
+      "budgets": {
+        "review_rounds_max": 2,
+        "repeated_blocker_max": 3,
+        "stop_condition": "Stop, record the blocker in PROGRESS.md, and escalate to a human. Do not retry, do not refactor around it, do not open a new approach."
+      },
+      "verification": [
+        "The four failure classes of 2026-10-23 each come back NOT_WIRED and named, offline, from stubbed tools.",
+        "Control: a fully wired fixture does not fail, and open signup with no USING true policy is not a failure."
+      ],
+      "layers": [
+        {
+          "label": "contract",
+          "cmd": "bash tests/contract/F32-wiring-names-what-is-not-connected.sh",
+          "repair": "Read the first failing line only. A case that passes should have been named; a control that fails means a false alarm."
+        },
+        {
+          "label": "suite",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Read the first failing assertion only. Fix that one, re-run. Do not batch fixes."
+        }
+      ],
+      "evidence": [
+        "all layers passed — commit 786e983, 2026-10-23T23:52:23Z"
+      ],
+      "notes": "Run live on 2026-10-23 against casabat-comparador-cliente, mallol-bim-control, mallol-comfy-connector and Aurobalance; it found real gaps (no required check, no Sentry) and was corrected twice where it read the stale working tree or double-counted a Vercel link."
     }
   ]
 }

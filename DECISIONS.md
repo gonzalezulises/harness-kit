@@ -9,6 +9,18 @@ already says.
 
 ---
 
+## 2026-10-23 — harness-wiring checks what lives outside the repo
+
+**Context.** Every failure that cost real time on 2026-10-23 was outside the repo: Dependabot off,
+sites that did not deploy themselves, open Supabase signup over `USING true` policies, a CLI user
+that could not see the repo. No gate here could see any of it.
+
+**Decision.** Add `bin/harness-wiring.sh`, read-only, against the live systems, with account
+profiles outside the kit. Detail, alternatives and what was given up:
+[Agent Note](.agents/notes/implemented/feature/2026-10-23-harness-wiring.md).
+
+---
+
 ## 2026-10-23 — lite is the default level; the feature ceremony becomes opt-in
 
 **Context.** Measured over the last 30 merged PRs of 11 repos: CI took 1–6 minutes, but 11–35 %

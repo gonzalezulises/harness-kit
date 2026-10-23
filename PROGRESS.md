@@ -3,7 +3,17 @@
 The durable memory of this repository. Every session reads this first and writes to it
 last. If it disagrees with your recollection, this file wins.
 
-## Current state — 2026-10-23 (F31: lite becomes the default level)
+## Current state — 2026-10-23 (F32: harness-wiring)
+
+F31 is on `main` (PR #48). F32 adds `bin/harness-wiring.sh`. Its contract reproduces the four
+failure classes of 2026-10-23 offline and keeps two controls. It was run live on four real repos,
+and that run corrected it twice: it read the stale working tree instead of `origin/<default>`,
+and it counted a Vercel link twice.
+
+**Next:** move the governed repos onto the current kit, and `lite` where the ceremony is not
+earning its cost. Hook `--quick` into session start.
+
+## State — 2026-10-23 (F31: lite becomes the default level)
 
 F31 is `passing` on its branch, promoted by `verify-feature.sh` on the first round: contract
 23/0, suite 274/0. `make check` exits 0. Why it exists, with the measurement behind it, is in
