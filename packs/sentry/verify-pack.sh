@@ -635,7 +635,18 @@ case "$OUT" in *"HTTP 403 en projects/acme/web/issues/"*) ok "sentry-to-issues n
   *) bad "sentry-to-issues does not name HTTP 403: $OUT" ;; esac
 case "$OUT" in *"$SECRET_TOKEN"*) bad "sentry-to-issues printed the auth token" ;; *) ok "sentry-to-issues never prints the token" ;; esac
 
-# ── 88-89. La canary no entra a triage ni al backlog ────────────────────────
+# ── 88. El preflight del workflow recibe el environment que exige ─────────
+# `sentry-check preflight` falla sin SENTRY_ENVIRONMENT, y el paso no se lo
+# pasaba: todo repo que activaba el pack nacía con el preflight en rojo.
+PREFLIGHT_STEP="$(sed -n '/name: Preflight/,/sentry-check preflight/p' \
+  "$PACK_DIR/repo-template/.github/workflows/observability.yml")"
+if printf '%s' "$PREFLIGHT_STEP" | grep -q 'SENTRY_ENVIRONMENT:'; then
+  ok "the workflow's preflight step declares SENTRY_ENVIRONMENT"
+else
+  bad "the workflow's preflight step omits SENTRY_ENVIRONMENT — preflight fails on every repo"
+fi
+
+# ── 89-90. La canary no entra a triage ni al backlog ────────────────────────
 for f in sentry-check sentry-to-issues; do
   if grep -q 'is:unresolved%20!message:harness-canary\*' "$PACK_DIR/repo-template/bin/$f"; then
     ok "$f excludes the canary's issue from the unresolved query"
