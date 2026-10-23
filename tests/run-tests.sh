@@ -364,7 +364,7 @@ echo ""
 # own, and its repair text told the user to fix something already correct.
 # A repo with complete budgets and no budget_defaults could never pass.
 AUD="$WORK/audit-counters"; make_fixture "$AUD"
-bash "$KIT_DIR/bin/harness-activate.sh" --target "$AUD" --yes >/dev/null 2>&1
+bash "$KIT_DIR/bin/harness-activate.sh" --target "$AUD" --level full --yes >/dev/null 2>&1
 python3 - "$AUD/feature_list.json" <<'PYEOF'
 import json, sys
 p = sys.argv[1]

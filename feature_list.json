@@ -1,6 +1,6 @@
 {
   "project": "harness-kit",
-  "last_updated": "2026-09-19",
+  "last_updated": "2026-10-23",
   "rules": {
     "single_active_feature": true,
     "passing_requires_evidence": true,
@@ -984,6 +984,38 @@
       ],
       "evidence": [],
       "notes": "README lists workflow editing on personal repos as a known limit whose only defence is manual review. This is a compensating control, not a guarantee, and must be reported as such by harness-status."
+    },
+    {
+      "id": "F31",
+      "priority": 31,
+      "area": "adoption",
+      "behavior": "lite is the default level of harness-init and harness-activate: it installs the merge gate (Required quality workflow, both rulesets, verify-claims, verify-decisions, Makefile check) and no feature ceremony, and harness-activate also turns Dependabot on.",
+      "state": "passing",
+      "budgets": {
+        "review_rounds_max": 2,
+        "repeated_blocker_max": 3,
+        "stop_condition": "Stop, record the blocker in PROGRESS.md, and escalate to a human. Do not retry, do not refactor around it, do not open a new approach."
+      },
+      "verification": [
+        "A fresh lite scaffold has every gate piece and none of the ceremony pieces, and is green straight away.",
+        "Control: lite still rejects an edited earlier decision."
+      ],
+      "layers": [
+        {
+          "label": "contract",
+          "cmd": "bash tests/contract/F31-lite-is-the-default-and-still-gated.sh",
+          "repair": "Read the first failing line only. A missing gate piece is a regression; a present ceremony piece means lite grew back."
+        },
+        {
+          "label": "suite",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Read the first failing assertion only. Fix that one, re-run. Do not batch fixes."
+        }
+      ],
+      "evidence": [
+        "all layers passed — commit 1584e89, 2026-10-23T23:38:12Z"
+      ],
+      "notes": "Born from the 2026-10-23 measurement with pr_cost.py over the last 30 merged PRs of 11 repos."
     }
   ]
 }

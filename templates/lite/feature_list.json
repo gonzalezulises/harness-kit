@@ -1,0 +1,7 @@
+{
+  "project": "{{PROJECT_NAME}}",
+  "last_updated": "{{DATE}}",
+  "level": "lite",
+  "note": "Empty on purpose: the lite harness carries no feature ceremony. verify-claims reports NO_CLAIMS. Re-run harness-init --level full to adopt WIP=1, budgets and evidence.",
+  "features": []
+}

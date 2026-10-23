@@ -2,7 +2,10 @@
 # harness-activate.sh — one command between "new repo" and "governed repo".
 #
 # Usage:
-#   bin/harness-activate.sh [--target DIR] [--with gherkin] [--yes] [--dry-run]
+#   bin/harness-activate.sh [--target DIR] [--level lite|minimal|full] [--with gherkin] [--yes] [--dry-run]
+#
+# --level defaults to lite: the merge gate, the rulesets and Dependabot, with no feature
+# ceremony. Use full for long-lived, multi-session projects that need WIP=1 and budgets.
 #
 # Scaffolding, wiring the remote, and installing rulesets were eight manual steps.
 # The step people skipped was replacing the placeholder features, and a harness
@@ -18,6 +21,7 @@ set -uo pipefail
 KIT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 TARGET="."
 WITH_GHERKIN=0
+LEVEL="lite"
 ASSUME_YES=0
 DRYRUN=0
 
@@ -38,6 +42,7 @@ while [[ $# -gt 0 ]]; do
            exit 64 ;;
       esac
       shift 2 ;;
+    --level)   LEVEL="${2:-}"; shift 2 ;;
     --yes|-y)  ASSUME_YES=1; shift ;;
     --dry-run) DRYRUN=1; shift ;;
     -h|--help) sed -n '2,18p' "$0"; exit 0 ;;
@@ -46,6 +51,8 @@ while [[ $# -gt 0 ]]; do
 done
 
 TARGET="$(cd "$TARGET" 2>/dev/null && pwd)" || { echo "harness-activate: no such directory" >&2; exit 64; }
+[[ "$LEVEL" == "lite" || "$LEVEL" == "minimal" || "$LEVEL" == "full" ]] || {
+  echo "harness-activate: --level must be lite, minimal or full" >&2; exit 64; }
 
 if [[ ! -t 1 ]] || [[ -n "${NO_COLOR:-}" ]]; then
   RED=""; GREEN=""; YELLOW=""; BOLD=""; RESET=""
@@ -91,10 +98,16 @@ if [[ -n "$SLUG" ]]; then
 else
   echo "  Remoto:       ninguno (sólo control local)"
 fi
+echo "  Nivel:        $LEVEL"
 [[ $WITH_GHERKIN -eq 1 ]] && echo "  Extra:        pack de Gherkin (specs ejecutables)"
 echo ""
-echo "Instalaré el contrato para agentes, estado durable, presupuestos anti-loop,"
-echo "la compuerta local y el control de GitHub cuando el plan lo permita."
+if [[ "$LEVEL" == "lite" ]]; then
+  echo "Instalaré el contrato para agentes, la compuerta local, el control de GitHub"
+  echo "cuando el plan lo permita y Dependabot. Sin ceremonia de features."
+else
+  echo "Instalaré el contrato para agentes, estado durable, presupuestos anti-loop,"
+  echo "la compuerta local y el control de GitHub cuando el plan lo permita."
+fi
 echo "No se sobrescribe ningún archivo existente."
 
 if [[ $DRYRUN -eq 1 ]]; then
@@ -117,7 +130,7 @@ echo ""
 echo "${BOLD}────────────────────────────────────────${RESET}"
 
 # ── 1. The harness itself ────────────────────────────────────────────────────
-if ! bash "$KIT_DIR/bin/harness-init.sh" --target "$TARGET" --level full >/dev/null 2>&1; then
+if ! bash "$KIT_DIR/bin/harness-init.sh" --target "$TARGET" --level "$LEVEL" >/dev/null 2>&1; then
   echo "${RED}BLOCKED_TOOL${RESET} — el scaffold falló. Revisa permisos de escritura en $TARGET."
   exit 1
 fi
@@ -149,6 +162,15 @@ if [[ -n "$SLUG" ]] && command -v gh >/dev/null 2>&1; then
   else
     echo "  ${YELLOW}--${RESET}   workflow NO protegido (los push rules requieren repo de organización)"
   fi
+  # Dependabot: alerts plus security-update PRs. Read back; a PUT that answered is not proof.
+  gh api -X PUT "repos/$SLUG/vulnerability-alerts" >/dev/null 2>&1
+  gh api -X PUT "repos/$SLUG/automated-security-fixes" >/dev/null 2>&1
+  if gh api "repos/$SLUG/vulnerability-alerts" >/dev/null 2>&1 &&
+     [[ "$(gh api "repos/$SLUG/automated-security-fixes" --jq .enabled 2>/dev/null)" == "true" ]]; then
+    echo "  ${GREEN}ok${RESET}   Dependabot: alertas y actualizaciones de seguridad activas"
+  else
+    echo "  ${YELLOW}--${RESET}   Dependabot NO quedó activo en $SLUG (¿falta admin?)"
+  fi
 elif [[ -n "$SLUG" ]]; then
   echo "  ${YELLOW}--${RESET}   gh no está disponible: no se instalaron reglas en $SLUG"
 else
@@ -162,8 +184,12 @@ NO_COLOR="${NO_COLOR:-}" bash "$KIT_DIR/bin/harness-status.sh" --target "$TARGET
 echo ""
 echo "${BOLD}Lo que queda en tus manos${RESET}"
 echo "  1. AGENTS.md — reemplaza la línea de propósito por lo que hace este proyecto."
-echo "  2. feature_list.json — reemplaza las features de ejemplo por el backlog real."
-echo "     Un harness con features de ejemplo es decoración: este es el paso que"
-echo "     decide si el sistema sirve o sólo aparenta."
-echo "  3. Confirma que la verificación es correcta: $VERIFY"
+if [[ "$LEVEL" == "lite" ]]; then
+  echo "  2. Confirma que la verificación es correcta: $VERIFY"
+else
+  echo "  2. feature_list.json — reemplaza las features de ejemplo por el backlog real."
+  echo "     Un harness con features de ejemplo es decoración: este es el paso que"
+  echo "     decide si el sistema sirve o sólo aparenta."
+  echo "  3. Confirma que la verificación es correcta: $VERIFY"
+fi
 exit 0
