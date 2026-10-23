@@ -6,6 +6,19 @@ con qué versión se construyó, así que `harness-status.sh` puede decir cuál 
 
 ---
 
+## [2.3.3](https://github.com/gonzalezulises/harness-kit/compare/v2.3.2...v2.3.3) (2026-10-23)
+
+
+### Arreglado
+
+* **sentry:** pass SENTRY_ENVIRONMENT to the template's preflight step ([07bcce1](https://github.com/gonzalezulises/harness-kit/commit/07bcce13600e55003229a6639a3543f36545bc83))
+* **sentry:** surface the HTTP status of API reads and exclude the canary ([6e6d92d](https://github.com/gonzalezulises/harness-kit/commit/6e6d92d2e6a97d25a92a7b7af0c374c82a007b34))
+
+
+### Documentación
+
+* **sentry:** record why API reads now surface their HTTP status ([8152486](https://github.com/gonzalezulises/harness-kit/commit/8152486f5177f56eb5c8cefa45ed7386ba64fb49))
+
 ## [2.3.2](https://github.com/gonzalezulises/harness-kit/compare/v2.3.1...v2.3.2) (2026-09-21)
 
 
