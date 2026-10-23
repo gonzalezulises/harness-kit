@@ -31,6 +31,11 @@ jobs:
         env:
           NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           SENTRY_SAMPLE_RATE: ${{ vars.SENTRY_SAMPLE_RATE || '1' }}
+          # The preflight runs outside the app, so it does not inherit the
+          # deployment's env: without the environment it fails on every repo.
+          SENTRY_ENVIRONMENT: ${{ vars.SENTRY_ENVIRONMENT || 'production' }}
+          # No default on purpose: tracing off passes only when a repo says so.
+          SENTRY_TRACING_ACKNOWLEDGED: ${{ vars.SENTRY_TRACING_ACKNOWLEDGED }}
         run: bash bin/sentry-check preflight
 
       # The only step that proves the pipeline end to end. It sends a marked
