@@ -25,7 +25,7 @@ jobs:
        github.event.deployment.environment == 'production')
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Preflight — configurations the SDK accepts and then ignores
         env:
@@ -103,7 +103,7 @@ jobs:
       contents: read
       issues: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Open a GitHub issue for each unresolved Sentry issue
         env:
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
