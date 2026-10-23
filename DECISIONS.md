@@ -9,6 +9,47 @@ already says.
 
 ---
 
+## 2026-10-23 — lite is the default level; the feature ceremony becomes opt-in
+
+**Context.** The owner asked whether the harness had turned bureaucratic. `pr_cost.py` measured
+the last 30 merged PRs of 11 repos. CI was not the cost: the median CI run took 1–6 minutes and PRs
+merged within minutes. The cost was bookkeeping. In `full` repos, 11–35 % of the files a PR touched
+were process files (`feature_list.json`, `PROGRESS.md`, session files, evidence), against 0 % in
+ungoverned repos. Kit versions had also drifted: four versions across nine repos. The root:
+`harness-activate`, the entry point every new client repo goes through, always installed
+`--level full`, and `minimal` already carried the whole ceremony. The gate that actually blocks a
+bad merge only came with `full`. In the same session, the failures that cost real time were outside
+the repo (Dependabot off in 235 repos, four sites that did not deploy themselves, open Supabase
+signup over `USING true` policies). No gate in the harness caught any of them.
+
+**Decision.** Add `--level lite` and make it the default of `harness-init` and `harness-activate`.
+- **What lite installs:** the pieces that catch real failures. That is the Required quality
+  workflow, both rulesets, `verify-claims`, `verify-decisions`, `Makefile check` and a short
+  `AGENTS.md`. `harness-activate` also turns Dependabot on through the API and reads it back.
+- **What lite leaves out:** `PROGRESS.md`, session files, `init.sh` and the feature state machine.
+  `feature_list.json` ships empty, so `verify-claims` reports `NO_CLAIMS` and keeps its
+  deletion guard (exit 66).
+- **Fast lane:** `minimal` and `full` gain a fast lane. Dependency, config, CI and docs changes,
+  and small changes with no new behaviour, skip the ceremony but not `make check`.
+- **Levels are a choice:** `minimal` and `full` are unchanged and remain for long-lived,
+  multi-session work.
+
+**Alternatives rejected.**
+- *Strip the ceremony out of `full`.* Long-lived projects, this kit included, do benefit from
+  WIP=1 and budgets. The problem was making it the default, not its existence.
+- *A separate lite workflow.* A second required workflow is a second thing to protect.
+  Lite reuses the exact `full` workflow and passes it trivially with an empty feature list.
+
+**Consequences.**
+- A new repo is born gated, at about 10 files instead of about 40.
+- Existing governed repos keep their level until someone re-runs init. Lite is not imposed on
+  them.
+- The harness gets a budget of its own, measured monthly with `pr_cost.py`: median CI ≤ 5 min,
+  ≤ 10 % of a PR's files in process files, and zero manual steps for non-destructive changes.
+  Over budget means prune again.
+
+---
+
 ## 2026-09-19 — The F15 probe is fixed for bash 3.2; its contract is unchanged
 
 **Context.** `tests/contract/F15-packs-expose-nothing.sh` was written on Linux and watched failing

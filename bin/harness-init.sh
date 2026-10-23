@@ -2,9 +2,13 @@
 # harness-init.sh — scaffold an agent harness into a repository.
 #
 # Usage:
-#   harness-init.sh --target /path/to/repo [--level minimal|full] [--force] [--dry-run]
+#   harness-init.sh --target /path/to/repo [--level lite|minimal|full] [--force] [--dry-run]
 #
 # Levels:
+#   lite     (default) the merge gate and nothing else: AGENTS.md, CLAUDE.md pointer,
+#            DECISIONS.md, Makefile `check`, the Required quality workflow, both rulesets,
+#            verify-claims / verify-decisions and an empty feature_list.json. No feature
+#            ceremony, no PROGRESS or session files: for repos where speed matters most.
 #   minimal  AGENTS.md, CLAUDE.md pointer, init.sh, PROGRESS.md, feature_list.json,
 #            clean-state-checklist.md, session-handoff.md, DECISIONS.md
 #   full     everything above, plus Makefile, verify-feature / check-arch /
@@ -18,7 +22,7 @@ set -euo pipefail
 
 KIT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 TARGET=""
-LEVEL="minimal"
+LEVEL="lite"
 FORCE=0
 DRYRUN=0
 PROJECT_PURPOSE=""
@@ -37,8 +41,8 @@ done
 
 [[ -n "$TARGET" ]] || { echo "harness-init: --target is required" >&2; exit 64; }
 [[ -d "$TARGET" ]] || { echo "harness-init: not a directory: $TARGET" >&2; exit 66; }
-[[ "$LEVEL" == "minimal" || "$LEVEL" == "full" ]] || {
-  echo "harness-init: --level must be minimal or full" >&2; exit 64; }
+[[ "$LEVEL" == "lite" || "$LEVEL" == "minimal" || "$LEVEL" == "full" ]] || {
+  echo "harness-init: --level must be lite, minimal or full" >&2; exit 64; }
 
 TARGET="$(cd "$TARGET" && pwd)"
 PROJECT_NAME="$(basename "$TARGET")"
@@ -151,6 +155,7 @@ PYEOF
 
 M="$KIT_DIR/templates/minimal"
 F="$KIT_DIR/templates/full"
+L="$KIT_DIR/templates/lite"
 
 echo "Harness init"
 echo "  target: $TARGET"
@@ -158,6 +163,39 @@ echo "  level:  $LEVEL"
 echo "  verify: $VERIFY_CMD"
 [[ $DRYRUN -eq 1 ]] && echo "  (dry run — nothing will be written)"
 echo ""
+
+# ── Lite layer: the merge gate, nothing else ────────────────────────────────
+if [[ "$LEVEL" == "lite" ]]; then
+  render "$L/AGENTS.md"                  "$TARGET/AGENTS.md"
+  render "$M/CLAUDE.md"                  "$TARGET/CLAUDE.md"
+  render "$M/DECISIONS.md"               "$TARGET/DECISIONS.md"
+  render "$L/feature_list.json"          "$TARGET/feature_list.json"
+  render "$L/Makefile"                   "$TARGET/Makefile"
+  render "$F/scripts/verify-claims.sh"    "$TARGET/scripts/verify-claims.sh"
+  render "$F/scripts/verify-decisions.sh" "$TARGET/scripts/verify-decisions.sh"
+  render "$F/.github/workflows/required-quality.yml" \
+                                          "$TARGET/.github/workflows/required-quality.yml"
+  render "$F/.github/rulesets/required-quality-check.json" \
+                                          "$TARGET/.github/rulesets/required-quality-check.json"
+  render "$F/.github/rulesets/required-quality-integrity.json" \
+                                          "$TARGET/.github/rulesets/required-quality-integrity.json"
+  if [[ $DRYRUN -eq 0 ]]; then
+    mkdir -p "$TARGET/.harness"
+    tr -d '[:space:]' < "$KIT_DIR/VERSION" > "$TARGET/.harness/kit-version" 2>/dev/null || true
+    printf '\n' >> "$TARGET/.harness/kit-version"
+    printf 'lite\n' > "$TARGET/.harness/level"
+    chmod +x "$TARGET"/scripts/*.sh 2>/dev/null || true
+    echo ""
+    echo "Done (lite). Next steps:"
+    echo "  1. Edit AGENTS.md — replace the purpose line with what this project actually does."
+    echo "  2. Confirm the verification command is right: $VERIFY_CMD"
+    echo "  3. Protect the merge:  $KIT_DIR/bin/harness-protect.sh --target $TARGET"
+  else
+    echo ""
+    echo "Dry run complete. Re-run without --dry-run to write."
+  fi
+  exit 0
+fi
 
 # ── Minimal layer ────────────────────────────────────────────────────────────
 if [[ "$LEVEL" == "minimal" ]]; then

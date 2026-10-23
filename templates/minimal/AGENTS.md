@@ -32,6 +32,11 @@ commit and at every clock-out.
 
 ## Working rules
 
+- **Fast lane** — a change that only touches dependencies, configuration, CI, docs, or
+  fewer than ~50 lines of code with no new behavior skips the feature ceremony: no
+  feature to activate, no `PROGRESS.md` entry, no session files. It still needs
+  `{{VERIFY_CMD}}` green and a pull request. why: the ceremony exists to keep multi-session
+  work honest; spent on a version bump it only slows the fix that matters.
 - **WIP=1** — only one feature may be `active` at a time. Finish it, verify it, then
   activate the next. why: parallel half-finished features leave no verifiable state.
 - **Evidence before done** — never mark a feature `passing` because code was written.

@@ -173,6 +173,13 @@ es mejor que aparentar protección total o negarse a funcionar.
 
 ## Niveles y auditoría
 
+**`--level lite`** (predeterminado en `harness-init` y `harness-activate`) — la compuerta de
+merge y nada más: contrato corto, `Makefile check`, el workflow `Required quality` con sus dos
+rulesets, `verify-claims`, `verify-decisions`, un `feature_list.json` vacío y, con
+`harness-activate`, Dependabot encendido. Sin ceremonia de features ni archivos de sesión.
+Es el nivel para la mayoría de los repos: medido el 2026-10-23, en los repos `full` entre el
+11 y el 35 % de los archivos de cada PR eran papeleo del proceso.
+
 **`--level minimal`** — 9 archivos, sin suponer sistema de build: contrato de operación,
 ruta de arranque, estado de features, memoria de progreso y checklist de cierre.
 
@@ -204,7 +211,7 @@ bin/harness-activate.sh   activación en un comando (detecta, pregunta una vez, 
 bin/harness-status.sh     qué está realmente protegido, ahora mismo
 bin/harness-audit.sh      auditor de 84 checks, sin dependencias
 bin/harness-protect.sh    instala los rulesets y los verifica por GET
-bin/harness-init.sh       scaffolder (--level minimal|full)
+bin/harness-init.sh       scaffolder (--level lite|minimal|full)
 scripts/verify-feature.sh la única ruta a passing; hace cumplir los presupuestos
 scripts/verify-claims.sh  re-verifica todo passing declarado
 scripts/verify-version-sync.sh  las cuatro copias de la versión deben coincidir

@@ -3,7 +3,18 @@
 The durable memory of this repository. Every session reads this first and writes to it
 last. If it disagrees with your recollection, this file wins.
 
-## Current state — 2026-09-20 (F15 merged, 2.3.0 released, no open PRs)
+## Current state — 2026-10-23 (F31: lite becomes the default level)
+
+F31 is `passing` on its branch, promoted by `verify-feature.sh` on the first round: contract
+23/0, suite 274/0. `make check` exits 0. Why it exists, with the measurement behind it, is in
+`DECISIONS.md` under 2026-10-23. In short, the default scaffold was `full`, and the cost of the
+harness was paperwork, not CI.
+
+**Next:** `bin/harness-wiring.sh`. The read-only checklist of integrations and account
+identity (Dependabot, deploy wiring, Supabase signup against `USING true`, Sentry, env vars per
+integration) is the failure class that cost real time on 2026-10-23, and no gate here catches it.
+
+## State — 2026-09-20 (F15 merged, 2.3.0 released, no open PRs)
 
 F15 is `passing` and on `main`: PR #40 rebase-merged, VCR 15/15. It was promoted by
 `verify-feature.sh` on the first round — contract 6/0, Sentry pack 75/0, load-testing pack 57/0,
