@@ -31,7 +31,9 @@ hace ruido. Es el mismo modo de falla que `packs/load-testing/` cierra para k6 y
 
 Todo lo demás es inferencia. `sentry-check canary` envía un evento con un
 marcador único y después **le pregunta a la API si quedó almacenado**. Si no
-puede confirmarlo, sale con código 2 (`UNCONFIRMED`) y bloquea.
+puede confirmarlo, sale con código 2 (`UNCONFIRMED`) y bloquea. Si lo que falla
+es la lectura —un token sin scope de issues recibe `403`—, sale con código 3 y
+lo dice: «la lectura falló (HTTP 403 en …)» no es «el evento no apareció».
 
 Es deliberado que aceptar no sea suficiente. La ingesta de Sentry responde `200`
 y descarta el evento después si la cuota está agotada, si un filtro de entrada lo
@@ -139,6 +141,11 @@ Dos propiedades lo hacen seguro de programar:
   siguiente corrida. Sin esto, ponerlo en un cron produce cien duplicados del
   mismo error.
 
+La canary queda fuera: `triage` y `sentry-to-issues` piden
+`is:unresolved !message:harness-canary*`. Su issue está sin resolver por diseño
+—cada corrida le suma un evento— y convertirlo en issue de GitHub mete una señal
+de prueba en el backlog de defectos.
+
 ### Lo que cada comprobación cierra
 
 | Comando | El fallo silencioso que impide |
@@ -157,7 +164,7 @@ Dos propiedades lo hacen seguro de programar:
 | `0` | Todas las comprobaciones pedidas pasaron |
 | `1` | Una comprobación falló: hay una mala configuración |
 | `2` | `UNCONFIRMED` — no se pudo probar que los eventos llegan |
-| `3` | Respuesta ilegible, o falta una entrada obligatoria |
+| `3` | Respuesta ilegible, la API respondió algo que no es 2xx (se imprime `HTTP <code> en <path>`, nunca el token), o falta una entrada obligatoria |
 | `64` | Error de uso |
 | `69` | Falta una dependencia en el `PATH` |
 
@@ -200,7 +207,8 @@ Las respuestas se sintetizan en vez de pedirse a la red, así que el pack se
 verifica en cualquier máquina con `bash`: sin cuenta de Sentry, sin token, sin
 red. `SENTRY_STUB_DIR` es la costura de prueba que lo permite; un fixture ausente
 significa «la llamada falló», que es justo lo que la compuerta debe sobrevivir
-cuando Sentry no responde.
+cuando Sentry no responde. `<fixture>.http` simula el status de esa respuesta
+(sin él, `200`): así se prueba que un `403` no se lee como «sin resultados».
 
 La ruta viva la ejerce `bin/sentry-check` en cuanto el proyecto tiene un DSN real.
 
