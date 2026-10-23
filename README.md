@@ -212,6 +212,7 @@ bin/harness-status.sh     qué está realmente protegido, ahora mismo
 bin/harness-audit.sh      auditor de 84 checks, sin dependencias
 bin/harness-protect.sh    instala los rulesets y los verifica por GET
 bin/harness-init.sh       scaffolder (--level lite|minimal|full)
+bin/harness-wiring.sh     integraciones y cuenta correcta, contra los sistemas vivos (--quick | --json | --fleet OWNER)
 scripts/verify-feature.sh la única ruta a passing; hace cumplir los presupuestos
 scripts/verify-claims.sh  re-verifica todo passing declarado
 scripts/verify-version-sync.sh  las cuatro copias de la versión deben coincidir
