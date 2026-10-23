@@ -61,18 +61,33 @@ command -v "$GH" >/dev/null 2>&1 || die "the GitHub CLI ('$GH') is not on PATH" 
 
 # ── Read Sentry ──────────────────────────────────────────────────────────────
 
+# The canary's own issue is excluded: it is unresolved by design, and turning
+# it into a GitHub issue would put a test signal in the defect backlog.
+ISSUES_PATH="projects/$SENTRY_ORG/$SENTRY_PROJECT/issues/?query=is:unresolved%20!message:harness-canary*&statsPeriod=24h"
+
+# Runs in this shell and leaves the body in BODY. `curl --fail` used to swallow
+# the status, so a 403 from a token without issue scope read as "unreachable";
+# a non-2xx answer now names its code and the path — never the token.
+# Stub: "$STUB/triage.json.http" holds the status to simulate; absent means 200.
 fetch_issues() {
+  local code tmp
   if [[ -n "$STUB" ]]; then
     [[ -f "$STUB/triage.json" ]] || return 1
-    cat "$STUB/triage.json"
-    return 0
+    BODY="$(cat "$STUB/triage.json")"
+    code="$(cat "$STUB/triage.json.http" 2>/dev/null || echo 200)"
+  else
+    tmp="$(mktemp)" || die "could not create a temp file" "$E_MALFORMED"
+    code="$(curl -sS --max-time 20 -o "$tmp" -w '%{http_code}' \
+      -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" "$API_BASE/$ISSUES_PATH" 2>/dev/null)"
+    BODY="$(cat "$tmp")"
+    rm -f "$tmp"
   fi
-  curl -sS --fail --max-time 20 -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
-    "$API_BASE/projects/$SENTRY_ORG/$SENTRY_PROJECT/issues/?query=is:unresolved&statsPeriod=24h" \
-    2>/dev/null
+  case "$code" in 2[0-9][0-9]) return 0 ;; esac
+  die "HTTP ${code:-000} en $ISSUES_PATH" "$E_MALFORMED"
 }
 
-BODY="$(fetch_issues)" \
+BODY=""
+fetch_issues \
   || die "could not reach the issues API — this is not the same as having no issues" "$E_MALFORMED"
 
 case "$BODY" in

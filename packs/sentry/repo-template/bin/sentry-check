@@ -63,15 +63,43 @@ die()  { echo "${RED}sentry-check: $1${RESET}" >&2; exit "$2"; }
 # offline. A stub file that does not exist means "the call failed", which is the
 # same thing the gate must do when the network is down: block.
 
+#
+# api_get leaves the body in API_BODY instead of printing it, so it runs in this
+# shell and a caller can tell the outcomes apart. `curl --fail` used to swallow
+# the status: a 403 from a token without issue scope looked exactly like a
+# network blip, and the canary reported "dropped before storage" for an event
+# it was never allowed to read. A non-2xx answer now returns E_MALFORMED with
+# "HTTP <code> en <path>" in API_ERR — the path, never the token.
+#
+# Stub: "$STUB/<name>.http" holds the status to simulate; absent means 200.
+
+API_BODY=""; API_ERR=""
+
 api_get() {
-  local path="$1" name="$2"
+  local path="$1" name="$2" code tmp
+  API_BODY=""; API_ERR=""
   if [[ -n "$STUB" ]]; then
     [[ -f "$STUB/$name" ]] || return 1
-    cat "$STUB/$name"
-    return 0
+    API_BODY="$(cat "$STUB/$name")"
+    code="$(cat "$STUB/$name.http" 2>/dev/null || echo 200)"
+  else
+    tmp="$(mktemp)" || die "could not create a temp file" "$E_MALFORMED"
+    code="$(curl -sS --max-time 20 -o "$tmp" -w '%{http_code}' \
+      -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" "$API_BASE/$path" 2>/dev/null)"
+    API_BODY="$(cat "$tmp")"
+    rm -f "$tmp"
   fi
-  curl -sS --fail --max-time 20 -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
-    "$API_BASE/$path" 2>/dev/null
+  case "$code" in 2[0-9][0-9]) return 0 ;; esac
+  API_ERR="HTTP ${code:-000} en $path"
+  return "$E_MALFORMED"
+}
+
+# For readers that have no answer of their own to a failed read: end the run.
+api_read() {
+  api_get "$@"
+  local rc=$?
+  [[ $rc -eq $E_MALFORMED ]] && die "$API_ERR" "$E_MALFORMED"
+  return $rc
 }
 
 ingest_send() {
@@ -373,7 +401,13 @@ cmd_canary() {
   # all drop events after a successful POST. Read it back or report nothing.
   local waited=0 body=""
   while [[ $waited -lt $CANARY_TIMEOUT ]]; do
-    body="$(api_get "projects/$SENTRY_ORG/$SENTRY_PROJECT/issues/?query=$marker" "issues.json")" || body=""
+    body=""
+    if api_get "projects/$SENTRY_ORG/$SENTRY_PROJECT/issues/?query=$marker" "issues.json"; then
+      body="$API_BODY"
+    elif [[ -n "$API_ERR" ]]; then
+      fail "la lectura falló ($API_ERR) — no se sabe si el evento llegó"
+      exit "$E_MALFORMED"
+    fi
     if [[ -n "$body" ]]; then
       require_json "$body"
       if printf '%s' "$body" | grep -q "$marker"; then
@@ -386,7 +420,7 @@ cmd_canary() {
     waited=$((waited + 5))
   done
 
-  fail "event never appeared in the project — accepted by ingest, dropped before storage"
+  fail "el evento no apareció en el proyecto — aceptado por ingest, descartado antes de guardarse"
   exit "$E_UNCONFIRMED"
 }
 
@@ -401,10 +435,11 @@ cmd_release() {
   [[ -n "${SENTRY_ORG:-}" ]] || die "release needs SENTRY_ORG" "$E_MALFORMED"
   [[ -n "${SENTRY_AUTH_TOKEN:-}" ]] || die "release needs SENTRY_AUTH_TOKEN" "$E_MALFORMED"
 
-  body="$(api_get "organizations/$SENTRY_ORG/releases/$version/files/" "files.json")" || {
+  api_read "organizations/$SENTRY_ORG/releases/$version/files/" "files.json" || {
     fail "release $version does not exist in Sentry — events cannot be attributed to a deploy"
     return
   }
+  body="$API_BODY"
   require_json "$body"
   if [[ "$(printf '%s' "$body" | tr -d '[:space:]')" == "[]" ]]; then
     fail "release $version has no uploaded files — stack traces will be minified"
@@ -417,10 +452,11 @@ cmd_release() {
   # Suspect commits: with commits associated, Sentry names the change that most
   # likely caused an issue and suggests its author. Without them, every incident
   # starts with "which deploy was this?".
-  body="$(api_get "organizations/$SENTRY_ORG/releases/$version/commits/" "commits.json")" || {
+  api_read "organizations/$SENTRY_ORG/releases/$version/commits/" "commits.json" || {
     fail "release $version has no commit data — suspect commits will never be identified"
     return
   }
+  body="$API_BODY"
   require_json "$body"
   if [[ "$(printf '%s' "$body" | tr -d '[:space:]')" == "[]" ]]; then
     fail "release $version has zero associated commits — suspect commits stay empty"
@@ -437,10 +473,11 @@ cmd_health() {
   [[ -n "${SENTRY_ORG:-}" ]] || die "health needs SENTRY_ORG" "$E_MALFORMED"
   [[ -n "${SENTRY_AUTH_TOKEN:-}" ]] || die "health needs SENTRY_AUTH_TOKEN" "$E_MALFORMED"
 
-  body="$(api_get "organizations/$SENTRY_ORG/releases/$version/" "health.json")" || {
+  api_read "organizations/$SENTRY_ORG/releases/$version/" "health.json" || {
     fail "release $version has no health data — release health is not being reported"
     return
   }
+  body="$API_BODY"
   require_json "$body"
 
   rate="$(json_field_deep "$body" crashFreeSessions)"
@@ -469,10 +506,11 @@ cmd_cron() {
   [[ -n "${SENTRY_ORG:-}" ]] || die "cron needs SENTRY_ORG" "$E_MALFORMED"
   [[ -n "${SENTRY_AUTH_TOKEN:-}" ]] || die "cron needs SENTRY_AUTH_TOKEN" "$E_MALFORMED"
 
-  body="$(api_get "organizations/$SENTRY_ORG/monitors/$slug/" "monitor.json")" || {
+  api_read "organizations/$SENTRY_ORG/monitors/$slug/" "monitor.json" || {
     fail "monitor '$slug' does not exist — the job is running unwatched"
     return
   }
+  body="$API_BODY"
   require_json "$body"
 
   status="$(json_field "$body" status)"
@@ -505,8 +543,11 @@ cmd_triage() {
     || die "triage needs SENTRY_ORG and SENTRY_PROJECT" "$E_MALFORMED"
   [[ -n "${SENTRY_AUTH_TOKEN:-}" ]] || die "triage needs SENTRY_AUTH_TOKEN" "$E_MALFORMED"
 
-  body="$(api_get "projects/$SENTRY_ORG/$SENTRY_PROJECT/issues/?query=is:unresolved&statsPeriod=24h" "triage.json")" \
+  # The canary's own issue is excluded: it is unresolved by design (every run
+  # adds an event), and listing it buries the defects users actually hit.
+  api_read "projects/$SENTRY_ORG/$SENTRY_PROJECT/issues/?query=is:unresolved%20!message:harness-canary*&statsPeriod=24h" "triage.json" \
     || die "could not reach the issues API — this is not the same as having no issues" "$E_MALFORMED"
+  body="$API_BODY"
   require_json "$body"
 
   count="$(json_count "$body" shortId)"

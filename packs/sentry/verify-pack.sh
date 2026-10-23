@@ -583,6 +583,68 @@ case "$SANITIZED" in
 esac
 
 
+# ── 77-87. Un 403 no es "no llegó": el status de la lectura se ve ─────────────
+# El token de org (scope org:ci) recibía 403 en cada lectura de issues y
+# `curl --fail ... 2>/dev/null` lo convertía en silencio: el canary reportaba
+# "dropped before storage" sin haber podido leer nada.
+SECRET_TOKEN="tok-que-no-debe-salir-0123456789"
+capture() { ( cd "$SANDBOX" && env "$@" ) 2>&1; }
+
+stub
+touch "$STUB_DIR/ingest-ok"
+printf '{"detail":"You do not have permission to perform this action."}\n' > "$STUB_DIR/issues.json"
+printf '403' > "$STUB_DIR/issues.json.http"
+assert "a canary whose read-back gets 403 exits 3, not UNCONFIRMED" 3 \
+  NO_COLOR=1 "SENTRY_DSN=$GOOD_DSN" SENTRY_ORG=acme SENTRY_PROJECT=web \
+  "SENTRY_AUTH_TOKEN=$SECRET_TOKEN" "SENTRY_STUB_DIR=$STUB_DIR" -- canary
+OUT="$(capture NO_COLOR=1 "SENTRY_DSN=$GOOD_DSN" SENTRY_ORG=acme SENTRY_PROJECT=web \
+  "SENTRY_AUTH_TOKEN=$SECRET_TOKEN" "SENTRY_STUB_DIR=$STUB_DIR" "$GATE" canary)"
+case "$OUT" in *"la lectura falló (HTTP 403 en projects/acme/web/issues/"*) ok "the canary names the failed read and its status" ;;
+  *) bad "the canary does not say the read failed with HTTP 403: $OUT" ;; esac
+case "$OUT" in *"no apareció"*) bad "a failed read is reported as a missing event" ;;
+  *) ok "a failed read is not reported as a missing event" ;; esac
+case "$OUT" in *"$SECRET_TOKEN"*) bad "the canary printed the auth token" ;; *) ok "the canary never prints the token" ;; esac
+
+stub
+touch "$STUB_DIR/ingest-ok"
+printf '[]\n' > "$STUB_DIR/issues.json"
+OUT="$(capture NO_COLOR=1 "SENTRY_DSN=$GOOD_DSN" SENTRY_ORG=acme SENTRY_PROJECT=web \
+  SENTRY_AUTH_TOKEN=t "SENTRY_STUB_DIR=$STUB_DIR" "$GATE" canary)"
+case "$OUT" in *"el evento no apareció"*) ok "a readable empty answer is reported as a missing event" ;;
+  *) bad "the missing-event message changed: $OUT" ;; esac
+
+stub
+printf '{"detail":"forbidden"}\n' > "$STUB_DIR/triage.json"
+printf '403' > "$STUB_DIR/triage.json.http"
+assert "triage with a 403 exits 3" 3 \
+  NO_COLOR=1 SENTRY_ORG=acme SENTRY_PROJECT=web "SENTRY_AUTH_TOKEN=$SECRET_TOKEN" \
+  "SENTRY_STUB_DIR=$STUB_DIR" -- triage
+OUT="$(capture NO_COLOR=1 SENTRY_ORG=acme SENTRY_PROJECT=web "SENTRY_AUTH_TOKEN=$SECRET_TOKEN" \
+  "SENTRY_STUB_DIR=$STUB_DIR" "$GATE" triage)"
+case "$OUT" in *"HTTP 403 en projects/acme/web/issues/"*) ok "triage names the status and the endpoint" ;;
+  *) bad "triage does not name HTTP 403: $OUT" ;; esac
+case "$OUT" in *"$SECRET_TOKEN"*) bad "triage printed the auth token" ;; *) ok "triage never prints the token" ;; esac
+
+TI_ARGS=()
+ti_assert "sentry-to-issues with a 403 exits 3" 3 \
+  NO_COLOR=1 SENTRY_ORG=acme SENTRY_PROJECT=web "SENTRY_AUTH_TOKEN=$SECRET_TOKEN" \
+  "GH_BIN=$GHDIR/gh" "GH_LOG=$WORK/gh403.log" "SENTRY_STUB_DIR=$STUB_DIR"
+OUT="$( env NO_COLOR=1 SENTRY_ORG=acme SENTRY_PROJECT=web "SENTRY_AUTH_TOKEN=$SECRET_TOKEN" \
+  "GH_BIN=$GHDIR/gh" "GH_LOG=$WORK/gh403.log" "SENTRY_STUB_DIR=$STUB_DIR" "$TO_ISSUES" 2>&1 )"
+case "$OUT" in *"HTTP 403 en projects/acme/web/issues/"*) ok "sentry-to-issues names the status and the endpoint" ;;
+  *) bad "sentry-to-issues does not name HTTP 403: $OUT" ;; esac
+case "$OUT" in *"$SECRET_TOKEN"*) bad "sentry-to-issues printed the auth token" ;; *) ok "sentry-to-issues never prints the token" ;; esac
+
+# ── 88-89. La canary no entra a triage ni al backlog ────────────────────────
+for f in sentry-check sentry-to-issues; do
+  if grep -q 'is:unresolved%20!message:harness-canary\*' "$PACK_DIR/repo-template/bin/$f"; then
+    ok "$f excludes the canary's issue from the unresolved query"
+  else
+    bad "$f would list the canary's own issue as a defect"
+  fi
+done
+
+
 echo ""
 echo "${BOLD}────────────────────────────────────────${RESET}"
 echo "${BOLD}$PASS passed, $FAIL failed${RESET}"
