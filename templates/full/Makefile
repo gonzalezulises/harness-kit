@@ -30,6 +30,14 @@ verify-claims: ## Re-run every feature the repo claims is passing. CI runs this 
 verify-decisions: ## Confirm no earlier decision was rewritten
 	bash scripts/verify-decisions.sh
 
+.PHONY: verify-coverage
+verify-coverage: ## Every feature must have a real, non-vacuous verification
+	@bash scripts/verify-coverage.sh
+
+.PHONY: gen-feature-list
+gen-feature-list: ## Derive feature_list.json from the executable spec (features/*.feature)
+	@bash scripts/gen-feature-list.sh
+
 .PHONY: verify-agent-notes
 verify-agent-notes: ## Agent Notes tree and format gate
 	bash scripts/verify-agent-notes.sh

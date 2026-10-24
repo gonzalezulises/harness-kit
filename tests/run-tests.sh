@@ -1461,6 +1461,74 @@ assert_contains "and shows the status" "$O18F" "RETIRED"
 
 cd "$KIT_DIR" || exit 1
 
+# ── 22 — spec-first: derived state and requirement traceability ───────────────
+echo ""
+echo "${BOLD}22 — spec-first and traceability${RESET}"
+
+GEN="$WORK/gen"; make_fixture "$GEN"
+bash "$KIT_DIR/bin/harness-init.sh" --target "$GEN" --level full >/dev/null 2>&1
+cd "$GEN" || exit 1
+
+# 22a — gen-feature-list derives one feature entry per Gherkin scenario
+mkdir -p features
+cat > features/cart.feature <<'EOF'
+Feature: Shopping cart
+
+  Scenario: add an item
+    Given an empty cart
+    When I add a widget
+    Then the cart has one item
+
+  Scenario: remove an item
+    Given a cart with one item
+    When I remove it
+    Then the cart is empty
+EOF
+bash scripts/gen-feature-list.sh >/dev/null 2>&1
+N22="$(python3 -c "import json;print(len(json.load(open('feature_list.json'))['features']))")"
+assert_eq "one entry per scenario is derived" "2" "$N22"
+CMD22="$(python3 -c "import json;print(json.load(open('feature_list.json'))['features'][0]['layers'][0]['cmd'])")"
+assert_eq "each entry is wired to the gherkin gate" "bin/gherkin-check --expect 2" "$CMD22"
+
+# 22b — regeneration preserves existing states (derived, never reset)
+python3 - <<'PYEOF'
+import json
+d = json.load(open("feature_list.json"))
+d["features"][0]["state"] = "passing"
+json.dump(d, open("feature_list.json","w"), indent=2)
+PYEOF
+bash scripts/gen-feature-list.sh >/dev/null 2>&1
+assert_eq "regeneration preserves a passing state" "passing" \
+  "$(python3 -c "import json;print(json.load(open('feature_list.json'))['features'][0]['state'])")"
+
+# 22c — verify-coverage passes a repo whose features carry real checks
+bash scripts/verify-coverage.sh >/dev/null 2>&1
+assert_eq "covered features pass the traceability gate" "0" "$?"
+
+# 22d — a feature with no verification is UNCOVERED_REQUIREMENT
+python3 - <<'PYEOF'
+import json
+d = json.load(open("feature_list.json"))
+d["features"] = [{"id":"C1","state":"not_started","behavior":"b","verification":[],"layers":[],"evidence":[]}]
+json.dump(d, open("feature_list.json","w"), indent=2)
+PYEOF
+OUT22="$(bash scripts/verify-coverage.sh 2>&1)"; RC22=$?
+assert_eq "uncovered requirement exits 1" "1" "$RC22"
+assert_contains "and is named UNCOVERED_REQUIREMENT" "$OUT22" "UNCOVERED_REQUIREMENT"
+
+# 22e — a feature whose only check is a no-op is VACUOUS_ASSERTION
+python3 - <<'PYEOF'
+import json
+d = json.load(open("feature_list.json"))
+d["features"] = [{"id":"C1","state":"not_started","behavior":"b","verification":["check"],"layers":[{"label":"x","cmd":"true","repair":"r"}],"evidence":[]}]
+json.dump(d, open("feature_list.json","w"), indent=2)
+PYEOF
+OUT22e="$(bash scripts/verify-coverage.sh 2>&1)"; RC22e=$?
+assert_eq "a vacuous assertion exits 2" "2" "$RC22e"
+assert_contains "and is named VACUOUS_ASSERTION" "$OUT22e" "VACUOUS_ASSERTION"
+
+cd "$KIT_DIR" || exit 1
+
 # ═════════════════════════════════════════════════════════════════════════════
 echo ""
 echo "${BOLD}────────────────────────────────────────${RESET}"
