@@ -723,6 +723,21 @@ import json,sys
 print(next(c['result'] for c in json.load(sys.stdin)['checks'] if c['id']=='enf.stopcond'))" 2>/dev/null)"
 assert_eq "budgets without stop_condition is caught" "fail" "$NOSTOP"
 
+# 16g — verification posture: the evidence ladder the documentation score cannot fake
+POST="$WORK/posture"; make_fixture "$POST"
+bash "$KIT_DIR/bin/harness-init.sh" --target "$POST" --level full >/dev/null 2>&1
+POST_JSON="$(bash "$KIT_DIR/bin/harness-audit.sh" "$POST" --json 2>/dev/null)"
+POST_LEVEL="$(echo "$POST_JSON" | python3 -c "import json,sys;print(json.load(sys.stdin)['posture']['level'])")"
+POST_PROT="$(echo "$POST_JSON" | python3 -c "import json,sys;print('true' if json.load(sys.stdin)['posture']['protected'] else 'false')")"
+assert_eq "full scaffold reports a runtime posture (level 2)" "2" "$POST_LEVEL"
+assert_eq "full scaffold reports protected=true" "true" "$POST_PROT"
+
+EMPTY_POST="$(bash "$KIT_DIR/bin/harness-audit.sh" "$EMPTY" --json 2>/dev/null)"
+EMPTY_LEVEL="$(echo "$EMPTY_POST" | python3 -c "import json,sys;print(json.load(sys.stdin)['posture']['level'])")"
+EMPTY_PROT="$(echo "$EMPTY_POST" | python3 -c "import json,sys;print('true' if json.load(sys.stdin)['posture']['protected'] else 'false')")"
+assert_eq "an empty repo has posture 0" "0" "$EMPTY_LEVEL"
+assert_eq "an empty repo is not protected" "false" "$EMPTY_PROT"
+
 # ═════════════════════════════════════════════════════════════════════════════
 echo ""
 echo "${BOLD}17. verify-decisions — the record of WHY cannot be rewritten${RESET}"
