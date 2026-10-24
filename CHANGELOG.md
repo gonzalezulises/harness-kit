@@ -6,6 +6,26 @@ con qué versión se construyó, así que `harness-status.sh` puede decir cuál 
 
 ---
 
+## [2.4.0](https://github.com/gonzalezulises/harness-kit/compare/v2.3.3...v2.4.0) (2026-10-24)
+
+
+### Añadido
+
+* add harness-wiring, a read-only check of integrations and account ([42b7b98](https://github.com/gonzalezulises/harness-kit/commit/42b7b9825127f90dfda08a42378fda7ed5706680))
+* add lite level as the default and make the feature ceremony opt-in ([f1bb26e](https://github.com/gonzalezulises/harness-kit/commit/f1bb26e65d21df3d53e2ced8ef4400bbc7ab7f8d))
+
+
+### Arreglado
+
+* **gate:** let the PR that installs Required quality pass it ([ce8a88f](https://github.com/gonzalezulises/harness-kit/commit/ce8a88f95db627be6cbc4bd58e9fd3c1c439cd8e))
+* **gate:** skip the self-copy on bootstrap; run F33 under the runner's bash -e ([d074822](https://github.com/gonzalezulises/harness-kit/commit/d074822190a787af69066e0e2325241adb3ac0ea))
+* scope harness-wiring to production repos and recognise Actions deploys ([b1c8062](https://github.com/gonzalezulises/harness-kit/commit/b1c806240eaee6306854c36b77898242203eb85a))
+
+
+### Documentación
+
+* move the lite decision detail into an Agent Note ([786e983](https://github.com/gonzalezulises/harness-kit/commit/786e9830cb316e13652e9af92a85e17f988385fd))
+
 ## [2.3.3](https://github.com/gonzalezulises/harness-kit/compare/v2.3.2...v2.3.3) (2026-10-23)
 
 
