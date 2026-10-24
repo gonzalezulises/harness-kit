@@ -24,6 +24,9 @@ The single command that proves this repo is consistent:
 It must exit 0 before every commit. CI runs it as the `Required quality` check, and the
 branch rules block any merge without it.
 
+- **Before each commit:** `make check-fast` (unit tests, seconds).
+- **Before clock-out and PR:** `make check` (the full pipeline above).
+
 ## Rules
 
 - **Evidence before done.** Do not call a change done until the verification command

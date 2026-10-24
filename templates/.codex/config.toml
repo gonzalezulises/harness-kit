@@ -1,0 +1,18 @@
+#:schema https://developers.openai.com/codex/config-schema.json
+
+# harness-kit — Codex project defaults.
+# Documentación oficial: https://developers.openai.com/codex/config-reference
+#
+# approval_policy controla cuánto pregunta Codex antes de actuar:
+#   "on-failure"  → ejecuta y solo pregunta cuando algo falla (iteración rápida).
+#   "on-request"  → pregunta antes de cada acción (más seguro, más lento).
+#   "never"       → nunca pregunta (peligroso, no recomendado).
+approval_policy = "on-failure"
+
+# sandbox_mode acota dónde puede escribir:
+#   "workspace-write" → solo dentro del repo (recomendado).
+#   "read-only"       → sin escritura.
+sandbox_mode = "workspace-write"
+
+# Deja model / model_provider sin fijar para usar los defaults actuales de Codex.
+# Pínnalos aquí solo si quieres un override por-repo o global.

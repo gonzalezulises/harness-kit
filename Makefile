@@ -18,8 +18,13 @@ dev: ## Start the local dev server
 test: ## Run the test suite
 	bash tests/run-tests.sh
 
+.PHONY: check-fast
+check-fast: ## Fast gate for every commit: syntax + JSON validity (seconds)
+	@for f in bin/*.sh scripts/*.sh templates/full/scripts/*.sh tests/*.sh; do bash -n "$$f" || exit 1; done
+	@python3 -c "import json;json.load(open('templates/minimal/feature_list.json'));json.load(open('templates/full/.harness/arch-rules.json'))"
+
 .PHONY: check
-check: ## Full verification pipeline — must exit 0 before every commit
+check: ## Full verification pipeline — run before clock-out and PR
 	bash tests/run-tests.sh
 # The packs ship their own failure matrices. Linting them was never the same as
 # running them: a pack could regress with the repo's gate still green, which is
