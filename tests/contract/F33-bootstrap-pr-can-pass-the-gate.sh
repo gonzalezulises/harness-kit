@@ -10,7 +10,9 @@
 # The control keeps it honest: with the workflow on the base and its checker gone, the
 # step must still refuse with NOT_EXECUTED.
 #
-# The steps run here are the ones in the template, extracted from the YAML, not a copy.
+# The steps run here are the ones in the template, extracted from the YAML, not a copy,
+# under the runner's own shell (`bash -e -o pipefail`): without -e the first version passed
+# here and failed in CI on `cp` copying the checker onto itself.
 #
 # Usage: bash tests/contract/F33-bootstrap-pr-can-pass-the-gate.sh
 
@@ -54,7 +56,7 @@ layout() {  # layout <dir> <base-has-workflow 0|1> <base-has-checkers 0|1>
 run_step() {  # run_step <dir> <claims|decisions>
   ( cd "$1" && GITHUB_WORKSPACE="$1" GITHUB_OUTPUT="$1/out" RUNNER_TEMP="$1/tmp" \
       CLAIMS_BASE_FILE="$1/base/feature_list.json" DECISIONS_BASE_FILE="$1/base/DECISIONS.md" \
-      bash "$WORK/$2.sh" 2>&1 )
+      bash --noprofile --norc -e -o pipefail "$WORK/$2.sh" 2>&1 )  # the runner's shell
 }
 
 for id in claims decisions; do

@@ -1077,7 +1077,8 @@
         }
       ],
       "evidence": [
-        "all layers passed — commit b1c8062, 2026-10-24T02:35:05Z"
+        "all layers passed — commit b1c8062, 2026-10-24T02:35:05Z",
+        "all layers passed — commit bf4b995, 2026-10-24T02:39:49Z"
       ],
       "notes": "Found on 2026-10-23 rolling lite onto 12 Mallol repos: make check passed in CI on all 12 and every Required quality ended blocked with exit 126."
     }

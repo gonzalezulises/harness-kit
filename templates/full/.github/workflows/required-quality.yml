@@ -115,7 +115,7 @@ jobs:
             printf 'claims_exit=126\n' >> "$GITHUB_OUTPUT"
             exit 126
           fi
-          cp "$checker" "$GITHUB_WORKSPACE/head/scripts/verify-claims.sh"
+          [ "$checker" = "$GITHUB_WORKSPACE/head/scripts/verify-claims.sh" ] || cp "$checker" "$GITHUB_WORKSPACE/head/scripts/verify-claims.sh"
           chmod +x "$GITHUB_WORKSPACE/head/scripts/verify-claims.sh"
           cd "$GITHUB_WORKSPACE/head"
           set +e
@@ -147,7 +147,7 @@ jobs:
             printf 'decisions_exit=126\n' >> "$GITHUB_OUTPUT"
             exit 126
           fi
-          cp "$checker" "$GITHUB_WORKSPACE/head/scripts/verify-decisions.sh"
+          [ "$checker" = "$GITHUB_WORKSPACE/head/scripts/verify-decisions.sh" ] || cp "$checker" "$GITHUB_WORKSPACE/head/scripts/verify-decisions.sh"
           cd "$GITHUB_WORKSPACE/head"
           set +e
           bash scripts/verify-decisions.sh
