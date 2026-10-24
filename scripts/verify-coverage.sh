@@ -16,7 +16,7 @@
 set -uo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$ROOT_DIR"
+cd "$ROOT_DIR" || { echo "verify-coverage: cannot cd to $ROOT_DIR" >&2; exit 66; }
 
 FL="${1:-feature_list.json}"
 [[ -f "$FL" ]] || { echo "verify-coverage: $FL not found" >&2; exit 66; }
