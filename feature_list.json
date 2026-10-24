@@ -1,6 +1,6 @@
 {
   "project": "harness-kit",
-  "last_updated": "2026-10-23",
+  "last_updated": "2026-10-24",
   "rules": {
     "single_active_feature": true,
     "passing_requires_evidence": true,
@@ -1048,6 +1048,38 @@
         "all layers passed — commit 786e983, 2026-10-23T23:52:23Z"
       ],
       "notes": "Run live on 2026-10-23 against casabat-comparador-cliente, mallol-bim-control, mallol-comfy-connector and Aurobalance; it found real gaps (no required check, no Sentry) and was corrected twice where it read the stale working tree or double-counted a Vercel link."
+    },
+    {
+      "id": "F33",
+      "priority": 33,
+      "area": "adoption",
+      "behavior": "The PR that installs the Required quality gate can pass it: while the base branch carries no gate workflow, the claim and decision steps use the checkers that PR installs; once the gate is on the base, a missing checker is still NOT_EXECUTED.",
+      "state": "passing",
+      "budgets": {
+        "review_rounds_max": 2,
+        "repeated_blocker_max": 3,
+        "stop_condition": "Stop, record the blocker in PROGRESS.md, and escalate to a human. Do not retry, do not refactor around it, do not open a new approach."
+      },
+      "verification": [
+        "The installing PR's claim and decision steps exit 0 and print BOOTSTRAP, run from the template's own YAML.",
+        "Control: with the workflow on the base and its checker missing, both steps exit 126 with NOT_EXECUTED."
+      ],
+      "layers": [
+        {
+          "label": "contract",
+          "cmd": "bash tests/contract/F33-bootstrap-pr-can-pass-the-gate.sh",
+          "repair": "Read the first failing line only. A bootstrap that blocks is the old bug; a control that passes is a hole."
+        },
+        {
+          "label": "suite",
+          "cmd": "bash tests/run-tests.sh",
+          "repair": "Read the first failing assertion only. Fix that one, re-run. Do not batch fixes."
+        }
+      ],
+      "evidence": [
+        "all layers passed — commit b1c8062, 2026-10-24T02:35:05Z"
+      ],
+      "notes": "Found on 2026-10-23 rolling lite onto 12 Mallol repos: make check passed in CI on all 12 and every Required quality ended blocked with exit 126."
     }
   ]
 }

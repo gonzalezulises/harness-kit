@@ -77,6 +77,7 @@ jobs:
             scripts/verify-decisions.sh
             DECISIONS.md
             feature_list.json
+            .github/workflows/required-quality.yml
           sparse-checkout-cone-mode: false
 
       - name: Run the repository verification pipeline
@@ -101,6 +102,14 @@ jobs:
         run: |
           set -uo pipefail
           checker="$GITHUB_WORKSPACE/base/scripts/verify-claims.sh"
+          # Bootstrap: the PR that installs the gate has no protected base to read from.
+          # Only when the base does not carry this workflow at all is the PR's own copy
+          # used; once the gate is on the base branch, a missing checker is NOT_EXECUTED.
+          if [ ! -f "$checker" ] && [ ! -f "$GITHUB_WORKSPACE/base/.github/workflows/required-quality.yml" ] &&
+             [ -f "$GITHUB_WORKSPACE/head/scripts/verify-claims.sh" ]; then
+            printf '%s\n' 'BOOTSTRAP: the base branch has no gate yet; using the checker this PR installs'
+            checker="$GITHUB_WORKSPACE/head/scripts/verify-claims.sh"
+          fi
           if [ ! -f "$checker" ]; then
             printf '%s\n' 'NOT_EXECUTED: protected claim checker is missing from the base branch' >&2
             printf 'claims_exit=126\n' >> "$GITHUB_OUTPUT"
@@ -125,6 +134,14 @@ jobs:
         run: |
           set -uo pipefail
           checker="$GITHUB_WORKSPACE/base/scripts/verify-decisions.sh"
+          # Bootstrap: the PR that installs the gate has no protected base to read from.
+          # Only when the base does not carry this workflow at all is the PR's own copy
+          # used; once the gate is on the base branch, a missing checker is NOT_EXECUTED.
+          if [ ! -f "$checker" ] && [ ! -f "$GITHUB_WORKSPACE/base/.github/workflows/required-quality.yml" ] &&
+             [ -f "$GITHUB_WORKSPACE/head/scripts/verify-decisions.sh" ]; then
+            printf '%s\n' 'BOOTSTRAP: the base branch has no gate yet; using the checker this PR installs'
+            checker="$GITHUB_WORKSPACE/head/scripts/verify-decisions.sh"
+          fi
           if [ ! -f "$checker" ]; then
             printf '%s\n' 'NOT_EXECUTED: protected decision checker is missing from the base branch' >&2
             printf 'decisions_exit=126\n' >> "$GITHUB_OUTPUT"

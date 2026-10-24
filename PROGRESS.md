@@ -3,7 +3,17 @@
 The durable memory of this repository. Every session reads this first and writes to it
 last. If it disagrees with your recollection, this file wins.
 
-## Current state — 2026-10-23 (F32: harness-wiring)
+## Current state — 2026-10-23 (F33: the bootstrap PR can pass the gate)
+
+Rolling `lite` onto 12 Mallol repos showed that every installing PR ends `blocked`: `make check`
+passed, but the claim checker is read from a base that does not have it yet. F33 lets the
+installing PR use its own checkers only while the base carries no gate workflow. The control keeps
+`NOT_EXECUTED` once the gate exists. Contract 7/0; 4/3 against the old template.
+
+**Next:** propagate the fixed workflow to the 12 open PRs, merge them, and install the
+`required-quality-check` ruleset on each.
+
+## State — 2026-10-23 (F32: harness-wiring)
 
 F31 is on `main` (PR #48). F32 adds `bin/harness-wiring.sh`. Its contract reproduces the four
 failure classes of 2026-10-23 offline and keeps two controls. It was run live on four real repos,
