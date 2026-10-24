@@ -21,6 +21,7 @@ set -uo pipefail
 KIT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 TARGET="."
 WITH_GHERKIN=0
+WITH_CEREMONY=0
 LEVEL="lite"
 ASSUME_YES=0
 DRYRUN=0
@@ -34,6 +35,7 @@ while [[ $# -gt 0 ]]; do
     --with)
       case "${2:-}" in
         gherkin) WITH_GHERKIN=1 ;;
+        ceremony) WITH_CEREMONY=1 ;;
         "") echo "harness-activate: --with necesita el nombre de un pack" >&2; exit 64 ;;
         *) echo "harness-activate: pack desconocido '$2'" >&2
            echo "  Sólo 'gherkin' se instala con --with." >&2
@@ -130,7 +132,9 @@ echo ""
 echo "${BOLD}────────────────────────────────────────${RESET}"
 
 # ── 1. The harness itself ────────────────────────────────────────────────────
-if ! bash "$KIT_DIR/bin/harness-init.sh" --target "$TARGET" --level "$LEVEL" >/dev/null 2>&1; then
+INIT_ARGS=(--target "$TARGET" --level "$LEVEL")
+[[ "$WITH_CEREMONY" -eq 1 ]] && INIT_ARGS+=(--ceremony)
+if ! bash "$KIT_DIR/bin/harness-init.sh" "${INIT_ARGS[@]}" >/dev/null 2>&1; then
   echo "${RED}BLOCKED_TOOL${RESET} — el scaffold falló. Revisa permisos de escritura en $TARGET."
   exit 1
 fi

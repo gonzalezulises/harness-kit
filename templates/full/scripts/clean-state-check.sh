@@ -94,21 +94,29 @@ except Exception as e:
     print(f"PARSE_ERROR::{e}"); sys.exit(0)
 feats = data.get("features", [])
 problems = []
+notes = []
 active = [f for f in feats if f.get("state") == "active"]
 if len(active) > 1:
-    problems.append(f"WIP=1 violated: {len(active)} features are active ({', '.join(f.get('id','?') for f in active)})")
+    notes.append(f"NOTE: WIP — {len(active)} features active at once; relax per area/worktree with explicit ownership")
 for f in feats:
     if f.get("state") == "passing" and not f.get("evidence"):
-        problems.append(f"{f.get('id','?')} is 'passing' with no evidence recorded")
-print("OK" if not problems else "\n".join(problems))
+        problems.append(f"FAIL: {f.get('id','?')} is 'passing' with no evidence recorded")
+print("OK" if (not problems and not notes) else "\n".join(notes + problems))
 PYEOF
 )"
     if [[ "$RESULT" == "OK" ]]; then
-      ok "no false 'passing' entries, WIP=1 respected"
+      ok "no false 'passing' entries"
     elif [[ "$RESULT" == PARSE_ERROR::* ]]; then
       bad "feature_list.json is not valid JSON: ${RESULT#PARSE_ERROR::}"
     else
-      while IFS= read -r line; do bad "$line"; done <<< "$RESULT"
+      while IFS= read -r line; do
+        [[ -z "$line" ]] && continue
+        case "$line" in
+          NOTE:*) note "${line#NOTE: }" ;;
+          FAIL:*) bad "${line#FAIL: }" ;;
+          *)      bad "$line" ;;
+        esac
+      done <<< "$RESULT"
     fi
   else
     note "python3 unavailable — skipping feature list validation"

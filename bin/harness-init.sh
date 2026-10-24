@@ -26,6 +26,7 @@ LEVEL="lite"
 FORCE=0
 DRYRUN=0
 PROJECT_PURPOSE=""
+WITH_CEREMONY=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -34,6 +35,7 @@ while [[ $# -gt 0 ]]; do
     --purpose) PROJECT_PURPOSE="${2:-}"; shift 2 ;;
     --force)   FORCE=1; shift ;;
     --dry-run) DRYRUN=1; shift ;;
+    --ceremony) WITH_CEREMONY=1; shift ;;
     -h|--help) sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *)         TARGET="$1"; shift ;;
   esac
@@ -242,24 +244,33 @@ if [[ "$LEVEL" == "full" ]]; then
   render "$F/scripts/check-arch.sh"           "$TARGET/scripts/check-arch.sh"
   render "$F/scripts/verify-makefile-gates.sh" "$TARGET/scripts/verify-makefile-gates.sh"
   render "$F/scripts/run-gates.sh"            "$TARGET/scripts/run-gates.sh"
-  render "$F/scripts/verify-agent-notes.sh"   "$TARGET/scripts/verify-agent-notes.sh"
   render "$F/scripts/verify-delivery-doc.sh" "$TARGET/scripts/verify-delivery-doc.sh"
   render "$F/scripts/verify-context-routes.sh" "$TARGET/scripts/verify-context-routes.sh"
-  render "$F/scripts/verify-oracles.sh"        "$TARGET/scripts/verify-oracles.sh"
   render "$F/scripts/gen-feature-list.sh"     "$TARGET/scripts/gen-feature-list.sh"
   render "$F/scripts/verify-coverage.sh"      "$TARGET/scripts/verify-coverage.sh"
   render "$F/scripts/verify-ceremony.sh"      "$TARGET/scripts/verify-ceremony.sh"
-  render "$F/.harness/oracles/README.md"      "$TARGET/.harness/oracles/README.md"
-  render "$F/.harness/oracles/AC-000.example.yaml.txt" "$TARGET/.harness/oracles/AC-000.example.yaml.txt"
   render "$F/.harness/context-routes.json" "$TARGET/.harness/context-routes.json"
   render "$F/scripts/verify-impact.template.mjs" "$TARGET/scripts/verify-impact.template.mjs"
   render "$F/scripts/pre-commit-staged.sh"    "$TARGET/scripts/pre-commit-staged.sh"
   render "$F/scripts/install-githooks.sh"     "$TARGET/scripts/install-githooks.sh"
-  render "$F/.agents/notes/README.md"         "$TARGET/.agents/notes/README.md"
   render "$F/scripts/clean-state-check.sh"    "$TARGET/scripts/clean-state-check.sh"
   render "$F/scripts/session-trace.sh"        "$TARGET/scripts/session-trace.sh"
   render "$KIT_DIR/bin/harness-audit.sh"      "$TARGET/scripts/harness-audit.sh"
   render "$F/.harness/arch-rules.json"        "$TARGET/.harness/arch-rules.json"
+
+  # Self-report ceremony is opt-in. Without --ceremony, the full level ships the
+  # mechanical gates only — no sprint contract, no self-grading rubric, no quality
+  # document, no agent notes, no oracles. A repo that wants them passes --ceremony.
+  if [[ "$WITH_CEREMONY" -eq 1 ]]; then
+    render "$F/scripts/verify-agent-notes.sh"   "$TARGET/scripts/verify-agent-notes.sh"
+    render "$F/scripts/verify-oracles.sh"        "$TARGET/scripts/verify-oracles.sh"
+    render "$F/.harness/oracles/README.md"      "$TARGET/.harness/oracles/README.md"
+    render "$F/.harness/oracles/AC-000.example.yaml.txt" "$TARGET/.harness/oracles/AC-000.example.yaml.txt"
+    render "$F/.agents/notes/README.md"         "$TARGET/.agents/notes/README.md"
+    render "$F/templates/sprint-contract.md"    "$TARGET/templates/sprint-contract.md"
+    render "$F/templates/evaluator-rubric.md"   "$TARGET/templates/evaluator-rubric.md"
+    render "$F/docs/quality-document.md"        "$TARGET/docs/quality-document.md"
+  fi
 
   # Stamp which kit built this. Without it there is no way to answer "which of my
   # repositories still lack the fix?" across a fleet.
@@ -268,9 +279,6 @@ if [[ "$LEVEL" == "full" ]]; then
     tr -d '[:space:]' < "$KIT_DIR/VERSION" > "$TARGET/.harness/kit-version" 2>/dev/null || true
     printf '\n' >> "$TARGET/.harness/kit-version"
   fi
-  render "$F/templates/sprint-contract.md"    "$TARGET/templates/sprint-contract.md"
-  render "$F/templates/evaluator-rubric.md"   "$TARGET/templates/evaluator-rubric.md"
-  render "$F/docs/quality-document.md"        "$TARGET/docs/quality-document.md"
 
   if [[ $DRYRUN -eq 0 ]]; then
     mkdir -p "$TARGET/.harness/traces"
