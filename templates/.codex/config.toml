@@ -14,5 +14,8 @@ approval_policy = "on-failure"
 #   "read-only"       → sin escritura.
 sandbox_mode = "workspace-write"
 
+# Sin búsqueda web: menos latencia y menos superficie de error.
+web_search = "off"
+
 # Deja model / model_provider sin fijar para usar los defaults actuales de Codex.
 # Pínnalos aquí solo si quieres un override por-repo o global.

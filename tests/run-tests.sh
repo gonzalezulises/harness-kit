@@ -1577,6 +1577,10 @@ assert_file "lite writes .codex/config.toml" "$LITE24/.codex/config.toml"
 grep -q 'approval_policy' "$LITE24/.codex/config.toml" \
   && ok "codex config sets an approval policy" \
   || bad "codex config lacks approval_policy"
+assert_file "lite writes .claude/settings.json" "$LITE24/.claude/settings.json"
+grep -q '"deny"' "$LITE24/.claude/settings.json" \
+  && ok "claude settings deny secrets/destructive commands" \
+  || bad "claude settings lacks a deny list"
 grep -q 'check-fast' "$LITE24/Makefile" \
   && ok "lite Makefile has a check-fast target" \
   || bad "lite Makefile lacks check-fast"
@@ -1587,6 +1591,27 @@ assert_file "full writes .codex/config.toml" "$FULL24/.codex/config.toml"
 grep -q 'check-fast' "$FULL24/Makefile" \
   && ok "full Makefile has a check-fast target" \
   || bad "full Makefile lacks check-fast"
+
+cd "$KIT_DIR" || exit 1
+
+# ── 25 — the receipt is local when there is no CI gate ────────────────────────
+echo ""
+echo "${BOLD}25 — the receipt is local when there is no CI gate${RESET}"
+
+LOC="$WORK/local-receipt"; make_fixture "$LOC"
+bash "$KIT_DIR/bin/harness-init.sh" --target "$LOC" --level full >/dev/null 2>&1
+rm -f "$LOC/.github/workflows/required-quality.yml"
+cd "$LOC" || exit 1
+python3 - <<'PYEOF'
+import json
+d = json.load(open("feature_list.json"))
+d["features"][0]["state"] = "active"
+d["features"][0]["layers"] = [{"label":"static","cmd":"true","repair":"n/a"}]
+json.dump(d, open("feature_list.json","w"), indent=2)
+PYEOF
+bash scripts/verify-feature.sh F01 >/dev/null 2>&1
+assert_eq "without a CI gate the local run writes passing" "passing" \
+  "$(python3 -c "import json;print(json.load(open('feature_list.json'))['features'][0]['state'])")"
 
 cd "$KIT_DIR" || exit 1
 
