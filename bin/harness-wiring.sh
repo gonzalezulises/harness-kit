@@ -129,6 +129,7 @@ finish_report() {
   local state="WIRED"
   grep -q $'^warn\t' "$RESULTS" && state="PARTIAL"
   grep -q $'^fail\t' "$RESULTS" && state="NOT_WIRED"
+  [[ "${ARCHIVED:-0}" -eq 1 ]] && state="ARCHIVED"
   if [[ $JSON -eq 1 ]]; then
     python3 - "$SLUG" "$state" "$RESULTS" <<'PY'
 import json, sys
@@ -142,6 +143,7 @@ PY
       WIRED)     printf '%s\n' "${GREEN}${BOLD}WIRED${RESET} — $SLUG está conectado a todo lo que declara." ;;
       PARTIAL)   printf '%s\n' "${YELLOW}${BOLD}PARTIAL${RESET} — nada falla, pero hay integraciones sin verificar." ;;
       NOT_WIRED) printf '%s\n' "${RED}${BOLD}NOT_WIRED${RESET} — falta al menos una integración." ;;
+      ARCHIVED)  printf '%s\n' "${BOLD}ARCHIVED${RESET} — $SLUG está archivado: no se revisa." ;;
     esac
     local last=""
     while IFS=$'\t' read -r st block item ev fix; do
@@ -176,6 +178,9 @@ fi
 [[ -z "$SLUG" || -z "${GH_TOKEN:-}" || -z "${REPO_JSON:-}" ]] && finish_report
 
 DEFAULT_BRANCH="$(printf '%s' "$REPO_JSON" | python3 -c 'import json,sys;print(json.load(sys.stdin)["default_branch"])')"
+if [[ "$(printf '%s' "$REPO_JSON" | python3 -c 'import json,sys;print(json.load(sys.stdin).get("archived"))')" == "True" ]]; then
+  ARCHIVED=1; rec na github "repo" "archivado: fuera de alcance"; finish_report
+fi
 HEAD_SHA="$(gh api "repos/$SLUG/commits/$DEFAULT_BRANCH" --jq .sha 2>/dev/null || true)"
 # File checks read the remote default branch, not the working tree: a stale clone would
 # report a defect that main no longer has (seen on mallol-bim-control, 2026-10-23).
@@ -204,11 +209,10 @@ else
   rec warn github "actualizaciones de seguridad" "apagadas en $SLUG" "gh api -X PUT repos/$SLUG/automated-security-fixes"
 fi
 rules="$(gh api "repos/$SLUG/rules/branches/$DEFAULT_BRANCH" --jq '[.[].type]|join(",")' 2>/dev/null || true)"
+HAS_REQ=0
 if [[ "$rules" == *required_status_checks* ]] || \
    gh api "repos/$SLUG/branches/$DEFAULT_BRANCH/protection/required_status_checks" >/dev/null 2>&1; then
-  rec ok github "check requerido" "$DEFAULT_BRANCH no acepta merges sin checks"
-else
-  rec fail github "check requerido" "nada impide fusionar en $DEFAULT_BRANCH sin CI" "bin/harness-protect.sh $SLUG"
+  HAS_REQ=1
 fi
 
 # ── 3. Quality ───────────────────────────────────────────────────────────────
@@ -270,6 +274,16 @@ print(" ".join(sorted({e["key"] for e in d.get("envs", []) if "production" in (e
 done < <(cd "$TARGET" && find . -maxdepth 3 -path ./node_modules -prune -o \
            -path '*/.vercel/project.json' -print 2>/dev/null | sed 's#^\./##' | sort -u)
 
+ACTIONS_DEPLOY=""
+for wf in $(tracked '.github/workflows/*.yml' '.github/workflows/*.yaml'); do
+  catf "$wf" | grep -qE 'gcloud run deploy|gcloud builds submit|deploy-cloudrun|vercel deploy|vercel --prod|wrangler deploy|fly deploy' \
+    && ACTIONS_DEPLOY="$ACTIONS_DEPLOY ${wf#.github/workflows/}"
+done
+if [[ -n "$ACTIONS_DEPLOY" ]]; then
+  DEPLOY=1
+  rec ok despliegue "GitHub Actions" "despliega desde${ACTIONS_DEPLOY}"
+fi
+
 if [[ -n "$(tracked 'cloudbuild.yaml' '*/cloudbuild.yaml')" ]]; then
   DEPLOY=1
   if [[ -z "$GCP_PROJECT" ]]; then
@@ -284,6 +298,8 @@ if [[ -n "$(tracked 'cloudbuild.yaml' '*/cloudbuild.yaml')" ]]; then
         "")      rec warn despliegue "último build" "no hay build para ${HEAD_SHA:0:7} (¿el cambio no tocó las rutas del trigger?)" ;;
         *)       rec fail despliegue "último build" "${HEAD_SHA:0:7} terminó en $st" "gcloud builds list --project $GCP_PROJECT --region us-central1" ;;
       esac
+    elif [[ -n "$ACTIONS_DEPLOY" ]]; then
+      rec warn despliegue "Cloud Build" "cloudbuild.yaml sin trigger; el despliegue va por GitHub Actions"
     else
       rec fail despliegue "Cloud Build" "hay cloudbuild.yaml pero ningún trigger para $REPO en $GCP_PROJECT" "gcloud builds triggers create github …"
     fi
@@ -295,7 +311,16 @@ if [[ -n "$(tracked 'cloudbuild.yaml' '*/cloudbuild.yaml')" ]]; then
     fi
   fi
 fi
-[[ $DEPLOY -eq 0 ]] && rec warn despliegue "plataforma" "ni Vercel enlazado ni cloudbuild.yaml: no sé cómo llega a producción"
+[[ $DEPLOY -eq 0 ]] && rec warn despliegue "plataforma" "ni Vercel, ni Cloud Build, ni un workflow que despliegue: no detecto producción"
+
+# D10: the merge gate belongs where there is production. Without one, its absence is a note.
+if [[ $HAS_REQ -eq 1 ]]; then
+  rec ok github "check requerido" "$DEFAULT_BRANCH no acepta merges sin checks"
+elif [[ $DEPLOY -eq 1 ]]; then
+  rec fail github "check requerido" "$SLUG despliega a producción y nada impide fusionar en $DEFAULT_BRANCH sin CI" "bin/harness-activate.sh --target $TARGET  (o bin/harness-protect.sh $SLUG)"
+else
+  rec warn github "check requerido" "sin producción detectada: D10 no exige la compuerta aquí"
+fi
 
 # ── 5. Supabase: open signup over `USING true` is invisible to the Advisor ─────
 refs="$(git -C "$TARGET" grep -hoE '[a-z]{20}\.supabase\.co' "$REF" -- . ':!*.lock' ':!*lock.json' 2>/dev/null | sed -e 's/^[^:]*://' -e 's/\.supabase\.co//' | sort -u)"

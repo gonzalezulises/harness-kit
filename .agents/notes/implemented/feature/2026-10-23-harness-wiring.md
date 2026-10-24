@@ -11,6 +11,14 @@ whether a repo is wired to what it needs:
 - cross-wiring: production declares the variables of each integration the code uses, and a
   smoke that marks a login wall as unverified, never green.
 
+**Scope follows D10:**
+- A missing required check fails only where the repo reaches production, detected as a linked
+  Vercel project, a Cloud Build trigger or a workflow that deploys. Elsewhere it is a note.
+- Archived repos report `ARCHIVED` and are not checked.
+
+The first fleet run over 47 Mallol clones marked 38 repos for a missing required check,
+experiments included. A check that fails everywhere gets skimmed, so it was scoped.
+
 Every line names the object it asked about. It reports `WIRED`, `PARTIAL` or `NOT_WIRED`;
 `--json` gives the same for agents, `--quick` re-uses the last full run for session start, and
 `--fleet OWNER` gives one line per local clone.

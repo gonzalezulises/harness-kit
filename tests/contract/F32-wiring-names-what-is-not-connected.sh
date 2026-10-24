@@ -34,16 +34,17 @@ printf 'GIT_EMAIL="dev@acme.test"\nGH_USER="acme"\nGCP_PROJECT=""\nSUPABASE_KEYC
 
 # Each case sets these, and the stubs read them.
 export F32_ALERTS F32_LINK F32_SIGNUP F32_OPEN_POLICIES
+export F32_REQ=on F32_ARCHIVED=false
 
 cat > "$STUBS/gh" <<'SH'
 #!/usr/bin/env bash
 args="$*"
 case "$args" in
   "auth token --user acme") echo "tok" ;;
-  "api repos/acme/app") echo '{"default_branch":"main","permissions":{"admin":true}}' ;;
+  "api repos/acme/app") echo "{\"default_branch\":\"main\",\"archived\":$F32_ARCHIVED,\"permissions\":{\"admin\":true}}" ;;
   "api repos/acme/app/vulnerability-alerts") [[ "$F32_ALERTS" == on ]] || exit 1 ;;
   "api repos/acme/app/automated-security-fixes --jq .enabled") echo true ;;
-  "api repos/acme/app/rules/branches/main --jq"*) echo "required_status_checks" ;;
+  "api repos/acme/app/rules/branches/main --jq"*) [[ "$F32_REQ" == on ]] && echo "required_status_checks" || echo "" ;;
   "api repos/acme/app/commits/main --jq .sha") echo "abc1234def" ;;
   *) exit 1 ;;
 esac
@@ -140,5 +141,22 @@ assert_contains "and says anyone can register and read" "$OUT" "cualquiera se re
 
 run_case on linked "eslint ." open 0
 expect_zero "open signup with no USING true policy is not a failure" $RC
+
+# D10 scope: the merge gate is required where there is production, not everywhere.
+F32_REQ=off
+run_case on linked "eslint ." closed 0
+expect_nonzero "no required check on a repo that deploys is NOT_WIRED" $RC
+assert_contains "and says it deploys to production" "$OUT" "despliega a producción y nada impide"
+mv "$WORK/app/.vercel" "$WORK/vercel.off"
+run_case on linked "eslint ." closed 0
+expect_zero "no required check and no production is only a note" $RC
+mv "$WORK/vercel.off" "$WORK/app/.vercel"
+F32_REQ=on
+
+F32_ARCHIVED=true
+run_case off unlinked "next lint" open 28
+expect_zero "an archived repo is out of scope, whatever its state" $RC
+assert_contains "and says it is archived" "$OUT" "ARCHIVED"
+F32_ARCHIVED=false
 
 finish "F32"
