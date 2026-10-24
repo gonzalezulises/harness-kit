@@ -177,7 +177,7 @@ echo ""
 echo "${BOLD}8. verify-feature gate${RESET}"
 cd "$FULL" || exit 1
 
-# 8a — happy path promotes to passing with evidence
+# 8a — happy path records a LOCAL CLAIM (claimed), never passing
 python3 - <<'PYEOF'
 import json
 d = json.load(open("feature_list.json"))
@@ -187,9 +187,9 @@ json.dump(d, open("feature_list.json","w"), indent=2)
 PYEOF
 bash scripts/verify-feature.sh F01 >/dev/null 2>&1
 STATE="$(python3 -c "import json;print(json.load(open('feature_list.json'))['features'][0]['state'])")"
-assert_eq "passing layers promote the feature" "passing" "$STATE"
+assert_eq "green layers record a local claim, not passing" "claimed" "$STATE"
 EV="$(python3 -c "import json;print(len(json.load(open('feature_list.json'))['features'][0]['evidence']))")"
-[[ "$EV" -gt 0 ]] && ok "evidence recorded on promotion" || bad "no evidence recorded"
+[[ "$EV" -gt 0 ]] && ok "evidence recorded on the claim" || bad "no evidence recorded"
 
 # 8b — a failing layer must NOT promote, and must print repair guidance
 python3 - <<'PYEOF'
@@ -510,6 +510,22 @@ claims "$CLAIM_OK"
 OUT14="$(bash scripts/verify-claims.sh 2>&1)"; RC14=$?
 assert_eq "honest passing claim exits 0" "0" "$RC14"
 assert_contains "reports how many claims were re-verified" "$OUT14" "1"
+
+# 14a-bis — a local claim (claimed) that re-verifies green becomes passing
+CLAIMED_OK='[{"id":"C1","state":"claimed","behavior":"b","evidence":["local claim"],"layers":[{"label":"unit","cmd":"true","repair":"r"}]}]'
+claims "$CLAIMED_OK"
+OUT14b="$(bash scripts/verify-claims.sh 2>&1)"; RC14b=$?
+assert_eq "a green local claim is promoted to passing" "0" "$RC14b"
+assert_eq "claimed -> passing after CI re-verification" "passing" \
+  "$(python3 -c "import json;print(json.load(open('feature_list.json'))['features'][0]['state'])")"
+assert_contains "promotion is announced" "$OUT14b" "promoted to passing"
+
+# 14a-ter — a local claim whose layers fail is a FALSE_CLAIM, not promoted
+claims '[{"id":"C1","state":"claimed","behavior":"b","evidence":["local claim"],"layers":[{"label":"unit","cmd":"false","repair":"r"}]}]'
+bash scripts/verify-claims.sh >/dev/null 2>&1
+assert_eq "a failing local claim is rejected" "1" "$?"
+assert_eq "a failing claim is not promoted" "claimed" \
+  "$(python3 -c "import json;print(json.load(open('feature_list.json'))['features'][0]['state'])")"
 
 # 14b — a hand-written passing state does NOT survive
 claims "$CLAIM_LIE"
