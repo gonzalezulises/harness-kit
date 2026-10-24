@@ -116,14 +116,27 @@ fi
 # `problem` is OK, or names why the claim is unverifiable before anything runs.
 # Every field carries a token: consecutive tabs collapse under IFS whitespace
 # splitting, so an empty middle field would silently shift the columns left.
-CLAIMS_TSV="$("$PY" - "$FL" <<'PYEOF'
+CLAIMS_TSV="$("$PY" - "$FL" "${BASE_FL:-}" <<'PYEOF'
 import json, sys
 data = json.load(open(sys.argv[1]))
+base = {}
+if len(sys.argv) > 2 and sys.argv[2]:
+    try:
+        base = {f.get("id"): f for f in json.load(open(sys.argv[2])).get("features", [])}
+    except Exception:
+        base = {}
 for f in data.get("features", []):
     if f.get("state") not in ("passing", "claimed"):
         continue
     fid = f.get("id", "?")
     state = f.get("state", "passing")
+    # Skip a passing feature whose verification is unchanged from the base: a
+    # prior CI run already re-verified it. Changed layers are caught upstream by
+    # WEAKENED_VERIFICATION, and new/changed code is covered by `make check` in CI.
+    if state == "passing" and fid in base:
+        b = base[fid]
+        if b.get("state") == "passing" and json.dumps(b.get("layers"), sort_keys=True) == json.dumps(f.get("layers"), sort_keys=True):
+            continue
     layers = f.get("layers") or []
     if not layers:
         print("%s\t%s\tNO_LAYERS\t-\t-" % (fid, state)); continue
@@ -137,7 +150,7 @@ PYEOF
 )"
 
 if [[ -z "${CLAIMS_TSV//[$'\n'[:space:]]/}" ]]; then
-  echo "${YELLOW}NO_CLAIMS${RESET} — no feature is marked passing or claimed, so there was nothing to re-verify."
+  echo "${YELLOW}NO_CLAIMS${RESET} — nothing needs re-verification: no claims, and every passing feature is unchanged from the base."
   echo "This is not a pass: it means the repo claims nothing yet."
   exit 0
 fi

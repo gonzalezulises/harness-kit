@@ -149,9 +149,20 @@ FULL="$WORK/full"; make_fixture "$FULL"
 bash "$KIT_DIR/bin/harness-init.sh" --target "$FULL" --level full >/dev/null 2>&1
 for f in Makefile scripts/verify-feature.sh scripts/check-arch.sh \
          scripts/clean-state-check.sh scripts/session-trace.sh \
-         .harness/arch-rules.json templates/sprint-contract.md \
-         templates/evaluator-rubric.md docs/quality-document.md; do
+         .harness/arch-rules.json; do
   assert_file "full wrote $f" "$FULL/$f"
+done
+[[ ! -f "$FULL/templates/sprint-contract.md" ]] && ok "no sprint contract by default" \
+                                                  || bad "sprint contract installed without --ceremony"
+[[ ! -f "$FULL/docs/quality-document.md" ]] && ok "no quality document by default" \
+                                             || bad "quality document installed without --ceremony"
+
+# --ceremony opts into the self-report artifacts
+FULLCER="$WORK/fullceremony"; make_fixture "$FULLCER"
+bash "$KIT_DIR/bin/harness-init.sh" --target "$FULLCER" --level full --ceremony >/dev/null 2>&1
+for f in templates/sprint-contract.md templates/evaluator-rubric.md docs/quality-document.md \
+         scripts/verify-agent-notes.sh scripts/verify-oracles.sh .agents/notes/README.md; do
+  assert_file "--ceremony wrote $f" "$FULLCER/$f"
 done
 
 FULL_SCORE="$(bash "$KIT_DIR/bin/harness-audit.sh" "$FULL" --json 2>/dev/null \
@@ -284,8 +295,9 @@ d["features"][1]["state"] = "active"
 d["features"][1]["evidence"] = []
 json.dump(d, open("feature_list.json","w"), indent=2)
 PYEOF
-OUT5="$(bash scripts/clean-state-check.sh . 2>&1)"
-assert_contains "WIP=1 violation is caught" "$OUT5" "WIP=1 violated"
+OUT5="$(bash scripts/clean-state-check.sh . 2>&1)"; RC5=$?
+assert_contains "WIP is reported as a note" "$OUT5" "features active at once"
+assert_eq "WIP no longer blocks clock-out" "0" "$RC5"
 
 # ═════════════════════════════════════════════════════════════════════════════
 echo ""
@@ -1032,8 +1044,8 @@ rm -f Makefile.broken Makefile.ok
 # kit's own and must not run in scaffolded repos), so the omission is silent by design.
 for tpl in "$KIT_DIR"/templates/full/scripts/*.sh; do
   base="$(basename "$tpl")"
-  # Registered gates are the ones that must travel; helpers are pulled in by name elsewhere.
-  grep -q "bash scripts/$base" "$KIT_DIR/templates/full/scripts/run-gates.sh" || continue
+  # Required gates are the ones that must travel; optional ones may legitimately be absent.
+  grep -q "required|bash scripts/$base" "$KIT_DIR/templates/full/scripts/run-gates.sh" || continue
   assert_file "installed: scripts/$base" "$GATES/scripts/$base"
 done
 
@@ -1612,6 +1624,44 @@ PYEOF
 bash scripts/verify-feature.sh F01 >/dev/null 2>&1
 assert_eq "without a CI gate the local run writes passing" "passing" \
   "$(python3 -c "import json;print(json.load(open('feature_list.json'))['features'][0]['state'])")"
+
+cd "$KIT_DIR" || exit 1
+
+# ── 26 — verify-claims only re-verifies what changed ──────────────────────────
+echo ""
+echo "${BOLD}26 — verify-claims only re-verifies what changed${RESET}"
+
+DIFF="$WORK/difffilter"; make_fixture "$DIFF"
+bash "$KIT_DIR/bin/harness-init.sh" --target "$DIFF" --level full >/dev/null 2>&1
+cd "$DIFF" || exit 1
+BASEFL="$WORK/difffilter-base.json"
+python3 - "$BASEFL" <<'PYEOF'
+import json, sys
+json.dump({"features":[{"id":"C1","state":"passing","behavior":"b","evidence":["e"],
+    "layers":[{"label":"s","cmd":"printf x >> counter.txt","repair":"r"}]}]}, open(sys.argv[1],"w"))
+PYEOF
+python3 - <<'PYEOF'
+import json
+d = json.load(open("feature_list.json"))
+d["features"] = [
+    {"id":"C1","state":"passing","behavior":"b","evidence":["e"],
+     "layers":[{"label":"s","cmd":"printf x >> counter.txt","repair":"r"}]},
+    {"id":"C2","state":"claimed","behavior":"b","evidence":["e"],
+     "layers":[{"label":"s","cmd":"printf y >> counter.txt","repair":"r"}]},
+]
+json.dump(d, open("feature_list.json","w"), indent=2)
+PYEOF
+rm -f counter.txt
+CLAIMS_BASE_FILE="$BASEFL" bash scripts/verify-claims.sh >/dev/null 2>&1
+assert_eq "claims still exit 0" "0" "$?"
+CTR="$(cat counter.txt 2>/dev/null || true)"
+case "$CTR" in
+  *x*) bad "an unchanged passing feature was re-run (should be skipped)" ;;
+  *y*) ok "a new claim was re-verified" ;;
+  *)   bad "the claimed feature's layer did not run" ;;
+esac
+assert_eq "the claimed feature is promoted to passing" "passing" \
+  "$(python3 -c "import json;print(json.load(open('feature_list.json'))['features'][1]['state'])")"
 
 cd "$KIT_DIR" || exit 1
 
