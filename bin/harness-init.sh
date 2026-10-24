@@ -244,6 +244,7 @@ if [[ "$LEVEL" == "full" ]]; then
   render "$F/scripts/verify-oracles.sh"        "$TARGET/scripts/verify-oracles.sh"
   render "$F/scripts/gen-feature-list.sh"     "$TARGET/scripts/gen-feature-list.sh"
   render "$F/scripts/verify-coverage.sh"      "$TARGET/scripts/verify-coverage.sh"
+  render "$F/scripts/verify-ceremony.sh"      "$TARGET/scripts/verify-ceremony.sh"
   render "$F/.harness/oracles/README.md"      "$TARGET/.harness/oracles/README.md"
   render "$F/.harness/oracles/AC-000.example.yaml.txt" "$TARGET/.harness/oracles/AC-000.example.yaml.txt"
   render "$F/.harness/context-routes.json" "$TARGET/.harness/context-routes.json"

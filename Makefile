@@ -45,6 +45,14 @@ verify-coverage: ## Every feature must have a real, non-vacuous verification
 gen-feature-list: ## Derive feature_list.json from the executable spec (features/*.feature)
 	@bash scripts/gen-feature-list.sh
 
+.PHONY: verify-ceremony
+verify-ceremony: ## Keep the paperwork below the ceremony ceiling
+	@bash scripts/verify-ceremony.sh
+
+.PHONY: report
+report: ## Outcome metrics: coverage, completion, false-claim share
+	@bash bin/harness-report.sh .
+
 .PHONY: verify-agent-notes
 verify-agent-notes: ## Agent Notes tree and format gate
 	bash scripts/verify-agent-notes.sh

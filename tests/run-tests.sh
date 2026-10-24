@@ -1529,6 +1529,35 @@ assert_contains "and is named VACUOUS_ASSERTION" "$OUT22e" "VACUOUS_ASSERTION"
 
 cd "$KIT_DIR" || exit 1
 
+# ── 23 — ceremony ceiling and outcome metrics ────────────────────────────────
+echo ""
+echo "${BOLD}23 — ceremony ceiling and outcome metrics${RESET}"
+
+# 23a — a code-heavy repo passes the ceremony gate
+CER="$WORK/ceremony"; make_fixture "$CER"
+bash "$KIT_DIR/bin/harness-init.sh" --target "$CER" --level full >/dev/null 2>&1
+cd "$CER" || exit 1
+bash scripts/verify-ceremony.sh . >/dev/null 2>&1
+assert_eq "a code-heavy repo passes the ceremony gate" "0" "$?"
+
+# 23b — a repo whose prose outweighs its code is CEREMONY_OVER_BUDGET
+BLOB="$WORK/blob"; mkdir -p "$BLOB"; cd "$BLOB" || exit 1
+git init -q . && git config user.email t@t && git config user.name t
+printf 'console.log(1)\n' > index.js
+for i in $(seq 1 100); do printf '# doc %s\n\n' "$i" >> README.md; done
+git add -A >/dev/null && git commit -qm base >/dev/null
+OUT23="$(CEREMONY_MAX_PERCENT=50 bash "$KIT_DIR/scripts/verify-ceremony.sh" . 2>&1)"; RC23=$?
+assert_eq "prose over the ceiling blocks" "1" "$RC23"
+assert_contains "and is named CEREMONY_OVER_BUDGET" "$OUT23" "CEREMONY_OVER_BUDGET"
+
+# 23c — harness-report emits outcome metrics, not a structure score
+cd "$CER" || exit 1
+REP="$(bash "$KIT_DIR/bin/harness-report.sh" . --json 2>/dev/null)"
+RCV="$(echo "$REP" | python3 -c "import json,sys;d=json.load(sys.stdin);print('requirement_coverage' in d and 'false_claim_share' in d and 'verified_completion_ratio' in d)")"
+assert_eq "the report carries the outcome metrics" "True" "$RCV"
+
+cd "$KIT_DIR" || exit 1
+
 # ═════════════════════════════════════════════════════════════════════════════
 echo ""
 echo "${BOLD}────────────────────────────────────────${RESET}"
