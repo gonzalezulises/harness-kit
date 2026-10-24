@@ -1558,6 +1558,38 @@ assert_eq "the report carries the outcome metrics" "True" "$RCV"
 
 cd "$KIT_DIR" || exit 1
 
+# ── 24 — fast gate and Codex config ───────────────────────────────────────────
+echo ""
+echo "${BOLD}24 — fast gate and Codex config${RESET}"
+
+cd "$KIT_DIR" || exit 1
+START24=$SECONDS
+make check-fast >/dev/null 2>&1
+RC24=$?
+ELAPSED24=$((SECONDS-START24))
+assert_eq "make check-fast exits 0 on the kit" "0" "$RC24"
+[[ "$ELAPSED24" -lt 20 ]] && ok "check-fast is fast (${ELAPSED24}s)" \
+                            || bad "check-fast took ${ELAPSED24}s — it is not the fast lane"
+
+LITE24="$WORK/lite24"; make_fixture "$LITE24"
+bash "$KIT_DIR/bin/harness-init.sh" --target "$LITE24" --level lite >/dev/null 2>&1
+assert_file "lite writes .codex/config.toml" "$LITE24/.codex/config.toml"
+grep -q 'approval_policy' "$LITE24/.codex/config.toml" \
+  && ok "codex config sets an approval policy" \
+  || bad "codex config lacks approval_policy"
+grep -q 'check-fast' "$LITE24/Makefile" \
+  && ok "lite Makefile has a check-fast target" \
+  || bad "lite Makefile lacks check-fast"
+
+FULL24="$WORK/full24"; make_fixture "$FULL24"
+bash "$KIT_DIR/bin/harness-init.sh" --target "$FULL24" --level full >/dev/null 2>&1
+assert_file "full writes .codex/config.toml" "$FULL24/.codex/config.toml"
+grep -q 'check-fast' "$FULL24/Makefile" \
+  && ok "full Makefile has a check-fast target" \
+  || bad "full Makefile lacks check-fast"
+
+cd "$KIT_DIR" || exit 1
+
 # ═════════════════════════════════════════════════════════════════════════════
 echo ""
 echo "${BOLD}────────────────────────────────────────${RESET}"

@@ -10,7 +10,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT_DIR"
 
 INSTALL_CMD=""
-VERIFY_CMD="bash tests/run-tests.sh"
+VERIFY_CMD="make check-fast"
 START_CMD="make check"
 
 echo "== Working directory =="

@@ -19,8 +19,12 @@ test: ## Run the test suite
 	{{TEST_CMD}}
 
 .PHONY: check
-check: ## Full verification pipeline — must exit 0 before every commit
+check: ## Full verification pipeline — run before clock-out and PR
 	{{VERIFY_CMD}}
+
+.PHONY: check-fast
+check-fast: ## Fast gate for every commit: unit tests (seconds)
+	{{TEST_CMD}}
 
 .PHONY: verify-claims
 verify-claims: ## Re-run every feature the repo claims is passing. CI runs this too.

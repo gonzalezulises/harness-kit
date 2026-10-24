@@ -167,6 +167,7 @@ echo ""
 # ── Lite layer: the merge gate, nothing else ────────────────────────────────
 if [[ "$LEVEL" == "lite" ]]; then
   render "$L/AGENTS.md"                  "$TARGET/AGENTS.md"
+  render "$KIT_DIR/templates/.codex/config.toml" "$TARGET/.codex/config.toml"
   render "$M/CLAUDE.md"                  "$TARGET/CLAUDE.md"
   render "$M/DECISIONS.md"               "$TARGET/DECISIONS.md"
   render "$L/feature_list.json"          "$TARGET/feature_list.json"
@@ -215,6 +216,7 @@ else
 fi
 
 render "$M/CLAUDE.md"                  "$TARGET/CLAUDE.md"
+render "$KIT_DIR/templates/.codex/config.toml" "$TARGET/.codex/config.toml"
 render "$M/init.sh"                    "$TARGET/init.sh"
 render "$M/PROGRESS.md"                "$TARGET/PROGRESS.md"
 render "$M/feature_list.json"          "$TARGET/feature_list.json"

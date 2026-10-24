@@ -12,12 +12,11 @@ sessions. This file is a router, not a manual — details live in `docs/`.
 
 ## Verification
 
-```bash
-make check
-```
+- **Before every commit:** `make check-fast` (syntax + JSON, seconds).
+- **Before clock-out and PR:** `make check` (full suite + pack matrices).
 
-must exit 0 before every commit and at every clock-out. CI runs it, plus
-`verify-claims` and `verify-decisions`, on a runner an agent cannot edit.
+CI runs `make check`, plus `verify-claims` and `verify-decisions`, on a runner an
+agent cannot edit.
 
 ## Working rules
 
