@@ -198,6 +198,18 @@ comparables. La versión de rúbrica viaja en la salida, así que un `71/74` ano
 sigue siendo legible en vez de competir en silencio con un total nuevo. Sale con 1 si falla
 cualquier check crítico.
 
+El score mide **lo que el repo dice** (documentación). Junto a él, el auditor ahora reporta
+una **escalera de evidencia (`posture`)** que mide **lo que el repo tiene cableado y protegido
+para observar de verdad**: `0` nada → `1` static → `2` runtime → `3` behaviour (e2e real o
+Gherkin) → `4` señal externa (Sentry/k6), más un flag `protected` que dice si el veredicto
+está fuera del alcance del agente. `bin/harness-report.sh` añade las **métricas de outcome**
+que el score estructural no puede producir: cobertura de requisitos, ratio de completación
+verificada y tasa de afirmaciones falsas.
+
+El ciclo de estado es ahora `not_started → active → claimed → passing`: `verify-feature.sh`
+solo escribe `claimed` (una afirmación local); `verify-claims.sh`, en CI sobre la base
+protegida, es lo único que escribe `passing` (el recibo).
+
 Los archivos de instrucciones se reconocen en inglés *o* español, y las reglas documentadas
 en archivos enlazados de `docs/` cuentan para el score: el archivo de entrada debe quedarse
 corto.
@@ -209,15 +221,19 @@ corto.
 ```
 bin/harness-activate.sh   activación en un comando (detecta, pregunta una vez, instala)
 bin/harness-status.sh     qué está realmente protegido, ahora mismo
-bin/harness-audit.sh      auditor de 84 checks, sin dependencias
+bin/harness-audit.sh      auditor de 84 checks + escalera de evidencia (posture), sin dependencias
+bin/harness-report.sh     métricas de outcome: cobertura, VCR, tasa de afirmaciones falsas
 bin/harness-protect.sh    instala los rulesets y los verifica por GET
 bin/harness-init.sh       scaffolder (--level lite|minimal|full)
 bin/harness-wiring.sh     integraciones y cuenta correcta, contra los sistemas vivos (--quick | --json | --fleet OWNER)
-scripts/verify-feature.sh la única ruta a passing; hace cumplir los presupuestos
-scripts/verify-claims.sh  re-verifica todo passing declarado
+scripts/verify-feature.sh registra un *claim* local; hace cumplir los presupuestos
+scripts/verify-claims.sh  re-verifica claims y passing; es lo único que escribe passing
+scripts/gen-feature-list.sh  deriva feature_list.json desde la especificación Gherkin
+scripts/verify-coverage.sh   ningún requisito sin verificación real (trazabilidad)
+scripts/verify-ceremony.sh   techo de papeleo: la prosa no puede superar el 35 %
+scripts/verify-decisions.sh  ledger append-only
 scripts/verify-version-sync.sh  las cuatro copias de la versión deben coincidir
 scripts/sync-version.sh   propaga la versión publicada desde el manifiesto
-scripts/verify-decisions.sh  ledger append-only
 templates/minimal/        contrato base y archivos de estado
 templates/full/           Makefile, compuertas, workflow, payloads de ruleset
 packs/gherkin/            especificación ejecutable + matriz de modos de falla

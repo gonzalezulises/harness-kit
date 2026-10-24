@@ -177,7 +177,7 @@ echo ""
 echo "${BOLD}8. verify-feature gate${RESET}"
 cd "$FULL" || exit 1
 
-# 8a — happy path promotes to passing with evidence
+# 8a — happy path records a LOCAL CLAIM (claimed), never passing
 python3 - <<'PYEOF'
 import json
 d = json.load(open("feature_list.json"))
@@ -187,9 +187,9 @@ json.dump(d, open("feature_list.json","w"), indent=2)
 PYEOF
 bash scripts/verify-feature.sh F01 >/dev/null 2>&1
 STATE="$(python3 -c "import json;print(json.load(open('feature_list.json'))['features'][0]['state'])")"
-assert_eq "passing layers promote the feature" "passing" "$STATE"
+assert_eq "green layers record a local claim, not passing" "claimed" "$STATE"
 EV="$(python3 -c "import json;print(len(json.load(open('feature_list.json'))['features'][0]['evidence']))")"
-[[ "$EV" -gt 0 ]] && ok "evidence recorded on promotion" || bad "no evidence recorded"
+[[ "$EV" -gt 0 ]] && ok "evidence recorded on the claim" || bad "no evidence recorded"
 
 # 8b — a failing layer must NOT promote, and must print repair guidance
 python3 - <<'PYEOF'
@@ -511,6 +511,22 @@ OUT14="$(bash scripts/verify-claims.sh 2>&1)"; RC14=$?
 assert_eq "honest passing claim exits 0" "0" "$RC14"
 assert_contains "reports how many claims were re-verified" "$OUT14" "1"
 
+# 14a-bis — a local claim (claimed) that re-verifies green becomes passing
+CLAIMED_OK='[{"id":"C1","state":"claimed","behavior":"b","evidence":["local claim"],"layers":[{"label":"unit","cmd":"true","repair":"r"}]}]'
+claims "$CLAIMED_OK"
+OUT14b="$(bash scripts/verify-claims.sh 2>&1)"; RC14b=$?
+assert_eq "a green local claim is promoted to passing" "0" "$RC14b"
+assert_eq "claimed -> passing after CI re-verification" "passing" \
+  "$(python3 -c "import json;print(json.load(open('feature_list.json'))['features'][0]['state'])")"
+assert_contains "promotion is announced" "$OUT14b" "promoted to passing"
+
+# 14a-ter — a local claim whose layers fail is a FALSE_CLAIM, not promoted
+claims '[{"id":"C1","state":"claimed","behavior":"b","evidence":["local claim"],"layers":[{"label":"unit","cmd":"false","repair":"r"}]}]'
+bash scripts/verify-claims.sh >/dev/null 2>&1
+assert_eq "a failing local claim is rejected" "1" "$?"
+assert_eq "a failing claim is not promoted" "claimed" \
+  "$(python3 -c "import json;print(json.load(open('feature_list.json'))['features'][0]['state'])")"
+
 # 14b — a hand-written passing state does NOT survive
 claims "$CLAIM_LIE"
 OUTL="$(bash scripts/verify-claims.sh 2>&1)"; RCL=$?
@@ -706,6 +722,21 @@ NOSTOP="$(bash "$KIT_DIR/bin/harness-audit.sh" "$CLAIMS" --json 2>/dev/null | py
 import json,sys
 print(next(c['result'] for c in json.load(sys.stdin)['checks'] if c['id']=='enf.stopcond'))" 2>/dev/null)"
 assert_eq "budgets without stop_condition is caught" "fail" "$NOSTOP"
+
+# 16g — verification posture: the evidence ladder the documentation score cannot fake
+POST="$WORK/posture"; make_fixture "$POST"
+bash "$KIT_DIR/bin/harness-init.sh" --target "$POST" --level full >/dev/null 2>&1
+POST_JSON="$(bash "$KIT_DIR/bin/harness-audit.sh" "$POST" --json 2>/dev/null)"
+POST_LEVEL="$(echo "$POST_JSON" | python3 -c "import json,sys;print(json.load(sys.stdin)['posture']['level'])")"
+POST_PROT="$(echo "$POST_JSON" | python3 -c "import json,sys;print('true' if json.load(sys.stdin)['posture']['protected'] else 'false')")"
+assert_eq "full scaffold reports a runtime posture (level 2)" "2" "$POST_LEVEL"
+assert_eq "full scaffold reports protected=true" "true" "$POST_PROT"
+
+EMPTY_POST="$(bash "$KIT_DIR/bin/harness-audit.sh" "$EMPTY" --json 2>/dev/null)"
+EMPTY_LEVEL="$(echo "$EMPTY_POST" | python3 -c "import json,sys;print(json.load(sys.stdin)['posture']['level'])")"
+EMPTY_PROT="$(echo "$EMPTY_POST" | python3 -c "import json,sys;print('true' if json.load(sys.stdin)['posture']['protected'] else 'false')")"
+assert_eq "an empty repo has posture 0" "0" "$EMPTY_LEVEL"
+assert_eq "an empty repo is not protected" "false" "$EMPTY_PROT"
 
 # ═════════════════════════════════════════════════════════════════════════════
 echo ""
@@ -1427,6 +1458,103 @@ assert_eq "a retired criterion is not enforced" "0" \
 O18F="$(bash scripts/verify-oracles.sh --list 2>&1)"
 assert_eq "--list never blocks" "0" "$?"
 assert_contains "and shows the status" "$O18F" "RETIRED"
+
+cd "$KIT_DIR" || exit 1
+
+# ── 22 — spec-first: derived state and requirement traceability ───────────────
+echo ""
+echo "${BOLD}22 — spec-first and traceability${RESET}"
+
+GEN="$WORK/gen"; make_fixture "$GEN"
+bash "$KIT_DIR/bin/harness-init.sh" --target "$GEN" --level full >/dev/null 2>&1
+cd "$GEN" || exit 1
+
+# 22a — gen-feature-list derives one feature entry per Gherkin scenario
+mkdir -p features
+cat > features/cart.feature <<'EOF'
+Feature: Shopping cart
+
+  Scenario: add an item
+    Given an empty cart
+    When I add a widget
+    Then the cart has one item
+
+  Scenario: remove an item
+    Given a cart with one item
+    When I remove it
+    Then the cart is empty
+EOF
+bash scripts/gen-feature-list.sh >/dev/null 2>&1
+N22="$(python3 -c "import json;print(len(json.load(open('feature_list.json'))['features']))")"
+assert_eq "one entry per scenario is derived" "2" "$N22"
+CMD22="$(python3 -c "import json;print(json.load(open('feature_list.json'))['features'][0]['layers'][0]['cmd'])")"
+assert_eq "each entry is wired to the gherkin gate" "bin/gherkin-check --expect 2" "$CMD22"
+
+# 22b — regeneration preserves existing states (derived, never reset)
+python3 - <<'PYEOF'
+import json
+d = json.load(open("feature_list.json"))
+d["features"][0]["state"] = "passing"
+json.dump(d, open("feature_list.json","w"), indent=2)
+PYEOF
+bash scripts/gen-feature-list.sh >/dev/null 2>&1
+assert_eq "regeneration preserves a passing state" "passing" \
+  "$(python3 -c "import json;print(json.load(open('feature_list.json'))['features'][0]['state'])")"
+
+# 22c — verify-coverage passes a repo whose features carry real checks
+bash scripts/verify-coverage.sh >/dev/null 2>&1
+assert_eq "covered features pass the traceability gate" "0" "$?"
+
+# 22d — a feature with no verification is UNCOVERED_REQUIREMENT
+python3 - <<'PYEOF'
+import json
+d = json.load(open("feature_list.json"))
+d["features"] = [{"id":"C1","state":"not_started","behavior":"b","verification":[],"layers":[],"evidence":[]}]
+json.dump(d, open("feature_list.json","w"), indent=2)
+PYEOF
+OUT22="$(bash scripts/verify-coverage.sh 2>&1)"; RC22=$?
+assert_eq "uncovered requirement exits 1" "1" "$RC22"
+assert_contains "and is named UNCOVERED_REQUIREMENT" "$OUT22" "UNCOVERED_REQUIREMENT"
+
+# 22e — a feature whose only check is a no-op is VACUOUS_ASSERTION
+python3 - <<'PYEOF'
+import json
+d = json.load(open("feature_list.json"))
+d["features"] = [{"id":"C1","state":"not_started","behavior":"b","verification":["check"],"layers":[{"label":"x","cmd":"true","repair":"r"}],"evidence":[]}]
+json.dump(d, open("feature_list.json","w"), indent=2)
+PYEOF
+OUT22e="$(bash scripts/verify-coverage.sh 2>&1)"; RC22e=$?
+assert_eq "a vacuous assertion exits 2" "2" "$RC22e"
+assert_contains "and is named VACUOUS_ASSERTION" "$OUT22e" "VACUOUS_ASSERTION"
+
+cd "$KIT_DIR" || exit 1
+
+# ── 23 — ceremony ceiling and outcome metrics ────────────────────────────────
+echo ""
+echo "${BOLD}23 — ceremony ceiling and outcome metrics${RESET}"
+
+# 23a — a code-heavy repo passes the ceremony gate
+CER="$WORK/ceremony"; make_fixture "$CER"
+bash "$KIT_DIR/bin/harness-init.sh" --target "$CER" --level full >/dev/null 2>&1
+cd "$CER" || exit 1
+bash scripts/verify-ceremony.sh . >/dev/null 2>&1
+assert_eq "a code-heavy repo passes the ceremony gate" "0" "$?"
+
+# 23b — a repo whose prose outweighs its code is CEREMONY_OVER_BUDGET
+BLOB="$WORK/blob"; mkdir -p "$BLOB"; cd "$BLOB" || exit 1
+git init -q . && git config user.email t@t && git config user.name t
+printf 'console.log(1)\n' > index.js
+for i in $(seq 1 100); do printf '# doc %s\n\n' "$i" >> README.md; done
+git add -A >/dev/null && git commit -qm base >/dev/null
+OUT23="$(CEREMONY_MAX_PERCENT=50 bash "$KIT_DIR/scripts/verify-ceremony.sh" . 2>&1)"; RC23=$?
+assert_eq "prose over the ceiling blocks" "1" "$RC23"
+assert_contains "and is named CEREMONY_OVER_BUDGET" "$OUT23" "CEREMONY_OVER_BUDGET"
+
+# 23c — harness-report emits outcome metrics, not a structure score
+cd "$CER" || exit 1
+REP="$(bash "$KIT_DIR/bin/harness-report.sh" . --json 2>/dev/null)"
+RCV="$(echo "$REP" | python3 -c "import json,sys;d=json.load(sys.stdin);print('requirement_coverage' in d and 'false_claim_share' in d and 'verified_completion_ratio' in d)")"
+assert_eq "the report carries the outcome metrics" "True" "$RCV"
 
 cd "$KIT_DIR" || exit 1
 

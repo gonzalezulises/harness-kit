@@ -430,15 +430,16 @@ recommended wip.vcrtarget "'vcr' target exists (verified completion ratio)" \
 
 _vcr_res="fail"; _vcr_desc="VCR: no feature_list found, ratio cannot be computed"
 if [[ -n "$FLPATH" ]]; then
-  _va=0; _vp=0
+  _va=0; _vc=0; _vp=0
   _va="$(count_matches '"state"[[:space:]]*:[[:space:]]*"active"' "$FLPATH")"
+  _vc="$(count_matches '"state"[[:space:]]*:[[:space:]]*"claimed"' "$FLPATH")"
   _vp="$(count_matches '"state"[[:space:]]*:[[:space:]]*"passing"' "$FLPATH")"
-  _va="$(echo "$_va" | tr -d ' \n')"; _vp="$(echo "$_vp" | tr -d ' \n')"
-  _vtot=$(( _va + _vp ))
+  _va="$(echo "$_va" | tr -d ' \n')"; _vc="$(echo "$_vc" | tr -d ' \n')"; _vp="$(echo "$_vp" | tr -d ' \n')"
+  _vtot=$(( _va + _vc + _vp ))
   if [[ "$_vtot" -eq 0 ]]; then
     _vcr_res="pass"; _vcr_desc="VCR: no activated features yet (clean slate)"
-  elif [[ "$_va" -gt 0 ]]; then
-    _vcr_res="fail"; _vcr_desc="VCR = ${_vp}/${_vtot} — ${_va} active feature(s) not yet passing"
+  elif [[ "$_va" -gt 0 || "$_vc" -gt 0 ]]; then
+    _vcr_res="fail"; _vcr_desc="VCR = ${_vp}/${_vtot} — ${_va} active + ${_vc} claimed not yet CI-verified"
   else
     _vcr_res="pass"; _vcr_desc="VCR = ${_vp}/${_vtot} = 1.0 — all activated features are passing"
   fi
@@ -686,6 +687,61 @@ recommended enf.wfdoc "Workflow-tampering rule documented" \
   "Add to $IPATH: agents must never edit .github/workflows/required-quality.yml — a skipped job counts as a passing check."
 
 # ═════════════════════════════════════════════════════════════════════════════
+# Verification posture — the evidence ladder.
+# The checks above measure what the repository *says* (documentation). This
+# measures what it has *wired and protected* to actually observe behaviour: the
+# strongest rung of verification machinery present. A repo can score 84/84 on
+# documentation and sit at posture 0 — and the reverse. The runner, not the
+# auditor, observes the run; this attests that the machinery is in place.
+# ═════════════════════════════════════════════════════════════════════════════
+_posture_e2e_real() {
+  # An e2e target whose body is a fail-closed TODO is not evidence of e2e.
+  local f body
+  for f in "$REPO/Makefile" "$REPO/makefile"; do
+    [[ -f "$f" ]] || continue
+    body="$(awk '/^e2e[[:space:]]*:/{flag=1;next} /^[a-zA-Z0-9_.-]+[[:space:]]*:/{flag=0} flag' "$f")"
+    [[ -n "$body" ]] && ! grep -qiE 'TODO|not implemented' <<<"$body" && { echo "pass"; return; }
+  done
+  echo "fail"
+}
+
+POSTURE_LEVEL=0
+POSTURE_LABEL="none — no verification wired"
+POSTURE_PROTECTED="false"
+
+if [[ "$(makefile_has_target "check")" == "pass" || "$(makefile_has_target "test")" == "pass" ]]; then
+  POSTURE_LEVEL=1
+  POSTURE_LABEL="static — a check/test target is wired"
+fi
+if [[ "$POSTURE_LEVEL" -ge 1 ]]; then
+  if [[ "$(any_file_match "init.sh" "scripts/init.sh" "bin/init.sh")" == "pass" \
+     || "$(makefile_has_target "dev")" == "pass" \
+     || "$(makefile_has_target "start")" == "pass" ]]; then
+    POSTURE_LEVEL=2
+    POSTURE_LABEL="runtime — the app has a wired startup path"
+  fi
+fi
+if [[ "$POSTURE_LEVEL" -ge 2 ]]; then
+  if [[ "$(_posture_e2e_real)" == "pass" \
+     || "$(any_file_match "bin/gherkin-check" "scripts/gherkin-check")" == "pass" ]]; then
+    POSTURE_LEVEL=3
+    POSTURE_LABEL="behaviour — executable specs or a real e2e target are wired"
+  fi
+fi
+if [[ "$POSTURE_LEVEL" -ge 3 ]]; then
+  if [[ "$(any_file_match "bin/sentry-check" "scripts/sentry-check" "bin/perf-check" "scripts/perf-check")" == "pass" ]]; then
+    POSTURE_LEVEL=4
+    POSTURE_LABEL="external signal — observability or performance evidence is wired"
+  fi
+fi
+if [[ "$(file_exists "scripts/verify-claims.sh")" == "pass" \
+   && "$(file_exists "$WF_PATH")" == "pass" \
+   && "$(file_exists ".github/rulesets/required-quality-integrity.json")" == "pass" \
+   && "$(actions_pinned)" == "pass" ]]; then
+  POSTURE_PROTECTED="true"
+fi
+
+# ═════════════════════════════════════════════════════════════════════════════
 # Reporting
 # ═════════════════════════════════════════════════════════════════════════════
 CP=0; CF=0; RP=0; RF=0
@@ -710,6 +766,8 @@ if [[ "$FORMAT" == "json" ]]; then
   printf '  "repo": "%s",\n' "$(json_escape "$REPO")"
   printf '  "score": { "passed": %d, "total": %d, "critical_passed": %d, "critical_total": %d, "recommended_passed": %d, "recommended_total": %d },\n' \
     "$TOTAL_PASS" "$TOTAL" "$CP" "$((CP+CF))" "$RP" "$((RP+RF))"
+  printf '  "posture": { "level": %d, "label": "%s", "protected": %s },\n' \
+    "$POSTURE_LEVEL" "$(json_escape "$POSTURE_LABEL")" "$POSTURE_PROTECTED"
   printf '  "checks": [\n'
   for i in "${!CHK_ID[@]}"; do
     printf '    { "id": "%s", "severity": "%s", "group": "%s", "description": "%s", "result": "%s", "fix": "%s" }' \
@@ -744,6 +802,12 @@ else
     "$BOLD" "$RESET" "$TOTAL_PASS" "$TOTAL" "$RUBRIC_VERSION"
   printf '  Critical:    %d / %d\n' "$CP" "$((CP+CF))"
   printf '  Recommended: %d / %d\n' "$RP" "$((RP+RF))"
+  printf '  Posture:     %d/4 (%s)\n' "$POSTURE_LEVEL" "$POSTURE_LABEL"
+  if [[ "$POSTURE_PROTECTED" == "true" ]]; then
+    printf '  Protected:   yes — the verdict is enforced out of the agent reach\n'
+  else
+    printf '  Protected:   no — the agent can still edit how it is judged\n'
+  fi
   echo "${BOLD}────────────────────────────────────────${RESET}"
 
   if [[ $((CF + RF)) -gt 0 ]]; then

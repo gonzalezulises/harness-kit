@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
-# verify-feature.sh — the gate between "I wrote code" and "the feature passes".
+# verify-feature.sh — the gate between "I wrote code" and "I claim it passes".
 #
 # Usage:
-#   scripts/verify-feature.sh F01     # run every layer, gate to passing on success
+#   scripts/verify-feature.sh F01     # run every layer, gate to `claimed` on success
 #   scripts/verify-feature.sh --ratio # print the Verified Completion Ratio
 #
-# This script is the ONLY thing allowed to set a feature's state to "passing".
-# Agents must never hand-edit that field: a state written by hand is a claim,
-# a state written here is a receipt.
+# This script records a LOCAL CLAIM. It may set a feature's state to `claimed`,
+# never to `passing`: `passing` is a receipt that only CI (verify-claims.sh, on the
+# protected base) may issue after re-running the layers. A state written by hand is
+# a claim; a state that survives CI re-verification is a receipt.
 
 set -euo pipefail
 
@@ -37,8 +38,9 @@ import json, sys
 data = json.load(open(sys.argv[1]))
 feats = data.get("features", [])
 active  = [f for f in feats if f.get("state") == "active"]
+claimed = [f for f in feats if f.get("state") == "claimed"]
 passing = [f for f in feats if f.get("state") == "passing"]
-activated = len(active) + len(passing)
+activated = len(active) + len(claimed) + len(passing)
 if activated == 0:
     print("VCR: n/a — no features activated yet")
 else:
@@ -46,6 +48,8 @@ else:
     print(f"VCR = {len(passing)}/{activated} = {ratio:.2f}")
     for f in active:
         print(f"  still active: {f.get('id')} — {f.get('behavior','')[:60]}")
+    for f in claimed:
+        print(f"  claimed (awaiting CI): {f.get('id')} — {f.get('behavior','')[:60]}")
 if len(active) > 1:
     print("WIP=1 VIOLATION: more than one feature is active.")
     sys.exit(1)
@@ -219,7 +223,10 @@ PYEOF
   fi
 done <<< "$LAYERS_TSV"
 
-# ── All layers green: gate the state to passing, with evidence ───────────────
+# ── All layers green: record a LOCAL claim, never `passing` ───────────────────
+# `passing` is a receipt that only CI may issue. This records that the layers ran
+# and were green *here*, which is a claim until verify-claims.sh re-runs them on
+# the protected runner and observes the same result.
 COMMIT="$(git rev-parse --short HEAD 2>/dev/null || echo "no-git")"
 STAMP="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
@@ -229,9 +236,9 @@ path, fid, commit, stamp = sys.argv[1:5]
 data = json.load(open(path))
 for f in data.get("features", []):
     if f.get("id") == fid:
-        f["state"] = "passing"
+        f["state"] = "claimed"
         f.setdefault("evidence", []).append(
-            f"all layers passed — commit {commit}, {stamp}"
+            f"local claim: all layers passed — commit {commit}, {stamp}"
         )
         # Green run: the budget measures the current attempt, not repo history.
         if "ledger" in f:
@@ -243,5 +250,7 @@ with open(path, "w") as fh:
 PYEOF
 
 echo ""
-echo "${GREEN}${BOLD}$FEATURE_ID -> passing${RESET} (evidence recorded in $FL)"
-echo "Next: update PROGRESS.md and commit."
+echo "${YELLOW}${BOLD}$FEATURE_ID -> claimed${RESET} (local claim recorded in $FL)"
+echo "This is a CLAIM, not a receipt. CI (scripts/verify-claims.sh) re-runs the"
+echo "layers on the protected base and is the only thing that may set 'passing'."
+echo "Next: commit, open a PR, and let the Required quality check verify it."

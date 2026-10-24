@@ -59,6 +59,8 @@ GATES=(
   "agent-notes-tree|quick full|required|bash scripts/verify-agent-notes.sh"
   "arch-boundaries|quick full|required|bash scripts/check-arch.sh"
   "makefile-gates|quick full|required|bash scripts/verify-makefile-gates.sh"
+  "coverage|quick full|required|bash scripts/verify-coverage.sh"
+  "ceremony|quick full|required|bash scripts/verify-ceremony.sh"
   # Optional: it checks the kit's own release versions. The kit ships the script and runs it;
   # an installation has neither the script nor a release manifest, so there it stands down.
   "version-sync|quick full|optional|bash scripts/verify-version-sync.sh"
