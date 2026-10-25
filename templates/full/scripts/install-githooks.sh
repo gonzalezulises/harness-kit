@@ -25,6 +25,9 @@ mkdir -p .githooks
 if [[ ! -f .githooks/pre-commit ]]; then
   printf '#!/usr/bin/env bash\nexec bash scripts/pre-commit-staged.sh\n' > .githooks/pre-commit
 fi
-chmod +x .githooks/pre-commit
+if [[ ! -f .githooks/post-commit ]]; then
+  printf '#!/usr/bin/env bash\nexec bash scripts/post-commit-eval.sh\n' > .githooks/post-commit
+fi
+chmod +x .githooks/pre-commit .githooks/post-commit
 git config core.hooksPath .githooks
-echo "installed: core.hooksPath=.githooks (pre-commit → scripts/pre-commit-staged.sh)"
+echo "installed: core.hooksPath=.githooks (pre-commit + post-commit eval)"
