@@ -1568,6 +1568,16 @@ REP="$(bash "$KIT_DIR/bin/harness-report.sh" . --json 2>/dev/null)"
 RCV="$(echo "$REP" | python3 -c "import json,sys;d=json.load(sys.stdin);print('requirement_coverage' in d and 'false_claim_share' in d and 'verified_completion_ratio' in d)")"
 assert_eq "the report carries the outcome metrics" "True" "$RCV"
 
+# 23d — a hand-maintained state file that outgrows its cap blocks
+SFP="$WORK/statebloat"; make_fixture "$SFP"
+bash "$KIT_DIR/bin/harness-init.sh" --target "$SFP" --level full >/dev/null 2>&1
+cd "$SFP" || exit 1
+for i in $(seq 1 2100); do echo "line $i" >> PROGRESS.md; done
+git add -A >/dev/null 2>&1
+OUT23d="$(STATE_FILE_MAX_LINES=2000 bash scripts/verify-ceremony.sh . 2>&1)"; RC23d=$?
+assert_eq "a bloated state file blocks" "1" "$RC23d"
+assert_contains "and is named STATE_FILE_TOO_LARGE" "$OUT23d" "STATE_FILE_TOO_LARGE"
+
 cd "$KIT_DIR" || exit 1
 
 # ── 24 — fast gate and Codex config ───────────────────────────────────────────

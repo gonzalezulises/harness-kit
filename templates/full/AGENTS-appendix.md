@@ -6,12 +6,16 @@
 This repo runs the full harness. Everything above still applies; the sections below add
 the mechanical gates.
 
+The **Oracles**, **Agent Notes**, **Observability** and **Quality tracking** sections
+below are opt-in: they only apply to a repo activated with `--ceremony`.
+
 ## Commands
 
 | Command | Purpose |
 |---|---|
-| `make check` | Full verification pipeline. Must exit 0 before every commit. |
-| `make verify-feature F=F01` | Run a feature's layers and gate it to `passing`. |
+| `make check-fast` | Fast gate. Run before every commit (seconds). |
+| `make check` | Full verification pipeline. Run before clock-out and PR. |
+| `make verify-feature F=F01` | Run a feature's layers and record the receipt (`claimed`, or `passing` without CI). |
 | `make vcr` | Verified Completion Ratio — passing / activated. |
 | `make check-arch` | Enforce architectural boundaries. |
 | `make clean-check` | Clock-out gate. |
