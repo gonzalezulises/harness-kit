@@ -11,7 +11,7 @@
 #
 # Exit codes:
 #   0  ceremony footprint is under the ceiling
-#   1  CEREMONY_OVER_BUDGET — prose exceeds the ceiling share
+#   1  CEREMONY_OVER_BUDGET or STATE_FILE_TOO_LARGE
 #  66  not a git repository, or nothing tracked
 set -uo pipefail
 
@@ -24,6 +24,22 @@ git rev-parse --git-dir >/dev/null 2>&1 || { echo "verify-ceremony: not a git re
 FILES="$(mktemp)"; CER="$(mktemp)"; trap 'rm -f "$FILES" "$CER"' EXIT
 git ls-files > "$FILES"
 grep -E '\.(md|markdown)$|(^|/)feature_list\.json$' "$FILES" > "$CER" || true
+
+# ── Per-file state cap ────────────────────────────────────────────────────────
+# A hand-maintained state file that outgrows a few hundred lines stops being a
+# summary and becomes a second source of truth to reconcile with the code. It
+# should be derived (scripts/gen-feature-list.sh) or trimmed, never curated at
+# tens of kilobytes by hand.
+STATE_MAX_LINES="${STATE_FILE_MAX_LINES:-2000}"
+for sf in feature_list.json PROGRESS.md DECISIONS.md; do
+  [[ -f "$sf" ]] || continue
+  n="$(wc -l < "$sf" | tr -d ' ')"
+  if [[ "$n" -gt "$STATE_MAX_LINES" ]]; then
+    echo "STATE_FILE_TOO_LARGE: $sf is $n lines (ceiling $STATE_MAX_LINES)."
+    echo "  Derive it (scripts/gen-feature-list.sh) or trim it to a short summary."
+    exit 1
+  fi
+done
 
 CEREMONY=0; TOTAL=0
 while IFS= read -r f; do
