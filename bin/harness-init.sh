@@ -253,6 +253,7 @@ if [[ "$LEVEL" == "full" ]]; then
   render "$F/scripts/verify-impact.template.mjs" "$TARGET/scripts/verify-impact.template.mjs"
   render "$F/scripts/pre-commit-staged.sh"    "$TARGET/scripts/pre-commit-staged.sh"
   render "$F/scripts/install-githooks.sh"     "$TARGET/scripts/install-githooks.sh"
+  render "$F/scripts/post-commit-eval.sh"     "$TARGET/scripts/post-commit-eval.sh"
   render "$F/scripts/clean-state-check.sh"    "$TARGET/scripts/clean-state-check.sh"
   render "$F/scripts/session-trace.sh"        "$TARGET/scripts/session-trace.sh"
   render "$KIT_DIR/bin/harness-audit.sh"      "$TARGET/scripts/harness-audit.sh"

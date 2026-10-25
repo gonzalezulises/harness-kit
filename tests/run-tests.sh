@@ -1675,6 +1675,30 @@ assert_eq "the claimed feature is promoted to passing" "passing" \
 
 cd "$KIT_DIR" || exit 1
 
+# ── 27 — post-commit eval: cada commit de cualquier agente registra outcome ──
+echo ""
+echo "${BOLD}27 — post-commit eval hook${RESET}"
+
+EVALREPO="$WORK/evalhook"; make_fixture "$EVALREPO"
+bash "$KIT_DIR/bin/harness-init.sh" --target "$EVALREPO" --level full >/dev/null 2>&1
+cd "$EVALREPO" || exit 1
+
+# 27a — install-githooks.sh instala pre-commit Y post-commit
+bash scripts/install-githooks.sh >/dev/null 2>&1
+assert_file "post-commit hook installed" ".githooks/post-commit"
+assert_file "pre-commit hook installed" ".githooks/pre-commit"
+
+# 27b — el post-commit registra pass + false_claim en el dir de evals
+EVALOUT="$WORK/eval-out"; mkdir -p "$EVALOUT"
+git add -A >/dev/null 2>&1
+git -c user.email=t@t -c user.name=t commit -qm "eval test" >/dev/null 2>&1
+EVAL_RESULTS_DIR="$EVALOUT" bash scripts/post-commit-eval.sh >/dev/null 2>&1
+EVALFILE="$EVALOUT/$(date +%Y-%m-%d).jsonl"
+assert_file "eval recorded" "$EVALFILE"
+grep -q '"pass":' "$EVALFILE" && ok "eval has a pass field" || bad "eval missing pass field"
+
+cd "$KIT_DIR" || exit 1
+
 # ═════════════════════════════════════════════════════════════════════════════
 echo ""
 echo "${BOLD}────────────────────────────────────────${RESET}"
