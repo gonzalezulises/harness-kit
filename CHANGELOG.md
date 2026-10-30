@@ -6,6 +6,32 @@ con qué versión se construyó, así que `harness-status.sh` puede decir cuál 
 
 ---
 
+## [2.4.0](https://github.com/gonzalezulises/harness-kit/compare/v2.3.3...v2.4.0) (2026-10-30)
+
+
+### Añadido
+
+* add harness-wiring, a read-only check of integrations and account ([42b7b98](https://github.com/gonzalezulises/harness-kit/commit/42b7b9825127f90dfda08a42378fda7ed5706680))
+* add lite level as the default and make the feature ceremony opt-in ([f1bb26e](https://github.com/gonzalezulises/harness-kit/commit/f1bb26e65d21df3d53e2ced8ef4400bbc7ab7f8d))
+* **bureaucracy:** ceremony opt-in, diff-scoped claims, WIP as note ([#56](https://github.com/gonzalezulises/harness-kit/issues/56)) ([c79ecc1](https://github.com/gonzalezulises/harness-kit/commit/c79ecc1a973f907f21f0b696f5c69439f65095f7))
+* **bureaucracy:** local receipt without CI, sensible Claude config, web off ([#55](https://github.com/gonzalezulises/harness-kit/issues/55)) ([7834398](https://github.com/gonzalezulises/harness-kit/commit/783439843694011210c94f3bdae39a18cee53e5b))
+* **ceremony:** per-file state cap + fix the appendix commit-gate wording ([#57](https://github.com/gonzalezulises/harness-kit/issues/57)) ([ca718f7](https://github.com/gonzalezulises/harness-kit/commit/ca718f773badd77530393822c131d4d24a184fe7))
+* **eval:** agent-agnostic post-commit eval hook ([#58](https://github.com/gonzalezulises/harness-kit/issues/58)) ([340b8bc](https://github.com/gonzalezulises/harness-kit/commit/340b8bcfd7c33413bbae27f751922005b1f502e8))
+* **harness:** add harness-sync, harness-gh profile token resolver, and lite claim/status clarity ([#59](https://github.com/gonzalezulises/harness-kit/issues/59)) ([b38746c](https://github.com/gonzalezulises/harness-kit/commit/b38746c056c3b6e1434f9ea3fabe414c497b31c3))
+* **speed:** split fast gate from full gate, and ship Codex config ([#54](https://github.com/gonzalezulises/harness-kit/issues/54)) ([3067d2c](https://github.com/gonzalezulises/harness-kit/commit/3067d2c1f3130f3be798b473a80c921a01e76c27))
+
+
+### Arreglado
+
+* **gate:** let the PR that installs Required quality pass it ([ce8a88f](https://github.com/gonzalezulises/harness-kit/commit/ce8a88f95db627be6cbc4bd58e9fd3c1c439cd8e))
+* **gate:** skip the self-copy on bootstrap; run F33 under the runner's bash -e ([d074822](https://github.com/gonzalezulises/harness-kit/commit/d074822190a787af69066e0e2325241adb3ac0ea))
+* scope harness-wiring to production repos and recognise Actions deploys ([b1c8062](https://github.com/gonzalezulises/harness-kit/commit/b1c806240eaee6306854c36b77898242203eb85a))
+
+
+### Documentación
+
+* move the lite decision detail into an Agent Note ([786e983](https://github.com/gonzalezulises/harness-kit/commit/786e9830cb316e13652e9af92a85e17f988385fd))
+
 ## [2.3.3](https://github.com/gonzalezulises/harness-kit/compare/v2.3.2...v2.3.3) (2026-10-23)
 
 
