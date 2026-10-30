@@ -65,7 +65,12 @@ fi
 # ── Hosted layer: ask GitHub rather than assume ──────────────────────────────
 CHECK_RULE=""; INTEGRITY_RULE=""
 GH_OK=0
+KIT_BIN="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if [[ -n "$SLUG" ]] && command -v gh >/dev/null 2>&1; then
+  if [[ -z "${GH_TOKEN:-}" && -x "$KIT_BIN/harness-gh.sh" ]]; then
+    RESOLVED_TOKEN="$("$KIT_BIN/harness-gh.sh" --target "$TARGET" --repo "$SLUG" --print-token 2>/dev/null || true)"
+    [[ -n "$RESOLVED_TOKEN" ]] && export GH_TOKEN="$RESOLVED_TOKEN"
+  fi
   if RULESETS="$(gh api "repos/$SLUG/rulesets" --jq '.[] | "\(.name)|\(.enforcement)"' 2>/dev/null)"; then
     GH_OK=1
     CHECK_RULE="$(printf '%s\n' "$RULESETS" | grep '^required-quality-check|active' || true)"
@@ -108,8 +113,19 @@ else
 fi
 
 say ""
-say "${BOLD}Local${RESET}"
-line "ok" "contrato, estado y presupuestos"
+REPO_LEVEL=""
+[[ -f "$TARGET/.harness/level" ]] && REPO_LEVEL="$(tr -d '[:space:]' < "$TARGET/.harness/level")"
+if [[ -z "$REPO_LEVEL" && -f "$TARGET/feature_list.json" ]] && command -v python3 >/dev/null 2>&1; then
+  REPO_LEVEL="$(python3 -c "import json,sys;print(json.load(open(sys.argv[1])).get('level',''))" "$TARGET/feature_list.json" 2>/dev/null || true)"
+fi
+[[ -z "$REPO_LEVEL" ]] && REPO_LEVEL="full"
+
+say "${BOLD}Local${RESET} ($REPO_LEVEL)"
+if [[ "$REPO_LEVEL" == "lite" ]]; then
+  line "ok" "contrato lite (AGENTS.md + DECISIONS.md, sin ceremonia de features)"
+else
+  line "ok" "contrato, estado y presupuestos"
+fi
 [[ $HAS_CLAIMS -eq 1 ]] && line "ok" "re-verificador de afirmaciones (verify-claims.sh)" \
                         || line "--" "sin re-verificador: un 'passing' escrito a mano nunca se recomprueba"
 [[ $HAS_DEC -eq 1 ]]    && line "ok" "ledger de decisiones (solo se agrega)" \

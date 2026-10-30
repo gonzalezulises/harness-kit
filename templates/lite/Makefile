@@ -1,5 +1,11 @@
 .DEFAULT_GOAL := help
 
+.PHONY: sync
+sync: ## Synchronize workspace branch, upstream, git email, and harness level
+	@if [ -x "$(HOME)/GitHub/harness-kit/bin/harness-sync.sh" ]; then \
+		bash "$(HOME)/GitHub/harness-kit/bin/harness-sync.sh"; \
+	fi
+
 .PHONY: check
 check: ## Full verification pipeline — run before clock-out and PR
 	{{VERIFY_CMD}}

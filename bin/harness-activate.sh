@@ -154,6 +154,10 @@ fi
 
 # ── 3. Make the gate binding, as far as this repo's plan allows ──────────────
 if [[ -n "$SLUG" ]] && command -v gh >/dev/null 2>&1; then
+  if [[ -z "${GH_TOKEN:-}" && -x "$KIT_DIR/bin/harness-gh.sh" ]]; then
+    RESOLVED_TOKEN="$("$KIT_DIR/bin/harness-gh.sh" --target "$TARGET" --repo "$SLUG" --print-token 2>/dev/null || true)"
+    [[ -n "$RESOLVED_TOKEN" ]] && export GH_TOKEN="$RESOLVED_TOKEN"
+  fi
   PROTECT_OUT="$(NO_COLOR=1 bash "$KIT_DIR/bin/harness-protect.sh" "$SLUG" --repo-dir "$TARGET" 2>&1)"
   if printf '%s' "$PROTECT_OUT" | grep -q "required-quality-check.*\n.*verified" ||
      printf '%s' "$PROTECT_OUT" | grep -A2 "required-quality-check" | grep -q "verified"; then

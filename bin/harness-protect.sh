@@ -55,6 +55,11 @@ command -v gh      >/dev/null 2>&1 || { echo "harness-protect: needs the gh CLI"
 command -v python3 >/dev/null 2>&1 || { echo "harness-protect: needs python3" >&2; exit 69; }
 
 RULESET_DIR="$REPO_DIR/.github/rulesets"
+KIT_BIN="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ -z "${GH_TOKEN:-}" && -x "$KIT_BIN/harness-gh.sh" ]]; then
+  RESOLVED_TOKEN="$("$KIT_BIN/harness-gh.sh" --target "$REPO_DIR" --repo "$REPO" --print-token 2>/dev/null || true)"
+  [[ -n "$RESOLVED_TOKEN" ]] && export GH_TOKEN="$RESOLVED_TOKEN"
+fi
 # Scratch space for API errors goes to a temp dir: writing it under the user's
 # .github/ leaves an orphan file behind whenever an install fails halfway.
 WORK_PROTECT="$(mktemp -d)"

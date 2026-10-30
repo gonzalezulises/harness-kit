@@ -150,8 +150,17 @@ PYEOF
 )"
 
 if [[ -z "${CLAIMS_TSV//[$'\n'[:space:]]/}" ]]; then
-  echo "${YELLOW}NO_CLAIMS${RESET} — nothing needs re-verification: no claims, and every passing feature is unchanged from the base."
-  echo "This is not a pass: it means the repo claims nothing yet."
+  LEVEL_MODE=""
+  [[ -f ".harness/level" ]] && LEVEL_MODE="$(tr -d '[:space:]' < ".harness/level")"
+  if [[ -z "$LEVEL_MODE" ]]; then
+    LEVEL_MODE="$("$PY" -c "import json,sys;print(json.load(open(sys.argv[1])).get('level',''))" "$FL" 2>/dev/null || true)"
+  fi
+  if [[ "$LEVEL_MODE" == "lite" ]]; then
+    echo "${GREEN}NO_CLAIMS${RESET} (lite mode) — feature ceremony is disabled by design; merge gate relies on make check and verify-decisions."
+  else
+    echo "${YELLOW}NO_CLAIMS${RESET} — nothing needs re-verification: no claims, and every passing feature is unchanged from the base."
+    echo "This is not a pass: it means the repo claims nothing yet."
+  fi
   exit 0
 fi
 
