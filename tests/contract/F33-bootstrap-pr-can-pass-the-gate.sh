@@ -28,16 +28,40 @@ echo "${BOLD}F33 — the bootstrap PR can pass the gate${RESET}"
 WF="$KIT_DIR/templates/full/.github/workflows/required-quality.yml"
 for id in claims decisions; do
   python3 - "$WF" "$id" > "$WORK/$id.sh" <<'PY' || bad "step '$id' not found in the template"
-import sys, yaml
-steps = yaml.safe_load(open(sys.argv[1]))["jobs"]["required-quality"]["steps"]
-print(next(s["run"] for s in steps if s.get("id") == sys.argv[2]))
+import re, sys
+text = open(sys.argv[1]).read()
+target_id = sys.argv[2]
+try:
+    import yaml
+    steps = yaml.safe_load(text)["jobs"]["required-quality"]["steps"]
+    print(next(s["run"] for s in steps if s.get("id") == target_id))
+except ImportError:
+    blocks = re.split(r"\n      - name: ", text)
+    for b in blocks[1:]:
+        if re.search(rf"^\s+id:\s*{re.escape(target_id)}\s*$", b, re.M):
+            m = re.search(r"^\s+run:\s*\|\n((?:          .*\n?)+)", b, re.M)
+            if m:
+                print("\n".join(line[10:] for line in m.group(1).splitlines()))
+                sys.exit(0)
+    sys.exit(1)
 PY
 done
 
-if grep -q '\.github/workflows/required-quality\.yml' <(python3 -c '
-import sys, yaml
-steps = yaml.safe_load(open(sys.argv[1]))["jobs"]["required-quality"]["steps"]
-print(next(s["with"]["sparse-checkout"] for s in steps if s.get("with", {}).get("path") == "base"))' "$WF"); then
+if grep -q '\.github/workflows/required-quality\.yml' <(python3 - "$WF" <<'PY'
+import re, sys
+text = open(sys.argv[1]).read()
+try:
+    import yaml
+    steps = yaml.safe_load(text)["jobs"]["required-quality"]["steps"]
+    print(next(s["with"]["sparse-checkout"] for s in steps if s.get("with", {}).get("path") == "base"))
+except ImportError:
+    for b in re.split(r"\n      - name: ", text)[1:]:
+        if re.search(r"^\s+path:\s*base\s*$", b, re.M):
+            m = re.search(r"^\s+sparse-checkout:\s*\|\n((?:            .*\n?)+)", b, re.M)
+            if m:
+                print("\n".join(line[12:] for line in m.group(1).splitlines()))
+PY
+); then
   ok "the base checkout brings the workflow, so the step can tell a bootstrap apart"
 else
   bad "the base checkout does not bring the workflow — the bootstrap test reads nothing"

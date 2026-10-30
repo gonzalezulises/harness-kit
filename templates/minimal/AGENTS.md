@@ -11,10 +11,14 @@ it states the startup path, the rules, and what "done" means. Details live in `d
 Before touching code, in this order:
 
 1. Confirm the working directory with `pwd`.
-2. Read `PROGRESS.md` — it holds the last verified state and the next step.
-3. Read `feature_list.json` and pick the highest-priority unfinished feature.
-4. Review recent history: `git log --oneline -5`.
-5. Run `./init.sh` to install and verify the baseline.
+2. If `~/GitHub/harness-kit/bin/harness-sync.sh` exists, synchronize the workspace before
+   touching files: `bash ~/GitHub/harness-kit/bin/harness-sync.sh`. For GitHub CLI commands,
+   use `bash ~/GitHub/harness-kit/bin/harness-gh.sh <gh-args...>` so the repo owner's profile
+   token is injected without `gh auth switch`.
+3. Read `PROGRESS.md` — it holds the last verified state and the next step.
+4. Read `feature_list.json` and pick the highest-priority unfinished feature.
+5. Review recent history: `git log --oneline -5`.
+6. Run `./init.sh` to install and verify the baseline.
 
 If baseline verification is already failing, repair it first. MUST NOT stack new
 feature work on a broken baseline — a red baseline makes every later result unreadable.

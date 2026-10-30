@@ -1697,6 +1697,78 @@ EVALFILE="$EVALOUT/$(date +%Y-%m-%d).jsonl"
 assert_file "eval recorded" "$EVALFILE"
 grep -q '"pass":' "$EVALFILE" && ok "eval has a pass field" || bad "eval missing pass field"
 
+# ── 28 — harness-gh & harness-sync: profile alignment and workspace hygiene ──
+echo ""
+echo "${BOLD}28 — harness-gh and harness-sync${RESET}"
+
+SYNC_WORK="$WORK/sync-suite"
+mkdir -p "$SYNC_WORK/profiles"
+cat > "$SYNC_WORK/profiles/acme-org.profile" <<'PROF'
+ACCOUNT_ID="acme-org"
+GH_USER="acme-bot"
+GIT_EMAIL="bot@acme.example"
+PROF
+
+# Origin repo + clone to test upstream sync and merged-branch recovery
+git init -q --bare "$SYNC_WORK/origin.git"
+git -C "$SYNC_WORK/origin.git" symbolic-ref HEAD refs/heads/main
+git init -q "$SYNC_WORK/seed"
+git -C "$SYNC_WORK/seed" checkout -qb main
+git -C "$SYNC_WORK/seed" config user.email "seed@acme.example"
+git -C "$SYNC_WORK/seed" config user.name "seed"
+git -C "$SYNC_WORK/seed" remote add origin "$SYNC_WORK/origin.git"
+printf 'v1\n' > "$SYNC_WORK/seed/app.txt"
+git -C "$SYNC_WORK/seed" add app.txt
+git -C "$SYNC_WORK/seed" commit -qm "init"
+git -C "$SYNC_WORK/seed" branch -M main
+git -C "$SYNC_WORK/seed" push -q -u origin main
+
+git clone -q -b main "$SYNC_WORK/origin.git" "$SYNC_WORK/clone"
+git -C "$SYNC_WORK/clone" config user.email "wrong@personal.example"
+git -C "$SYNC_WORK/clone" config user.name "dev"
+# Simulate an acme-org remote URL for profile resolution while keeping local fetch working
+git -C "$SYNC_WORK/clone" config remote.origin.url "https://github.com/acme-org/widget.git"
+git -C "$SYNC_WORK/clone" config "url.$SYNC_WORK/origin.git.insteadOf" "https://github.com/acme-org/widget.git"
+bash "$KIT_DIR/bin/harness-init.sh" --target "$SYNC_WORK/clone" --level lite >/dev/null 2>&1
+git -C "$SYNC_WORK/clone" add -A && git -C "$SYNC_WORK/clone" commit -qm "lite"
+git -C "$SYNC_WORK/clone" push -q origin main
+
+# 19.1 — harness-gh resolves profile metadata from origin owner
+GH_PROF="$(HARNESS_PROFILES_DIR="$SYNC_WORK/profiles" bash "$KIT_DIR/bin/harness-gh.sh" --target "$SYNC_WORK/clone" --print-profile 2>&1)"
+assert_contains "harness-gh resolves owner from origin" "$GH_PROF" "OWNER=acme-org"
+assert_contains "harness-gh resolves GH_USER from profile" "$GH_PROF" "GH_USER=acme-bot"
+assert_contains "harness-gh resolves GIT_EMAIL from profile" "$GH_PROF" "GIT_EMAIL=bot@acme.example"
+
+# 19.2 — lite verify-claims states lite mode explicitly instead of warning 'claims nothing yet'
+LITE_CLAIMS="$(cd "$SYNC_WORK/clone" && NO_COLOR=1 bash scripts/verify-claims.sh 2>&1)"
+assert_contains "lite verify-claims reports lite mode" "$LITE_CLAIMS" "NO_CLAIMS (lite mode)"
+
+# 19.3 — harness-sync fixes mismatched git user.email and switches off merged branches
+git -C "$SYNC_WORK/clone" checkout -qb feat/already-merged
+SYNC_OUT1="$(HARNESS_PROFILES_DIR="$SYNC_WORK/profiles" bash "$KIT_DIR/bin/harness-sync.sh" --target "$SYNC_WORK/clone" 2>&1)"
+assert_eq "harness-sync exits 0 on clean merged branch" "0" "$?"
+assert_contains "harness-sync aligns git user.email with profile" "$SYNC_OUT1" "FIXED_GIT_EMAIL"
+assert_contains "harness-sync switches off merged feature branch to main" "$SYNC_OUT1" "SWITCHED_TO_DEFAULT: feat/already-merged -> main"
+assert_eq "clone is now on main" "main" "$(git -C "$SYNC_WORK/clone" symbolic-ref --short HEAD)"
+assert_eq "local git email matches profile" "bot@acme.example" "$(git -C "$SYNC_WORK/clone" config user.email)"
+
+# 19.4 — upstream advances: clean clone fast-forwards, dirty overlapping clone flags CONFLICT_RISK
+git -C "$SYNC_WORK/seed" pull -q origin main
+printf 'v2-upstream\n' > "$SYNC_WORK/seed/app.txt"
+git -C "$SYNC_WORK/seed" add app.txt && git -C "$SYNC_WORK/seed" commit -qm "upstream update"
+git -C "$SYNC_WORK/seed" push -q origin main
+
+printf 'dirty-local\n' > "$SYNC_WORK/clone/app.txt"
+SYNC_CONFLICT="$(HARNESS_PROFILES_DIR="$SYNC_WORK/profiles" bash "$KIT_DIR/bin/harness-sync.sh" --target "$SYNC_WORK/clone" 2>&1)"; RC_CONF=$?
+assert_eq "harness-sync fails with exit 2 on dirty overlapping tree" "2" "$RC_CONF"
+assert_contains "harness-sync names CONFLICT_RISK" "$SYNC_CONFLICT" "CONFLICT_RISK"
+
+git -C "$SYNC_WORK/clone" checkout -q -- app.txt
+SYNC_FF="$(HARNESS_PROFILES_DIR="$SYNC_WORK/profiles" bash "$KIT_DIR/bin/harness-sync.sh" --target "$SYNC_WORK/clone" 2>&1)"; RC_FF=$?
+assert_eq "harness-sync fast-forwards once tree is clean" "0" "$RC_FF"
+assert_contains "harness-sync reports FAST_FORWARDED" "$SYNC_FF" "FAST_FORWARDED"
+assert_eq "fast-forwarded file has upstream content" "v2-upstream" "$(cat "$SYNC_WORK/clone/app.txt")"
+
 cd "$KIT_DIR" || exit 1
 
 # ═════════════════════════════════════════════════════════════════════════════

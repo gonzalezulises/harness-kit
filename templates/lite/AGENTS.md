@@ -9,9 +9,17 @@ protects the merge and stays out of the way of the work.
 ## Before you start
 
 1. Confirm the working directory with `pwd` and read `git log --oneline -5`.
-2. If `~/GitHub/harness-kit/bin/harness-wiring.sh` exists, check the wiring once per
+2. If `~/GitHub/harness-kit/bin/harness-sync.sh` exists, synchronize the workspace before
+   touching files: `bash ~/GitHub/harness-kit/bin/harness-sync.sh`. It aligns local
+   `git config user.email` with the owner profile, checks `.harness/level`, fetches `origin`,
+   switches off already-merged branches, and fast-forwards `main` (or stops on `CONFLICT_RISK`
+   if dirty local files overlap with upstream commits).
+3. If `~/GitHub/harness-kit/bin/harness-wiring.sh` exists, check the wiring once per
    session: `bash ~/GitHub/harness-kit/bin/harness-wiring.sh --quick`. A `NOT_WIRED` line names
    the integration that is missing; fix it or report it before building on top of it.
+4. For GitHub CLI operations (`gh pr`, `gh run`, `gh api`), run them through
+   `bash ~/GitHub/harness-kit/bin/harness-gh.sh <gh-args...>` so the matching account profile
+   token is injected per-command without ever running `gh auth switch`.
 
 ## Verification
 
